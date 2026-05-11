@@ -666,6 +666,30 @@ def main() -> int:
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 
     log("=== Done ===")
+
+    # ---- Push updated files to GitHub ----------------------------------------
+    log("--- Pushing updates to GitHub ---")
+    try:
+        import os
+        git_dir = str(SCRIPT_DIR)
+        def git(cmd: str) -> int:
+            full = f'git -C "{git_dir}" {cmd}'
+            log(f"  $ {full}")
+            rc = os.system(full)
+            if rc != 0:
+                log(f"  WARNING: command exited with code {rc}")
+            return rc
+
+        git("add .")
+        git(f'commit -m "daily auto update {today}"')
+        rc = git("push")
+        if rc == 0:
+            log("GitHub push successful.")
+        else:
+            log("GitHub push failed — check remote/auth settings.")
+    except Exception as e:  # pylint: disable=broad-except
+        log(f"  (GitHub push failed: {type(e).__name__}: {e})")
+
     return 0
 
 

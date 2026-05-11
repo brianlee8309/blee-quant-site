@@ -353,3 +353,65 @@
 [2026-05-10T04:54:03]   Wrote 3 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
 [2026-05-10T04:54:03] Generated dashboard -> index2.html (value=$82.40, days=1)
 [2026-05-10T04:54:03] === Done ===
+[2026-05-11T06:08:48] === Composer daily allocation pull ===
+[2026-05-11T06:08:48] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'uP4EOQmkexROiO18SaiN']
+[2026-05-11T06:08:48] No account_uuid in config; discovering via /accounts/list...
+[2026-05-11T06:08:49] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-11T06:08:49] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-11T06:08:49] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-11T06:08:49] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-11T06:08:50] Saved symphony-stats response to composer_symphony_stats_2026-05-11.json
+[2026-05-11T06:08:50] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-11T06:08:50]   Got 17 positions from symphony-stats-meta
+[2026-05-11T06:08:50]   Saved today's slice to composer_allocations_2026-05-11.json
+[2026-05-11T06:08:50]   Wrote 17 rows for 2026-05-11 to composer_allocations.csv (kept 17 prior rows, source=symphony-stats-meta)
+[2026-05-11T06:08:51] Generated dashboard -> index.html (value=$41,069.00, days=2)
+[2026-05-11T06:08:51] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (uP4EOQmkexROiO18SaiN) ---
+[2026-05-11T06:08:51]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-11 JSON to verify the id matches one in the response)
+[2026-05-11T06:08:51]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-11T06:08:51] === Done ===
+[2026-05-11T06:26:52] === Composer daily allocation pull ===
+[2026-05-11T06:26:52] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-11T06:26:52] No account_uuid in config; discovering via /accounts/list...
+[2026-05-11T06:26:53] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-11T06:26:53] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-11T06:26:53] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-11T06:26:53] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-11T06:26:54] Saved symphony-stats response to composer_symphony_stats_2026-05-11.json
+[2026-05-11T06:26:54] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-11T06:26:54]   Got 17 positions from symphony-stats-meta
+[2026-05-11T06:26:54]   Saved today's slice to composer_allocations_2026-05-11.json
+[2026-05-11T06:26:54]   Wrote 17 rows for 2026-05-11 to composer_allocations.csv (kept 17 prior rows, source=symphony-stats-meta)
+[2026-05-11T06:26:54] Generated dashboard -> index.html (value=$41,069.00, days=2)
+[2026-05-11T06:26:54] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-11T06:26:54]   Got 3 positions from symphony-stats-meta
+[2026-05-11T06:26:54]   Saved today's slice to composer_allocations_185_2026-05-11.json
+[2026-05-11T06:26:55]   Wrote 3 rows for 2026-05-11 to composer_allocations_185.csv (kept 3 prior rows, source=symphony-stats-meta)
+[2026-05-11T06:26:55] Generated dashboard -> index2.html (value=$82.40, days=2)
+[2026-05-11T06:26:55] === Done ===
+[2026-05-11T10:43:17] === Composer daily allocation pull ===
+[2026-05-11T10:43:17] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-11T10:43:17] No account_uuid in config; discovering via /accounts/list...
+[2026-05-11T10:43:17] Network error on GET /api/v0.1/accounts/list: <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-11T10:43:17] FATAL: URLError: <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-11T06:45:57] === Composer daily allocation pull ===
+[2026-05-11T06:45:57] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-11T06:45:57] No account_uuid in config; discovering via /accounts/list...
+[2026-05-11T06:45:58] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-11T06:45:58] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-11T06:45:58] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-11T06:45:58] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-11T06:45:59] Saved symphony-stats response to composer_symphony_stats_2026-05-11.json
+[2026-05-11T06:45:59] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-11T06:45:59]   Got 17 positions from symphony-stats-meta
+[2026-05-11T06:45:59]   Saved today's slice to composer_allocations_2026-05-11.json
+[2026-05-11T06:45:59]   Wrote 17 rows for 2026-05-11 to composer_allocations.csv (kept 17 prior rows, source=symphony-stats-meta)
+[2026-05-11T06:45:59] Generated dashboard -> dashboard_186.html (value=$41,069.00, days=2)
+[2026-05-11T06:45:59] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-11T06:45:59]   Got 3 positions from symphony-stats-meta
+[2026-05-11T06:45:59]   Saved today's slice to composer_allocations_185_2026-05-11.json
+[2026-05-11T06:45:59]   Wrote 3 rows for 2026-05-11 to composer_allocations_185.csv (kept 3 prior rows, source=symphony-stats-meta)
+[2026-05-11T06:45:59] Generated dashboard -> index2.html (value=$82.40, days=2)
+[2026-05-11T06:45:59] === Done ===
+[2026-05-11T06:45:59] --- Pushing updates to GitHub ---
+[2026-05-11T06:45:59]   $ git -C "C:\Kei\ComposerInvest" add .

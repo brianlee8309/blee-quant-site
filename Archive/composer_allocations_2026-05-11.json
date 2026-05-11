@@ -1,5 +1,5 @@
 {
-  "date": "2026-05-10",
+  "date": "2026-05-11",
   "symphony_id": "jtQvlI5wINrxpOfxgmgl",
   "symphony_name": "BLEE - 186 2026 ALL in One",
   "source": "symphony-stats-meta",
@@ -122,11 +122,11 @@
     "sharpe_ratio": 8.8047,
     "time_weighted_return": 0.06072,
     "asset_class": "EQUITIES",
-    "may_rebalance_today": false,
+    "may_rebalance_today": true,
     "invested_since": "2026-04-20",
     "cash": 57.92,
     "deposit_adjusted_value": 39246.73,
-    "last_dollar_change": 585.3989018,
+    "last_dollar_change": 0.0,
     "rebalance_corridor_width": 0.05,
     "skip_rebalance_today": false,
     "tickers": [
@@ -405,8 +405,7 @@
         "allocation": 0.00483892,
         "price": 139.22,
         "amount": 1.42745,
-        "value": 198.729589,
-        "last_percent_change": -0.752722846
+        "value": 198.729589
       },
       {
         "ticker": "EUM",
@@ -420,8 +419,7 @@
         "allocation": 0.028510407,
         "price": 193.09,
         "amount": 6.06398,
-        "value": 1170.8938982,
-        "last_percent_change": -0.291056226
+        "value": 1170.8938982
       },
       {
         "ticker": "BTAL",
@@ -435,99 +433,86 @@
         "allocation": 0.019411309,
         "price": 76.28,
         "amount": 10.45101,
-        "value": 797.2030428,
-        "last_percent_change": -0.867887261
+        "value": 797.2030428
       },
       {
         "ticker": "SHV",
         "allocation": 0.014728664,
         "price": 110.18,
         "amount": 5.49003,
-        "value": 604.8915054,
-        "last_percent_change": 0.000363174
+        "value": 604.8915054
       },
       {
         "ticker": "VIXY",
         "allocation": 0.149851118,
         "price": 27.05,
         "amount": 227.51333,
-        "value": 6154.2355765,
-        "last_percent_change": 1.87556418
+        "value": 6154.2355765
       },
       {
         "ticker": "SGOV",
         "allocation": 0.269715243,
         "price": 100.48,
         "amount": 110.2402,
-        "value": 11076.935296,
-        "last_percent_change": 0.014087797
+        "value": 11076.935296
       },
       {
         "ticker": "GLD",
         "allocation": 0.15977922,
         "price": 433.77,
         "amount": 15.12777,
-        "value": 6561.9727929,
-        "last_percent_change": 0.013106313
+        "value": 6561.9727929
       },
       {
         "ticker": "UVXY",
         "allocation": 0.014736428,
         "price": 36.1,
         "amount": 16.76483,
-        "value": 605.210363,
-        "last_percent_change": 0.007254464
+        "value": 605.210363
       },
       {
         "ticker": "UDOW",
         "allocation": 0.023330178,
         "price": 60.7,
         "amount": 15.78496,
-        "value": 958.147072,
-        "last_percent_change": 0.013127835
+        "value": 958.147072
       },
       {
         "ticker": "TMV",
         "allocation": 0.014943417,
         "price": 37.82,
         "amount": 16.22716,
-        "value": 613.7111912,
-        "last_percent_change": 0.017841672
+        "value": 613.7111912
       },
       {
         "ticker": "USMV",
         "allocation": 0.029971413,
         "price": 94.03,
         "amount": 13.09046,
-        "value": 1230.8959538,
-        "last_percent_change": 0.013229696
+        "value": 1230.8959538
       },
       {
         "ticker": "BIL",
         "allocation": 0.134365539,
         "price": 91.46,
         "amount": 60.33521,
-        "value": 5518.2583066,
-        "last_percent_change": 0.013972638
+        "value": 5518.2583066
       },
       {
         "ticker": "SQQQ",
         "allocation": 0.023194996,
         "price": 42.57,
         "amount": 22.37715,
-        "value": 952.5952755,
-        "last_percent_change": 0.009004181
+        "value": 952.5952755
       },
       {
         "ticker": "PSQ",
         "allocation": 0.014915206,
         "price": 26.21,
         "amount": 23.37095,
-        "value": 612.5525995,
-        "last_percent_change": 0.013071138
+        "value": 612.5525995
       }
     ],
-    "last_percent_change": 0.0145,
     "simple_return": 0.053051,
     "is_shared": true,
     "as_of": "2026-05-08",
