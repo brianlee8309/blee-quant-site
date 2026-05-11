@@ -6,43 +6,43 @@
   "positions": [
     {
       "ticker": "GLDM",
-      "weight_pct": 9.3751,
-      "shares": 0.08263,
-      "market_value": 7.7250787
+      "weight_pct": 9.9937,
+      "shares": 1.06954,
+      "market_value": 100.1838118
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 85.4824,
-      "shares": 0.70101,
-      "market_value": 70.4374848
+      "weight_pct": 89.9035,
+      "shares": 8.96861,
+      "market_value": 901.2556189
     },
     {
       "ticker": "$USD",
-      "weight_pct": 5.1456,
-      "shares": 4.24,
-      "market_value": 4.24
+      "weight_pct": 0.1027,
+      "shares": 1.03,
+      "market_value": 1.03
     }
   ],
   "raw_api_entry": {
     "description": "",
     "community_review_status": null,
     "tags": [],
-    "last_rebalance_on": "2026-04-16",
-    "annualized_rate_of_return": 0.6465,
+    "last_rebalance_on": "2026-05-11",
+    "annualized_rate_of_return": 0.6333,
     "last_semantic_update_at": "2026-05-11T06:16:07.646714Z",
     "color": "#F274E9",
     "rebalance_frequency": "daily",
-    "last_rebalance_attempted_on": "2026-05-08",
+    "last_rebalance_attempted_on": "2026-05-11",
     "name": "BLEE - 185 2026 SGOV and Dual Reversal with Annual 16% perfomance",
-    "value": 82.4,
-    "sharpe_ratio": 4.0252,
-    "time_weighted_return": 0.1214,
+    "value": 1002.47,
+    "sharpe_ratio": 3.9923,
+    "time_weighted_return": 0.12151,
     "asset_class": "EQUITIES",
-    "may_rebalance_today": true,
+    "may_rebalance_today": false,
     "invested_since": "2026-02-17",
-    "cash": 4.24,
-    "deposit_adjusted_value": 19960.85,
-    "last_dollar_change": 0.0,
+    "cash": 1.03,
+    "deposit_adjusted_value": 19962.81,
+    "last_dollar_change": 920.0674365,
     "skip_rebalance_today": false,
     "tickers": [
       {
@@ -76,30 +76,33 @@
     ],
     "max_drawdown": 0.0193,
     "id": "ZGersOlsQFRHg7U2qnSw",
-    "net_deposits": -800.0,
+    "net_deposits": 120.0,
     "position_id": "fdddac09-10f5-49d2-aa22-229f046a250f",
     "holdings": [
       {
         "ticker": "GLDM",
-        "allocation": 0.093750955,
-        "price": 93.49,
-        "amount": 0.08263,
-        "value": 7.7250787
+        "allocation": 0.099936967,
+        "price": 93.67,
+        "amount": 1.06954,
+        "value": 100.1838118,
+        "last_percent_change": 11.968646106
       },
       {
         "ticker": "SGOV",
-        "allocation": 0.854823845,
-        "price": 100.48,
-        "amount": 0.70101,
-        "value": 70.4374848
+        "allocation": 0.899035002,
+        "price": 100.49,
+        "amount": 8.96861,
+        "value": 901.2556189,
+        "last_percent_change": 11.795113588
       }
     ],
-    "simple_return": 0.0,
+    "last_percent_change": 11.1655,
+    "simple_return": 7.3539,
     "is_shared": true,
-    "as_of": "2026-05-08",
+    "as_of": "2026-05-11",
     "asset_classes": [
       "EQUITIES"
     ],
-    "next_rebalance_on": "2026-05-09"
+    "next_rebalance_on": "2026-05-12"
   }
 }
