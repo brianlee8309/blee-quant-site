@@ -1,0 +1,104 @@
+{
+  "date": "2026-05-10",
+  "symphony_id": "jtQvlI5wINrxpOfxgmgl",
+  "symphony_name": "BLEE - 186 2026 ALL in One",
+  "source": "symphony-stats-meta",
+  "positions": [
+    {
+      "ticker": "UPRO",
+      "weight_pct": 0.4839,
+      "shares": 1.42745,
+      "market_value": 198.729589
+    },
+    {
+      "ticker": "EUM",
+      "weight_pct": 5.2863,
+      "shares": 135.77369,
+      "market_value": 2171.0213031
+    },
+    {
+      "ticker": "TECL",
+      "weight_pct": 2.851,
+      "shares": 6.06398,
+      "market_value": 1170.8938982
+    },
+    {
+      "ticker": "BTAL",
+      "weight_pct": 4.3435,
+      "shares": 148.40499,
+      "market_value": 1783.8279798
+    },
+    {
+      "ticker": "TQQQ",
+      "weight_pct": 1.9411,
+      "shares": 10.45101,
+      "market_value": 797.2030428
+    },
+    {
+      "ticker": "SHV",
+      "weight_pct": 1.4729,
+      "shares": 5.49003,
+      "market_value": 604.8915054
+    },
+    {
+      "ticker": "VIXY",
+      "weight_pct": 14.9851,
+      "shares": 227.51333,
+      "market_value": 6154.2355765
+    },
+    {
+      "ticker": "SGOV",
+      "weight_pct": 26.9715,
+      "shares": 110.2402,
+      "market_value": 11076.935296
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 15.9779,
+      "shares": 15.12777,
+      "market_value": 6561.9727929
+    },
+    {
+      "ticker": "UVXY",
+      "weight_pct": 1.4736,
+      "shares": 16.76483,
+      "market_value": 605.210363
+    },
+    {
+      "ticker": "UDOW",
+      "weight_pct": 2.333,
+      "shares": 15.78496,
+      "market_value": 958.147072
+    },
+    {
+      "ticker": "TMV",
+      "weight_pct": 1.4943,
+      "shares": 16.22716,
+      "market_value": 613.7111912
+    },
+    {
+      "ticker": "USMV",
+      "weight_pct": 2.9971,
+      "shares": 13.09046,
+      "market_value": 1230.8959538
+    },
+    {
+      "ticker": "BIL",
+      "weight_pct": 13.4366,
+      "shares": 60.33521,
+      "market_value": 5518.2583066
+    },
+    {
+      "ticker": "SQQQ",
+      "weight_pct": 2.3195,
+      "shares": 22.37715,
+      "market_value": 952.5952755
+    },
+    {
+      "ticker": "PSQ",
+      "weight_pct": 1.4915,
+      "shares": 23.37095,
+      "market_value": 612.5525995
+    }
+  ]
+}

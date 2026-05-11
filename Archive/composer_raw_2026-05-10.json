@@ -1,0 +1,100 @@
+{
+  "holdings": [
+    {
+      "ticker": "BIL",
+      "quantity": 82.9323,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "BTAL",
+      "quantity": 227.01372,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "EUM",
+      "quantity": 207.69139,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "GLD",
+      "quantity": 20.2507,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "GLDM",
+      "quantity": 0.29773,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "PSQ",
+      "quantity": 32.28879,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "SGOV",
+      "quantity": 112.95718,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "SHV",
+      "quantity": 7.51337,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "SQQQ",
+      "quantity": 23.01825,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "TECL",
+      "quantity": 9.27604,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "TMV",
+      "quantity": 22.14745,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "TQQQ",
+      "quantity": 16.3502,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "UDOW",
+      "quantity": 16.2191,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "UPRO",
+      "quantity": 2.19058,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "USMV",
+      "quantity": 13.37764,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "UVXY",
+      "quantity": 23.26536,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "VIXM",
+      "quantity": 0.0021,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "VIXY",
+      "quantity": 322.22433,
+      "asset_class": "EQUITIES"
+    },
+    {
+      "ticker": "VTI",
+      "quantity": 0.00062,
+      "asset_class": "EQUITIES"
+    }
+  ],
+  "_path": "/api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings"
+}

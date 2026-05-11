@@ -1,0 +1,355 @@
+[2026-05-09T08:12:36] === Composer daily allocation pull ===
+[2026-05-09T08:12:36] No account_uuid in config; discovering via /accounts...
+[2026-05-09T08:12:36] Network error on GET /api/v1/portfolio/accounts: <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-09T08:12:36] FATAL: URLError: <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-09T08:13:07] === Composer daily allocation pull ===
+[2026-05-09T08:13:07] No account_uuid in config; discovering via /accounts...
+[2026-05-09T08:13:07] Network error on GET /api/v1/portfolio/accounts: <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-09T08:13:07] FATAL: URLError: <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-09T08:24:14] === Composer daily allocation pull ===
+[2026-05-09T08:24:14] No account_uuid in config; discovering via /accounts...
+[2026-05-09T08:24:15] HTTP 404 on GET /api/v1/portfolio/accounts: {"errors":[{"status":404,"code":"not-found","title":"404 - Route not found"}]}
+[2026-05-09T08:24:15] FATAL: HTTPError: HTTP Error 404: Not Found
+[2026-05-09T08:29:25] === Composer daily allocation pull ===
+[2026-05-09T08:29:25] No account_uuid in config; discovering via /accounts...
+[2026-05-09T08:29:26] HTTP 404 on GET /api/v1/portfolio/accounts: {"errors":[{"status":404,"code":"not-found","title":"404 - Route not found"}]}
+[2026-05-09T08:29:26] FATAL: HTTPError: HTTP Error 404: Not Found
+[2026-05-09T08:32:45] === Composer daily allocation pull ===
+[2026-05-09T08:32:45] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T08:32:46] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:32:46] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T08:32:46] Fetching Symphony yrsRTIwEWPQpoZOWArGm on account b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:32:46] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings?symphony_id=yrsRTIwEWPQpoZOWArGm
+[2026-05-09T08:32:47] HTTP 400 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings?symphony_id=yrsRTIwEWPQpoZOWArGm: {"value":{"symphony_id":"yrsRTIwEWPQpoZOWArGm"},"type":"reitit.coercion/request-coercion","coercion":"malli","in":["request","query-params"],"humanized":{"symphony_id":["disallowed key"]}}
+[2026-05-09T08:32:47] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T08:32:48] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/yrsRTIwEWPQpoZOWArGm/holdings
+[2026-05-09T08:32:49] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/yrsRTIwEWPQpoZOWArGm/holdings: {"error": "Not Found", "status": 404}
+[2026-05-09T08:32:49] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/yrsRTIwEWPQpoZOWArGm
+[2026-05-09T08:32:50] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/yrsRTIwEWPQpoZOWArGm: {"error": "Not Found", "status": 404}
+[2026-05-09T08:32:50] GET /api/v0.1/portfolio/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T08:32:51] HTTP 404 on GET /api/v0.1/portfolio/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings: {"error": "Not Found", "status": 404}
+[2026-05-09T08:32:51] GET /api/v0.1/symphonies/yrsRTIwEWPQpoZOWArGm
+[2026-05-09T08:32:52] HTTP 403 on GET /api/v0.1/symphonies/yrsRTIwEWPQpoZOWArGm: <html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx/1.28.1</center>
+</body>
+</html>
+
+[2026-05-09T08:32:52] FATAL: HTTPError: HTTP Error 403: Forbidden
+[2026-05-09T08:39:32] === Composer daily allocation pull ===
+[2026-05-09T08:39:32] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T08:39:33] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:39:33] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T08:39:33] Fetching Symphony yrsRTIwEWPQpoZOWArGm on account b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:39:33] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T08:39:34] Saved raw response to composer_raw_2026-05-09.json
+[2026-05-09T08:39:34] Parsed 19 positions
+[2026-05-09T08:39:34] Appended 19 rows to composer_allocations.csv
+[2026-05-09T08:39:34] === Done ===
+[2026-05-09T08:50:40] === Composer daily allocation pull ===
+[2026-05-09T08:50:40] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T08:50:41] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:50:41] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T08:50:41] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-09T08:50:41] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-09T08:50:41] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:50:41] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-09T08:50:42] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:50:42] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-09T08:50:43] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:50:43] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-09T08:50:44] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:50:44] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-09T08:50:45] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:50:45] Falling back to /holdings (whole-account snapshot, ticker + quantity only)
+[2026-05-09T08:50:45] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T08:50:46] Saved /holdings response to composer_raw_2026-05-09.json
+[2026-05-09T08:50:46] Got 19 positions from account-holdings (weight % and market value will be blank; account-wide, not symphony-specific)
+[2026-05-09T08:50:46] FATAL: PermissionError: [Errno 13] Permission denied: 'C:\\Kei\\ComposerInvest\\composer_allocations.csv'
+[2026-05-09T08:52:28] === Composer daily allocation pull ===
+[2026-05-09T08:52:28] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T08:52:29] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:52:29] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T08:52:29] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-09T08:52:29] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-09T08:52:30] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:52:30] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-09T08:52:31] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:52:31] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-09T08:52:32] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:52:32] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-09T08:52:33] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:52:33] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-09T08:52:34] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:52:34] Falling back to /holdings (whole-account snapshot, ticker + quantity only)
+[2026-05-09T08:52:34] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T08:52:35] Saved /holdings response to composer_raw_2026-05-09.json
+[2026-05-09T08:52:35] Got 19 positions from account-holdings (weight % and market value will be blank; account-wide, not symphony-specific)
+[2026-05-09T08:52:35] FATAL: PermissionError: [Errno 13] Permission denied: 'C:\\Kei\\ComposerInvest\\composer_allocations.csv'
+[2026-05-09T08:56:35] === Composer daily allocation pull ===
+[2026-05-09T08:56:35] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T08:56:36] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T08:56:36] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T08:56:36] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-09T08:56:36] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-09T08:56:37] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:56:37] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-09T08:56:38] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:56:38] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-09T08:56:39] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:56:39] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-09T08:56:39] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:56:39] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-09T08:56:40] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-09T08:56:40] Falling back to /holdings (whole-account snapshot, ticker + quantity)
+[2026-05-09T08:56:40] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T08:56:41] Saved /holdings response to composer_raw_2026-05-09.json
+[2026-05-09T08:56:41] Got 19 positions from /holdings
+[2026-05-09T08:56:41] Fetching prices for 19 tickers from Yahoo Finance...
+[2026-05-09T08:56:57] Total computed market value: $52,430.19
+[2026-05-09T08:56:57] Appended 19 rows to composer_allocations.csv (source=account-holdings+yahoo-prices)
+[2026-05-09T08:56:57] === Done ===
+[2026-05-09T09:15:40] === Composer daily allocation pull ===
+[2026-05-09T09:15:40] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T09:15:41] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T09:15:41] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T09:15:41] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-09T09:15:41] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-09T09:15:42] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:15:42] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-09T09:15:43] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:15:43] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-09T09:15:44] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:15:44] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-09T09:15:45] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:15:45] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-09T09:15:46] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:15:46] Falling back to /holdings (whole-account snapshot, ticker + quantity)
+[2026-05-09T09:15:46] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T09:15:47] Saved /holdings response to composer_raw_2026-05-09.json
+[2026-05-09T09:15:47] Got 19 positions from /holdings
+[2026-05-09T09:15:47] Fetching prices for 19 tickers from Yahoo Finance...
+[2026-05-09T09:16:03] Total computed market value: $52,430.19
+[2026-05-09T09:16:03] Appended 19 rows to composer_allocations.csv (source=account-holdings+yahoo-prices)
+[2026-05-09T09:16:03] Generated dashboard -> index.html (value=$104,860.38, days=1)
+[2026-05-09T09:16:03] === Done ===
+[2026-05-09T09:25:36] === Composer daily allocation pull ===
+[2026-05-09T09:25:36] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T09:25:37] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T09:25:37] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T09:25:37] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-09T09:25:37] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-09T09:25:38] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:25:38] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-09T09:25:39] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:25:39] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-09T09:25:40] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:25:40] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-09T09:25:41] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:25:41] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-09T09:25:42] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:25:42] Falling back to /holdings (whole-account snapshot, ticker + quantity)
+[2026-05-09T09:25:42] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T09:25:42] Saved /holdings response to composer_raw_2026-05-09.json
+[2026-05-09T09:25:42] Got 19 positions from /holdings
+[2026-05-09T09:25:42] Fetching prices for 19 tickers from Yahoo Finance...
+[2026-05-09T09:25:59] Total computed market value: $52,430.19
+[2026-05-09T09:25:59] Wrote 19 rows for 2026-05-09 to composer_allocations.csv (kept 0 prior rows, source=account-holdings+yahoo-prices)
+[2026-05-09T09:25:59] Generated dashboard -> index.html (value=$52,430.19, days=1)
+[2026-05-09T09:25:59] === Done ===
+[2026-05-09T09:46:34] === Composer daily allocation pull ===
+[2026-05-09T09:46:34] No account_uuid in config; discovering via /accounts/list...
+[2026-05-09T09:46:35] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-09T09:46:35] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-09T09:46:35] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-09T09:46:35] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-09T09:46:36] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:46:36] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-09T09:46:37] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:46:37] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-09T09:46:38] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:46:38] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-09T09:46:38] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:46:38] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-09T09:46:39] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-09T09:46:39] Falling back to /holdings (whole-account snapshot, ticker + quantity)
+[2026-05-09T09:46:39] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-09T09:46:40] Saved /holdings response to composer_raw_2026-05-09.json
+[2026-05-09T09:46:40] Got 19 positions from /holdings
+[2026-05-09T09:46:40] Fetching prices for 19 tickers from Yahoo Finance...
+[2026-05-09T09:46:56] Total computed market value: $52,430.19
+[2026-05-09T09:46:57] Wrote 19 rows for 2026-05-09 to composer_allocations.csv (kept 0 prior rows, source=account-holdings+yahoo-prices)
+[2026-05-09T09:46:57] Generated dashboard -> index.html (value=$52,430.19, days=1)
+[2026-05-09T09:46:57] === Done ===
+[2026-05-09T21:25:47] === Composer daily allocation pull ===
+[2026-05-09T21:25:47] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T01:22:14] === Composer daily allocation pull ===
+[2026-05-10T01:22:14] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T01:22:16] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T01:22:16] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T01:22:16] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-10T01:22:16] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats
+[2026-05-10T01:22:16] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate-symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-10T01:22:16] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats
+[2026-05-10T01:22:17] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/aggregate_symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-10T01:22:17] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats
+[2026-05-10T01:22:18] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats: {"error": "Not Found", "status": 404}
+[2026-05-10T01:22:18] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats
+[2026-05-10T01:22:19] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony_stats: {"error": "Not Found", "status": 404}
+[2026-05-10T01:22:19] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats
+[2026-05-10T01:22:20] HTTP 404 on GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphonies/stats: {"error": "Not Found", "status": 404}
+[2026-05-10T01:22:20] Falling back to /holdings (whole-account snapshot, ticker + quantity)
+[2026-05-10T01:22:20] GET /api/v0.1/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/holdings
+[2026-05-10T01:22:21] Saved /holdings response to composer_raw_2026-05-10.json
+[2026-05-10T01:22:21] Got 19 positions from /holdings
+[2026-05-10T01:22:21] Fetching prices for 19 tickers from Yahoo Finance...
+[2026-05-10T01:22:38] Total computed market value: $52,430.19
+[2026-05-10T01:22:38] Wrote 19 rows for 2026-05-10 to composer_allocations.csv (kept 19 prior rows, source=account-holdings+yahoo-prices)
+[2026-05-10T01:22:39] Generated dashboard -> index.html (value=$52,430.19, days=2)
+[2026-05-10T01:22:39] === Done ===
+[2026-05-10T01:39:07] === Composer daily allocation pull ===
+[2026-05-10T01:39:07] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T01:39:08] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T01:39:08] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T01:39:08] Trying aggregate-symphony-stats endpoint for per-symphony breakdown...
+[2026-05-10T01:39:08] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T01:39:09] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T01:39:09] Got 16 positions from aggregate-symphony-stats
+[2026-05-10T01:39:09] Wrote 16 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=aggregate-symphony-stats)
+[2026-05-10T01:39:09] Generated dashboard -> index.html (value=$41,011.08, days=1)
+[2026-05-10T01:39:09] === Done ===
+[2026-05-10T02:01:34] === Composer daily allocation pull ===
+[2026-05-10T02:01:34] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T02:01:34] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T02:01:35] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T02:01:35] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T02:01:35] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T02:01:35] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T02:01:37] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T02:01:37] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T02:01:37]   Got 16 positions from symphony-stats-meta
+[2026-05-10T02:01:37]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T02:01:37]   Wrote 16 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:01:37] Generated dashboard -> index.html (value=$41,011.08, days=1)
+[2026-05-10T02:01:37] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T02:01:37]   Got 2 positions from symphony-stats-meta
+[2026-05-10T02:01:37]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T02:01:37]   Wrote 2 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:01:37] Generated dashboard -> index2.html (value=$78.16, days=1)
+[2026-05-10T02:01:37] === Done ===
+[2026-05-10T02:24:18] === Composer daily allocation pull ===
+[2026-05-10T02:24:18] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T02:24:18] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T02:24:19] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T02:24:19] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T02:24:19] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T02:24:19] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T02:24:20] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T02:24:20] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T02:24:20]   Got 16 positions from symphony-stats-meta
+[2026-05-10T02:24:20]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T02:24:20]   Wrote 16 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:24:20] Generated dashboard -> index.html (value=$41,011.08, days=1)
+[2026-05-10T02:24:20] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T02:24:20]   Got 2 positions from symphony-stats-meta
+[2026-05-10T02:24:20]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T02:24:20]   Wrote 2 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:24:20] Generated dashboard -> index2.html (value=$78.16, days=1)
+[2026-05-10T02:24:20] === Done ===
+[2026-05-10T02:28:20] === Composer daily allocation pull ===
+[2026-05-10T02:28:20] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T02:28:20] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T02:28:21] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T02:28:21] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T02:28:21] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T02:28:21] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T02:28:23] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T02:28:23] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T02:28:23]   Got 16 positions from symphony-stats-meta
+[2026-05-10T02:28:23]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T02:28:23]   Wrote 16 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:28:23] Generated dashboard -> index.html (value=$41,011.08, days=1)
+[2026-05-10T02:28:23] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T02:28:23]   Got 2 positions from symphony-stats-meta
+[2026-05-10T02:28:23]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T02:28:23]   Wrote 2 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:28:23] Generated dashboard -> index2.html (value=$78.16, days=1)
+[2026-05-10T02:28:23] === Done ===
+[2026-05-10T02:34:41] === Composer daily allocation pull ===
+[2026-05-10T02:34:41] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T02:34:41] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T02:34:42] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T02:34:42] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T02:34:42] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T02:34:42] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T02:34:44] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T02:34:44] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T02:34:44]   Got 17 positions from symphony-stats-meta
+[2026-05-10T02:34:44]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T02:34:44]   Wrote 17 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:34:44] Generated dashboard -> index.html (value=$41,069.00, days=1)
+[2026-05-10T02:34:44] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T02:34:44]   Got 3 positions from symphony-stats-meta
+[2026-05-10T02:34:44]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T02:34:44]   Wrote 3 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T02:34:44] Generated dashboard -> index2.html (value=$82.40, days=1)
+[2026-05-10T02:34:44] === Done ===
+[2026-05-10T03:18:48] === Composer daily allocation pull ===
+[2026-05-10T03:18:48] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T03:18:48] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T03:18:51] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T03:18:51] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T03:18:51] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T03:18:51] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T03:18:55] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T03:18:55] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T03:18:55]   Got 17 positions from symphony-stats-meta
+[2026-05-10T03:18:55]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T03:18:55]   Wrote 17 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T03:18:55] Generated dashboard -> index.html (value=$41,069.00, days=1)
+[2026-05-10T03:18:55] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T03:18:55]   Got 3 positions from symphony-stats-meta
+[2026-05-10T03:18:55]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T03:18:55]   Wrote 3 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T03:18:55] Generated dashboard -> index2.html (value=$82.40, days=1)
+[2026-05-10T03:18:55] === Done ===
+[2026-05-10T04:33:47] === Composer daily allocation pull ===
+[2026-05-10T04:33:47] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T04:33:47] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T04:33:49] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T04:33:49] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T04:33:49] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T04:33:49] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T04:33:51] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T04:33:51] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T04:33:51]   Got 17 positions from symphony-stats-meta
+[2026-05-10T04:33:51]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T04:33:51]   Wrote 17 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T04:33:51] Generated dashboard -> index.html (value=$41,069.00, days=1)
+[2026-05-10T04:33:51] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T04:33:51]   Got 3 positions from symphony-stats-meta
+[2026-05-10T04:33:51]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T04:33:51]   Wrote 3 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T04:33:51] Generated dashboard -> index2.html (value=$82.40, days=1)
+[2026-05-10T04:33:51] === Done ===
+[2026-05-10T04:54:00] === Composer daily allocation pull ===
+[2026-05-10T04:54:00] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-10T04:54:00] No account_uuid in config; discovering via /accounts/list...
+[2026-05-10T04:54:01] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-10T04:54:01] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-10T04:54:01] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-10T04:54:01] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-10T04:54:03] Saved symphony-stats response to composer_symphony_stats_2026-05-10.json
+[2026-05-10T04:54:03] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-10T04:54:03]   Got 17 positions from symphony-stats-meta
+[2026-05-10T04:54:03]   Saved today's slice to composer_allocations_2026-05-10.json
+[2026-05-10T04:54:03]   Wrote 17 rows for 2026-05-10 to composer_allocations.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T04:54:03] Generated dashboard -> index.html (value=$41,069.00, days=1)
+[2026-05-10T04:54:03] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-10T04:54:03]   Got 3 positions from symphony-stats-meta
+[2026-05-10T04:54:03]   Saved today's slice to composer_allocations_185_2026-05-10.json
+[2026-05-10T04:54:03]   Wrote 3 rows for 2026-05-10 to composer_allocations_185.csv (kept 0 prior rows, source=symphony-stats-meta)
+[2026-05-10T04:54:03] Generated dashboard -> index2.html (value=$82.40, days=1)
+[2026-05-10T04:54:03] === Done ===
