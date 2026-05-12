@@ -399,12 +399,47 @@ def _safe_float(s) -> float:
         return 0.0
 
 
+PASSWORD_OVERLAY_TEMPLATE = """
+<div id="blee-pw-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0b1120;z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#1e293b;padding:40px;border-radius:16px;text-align:center;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">&#128274; BLEE Quant Analytics</div>
+    <div style="color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:24px;">Daily Signal &mdash; Subscribers Only</div>
+    <input id="blee-pw-input" type="password" placeholder="Enter password" style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:15px;margin-bottom:12px;outline:none;box-sizing:border-box;">
+    <button onclick="bleePwCheck()" style="width:100%;padding:12px;background:#f59e0b;color:#000;font-weight:700;font-size:15px;border:none;border-radius:8px;cursor:pointer;">Access Daily Signal</button>
+    <div id="blee-pw-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+<script>
+(function() {
+  var PW = '__BLEE_PASSWORD__';
+  function bleePwCheck() {
+    if (document.getElementById('blee-pw-input').value === PW) {
+      document.getElementById('blee-pw-overlay').style.display = 'none';
+      sessionStorage.setItem('blee_auth', '1');
+    } else {
+      document.getElementById('blee-pw-error').style.display = 'block';
+    }
+  }
+  window.bleePwCheck = bleePwCheck;
+  document.addEventListener('DOMContentLoaded', function() {
+    var inp = document.getElementById('blee-pw-input');
+    if (inp) inp.addEventListener('keypress', function(e) { if (e.key === 'Enter') bleePwCheck(); });
+    if (sessionStorage.getItem('blee_auth') === '1') {
+      document.getElementById('blee-pw-overlay').style.display = 'none';
+    }
+  });
+})();
+</script>
+"""
+
+
 def generate_dashboard(
     csv_path: Path,
     html_path: Path,
     symphony_id: str,
     symphony_name: str,
     account_uuid: str | None,
+    password: str | None = None,
 ) -> None:
     """
     Read `csv_path` (this symphony's history) and write `html_path` with the
@@ -512,6 +547,10 @@ def generate_dashboard(
 
     template = DASHBOARD_TEMPLATE_PATH.read_text(encoding="utf-8")
     html = template.replace("/* __DATA_JSON__ */ {}", json.dumps(data))
+    if password:
+        overlay = PASSWORD_OVERLAY_TEMPLATE.replace("__BLEE_PASSWORD__", password)
+        html = html.replace("<body>", "<body>" + overlay, 1)
+        log(f"  Password protection injected into {html_path.name}")
     html_path.write_text(html, encoding="utf-8")
     log(f"Generated dashboard -> {html_path.name} "
         f"(value=${total_value:,.2f}, days={len(dates_sorted)})")
@@ -602,6 +641,7 @@ def main() -> int:
         sname     = sym["name"]
         csv_path  = SCRIPT_DIR / sym["csv"]
         html_path = SCRIPT_DIR / sym["html"]
+        password  = sym.get("password") or None
         log(f"--- {sname or sid} ({sid}) ---")
 
         positions: list[dict] = []
@@ -661,7 +701,7 @@ def main() -> int:
 
         # Regenerate this symphony's dashboard.
         try:
-            generate_dashboard(csv_path, html_path, sid, sname, account_uuid)
+            generate_dashboard(csv_path, html_path, sid, sname, account_uuid, password)
         except Exception as e:  # pylint: disable=broad-except
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 

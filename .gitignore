@@ -1,0 +1,10 @@
+# Never push sensitive config to GitHub
+composer_config.json
+
+# Never push raw API response snapshots (contain account data)
+composer_raw_*.json
+composer_symphony_stats_*.json
+composer_allocations_*_*.json
+
+# Logs
+composer_run.log
