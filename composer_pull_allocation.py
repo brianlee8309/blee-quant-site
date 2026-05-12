@@ -528,12 +528,14 @@ def generate_dashboard(
         for t in all_tickers:
             weight_history[t].append(ticker_to_w.get(t, 0.0))
 
+    run_datetime = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p")
     data = {
         "symphony_id":           symphony_id,
         "symphony_name":         symphony_name or "",
         "csv_filename":          csv_path.name,
         "account_uuid":          account_uuid or "",
         "last_updated":          today,
+        "run_datetime":          run_datetime,
         "total_value":           total_value,
         "day_change_pct":        day_change_pct,
         "total_return_pct":      total_return_pct,

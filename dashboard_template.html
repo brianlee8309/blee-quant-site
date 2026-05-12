@@ -146,8 +146,7 @@
   </section>
 
   <footer>
-    Symphony ID: <span id="footer-symphony"></span> &middot;
-    Account: <span id="footer-account"></span>
+    Last Updated: <span id="footer-updated"></span>
   </footer>
 </div>
 
@@ -174,8 +173,7 @@ const colorFor = (i) => colorPalette[i % colorPalette.length];
 // ---- Render top section ----------------------------------------------------
 document.getElementById("last-updated").textContent = DATA.last_updated || "—";
 document.getElementById("holdings-date").textContent = DATA.last_updated || "—";
-document.getElementById("footer-symphony").textContent = DATA.symphony_id || "—";
-document.getElementById("footer-account").textContent = DATA.account_uuid || "—";
+document.getElementById("footer-updated").textContent = DATA.run_datetime || DATA.last_updated || "—";
 if (DATA.symphony_name) {
   document.getElementById("symphony-name").textContent = DATA.symphony_name;
   document.getElementById("symphony-name-sep").style.display = "inline";
