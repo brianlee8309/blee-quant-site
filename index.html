@@ -75,6 +75,34 @@
     .nav-links a:not(.btn-nav) { display: none; }
   }
 
+  /* ── GOOGLE TRANSLATE ── */
+  .nav-translate {
+    display: flex; align-items: center; margin-left: 14px;
+    border-left: 1px solid rgba(255,255,255,0.12); padding-left: 14px;
+  }
+  /* Override Google Translate default ugly styles */
+  #google_translate_element .goog-te-gadget-simple {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    border-radius: 7px !important;
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+    color: rgba(255,255,255,0.85) !important;
+    cursor: pointer !important;
+  }
+  #google_translate_element .goog-te-gadget-simple span {
+    color: rgba(255,255,255,0.85) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    font-family: inherit !important;
+  }
+  #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:last-child {
+    display: none;
+  }
+  #google_translate_element img { display: none !important; }
+  .goog-te-banner-frame { display: none !important; }
+  body { top: 0 !important; }
+
   /* ── HERO ── */
   .hero {
     background: linear-gradient(160deg, var(--navy) 0%, #0f2044 55%, #0d1f3c 100%);
@@ -679,6 +707,9 @@
     <a href="performance1.html">Backtest</a>
     <a href="#pricing" class="btn-nav">Subscribe</a>
   </div>
+  <div class="nav-translate">
+    <div id="google_translate_element"></div>
+  </div>
 </nav>
 
 <!-- ══════════════════════════════════════ LEGAL BAR ══ -->
@@ -984,8 +1015,8 @@
     <div class="section-label">Our Strategies</div>
     <h2 class="section-title">One Algorithm. One Goal: Long-Term Wealth.</h2>
     <p class="section-sub">
-      A single, focused strategy — algorithmically managed and published daily at
-      <strong>~3:52 PM ET</strong>, giving you time to rebalance before market close.
+      A single, focused strategy — algorithmically managed and published daily around
+      <strong>3:55 PM ET</strong>. Rebalance anytime after 3:55 PM ET — before close or after hours, up until midnight — for a consistent, disciplined strategy with no day-trading concerns.
     </p>
 
     <!-- INVESTMENT COMPARISON STRIP -->
@@ -1031,8 +1062,8 @@
           Combining rule-based ETF rotation with defensive risk management, it aims to outperform
           traditional savings and dividend-oriented strategies while seeking lower drawdowns during
           difficult market conditions.
-          Signals publish around <strong>3:52 PM ET</strong> across just <strong>2–3 ETF positions</strong>.
-          Simple to follow. No sleepless nights.
+          Signals publish around <strong>3:55 PM ET</strong> across just <strong>2–3 ETF positions</strong>.
+          Rebalance anytime after 3:55 PM — before close or after hours, up until midnight. Simple to follow. No sleepless nights.
         </p>
       </div>
       <a href="analysis1-moderate-gain-low-risk.html">Start with Calm Growth Model →</a>
@@ -1062,7 +1093,7 @@
             <li>Anyone who wants to potentially beat the S&amp;P 500 — but <em>without</em> stomach-dropping −20% to −27% drawdowns during market downturns</li>
             <li>Investors approaching or in retirement who need steady growth without the risk of a large loss wiping out years of savings</li>
             <li>Long-term, patient investors looking for <strong>peace of mind</strong> — a strategy you can follow without losing sleep over daily market swings</li>
-            <li>People who want a simple daily signal (2–3 ETFs, ~3:52 PM ET) rather than constant active monitoring</li>
+            <li>People who want a simple daily signal (2–3 ETFs, ~3:55 PM ET) — rebalance anytime after 3:55 PM ET, before close or after hours, up until midnight. No day-trading concerns regardless of which window you use</li>
             <li>Investors of <strong>any account size</strong> — no minimum balance required. Because rebalances always execute the following trading day (not intraday), this model does not trigger <strong>Pattern Day Trader (PDT)</strong> rules and does not require the $25,000 minimum account balance that PDT-flagged accounts must maintain</li>
           </ul>
         </div>
@@ -1070,7 +1101,7 @@
           <span style="font-size:20px;flex-shrink:0;">✅</span>
           <div>
             <h4 style="font-size:14px;font-weight:700;color:#1e40af;margin-bottom:6px;">No Day Trading. No PDT Concerns. No $25K Requirement.</h4>
-            <p style="font-size:13px;color:#1e3a5f;line-height:1.6;">The Calm Growth Model rebalances across the <em>following</em> trading day rather than intraday. As a result, the strategy is generally designed to avoid Pattern Day Trader (PDT) classification and can be followed with accounts of many sizes — whether starting with $1,000 or $1,000,000.</p>
+            <p style="font-size:13px;color:#1e3a5f;line-height:1.6;">The signal updates around <strong>3:55 PM ET</strong>. You can rebalance anytime after that — before market close <em>or</em> during after-hours trading, any time up until midnight. Buying after 4:00 PM and selling the next trading day does not trigger a day trade. Because all rebalances execute on the <em>following</em> trading day, this strategy is generally designed to avoid Pattern Day Trader (PDT) classification and can be followed with accounts of any size — whether starting with $1,000 or $1,000,000.</p>
           </div>
         </div>
         <div class="strat-stats">
@@ -1110,8 +1141,8 @@
     <div class="why-grid">
       <div class="why-item">
         <span class="why-icon">🕓</span>
-        <h4>Signals Published at 3:52 PM ET</h4>
-        <p>Distributions are updated daily at approximately <strong>3:52 PM Eastern Time</strong> — roughly 8 minutes before market close — giving subscribers a clear window to act on the rebalancing signal the same trading day.</p>
+        <h4>Signal Updates Around 3:55 PM ET</h4>
+        <p>Distributions update daily around <strong>3:55 PM Eastern Time</strong>. Rebalance anytime after that — before market close, or after hours up until midnight. Buying after 4:00 PM and selling the next day does not trigger a day trade, so there are no PDT concerns regardless of which window you choose.</p>
       </div>
       <div class="why-item">
         <span class="why-icon">🛡️</span>
@@ -1163,7 +1194,7 @@
         </div>
         <p class="plan-desc">Full access to Calm Growth Model daily signals. Cancel anytime.</p>
         <ul>
-          <li>Daily rebalancing signal (~3:52 PM ET)</li>
+          <li>Daily rebalancing signal (~3:55 PM ET)</li>
           <li>Current ETF allocations &amp; weights</li>
           <li>Holdings table updated each trading day</li>
           <li>Portfolio charts &amp; performance metrics</li>
@@ -1353,6 +1384,20 @@
   });
 })();
 </script>
+
+
+<!-- ══════════════════════════════════════ GOOGLE TRANSLATE ══ -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,ja,vi,ko',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>

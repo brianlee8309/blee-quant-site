@@ -55,6 +55,33 @@
   }
   .nav-links .btn-nav:hover { background: #fbbf24; }
 
+  /* ── GOOGLE TRANSLATE ── */
+  .nav-translate {
+    display: flex; align-items: center; margin-left: 14px;
+    border-left: 1px solid rgba(255,255,255,0.12); padding-left: 14px;
+  }
+  #google_translate_element .goog-te-gadget-simple {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    border-radius: 7px !important;
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+    color: rgba(255,255,255,0.85) !important;
+    cursor: pointer !important;
+  }
+  #google_translate_element .goog-te-gadget-simple span {
+    color: rgba(255,255,255,0.85) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    font-family: inherit !important;
+  }
+  #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:last-child {
+    display: none;
+  }
+  #google_translate_element img { display: none !important; }
+  .goog-te-banner-frame { display: none !important; }
+  body { top: 0 !important; }
+
   /* LEGAL BAR */
   .legal-bar {
     background: #fefce8; border-bottom: 2px solid #fde047;
@@ -232,6 +259,9 @@
     <a href="analysis1-moderate-gain-low-risk.html">Daily Signal</a>
     <a href="performance1.html" class="active">Backtest</a>
     <a href="#pricing" class="btn-nav">Subscribe</a>
+  </div>
+  <div class="nav-translate">
+    <div id="google_translate_element"></div>
   </div>
 </nav>
 
@@ -672,7 +702,7 @@
   <div class="inner" style="text-align:center;max-width:600px;">
     <div class="sec-label">Subscribe</div>
     <h2 class="sec-title">Ready to Follow the Signal?</h2>
-    <p class="sec-sub" style="margin-left:auto;margin-right:auto;">Calm Growth Model daily rebalancing signal published at ~3:52 PM ET every trading day.</p>
+    <p class="sec-sub" style="margin-left:auto;margin-right:auto;">Calm Growth Model signal updates around <strong>3:55 PM ET</strong> every trading day. Rebalance anytime after that — before close or after hours, up until midnight. Buying after 4:00 PM and selling the next day does not trigger a day trade, so there are no PDT concerns regardless of when you act.</p>
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
       <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 32px;flex:1;min-width:220px;box-shadow:var(--shadow);">
         <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Monthly</div>
@@ -843,6 +873,20 @@
   }
 })();
 </script>
+
+
+<!-- ══════════════════════════════════════ GOOGLE TRANSLATE ══ -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,ja,vi,ko',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
