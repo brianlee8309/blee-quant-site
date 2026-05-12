@@ -7,6 +7,10 @@ if exist ".git\index.lock" (
     del /f ".git\index.lock"
 )
 
+echo Archiving current pages before overwrite...
+python archive_pages.py
+
+echo.
 echo Running Composer allocation pull...
 python composer_pull_allocation.py
 

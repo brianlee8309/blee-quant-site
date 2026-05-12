@@ -285,15 +285,16 @@
 </script>
 
 <nav>
-  <a class="nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <a class="nav-brand" href="../index.html">BLEE <span>Quant</span></a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="marketDailySummary.html">Market Forecast</a>
-    <a href="index2.html">Daily Signal</a>
-    <a href="performance1.html">Backtest</a>
-    <a href="index.html#pricing" style="background:var(--gold);color:#000;padding:5px 14px;border-radius:6px;font-weight:700;">Subscribe</a>
+    <a href="../index.html">Home</a>
+    <a href="../marketDailySummary.html">Market Forecast</a>
+    <a href="../index2.html">Daily Signal</a>
+    <a href="../performance1.html">Backtest</a>
+    <a href="../index.html#pricing" style="background:var(--gold);color:#000;padding:5px 14px;border-radius:6px;font-weight:700;">Subscribe</a>
   </div>
 </nav>
+<div style="background:#7c3aed;color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:600;letter-spacing:0.02em;">📅 Archive &mdash; Market Weather Forecast &mdash; May 12, 2026 &nbsp;·&nbsp; <a href="../BackLog/index.html" style="color:#e9d5ff;text-decoration:underline;">← Back to Archive Index</a></div>
 
 <div class="container">
 
@@ -520,31 +521,4 @@ document.getElementById("analysis-text").innerHTML = analysisHTML;
 const recMap = {
   "Clear Downtrend":          { icon:"⛈️", title:"Storm Warning — Stay Indoors",                body:"Our model is flashing a full thunderstorm alert. This is not a day to go for a stroll in equity-land — there's a high possibility of getting soaked. Seek shelter in short-duration treasuries and gold, and wait for the weather index to climb back above −10 before venturing outside again." },
   "Negative (Downtrend)":     { icon:"🌧️", title:"Rain Forecast — Keep That Umbrella Up",       body:"It's raining out there and the clouds aren't parting anytime soon. Defensive positioning is your best rain jacket right now. Avoid chasing growth assets in this downpour." },
-  "Leaning Negative":         { icon:"🌦️", title:"Scattered Showers — Check the Radar First",  body:"Conditions are unsettled — you might stay dry or you might get caught in a shower. Not the day to leave home without at least a light jacket. Watch key data closely for any clearing." },
-  "Neutral — Hold Gold/SGOV": { icon:"⛅", title:"Cloudy Day — Umbrella on Standby",           body:"No strong sun, no heavy rain — just grey skies and uncertainty. Hold your weather insurance (gold and short bonds) and wait for the clouds to break in a clear direction before making any bold moves." },
-  "Leaning Positive":         { icon:"🌤️", title:"Partly Sunny — Light Jacket Still Advised",  body:"A few rays are breaking through. Conditions are slowly improving, but don't pack away the umbrella just yet. Selective, cautious equity exposure may be appropriate if conditions hold." },
-  "Positive (Uptrend)":       { icon:"☀️", title:"Sunny Conditions — Good Day for a Walk",     body:"Market weather looks favorable — clear skies and positive momentum. A fine day for equity exposure. Enjoy the sunshine, but keep some diversification as sunscreen." },
-  "Strong Uptrend":           { icon:"🌈", title:"Perfect Weather — Full Sunshine Alert",       body:"Outstanding conditions across the board — this is a rare blue-sky day. The forecast supports bold positioning for those with appropriate risk tolerance. Pack the sunglasses, not the umbrella." }
-};
-const rec = recMap[REPORT.temperature] || { icon:"⚠️", title:"Signal Uncertain", body:"Review model inputs." };
-document.getElementById("rec-icon").textContent  = rec.icon;
-document.getElementById("rec-title").textContent = rec.title;
-document.getElementById("rec-body").textContent  = rec.body;
-
-
-// ─── News ────────────────────────────────────────────────────────────────────
-const newsEl = document.getElementById("news-section");
-REPORT.news.forEach(n => {
-  const div = document.createElement("div");
-  div.className = "news-item";
-  div.innerHTML = `
-    <div class="news-tag ${n.tag_class}">${n.tag}</div>
-    <div class="news-title">${n.title}</div>
-    <div class="news-body">${n.body}</div>
-    <div class="news-source">Source: <a href="${n.url}" target="_blank" rel="noopener">${n.source}</a></div>
-  `;
-  newsEl.appendChild(div);
-});
-</script>
-</body>
-</html>
+  "Leaning Negative":         { icon:"🌦️", title:"Scattered Showers — Check the Radar First",  bod

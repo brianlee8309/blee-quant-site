@@ -131,16 +131,48 @@
 </head>
 <body>
 
+<div id="blee-pw-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0b1120;z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#1e293b;padding:40px;border-radius:16px;text-align:center;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">&#128274; BLEE Quant Analytics</div>
+    <div style="color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:24px;">Daily Signal &mdash; Subscribers Only</div>
+    <input id="blee-pw-input" type="password" placeholder="Enter password" style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:15px;margin-bottom:12px;outline:none;box-sizing:border-box;">
+    <button onclick="bleePwCheck()" style="width:100%;padding:12px;background:#f59e0b;color:#000;font-weight:700;font-size:15px;border:none;border-radius:8px;cursor:pointer;">Access Daily Signal</button>
+    <div id="blee-pw-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+<script>
+(function() {
+  var PW = 'Blee@daily2026';
+  function bleePwCheck() {
+    if (document.getElementById('blee-pw-input').value === PW) {
+      document.getElementById('blee-pw-overlay').style.display = 'none';
+      sessionStorage.setItem('blee_auth', '1');
+    } else {
+      document.getElementById('blee-pw-error').style.display = 'block';
+    }
+  }
+  window.bleePwCheck = bleePwCheck;
+  document.addEventListener('DOMContentLoaded', function() {
+    var inp = document.getElementById('blee-pw-input');
+    if (inp) inp.addEventListener('keypress', function(e) { if (e.key === 'Enter') bleePwCheck(); });
+    if (sessionStorage.getItem('blee_auth') === '1') {
+      document.getElementById('blee-pw-overlay').style.display = 'none';
+    }
+  });
+})();
+</script>
+
 <nav class="site-nav">
-  <a class="site-nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <a class="site-nav-brand" href="../index.html">BLEE <span>Quant</span></a>
   <div class="site-nav-links">
-    <a href="index.html">Home</a>
-    <a href="marketDailySummary.html">Market Forecast</a>
-    <a href="index2.html">Daily Signal</a>
-    <a href="performance1.html">Backtest</a>
-    <a href="index.html#pricing" class="nav-cta">Subscribe</a>
+    <a href="../index.html">Home</a>
+    <a href="../marketDailySummary.html">Market Forecast</a>
+    <a href="../index2.html">Daily Signal</a>
+    <a href="../performance1.html">Backtest</a>
+    <a href="../index.html#pricing" class="nav-cta">Subscribe</a>
   </div>
 </nav>
+<div style="background:#7c3aed;color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:600;letter-spacing:0.02em;">📅 Archive &mdash; Daily Signal &mdash; May 12, 2026 &nbsp;·&nbsp; <a href="../BackLog/index.html" style="color:#e9d5ff;text-decoration:underline;">← Back to Archive Index</a></div>
 
 <div class="container">
   <header>
@@ -184,7 +216,7 @@
     <h2>Holdings — <span id="holdings-date"></span></h2>
     <div style="overflow-x:auto"><table id="holdings"></table></div>
     <div class="download-row">
-      <a id="csv-download" href="composer_allocations.csv" download>Download full history (CSV)</a>
+      <a id="csv-download" href="../composer_allocations.csv" download>Download full history (CSV)</a>
     </div>
   </section>
 
@@ -204,7 +236,7 @@
 </div>
 
 <script>
-const DATA = /* __DATA_JSON__ */ {};
+const DATA = {"symphony_id": "ZGersOlsQFRHg7U2qnSw", "symphony_name": "BLEE - 185 2026 SGOV Bond and min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 06:23 AM", "total_value": 1002.49, "day_change_pct": 0.002, "total_return_pct": 1116.6141, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 89.9017, "shares": 8.96861, "market_value": 901.2556189}, {"ticker": "GLDM", "weight_pct": 9.9956, "shares": 1.06954, "market_value": 100.2052026}, {"ticker": "$USD", "weight_pct": 0.1027, "shares": 1.03, "market_value": 1.03}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.49}], "all_tickers": ["$USD", "GLDM", "SGOV"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1027], "GLDM": [9.3751, 9.9937, 9.9956], "SGOV": [85.4824, 89.9035, 89.9017]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12"]};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -309,71 +341,4 @@ new Chart(document.getElementById("value-line"), {
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: (ctx) => fmt$(ctx.parsed.y) } }
-    },
-    scales: {
-      y: { ticks: { callback: (v) => "$" + Number(v).toLocaleString() } }
-    }
-  }
-});
-
-// ---- Holdings table --------------------------------------------------------
-const tbl = document.getElementById("holdings");
-const cols = [
-  ["Ticker", "ticker", "ticker"],
-  ["Weight", "weight_pct", "num", (v) => fmtPct(v)],
-  ["Shares", "shares", "num", (v) => Number(v).toLocaleString(undefined, { maximumFractionDigits: 4 })],
-  ["Market Value", "market_value", "num", (v) => fmt$(v)]
-];
-const thead = document.createElement("thead");
-const trh = document.createElement("tr");
-cols.forEach(c => {
-  const th = document.createElement("th");
-  th.textContent = c[0]; th.className = c[2];
-  trh.appendChild(th);
-});
-thead.appendChild(trh); tbl.appendChild(thead);
-const tbody = document.createElement("tbody");
-(DATA.today_allocations || []).forEach(a => {
-  const tr = document.createElement("tr");
-  cols.forEach(c => {
-    const td = document.createElement("td");
-    td.className = c[2];
-    const v = a[c[1]];
-    td.textContent = c[3] ? c[3](v) : v;
-    tr.appendChild(td);
-  });
-  tbody.appendChild(tr);
-});
-tbl.appendChild(tbody);
-
-// ---- Stacked area: weight history -----------------------------------------
-const tickers = DATA.all_tickers || [];
-const dates = DATA.dates || [];
-const datasets = tickers.map((t, i) => ({
-  label: t,
-  data: (DATA.weight_history || {})[t] || [],
-  backgroundColor: colorFor(i) + "cc",
-  borderColor: colorFor(i),
-  borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
-}));
-new Chart(document.getElementById("weights-stack"), {
-  type: "line",
-  data: { labels: dates, datasets },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    interaction: { mode: "index", intersect: false },
-    plugins: {
-      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 } } },
-      tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
-    },
-    scales: {
-      y: { stacked: true, max: 100, ticks: { callback: (v) => v + "%" } },
-      x: { stacked: true }
-    }
-  }
-});
-</script>
-</body>
-</html>
+  
