@@ -72,7 +72,7 @@ def load_allocations(path: Path) -> list[dict]:
                 end = i + 1
                 break
     data = json.loads(chunk[:end])
-    return data.get("today_allocations", []), data.get("total_value", 0)
+    return data.get("today_allocations", []), data.get("total_value", 0), data.get("last_updated", "")
 
 
 # ── Score calculation ─────────────────────────────────────────────────────────
@@ -265,7 +265,7 @@ def main() -> int:
     points = load_points(POINTS_CSV)
     log(f"Loaded {len(points)} ETF points from {POINTS_CSV.name}")
 
-    allocs, total_value = load_allocations(ALLOC_HTML)
+    allocs, total_value, last_updated = load_allocations(ALLOC_HTML)
     log(f"Loaded {len(allocs)} ETF allocations from {ALLOC_HTML.name}")
 
     # Score
@@ -275,11 +275,24 @@ def main() -> int:
 
     log(f"Composite score: {score:+.2f} → {label}")
 
-    # Dates
+    # Dates — for_date = next business day after the allocation date
     now = dt.datetime.now()
-    tomorrow = (now + dt.timedelta(days=1)).strftime("%B %d, %Y")
-    today_str = now.strftime("%B %d, %Y")
     generated = now.strftime("%m/%d/%Y %I:%M %p")
+    today_str = now.strftime("%B %d, %Y")
+
+    def next_business_day(date_str: str) -> dt.date:
+        """Return the next weekday (Mon–Fri) after the given ISO date string."""
+        try:
+            base = dt.date.fromisoformat(date_str)
+        except (ValueError, TypeError):
+            base = dt.date.today()
+        nxt = base + dt.timedelta(days=1)
+        while nxt.weekday() >= 5:   # 5=Sat, 6=Sun
+            nxt += dt.timedelta(days=1)
+        return nxt
+
+    for_date_obj = next_business_day(last_updated or dt.date.today().isoformat())
+    for_date_str = for_date_obj.strftime("%B %d, %Y")
 
     # News
     news = fetch_news(3)
@@ -289,11 +302,20 @@ def main() -> int:
     report = {
         "generated":      generated,
         "report_date":    today_str,
-        "for_date":       f"{tomorrow} (Tomorrow)",
+        "for_date":       for_date_str,
         "score":          score,
         "temperature":    label,
         "temp_color":     color,
         "temp_arrow":     arrow,
+        "weather_label":  {
+            "Clear Downtrend":          "⛈️ Thunderstorm",
+            "Negative (Downtrend)":     "🌧️ Rainy",
+            "Leaning Negative":         "🌦️ Cloudy with Showers",
+            "Neutral — Hold Gold/SGOV": "⛅ Overcast",
+            "Leaning Positive":         "🌤️ Partly Sunny",
+            "Positive (Uptrend)":       "☀️ Sunny",
+            "Strong Uptrend":           "🌈 Clear Blue Skies",
+        }.get(label, label),
         "positive_weight": pos_w,
         "negative_weight": neg_w,
         "neutral_weight":  neu_w,

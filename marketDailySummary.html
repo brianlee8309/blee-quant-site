@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BLEE Market Daily Summary</title>
+<title>BLEE Quant — Upcoming Market Weather Forecast</title>
 <style>
   :root {
     --bg:       #0b1120;
@@ -267,14 +267,14 @@
 
   <div class="page-header">
     <div class="badge-date" id="report-badge">— Loading —</div>
-    <h1>Market Daily Summary</h1>
-    <div class="sub">BLEE-186 Symphony · Quantitative temperature model · Updated <span id="updated-time">—</span></div>
+    <h1>Upcoming Market Weather Forecast</h1>
+    <div class="sub">BLEE Quant Analytics · Daily market weather model · Updated <span id="updated-time">—</span></div>
   </div>
 
   <!-- Temperature Hero -->
   <div class="temp-hero" id="temp-hero">
     <div>
-      <div class="temp-label">Market Temperature</div>
+      <div class="temp-label">🌡️ Weather Forecast</div>
       <div class="temp-value" id="temp-value">—</div>
       <div class="temp-desc" id="temp-desc">Calculating…</div>
       <div class="gauge-wrap">
@@ -282,14 +282,14 @@
           <div class="gauge-needle" id="gauge-needle"></div>
         </div>
         <div class="gauge-labels">
-          <span>Clear Downtrend</span>
-          <span>Neutral</span>
-          <span>Strong Uptrend</span>
+          <span>⛈️ Thunderstorm</span>
+          <span>⛅ Cloudy</span>
+          <span>☀️ Sunny</span>
         </div>
       </div>
     </div>
     <div class="score-box">
-      <div class="sl">Composite Score</div>
+      <div class="sl">🌡️ Weather Index</div>
       <div class="sv" id="score-val">—</div>
     </div>
   </div>
@@ -312,7 +312,7 @@
 
   <!-- Market Analysis -->
   <div class="card">
-    <h2>📋 Market Analysis — Tomorrow's Outlook</h2>
+    <h2>🌤️ Market Forecast — Tomorrow's Weather Report</h2>
     <div class="analysis-text" id="analysis-text">
       <!-- Populated by JS -->
     </div>
@@ -334,7 +334,7 @@
   </div>
 
   <footer>
-    <div>BLEE Quant Analytics · Market Daily Summary</div>
+    <div>BLEE Quant Analytics · Upcoming Market Weather Forecast</div>
     <div style="margin-top:4px">Last generated: <span id="footer-time">—</span></div>
     <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.25)">
       This report is generated automatically from quantitative signals and publicly available news sources.<br>
@@ -348,7 +348,7 @@
 const REPORT = /* __REPORT_JSON__ */ {
   "generated": "05/12/2026 01:30 AM",
   "report_date": "May 12, 2026",
-  "for_date": "May 13, 2026 (Tomorrow)",
+  "for_date": "May 12, 2026",
   "score": -58.17,
   "temperature": "Clear Downtrend",
   "temp_color": "#dc2626",
@@ -408,23 +408,23 @@ const fmtPct = n => Number(n).toFixed(2) + "%";
 const fmtScore = n => (n >= 0 ? "+" : "") + Number(n).toFixed(2);
 
 // ─── Populate header ────────────────────────────────────────────────────────
-document.getElementById("report-badge").textContent = "Report for " + REPORT.for_date;
+document.getElementById("report-badge").textContent = "⛅ Forecast for " + REPORT.for_date;
 document.getElementById("updated-time").textContent = REPORT.generated;
 document.getElementById("footer-time").textContent  = REPORT.generated;
 
 // ─── Temperature hero ───────────────────────────────────────────────────────
 const tempEl = document.getElementById("temp-value");
-tempEl.textContent = REPORT.temp_arrow + "  " + REPORT.temperature;
+tempEl.textContent = REPORT.weather_label || (REPORT.temp_arrow + "  " + REPORT.temperature);
 tempEl.style.color = REPORT.temp_color;
 
 const descMap = {
-  "Clear Downtrend":       "The quantitative model reads a decisive bearish signal. The portfolio's dominant positions — volatility hedges (VIXY, UVXY), inverse equities (SQQQ, PSQ), and safe-haven assets (SGOV, BIL, GLD) — reflect deep caution toward near-term equity markets. Risk-off posture is recommended.",
-  "Negative (Downtrend)":  "The model signals a negative market bias. The portfolio is positioned defensively, with significant allocations to volatility and inverse ETFs. Caution is warranted entering long equity positions.",
-  "Leaning Negative":      "The model shows a modest negative skew. Market conditions are uncertain; defensive positioning in bonds and gold is prudent while monitoring key economic data.",
-  "Neutral — Hold Gold/SGOV": "The model reads a balanced, neutral signal. Allocate to capital-preservation instruments such as SGOV and GLD until a directional bias becomes clear.",
-  "Leaning Positive":      "The model shows a modest positive skew. Selective long equity exposure may be appropriate on confirmation from key economic data.",
-  "Positive (Uptrend)":    "The model signals a positive market bias. Broad equity participation appears supported by the current symphony allocation.",
-  "Strong Uptrend":        "The model reads a strong bullish signal across leveraged and broad equity ETFs. High-conviction uptrend conditions are indicated."
+  "Clear Downtrend":          "⛈️ Full storm warning issued. Our weather station is detecting severe turbulence — barometric pressure is way down and there's a high possibility of heavy rain in the markets. Definitely not a day to leave the umbrella at home.",
+  "Negative (Downtrend)":     "🌧️ Rainy conditions ahead. The clouds have rolled in and there's a clear negative bias in the atmosphere. Expect persistent showers — probably not the best day for an outdoor equity picnic.",
+  "Leaning Negative":         "🌦️ Cloudy with a chance of showers. The forecast leans gloomy, but conditions aren't fully stormy yet. There's a higher possibility of some rain — keep an umbrella nearby and watch for changing winds.",
+  "Neutral — Hold Gold/SGOV": "⛅ Overcast and hard to read. No strong sun, no heavy rain — markets are in a 'wait and see' mood. A good day to sit on the porch with your umbrella (gold and short bonds) and see which way the wind turns.",
+  "Leaning Positive":         "🌤️ Partly sunny with some clouds. The forecast shows mild improvement — a few patches of blue sky are breaking through. Could be a pleasant day, but keep a light jacket handy just in case.",
+  "Positive (Uptrend)":       "☀️ Mostly sunny conditions. The market weather looks favorable — good visibility and a warm trend. A fine day to venture outside into equity territory.",
+  "Strong Uptrend":           "🌈 Clear blue skies all the way. Outstanding conditions forecasted — full sunshine, no clouds in sight. Pack your sunscreen and enjoy the upside."
 };
 document.getElementById("temp-desc").textContent = descMap[REPORT.temperature] || "";
 
@@ -443,44 +443,51 @@ document.getElementById("stat-neg").textContent     = fmtPct(REPORT.negative_wei
 document.getElementById("stat-neutral").textContent = fmtPct(REPORT.neutral_weight);
 // ─── Analysis text ──────────────────────────────────────────────────────────
 const scoreAbs = Math.abs(REPORT.score).toFixed(1);
+const weatherHeadline = {
+  "Clear Downtrend":          "⛈️ Thunderstorm",
+  "Negative (Downtrend)":     "🌧️ Rainy",
+  "Leaning Negative":         "🌦️ Cloudy with Showers",
+  "Neutral — Hold Gold/SGOV": "⛅ Overcast",
+  "Leaning Positive":         "🌤️ Partly Sunny",
+  "Positive (Uptrend)":       "☀️ Sunny",
+  "Strong Uptrend":           "🌈 Clear Blue Skies"
+};
+const headline = weatherHeadline[REPORT.temperature] || REPORT.temperature;
 const analysisHTML = `
-  <p>Based on the BLEE-186 symphony's current allocation as of <strong>${REPORT.report_date}</strong>,
-  the quantitative temperature model produces a composite score of
-  <strong style="color:${REPORT.temp_color}">${fmtScore(REPORT.score)}</strong>,
-  placing the market firmly in <strong style="color:${REPORT.temp_color}">${REPORT.temperature}</strong> territory
-  (threshold: below −20).</p>
+  <p>📡 The BLEE Quant weather station has recorded a market index of
+  <strong style="color:${REPORT.temp_color}">${fmtScore(REPORT.score)}</strong> based on data as of ${REPORT.report_date}.
+  The forecast for <strong>${REPORT.for_date}</strong> is:
+  <strong style="color:${REPORT.temp_color}">${headline}</strong>.
+  In weather terms — there is a higher possibility of negative market movement tomorrow, and we recommend packing a sturdy umbrella.</p>
 
-  <p>The dominant bearish driver is <strong>VIXY</strong> (iPath Series B S&amp;P 500 VIX Short-Term Futures),
-  carrying a 22.16% portfolio weight with a signal point of −3, contributing −66.49 to the composite score.
-  VIXY is a direct expression of expected near-term market volatility; a substantial allocation here signals
-  the symphony's algorithm anticipates elevated volatility and potential equity market stress ahead.</p>
+  <p>🌩️ The storm clouds are driven by a meaningful concentration in volatility and defensive instruments —
+  think of this as barometric pressure dropping well below normal. The weather index sits at ${fmtScore(REPORT.score)},
+  deep inside our ⛈️ Thunderstorm zone (below −20), suggesting conditions could get bumpy out there.</p>
 
-  <p>Partially offsetting factors include <strong>TECL</strong> (+8.54), <strong>EUM</strong> (+7.90),
-  and <strong>UDOW</strong> (+7.01) — leveraged and emerging-market ETFs that suggest a small speculative
-  long component within an otherwise defensive allocation. Combined, these contribute +26.45 to the score,
-  insufficient to offset the broad risk-off positioning.</p>
+  <p>☂️ On the brighter side, roughly <strong>${fmtPct(REPORT.neutral_weight)}</strong> of the portfolio is already
+  sheltered under the rain gear — parked in capital-preservation assets like short-duration treasuries and gold.
+  Think of this as the smart crowd who checked the forecast before leaving the house.</p>
 
-  <p>Approximately <strong>${fmtPct(REPORT.neutral_weight)}</strong> of the portfolio is in neutral instruments:
-  SGOV (26.97%), GLD (16.00%), and BIL (13.44%) — short-duration treasuries and gold. This capital-preservation
-  stance reinforces the bearish read and is consistent with periods of macro uncertainty or anticipated
-  market drawdowns.</p>
+  <p>🌤️ There are a few rays of sunshine too — about <strong>${fmtPct(REPORT.positive_weight)}</strong> in
+  growth-leaning positions still holding out hope for clearing skies. However, the prevailing winds from the
+  <strong>${fmtPct(REPORT.negative_weight)}</strong> in risk-off instruments are keeping those clouds firmly overhead.</p>
 
-  <p><strong>Outlook for tomorrow (${REPORT.for_date}):</strong> Investors should exercise caution with
-  directional long equity exposure. The model recommends maintaining defensive holdings (SGOV, BIL, GLD)
-  while monitoring the April CPI release, Fed Chair transition headlines, and the Trump-Xi summit outcome.
-  A hotter-than-expected CPI print or adverse geopolitical development could amplify volatility further.</p>
+  <p>📅 <strong>Tomorrow's weather summary (${REPORT.for_date}):</strong> High probability of turbulent conditions.
+  We suggest staying indoors — maintaining defensive positioning and waiting for the weather index to rise
+  above −10 before heading back out. Keep an eye on the CPI print, Fed commentary, and any geopolitical
+  developments for sudden changes in the forecast.</p>
 `;
 document.getElementById("analysis-text").innerHTML = analysisHTML;
 
 // ─── Recommendation ─────────────────────────────────────────────────────────
 const recMap = {
-  "Clear Downtrend":       { icon:"🔴", title:"Risk-Off — Maintain Defensive Posture",   body:"Avoid initiating new long equity positions. Hold SGOV, BIL, and GLD as primary capital-preservation instruments. Volatility hedges (VIXY, UVXY) remain appropriate given the extreme bearish signal. Wait for a confirmed reversal in the model score above −10 before rotating back to equities." },
-  "Negative (Downtrend)":  { icon:"🟠", title:"Cautious — Defensive Tilt Recommended",   body:"Limit equity exposure. Favor short-duration bonds (SGOV, BIL) and gold (GLD) over broad equity. Monitor key catalysts before adding risk." },
-  "Leaning Negative":      { icon:"🟡", title:"Neutral-to-Cautious — Watch Key Data",    body:"Current signal leans negative but does not confirm a downtrend. Maintain balanced allocation and await macro confirmation." },
-  "Neutral — Hold Gold/SGOV": { icon:"⚪", title:"Neutral — Capital Preservation Mode", body:"Hold SGOV and GLD. Await a directional signal before committing to equity upside or downside bets." },
-  "Leaning Positive":      { icon:"🟡", title:"Mildly Constructive — Selective Exposure", body:"Small equity additions may be warranted on catalyst confirmation. Maintain partial defensive allocation." },
-  "Positive (Uptrend)":    { icon:"🟢", title:"Constructive — Equity Exposure Appropriate", body:"Broad equity participation is supported. Consider increasing allocation to risk-on ETFs on pullbacks." },
-  "Strong Uptrend":        { icon:"🟢", title:"Bullish — High-Conviction Uptrend",       body:"The model supports aggressive equity positioning. Leveraged ETFs (TECL, UDOW) may be favored for short-term momentum plays." }
+  "Clear Downtrend":          { icon:"⛈️", title:"Storm Warning — Stay Indoors",                body:"Our model is flashing a full thunderstorm alert. This is not a day to go for a stroll in equity-land — there's a high possibility of getting soaked. Seek shelter in short-duration treasuries and gold, and wait for the weather index to climb back above −10 before venturing outside again." },
+  "Negative (Downtrend)":     { icon:"🌧️", title:"Rain Forecast — Keep That Umbrella Up",       body:"It's raining out there and the clouds aren't parting anytime soon. Defensive positioning is your best rain jacket right now. Avoid chasing growth assets in this downpour." },
+  "Leaning Negative":         { icon:"🌦️", title:"Scattered Showers — Check the Radar First",  body:"Conditions are unsettled — you might stay dry or you might get caught in a shower. Not the day to leave home without at least a light jacket. Watch key data closely for any clearing." },
+  "Neutral — Hold Gold/SGOV": { icon:"⛅", title:"Cloudy Day — Umbrella on Standby",           body:"No strong sun, no heavy rain — just grey skies and uncertainty. Hold your weather insurance (gold and short bonds) and wait for the clouds to break in a clear direction before making any bold moves." },
+  "Leaning Positive":         { icon:"🌤️", title:"Partly Sunny — Light Jacket Still Advised",  body:"A few rays are breaking through. Conditions are slowly improving, but don't pack away the umbrella just yet. Selective, cautious equity exposure may be appropriate if conditions hold." },
+  "Positive (Uptrend)":       { icon:"☀️", title:"Sunny Conditions — Good Day for a Walk",     body:"Market weather looks favorable — clear skies and positive momentum. A fine day for equity exposure. Enjoy the sunshine, but keep some diversification as sunscreen." },
+  "Strong Uptrend":           { icon:"🌈", title:"Perfect Weather — Full Sunshine Alert",       body:"Outstanding conditions across the board — this is a rare blue-sky day. The forecast supports bold positioning for those with appropriate risk tolerance. Pack the sunglasses, not the umbrella." }
 };
 const rec = recMap[REPORT.temperature] || { icon:"⚠️", title:"Signal Uncertain", body:"Review model inputs." };
 document.getElementById("rec-icon").textContent  = rec.icon;
