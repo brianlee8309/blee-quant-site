@@ -614,3 +614,32 @@
 [2026-05-12T05:56:52] Stamped last-updated (05/12/2026 05:56 AM) into index.html
 [2026-05-12T05:56:52] --- Pushing updates to GitHub ---
 [2026-05-12T05:56:52]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-12T05:56:53]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-12"
+[2026-05-12T05:56:53]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-12T05:56:57] GitHub push successful.
+[2026-05-12T05:56:58] market_report: === Market report generation started ===
+[2026-05-12T05:56:58] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-12T05:56:58] market_report: Loaded 15 ETF allocations from index_50.html
+[2026-05-12T05:56:58] market_report: FATAL: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 61: character maps to <undefined>
+[2026-05-12T06:23:12] === Composer daily allocation pull ===
+[2026-05-12T06:23:12] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw']
+[2026-05-12T06:23:12] No account_uuid in config; discovering via /accounts/list...
+[2026-05-12T06:23:13] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-12T06:23:13] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-12T06:23:13] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-12T06:23:13] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-12T06:23:14] Saved symphony-stats response to composer_symphony_stats_2026-05-12.json
+[2026-05-12T06:23:14] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-12T06:23:14]   Got 15 positions from symphony-stats-meta
+[2026-05-12T06:23:14]   Saved today's slice to composer_allocations_2026-05-12.json
+[2026-05-12T06:23:15]   Wrote 15 rows for 2026-05-12 to composer_allocations.csv (kept 32 prior rows, source=symphony-stats-meta)
+[2026-05-12T06:23:15] Generated dashboard -> index_50.html (value=$40,420.36, days=3)
+[2026-05-12T06:23:15] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-12T06:23:15]   Got 3 positions from symphony-stats-meta
+[2026-05-12T06:23:15]   Saved today's slice to composer_allocations_185_2026-05-12.json
+[2026-05-12T06:23:15]   Wrote 3 rows for 2026-05-12 to composer_allocations_185.csv (kept 6 prior rows, source=symphony-stats-meta)
+[2026-05-12T06:23:15] Generated dashboard -> index2.html (value=$1,002.49, days=3)
+[2026-05-12T06:23:15] === Done ===
+[2026-05-12T06:23:15] Stamped last-updated (05/12/2026 06:23 AM) into index.html
+[2026-05-12T06:23:15] --- Pushing updates to GitHub ---
+[2026-05-12T06:23:15]   $ git -C "C:\Kei\ComposerInvest" add .
