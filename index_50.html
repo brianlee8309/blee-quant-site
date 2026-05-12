@@ -93,36 +93,7 @@
   .download-row a:hover { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
-<body><div id="blee-pw-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0b1120;z-index:9999;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#1e293b;padding:40px;border-radius:16px;text-align:center;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">&#128274; BLEE Quant Analytics</div>
-    <div style="color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:24px;">Daily Signal &mdash; Subscribers Only</div>
-    <input id="blee-pw-input" type="password" placeholder="Enter password" style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:15px;margin-bottom:12px;outline:none;box-sizing:border-box;">
-    <button onclick="bleePwCheck()" style="width:100%;padding:12px;background:#f59e0b;color:#000;font-weight:700;font-size:15px;border:none;border-radius:8px;cursor:pointer;">Access Daily Signal</button>
-    <div id="blee-pw-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;">Incorrect password. Please try again.</div>
-  </div>
-</div>
-<script>
-(function() {
-  var PW = 'Blee@daily2026';
-  function bleePwCheck() {
-    if (document.getElementById('blee-pw-input').value === PW) {
-      document.getElementById('blee-pw-overlay').style.display = 'none';
-      sessionStorage.setItem('blee_auth', '1');
-    } else {
-      document.getElementById('blee-pw-error').style.display = 'block';
-    }
-  }
-  window.bleePwCheck = bleePwCheck;
-  document.addEventListener('DOMContentLoaded', function() {
-    var inp = document.getElementById('blee-pw-input');
-    if (inp) inp.addEventListener('keypress', function(e) { if (e.key === 'Enter') bleePwCheck(); });
-    if (sessionStorage.getItem('blee_auth') === '1') {
-      document.getElementById('blee-pw-overlay').style.display = 'none';
-    }
-  });
-})();
-</script>
+<body>
 <div class="container">
   <header>
     <h1>BLEE Stock Analysis</h1>
@@ -180,7 +151,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "jtQvlI5wINrxpOfxgmgl", "symphony_name": "BLEE - 186 2026 ALL in One", "csv_filename": "composer_allocations.csv", "account_uuid": "", "last_updated": "2026-05-11", "run_datetime": "05/12/2026 05:18 AM", "total_value": 40429.88, "day_change_pct": -1.5562, "total_return_pct": -1.5562, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 26.9788, "shares": 108.54324, "market_value": 10907.5101876}, {"ticker": "VIXY", "weight_pct": 22.1634, "shares": 326.73259, "market_value": 8960.64128075}, {"ticker": "GLD", "weight_pct": 15.9977, "shares": 14.87581, "market_value": 6467.8534299}, {"ticker": "BIL", "weight_pct": 13.4415, "shares": 59.40523, "market_value": 5434.3904404}, {"ticker": "USMV", "weight_pct": 2.9989, "shares": 12.8835, "market_value": 1212.466185}, {"ticker": "TECL", "weight_pct": 2.8451, "shares": 5.72811, "market_value": 1150.2617691}, {"ticker": "EUM", "weight_pct": 2.6346, "shares": 66.48945, "market_value": 1065.160989}, {"ticker": "UDOW", "weight_pct": 2.3369, "shares": 15.47608, "market_value": 944.814684}, {"ticker": "SQQQ", "weight_pct": 2.3254, "shares": 22.26824, "market_value": 940.1650928}, {"ticker": "BTAL", "weight_pct": 2.1878, "shares": 74.3303, "market_value": 884.53057}, {"ticker": "PSQ", "weight_pct": 1.5086, "shares": 23.35069, "market_value": 609.9200228}, {"ticker": "TMV", "weight_pct": 1.4924, "shares": 15.68473, "market_value": 603.3915631}, {"ticker": "UVXY", "weight_pct": 1.492, "shares": 16.32072, "market_value": 603.2138112}, {"ticker": "SHV", "weight_pct": 1.484, "shares": 5.44592, "market_value": 599.9770064}, {"ticker": "$USD", "weight_pct": 0.1127, "shares": 45.58, "market_value": 45.58}], "value_history": [{"date": "2026-05-10", "total": 41069.0}, {"date": "2026-05-11", "total": 40429.88}], "all_tickers": ["$USD", "BIL", "BTAL", "EUM", "GLD", "PSQ", "SGOV", "SHV", "SQQQ", "TECL", "TMV", "TQQQ", "UDOW", "UPRO", "USMV", "UVXY", "VIXY"], "weight_history": {"$USD": [0.141, 0.1127], "BIL": [13.4366, 13.4415], "BTAL": [4.3435, 2.1878], "EUM": [5.2863, 2.6346], "GLD": [15.9779, 15.9977], "PSQ": [1.4915, 1.5086], "SGOV": [26.9715, 26.9788], "SHV": [1.4729, 1.484], "SQQQ": [2.3195, 2.3254], "TECL": [2.851, 2.8451], "TMV": [1.4943, 1.4924], "TQQQ": [1.9411, 0.0], "UDOW": [2.333, 2.3369], "UPRO": [0.4839, 0.0], "USMV": [2.9971, 2.9989], "UVXY": [1.4736, 1.492], "VIXY": [14.9851, 22.1634]}, "dates": ["2026-05-10", "2026-05-11"]};
+const DATA = {"symphony_id": "jtQvlI5wINrxpOfxgmgl", "symphony_name": "BLEE - 186 2026 ALL in One", "csv_filename": "composer_allocations.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 05:56 AM", "total_value": 40420.36, "day_change_pct": -0.0235, "total_return_pct": -1.5794, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 26.9852, "shares": 108.54324, "market_value": 10907.5101876}, {"ticker": "VIXY", "weight_pct": 22.1565, "shares": 326.73259, "market_value": 8955.7402919}, {"ticker": "GLD", "weight_pct": 15.9963, "shares": 14.87581, "market_value": 6465.7708165}, {"ticker": "BIL", "weight_pct": 13.4447, "shares": 59.40523, "market_value": 5434.3904404}, {"ticker": "USMV", "weight_pct": 2.9993, "shares": 12.8835, "market_value": 1212.33735}, {"ticker": "TECL", "weight_pct": 2.8442, "shares": 5.72811, "market_value": 1149.631677}, {"ticker": "EUM", "weight_pct": 2.6352, "shares": 66.48945, "market_value": 1065.160989}, {"ticker": "UDOW", "weight_pct": 2.3379, "shares": 15.47608, "market_value": 944.9694448}, {"ticker": "SQQQ", "weight_pct": 2.326, "shares": 22.26824, "market_value": 940.1650928}, {"ticker": "BTAL", "weight_pct": 2.1828, "shares": 74.3303, "market_value": 882.300661}, {"ticker": "PSQ", "weight_pct": 1.5095, "shares": 23.35069, "market_value": 610.1535297}, {"ticker": "UVXY", "weight_pct": 1.4932, "shares": 16.32072, "market_value": 603.5402256}, {"ticker": "TMV", "weight_pct": 1.492, "shares": 15.68473, "market_value": 603.0778685}, {"ticker": "SHV", "weight_pct": 1.4845, "shares": 5.44592, "market_value": 600.0314656}, {"ticker": "$USD", "weight_pct": 0.1128, "shares": 45.58, "market_value": 45.58}], "value_history": [{"date": "2026-05-10", "total": 41069.0}, {"date": "2026-05-11", "total": 40429.88}, {"date": "2026-05-12", "total": 40420.36}], "all_tickers": ["$USD", "BIL", "BTAL", "EUM", "GLD", "PSQ", "SGOV", "SHV", "SQQQ", "TECL", "TMV", "TQQQ", "UDOW", "UPRO", "USMV", "UVXY", "VIXY"], "weight_history": {"$USD": [0.141, 0.1127, 0.1128], "BIL": [13.4366, 13.4415, 13.4447], "BTAL": [4.3435, 2.1878, 2.1828], "EUM": [5.2863, 2.6346, 2.6352], "GLD": [15.9779, 15.9977, 15.9963], "PSQ": [1.4915, 1.5086, 1.5095], "SGOV": [26.9715, 26.9788, 26.9852], "SHV": [1.4729, 1.484, 1.4845], "SQQQ": [2.3195, 2.3254, 2.326], "TECL": [2.851, 2.8451, 2.8442], "TMV": [1.4943, 1.4924, 1.492], "TQQQ": [1.9411, 0.0, 0.0], "UDOW": [2.333, 2.3369, 2.3379], "UPRO": [0.4839, 0.0, 0.0], "USMV": [2.9971, 2.9989, 2.9993], "UVXY": [1.4736, 1.492, 1.4932], "VIXY": [14.9851, 22.1634, 22.1565]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12"]};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
