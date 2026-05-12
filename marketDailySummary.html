@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE Market Daily Summary</title>
+<style>
+  :root {
+    --bg:       #0b1120;
+    --surface:  #131f35;
+    --card:     #1a2742;
+    --border:   rgba(255,255,255,0.07);
+    --text:     #e8edf5;
+    --muted:    rgba(255,255,255,0.45);
+    --gold:     #f59e0b;
+    --pos:      #22c55e;
+    --neg:      #ef4444;
+    --neutral:  #f59e0b;
+    --accent:   #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: #0d1829;
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-brand {
+    font-size: 17px; font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-brand span { color: var(--gold); }
+  .nav-links { display: flex; align-items: center; gap: 20px; }
+  .nav-links a {
+    color: var(--muted); font-size: 13.5px; text-decoration: none;
+    transition: color .15s;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 980px; margin: 0 auto; padding: 36px 20px 72px; }
+  .page-header { margin-bottom: 28px; }
+  .page-header h1 {
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.02em; color: #fff;
+  }
+  .page-header .sub {
+    color: var(--muted); font-size: 13px; margin-top: 4px;
+  }
+  .badge-date {
+    display: inline-block;
+    background: rgba(59,130,246,0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.3);
+    font-size: 11.5px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  /* ── TEMPERATURE HERO ── */
+  .temp-hero {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+  }
+  @media(max-width:640px){ .temp-hero { grid-template-columns:1fr; } }
+  .temp-label {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .temp-value {
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .temp-desc { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+  .score-box {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 18px 24px;
+    text-align: center;
+    min-width: 130px;
+  }
+  .score-box .sl { font-size: 11px; color: var(--muted); font-weight: 600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px; }
+  .score-box .sv { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+
+  /* ── GAUGE BAR ── */
+  .gauge-wrap { margin: 20px 0 8px; }
+  .gauge-track {
+    height: 10px; border-radius: 6px;
+    background: linear-gradient(to right,
+      #dc2626 0%, #ef4444 20%, #fca5a5 35%,
+      #f59e0b 48%, #f59e0b 52%,
+      #86efac 65%, #22c55e 80%, #16a34a 100%);
+    position: relative;
+  }
+  .gauge-needle {
+    position: absolute;
+    top: -4px;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #0d1829;
+    transform: translateX(-50%);
+    transition: left .6s ease;
+  }
+  .gauge-labels {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ── STAT STRIP ── */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:640px){ .stat-strip { grid-template-columns: repeat(2,1fr); } }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .stat-card .sl { font-size: 10.5px; color: var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:6px; }
+  .stat-card .sv { font-size: 20px; font-weight: 700; }
+
+  /* ── SECTION CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    font-size: 14px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .analysis-text {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: rgba(232,237,245,0.85);
+  }
+  .analysis-text p { margin-bottom: 14px; }
+  .analysis-text p:last-child { margin-bottom: 0; }
+
+  /* ── BREAKDOWN TABLE ── */
+  table { width:100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { font-size: 10.5px; font-weight: 700; text-transform:uppercase; letter-spacing:0.07em; color: var(--muted); }
+  td.num, th.num { text-align:right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .ticker-cell { font-weight: 700; font-size: 13.5px; }
+  .bar-wrap { display:flex; align-items:center; gap:8px; }
+  .bar-track { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; min-width:60px; }
+  .bar-fill { height:100%; border-radius:3px; }
+  .bar-pos { background: var(--pos); }
+  .bar-neg { background: var(--neg); }
+  .bar-zero { background: var(--muted); }
+  .contrib-pos { color: var(--pos); }
+  .contrib-neg { color: var(--neg); }
+
+  /* ── NEWS CARDS ── */
+  .news-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .news-item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .news-item:first-child { padding-top: 0; }
+  .news-tag {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 7px;
+  }
+  .tag-macro  { background: rgba(59,130,246,0.2); color: #93c5fd; }
+  .tag-fed    { background: rgba(245,158,11,0.2); color: #fcd34d; }
+  .tag-equity { background: rgba(34,197,94,0.2);  color: #86efac; }
+  .tag-risk   { background: rgba(239,68,68,0.2);  color: #fca5a5; }
+  .news-title { font-size: 15px; font-weight: 700; line-height: 1.4; color: #fff; margin-bottom: 6px; }
+  .news-body  { font-size: 13.5px; line-height: 1.7; color: rgba(232,237,245,0.75); }
+  .news-source { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .news-source a { color: var(--accent); text-decoration: none; }
+  .news-source a:hover { text-decoration: underline; }
+
+  /* ── RECOMMENDATION BOX ── */
+  .rec-box {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rec-icon { font-size: 26px; line-height:1; flex-shrink:0; }
+  .rec-title { font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+  .rec-body  { font-size: 13.5px; color: rgba(232,237,245,0.8); line-height: 1.65; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    line-height: 1.8;
+  }
+
+  .pos { color: var(--pos); }
+  .neg { color: var(--neg); }
+  .neutral { color: var(--neutral); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index2.html">Symphony 185</a>
+    <a href="index_50.html">Symphony 186</a>
+    <a href="performance1.html">Backtest</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="page-header">
+    <div class="badge-date" id="report-badge">— Loading —</div>
+    <h1>Market Daily Summary</h1>
+    <div class="sub">BLEE-186 Symphony · Quantitative temperature model · Updated <span id="updated-time">—</span></div>
+  </div>
+
+  <!-- Temperature Hero -->
+  <div class="temp-hero" id="temp-hero">
+    <div>
+      <div class="temp-label">Market Temperature</div>
+      <div class="temp-value" id="temp-value">—</div>
+      <div class="temp-desc" id="temp-desc">Calculating…</div>
+      <div class="gauge-wrap">
+        <div class="gauge-track">
+          <div class="gauge-needle" id="gauge-needle"></div>
+        </div>
+        <div class="gauge-labels">
+          <span>Clear Downtrend</span>
+          <span>Neutral</span>
+          <span>Strong Uptrend</span>
+        </div>
+      </div>
+    </div>
+    <div class="score-box">
+      <div class="sl">Composite Score</div>
+      <div class="sv" id="score-val">—</div>
+    </div>
+  </div>
+
+  <!-- Stat Strip -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="sl">Positive Drivers</div>
+      <div class="sv pos" id="stat-pos">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sl">Negative Drivers</div>
+      <div class="sv neg" id="stat-neg">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sl">Neutral Allocation</div>
+      <div class="sv" id="stat-neutral" style="color:#94a3b8">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sl">Portfolio Value</div>
+      <div class="sv" id="stat-value">—</div>
+    </div>
+  </div>
+
+  <!-- Market Analysis -->
+  <div class="card">
+    <h2>📋 Market Analysis — Tomorrow's Outlook</h2>
+    <div class="analysis-text" id="analysis-text">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Recommendation -->
+  <div class="rec-box" id="rec-box">
+    <div class="rec-icon" id="rec-icon">⚠️</div>
+    <div>
+      <div class="rec-title" id="rec-title">—</div>
+      <div class="rec-body" id="rec-body">—</div>
+    </div>
+  </div>
+
+  <!-- ETF Breakdown -->
+  <div class="card">
+    <h2>🔬 ETF Score Breakdown</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ETF</th>
+          <th class="num">Allocation</th>
+          <th class="num">Signal Pt</th>
+          <th>Contribution</th>
+          <th class="num">Market Value</th>
+        </tr>
+      </thead>
+      <tbody id="etf-table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Market News -->
+  <div class="card">
+    <h2>📰 Top Market News</h2>
+    <div id="news-section"></div>
+  </div>
+
+  <footer>
+    <div>BLEE Quant Analytics · Market Daily Summary</div>
+    <div style="margin-top:4px">Last generated: <span id="footer-time">—</span></div>
+    <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.25)">
+      This report is generated automatically from quantitative signals and publicly available news sources.<br>
+      It does not constitute financial advice. Past performance does not guarantee future results.
+    </div>
+  </footer>
+</div>
+
+<script>
+// ─── DATA (injected by market_report.py) ───────────────────────────────────
+const REPORT = /* __REPORT_JSON__ */ {
+  "generated": "05/12/2026 01:30 AM",
+  "report_date": "May 12, 2026",
+  "for_date": "May 13, 2026 (Tomorrow)",
+  "score": -58.17,
+  "temperature": "Clear Downtrend",
+  "temp_color": "#dc2626",
+  "temp_arrow": "↓↓",
+  "positive_weight": 11.27,
+  "negative_weight": 29.06,
+  "neutral_weight": 59.67,
+  "total_value": 40429.88,
+  "breakdown": [
+    {"ticker":"SGOV",  "weight":26.98, "point":0.0,  "contribution":0.00,    "value":10907.51},
+    {"ticker":"VIXY",  "weight":22.16, "point":-3.0, "contribution":-66.49,  "value":8960.64},
+    {"ticker":"GLD",   "weight":16.00, "point":0.0,  "contribution":0.00,    "value":6467.85},
+    {"ticker":"BIL",   "weight":13.44, "point":0.0,  "contribution":0.00,    "value":5434.39},
+    {"ticker":"USMV",  "weight":3.00,  "point":1.0,  "contribution":3.00,    "value":1212.47},
+    {"ticker":"TECL",  "weight":2.85,  "point":3.0,  "contribution":8.54,    "value":1150.26},
+    {"ticker":"EUM",   "weight":2.63,  "point":3.0,  "contribution":7.90,    "value":1065.16},
+    {"ticker":"UDOW",  "weight":2.34,  "point":3.0,  "contribution":7.01,    "value":944.81},
+    {"ticker":"SQQQ",  "weight":2.33,  "point":-3.0, "contribution":-6.98,   "value":940.17},
+    {"ticker":"BTAL",  "weight":2.19,  "point":-1.0, "contribution":-2.19,   "value":884.53},
+    {"ticker":"PSQ",   "weight":1.51,  "point":-1.0, "contribution":-1.51,   "value":609.92},
+    {"ticker":"TMV",   "weight":1.49,  "point":-1.0, "contribution":-1.49,   "value":603.39},
+    {"ticker":"UVXY",  "weight":1.49,  "point":-3.0, "contribution":-4.48,   "value":603.21},
+    {"ticker":"SHV",   "weight":1.48,  "point":-1.0, "contribution":-1.48,   "value":599.98},
+    {"ticker":"$USD",  "weight":0.11,  "point":0.0,  "contribution":0.00,    "value":45.58}
+  ],
+  "news": [
+    {
+      "tag": "MACRO",
+      "tag_class": "tag-macro",
+      "title": "April CPI Release on May 12 — The Week's Make-or-Break Catalyst",
+      "body": "The April Consumer Price Index (CPI) lands Tuesday at 8:30 AM ET, with consensus calling for headline inflation of 3.7% year-over-year and core at 2.7% YoY. A hotter-than-expected print would rapidly compress Fed rate-cut expectations and could reverse the S&P 500's six-week winning streak in a single session. Equity markets have rallied sharply to record levels above 7,300; any upside inflation surprise carries elevated downside risk given stretched valuations.",
+      "source": "Gotrade / CNBC",
+      "url": "https://www.heygotrade.com/en/news/weekly-economic-outlook-2026-05-11/"
+    },
+    {
+      "tag": "FED POLICY",
+      "tag_class": "tag-fed",
+      "title": "Fed Chair Transition: Powell Out, Warsh Confirmed This Week",
+      "body": "Jerome Powell's term as Federal Reserve Chair ends Friday May 15. The US Senate is expected to confirm Kevin Warsh as his successor this week. While Warsh is viewed as more open to rate cuts than Powell, the latest FOMC meeting showed three dissenting voters — signaling any rate cut remains conditional on materially softer inflation data. Markets face dual uncertainty: an uncertain inflation path and a leadership transition at the world's most watched central bank.",
+      "source": "Gotrade / CNBC",
+      "url": "https://www.cnbc.com/2026/04/29/fed-powell-warsh-interest-rates.html"
+    },
+    {
+      "tag": "GEOPOLITICAL RISK",
+      "tag_class": "tag-risk",
+      "title": "US-Iran Tensions Keep Energy Elevated; Trump-Xi Summit Eyes AI Guardrails",
+      "body": "Ongoing US-Iran tensions have pushed energy prices higher and disrupted key global trade routes, with Goldman Sachs noting that 'equity market gyrations will likely continue to mirror geopolitical volatility.' Separately, a Trump-Xi summit on May 14–15 will address AI governance between the world's two largest economies, with outcomes capable of moving semiconductor and tech stocks sharply. Applied Materials (AMAT) reports Thursday with options pricing in a ±8.7% post-earnings swing — a bellwether for global chip capex.",
+      "source": "Goldman Sachs / Gotrade",
+      "url": "https://www.heygotrade.com/en/news/weekly-economic-outlook-2026-05-11/"
+    }
+  ]
+};
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+const fmt$ = n => "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtPct = n => Number(n).toFixed(2) + "%";
+const fmtScore = n => (n >= 0 ? "+" : "") + Number(n).toFixed(2);
+
+// ─── Populate header ────────────────────────────────────────────────────────
+document.getElementById("report-badge").textContent = "Report for " + REPORT.for_date;
+document.getElementById("updated-time").textContent = REPORT.generated;
+document.getElementById("footer-time").textContent  = REPORT.generated;
+
+// ─── Temperature hero ───────────────────────────────────────────────────────
+const tempEl = document.getElementById("temp-value");
+tempEl.textContent = REPORT.temp_arrow + "  " + REPORT.temperature;
+tempEl.style.color = REPORT.temp_color;
+
+const descMap = {
+  "Clear Downtrend":       "The quantitative model reads a decisive bearish signal. The portfolio's dominant positions — volatility hedges (VIXY, UVXY), inverse equities (SQQQ, PSQ), and safe-haven assets (SGOV, BIL, GLD) — reflect deep caution toward near-term equity markets. Risk-off posture is recommended.",
+  "Negative (Downtrend)":  "The model signals a negative market bias. The portfolio is positioned defensively, with significant allocations to volatility and inverse ETFs. Caution is warranted entering long equity positions.",
+  "Leaning Negative":      "The model shows a modest negative skew. Market conditions are uncertain; defensive positioning in bonds and gold is prudent while monitoring key economic data.",
+  "Neutral — Hold Gold/SGOV": "The model reads a balanced, neutral signal. Allocate to capital-preservation instruments such as SGOV and GLD until a directional bias becomes clear.",
+  "Leaning Positive":      "The model shows a modest positive skew. Selective long equity exposure may be appropriate on confirmation from key economic data.",
+  "Positive (Uptrend)":    "The model signals a positive market bias. Broad equity participation appears supported by the current symphony allocation.",
+  "Strong Uptrend":        "The model reads a strong bullish signal across leveraged and broad equity ETFs. High-conviction uptrend conditions are indicated."
+};
+document.getElementById("temp-desc").textContent = descMap[REPORT.temperature] || "";
+
+document.getElementById("score-val").textContent = fmtScore(REPORT.score);
+document.getElementById("score-val").style.color = REPORT.temp_color;
+
+// ─── Gauge needle ────────────────────────────────────────────────────────────
+// Score range: -100 to +100 mapped to 0-100% of track
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const pct = clamp((REPORT.score + 100) / 200 * 100, 2, 98);
+document.getElementById("gauge-needle").style.left = pct + "%";
+
+// ─── Stat strip ─────────────────────────────────────────────────────────────
+document.getElementById("stat-pos").textContent     = fmtPct(REPORT.positive_weight);
+document.getElementById("stat-neg").textContent     = fmtPct(REPORT.negative_weight);
+document.getElementById("stat-neutral").textContent = fmtPct(REPORT.neutral_weight);
+document.getElementById("stat-value").textContent   = fmt$(REPORT.total_value);
+
+// ─── Analysis text ──────────────────────────────────────────────────────────
+const scoreAbs = Math.abs(REPORT.score).toFixed(1);
+const analysisHTML = `
+  <p>Based on the BLEE-186 symphony's current allocation as of <strong>${REPORT.report_date}</strong>,
+  the quantitative temperature model produces a composite score of
+  <strong style="color:${REPORT.temp_color}">${fmtScore(REPORT.score)}</strong>,
+  placing the market firmly in <strong style="color:${REPORT.temp_color}">${REPORT.temperature}</strong> territory
+  (threshold: below −20).</p>
+
+  <p>The dominant bearish driver is <strong>VIXY</strong> (iPath Series B S&amp;P 500 VIX Short-Term Futures),
+  carrying a 22.16% portfolio weight with a signal point of −3, contributing −66.49 to the composite score.
+  VIXY is a direct expression of expected near-term market volatility; a substantial allocation here signals
+  the symphony's algorithm anticipates elevated volatility and potential equity market stress ahead.</p>
+
+  <p>Partially offsetting factors include <strong>TECL</strong> (+8.54), <strong>EUM</strong> (+7.90),
+  and <strong>UDOW</strong> (+7.01) — leveraged and emerging-market ETFs that suggest a small speculative
+  long component within an otherwise defensive allocation. Combined, these contribute +26.45 to the score,
+  insufficient to offset the broad risk-off positioning.</p>
+
+  <p>Approximately <strong>${fmtPct(REPORT.neutral_weight)}</strong> of the portfolio is in neutral instruments:
+  SGOV (26.97%), GLD (16.00%), and BIL (13.44%) — short-duration treasuries and gold. This capital-preservation
+  stance reinforces the bearish read and is consistent with periods of macro uncertainty or anticipated
+  market drawdowns.</p>
+
+  <p><strong>Outlook for tomorrow (${REPORT.for_date}):</strong> Investors should exercise caution with
+  directional long equity exposure. The model recommends maintaining defensive holdings (SGOV, BIL, GLD)
+  while monitoring the April CPI release, Fed Chair transition headlines, and the Trump-Xi summit outcome.
+  A hotter-than-expected CPI print or adverse geopolitical development could amplify volatility further.</p>
+`;
+document.getElementById("analysis-text").innerHTML = analysisHTML;
+
+// ─── Recommendation ─────────────────────────────────────────────────────────
+const recMap = {
+  "Clear Downtrend":       { icon:"🔴", title:"Risk-Off — Maintain Defensive Posture",   body:"Avoid initiating new long equity positions. Hold SGOV, BIL, and GLD as primary capital-preservation instruments. Volatility hedges (VIXY, UVXY) remain appropriate given the extreme bearish signal. Wait for a confirmed reversal in the model score above −10 before rotating back to equities." },
+  "Negative (Downtrend)":  { icon:"🟠", title:"Cautious — Defensive Tilt Recommended",   body:"Limit equity exposure. Favor short-duration bonds (SGOV, BIL) and gold (GLD) over broad equity. Monitor key catalysts before adding risk." },
+  "Leaning Negative":      { icon:"🟡", title:"Neutral-to-Cautious — Watch Key Data",    body:"Current signal leans negative but does not confirm a downtrend. Maintain balanced allocation and await macro confirmation." },
+  "Neutral — Hold Gold/SGOV": { icon:"⚪", title:"Neutral — Capital Preservation Mode", body:"Hold SGOV and GLD. Await a directional signal before committing to equity upside or downside bets." },
+  "Leaning Positive":      { icon:"🟡", title:"Mildly Constructive — Selective Exposure", body:"Small equity additions may be warranted on catalyst confirmation. Maintain partial defensive allocation." },
+  "Positive (Uptrend)":    { icon:"🟢", title:"Constructive — Equity Exposure Appropriate", body:"Broad equity participation is supported. Consider increasing allocation to risk-on ETFs on pullbacks." },
+  "Strong Uptrend":        { icon:"🟢", title:"Bullish — High-Conviction Uptrend",       body:"The model supports aggressive equity positioning. Leveraged ETFs (TECL, UDOW) may be favored for short-term momentum plays." }
+};
+const rec = recMap[REPORT.temperature] || { icon:"⚠️", title:"Signal Uncertain", body:"Review model inputs." };
+document.getElementById("rec-icon").textContent  = rec.icon;
+document.getElementById("rec-title").textContent = rec.title;
+document.getElementById("rec-body").textContent  = rec.body;
+
+// ─── ETF table ───────────────────────────────────────────────────────────────
+const tbody = document.getElementById("etf-table-body");
+const maxContrib = Math.max(...REPORT.breakdown.map(r => Math.abs(r.contribution)));
+REPORT.breakdown.forEach(r => {
+  const barPct = maxContrib > 0 ? Math.abs(r.contribution) / maxContrib * 100 : 0;
+  const barClass = r.contribution > 0 ? "bar-pos" : r.contribution < 0 ? "bar-neg" : "bar-zero";
+  const contribClass = r.contribution > 0 ? "contrib-pos" : r.contribution < 0 ? "contrib-neg" : "";
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td class="ticker-cell">${r.ticker}</td>
+    <td class="num">${fmtPct(r.weight)}</td>
+    <td class="num" style="color:${r.point>0?"#22c55e":r.point<0?"#ef4444":"#94a3b8"}">${r.point > 0 ? "+" : ""}${r.point.toFixed(1)}</td>
+    <td>
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill ${barClass}" style="width:${barPct}%"></div></div>
+        <span class="${contribClass}" style="font-size:12.5px;font-variant-numeric:tabular-nums;min-width:52px;text-align:right">${fmtScore(r.contribution)}</span>
+      </div>
+    </td>
+    <td class="num">${fmt$(r.value)}</td>
+  `;
+  tbody.appendChild(tr);
+});
+
+// ─── News ────────────────────────────────────────────────────────────────────
+const newsEl = document.getElementById("news-section");
+REPORT.news.forEach(n => {
+  const div = document.createElement("div");
+  div.className = "news-item";
+  div.innerHTML = `
+    <div class="news-tag ${n.tag_class}">${n.tag}</div>
+    <div class="news-title">${n.title}</div>
+    <div class="news-body">${n.body}</div>
+    <div class="news-source">Source: <a href="${n.url}" target="_blank" rel="noopener">${n.source}</a></div>
+  `;
+  newsEl.appendChild(div);
+});
+</script>
+</body>
+</html>

@@ -9,6 +9,11 @@ if exist ".git\index.lock" (
 
 echo Running Composer allocation pull...
 python composer_pull_allocation.py
+
+echo.
+echo Running market temperature report...
+python market_report.py
+
 echo.
 echo Done! Press any key to close.
 pause
