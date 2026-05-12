@@ -139,11 +139,11 @@
   /* ── STAT STRIP ── */
   .stat-strip {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-bottom: 20px;
   }
-  @media(max-width:640px){ .stat-strip { grid-template-columns: repeat(2,1fr); } }
+  @media(max-width:500px){ .stat-strip { grid-template-columns: repeat(1,1fr); } }
   .stat-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -308,10 +308,6 @@
       <div class="sl">Neutral Allocation</div>
       <div class="sv" id="stat-neutral" style="color:#94a3b8">—</div>
     </div>
-    <div class="stat-card">
-      <div class="sl">Portfolio Value</div>
-      <div class="sv" id="stat-value">—</div>
-    </div>
   </div>
 
   <!-- Market Analysis -->
@@ -329,23 +325,6 @@
       <div class="rec-title" id="rec-title">—</div>
       <div class="rec-body" id="rec-body">—</div>
     </div>
-  </div>
-
-  <!-- ETF Breakdown -->
-  <div class="card">
-    <h2>🔬 ETF Score Breakdown</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ETF</th>
-          <th class="num">Allocation</th>
-          <th class="num">Signal Pt</th>
-          <th>Contribution</th>
-          <th class="num">Market Value</th>
-        </tr>
-      </thead>
-      <tbody id="etf-table-body"></tbody>
-    </table>
   </div>
 
   <!-- Market News -->
@@ -462,8 +441,6 @@ document.getElementById("gauge-needle").style.left = pct + "%";
 document.getElementById("stat-pos").textContent     = fmtPct(REPORT.positive_weight);
 document.getElementById("stat-neg").textContent     = fmtPct(REPORT.negative_weight);
 document.getElementById("stat-neutral").textContent = fmtPct(REPORT.neutral_weight);
-document.getElementById("stat-value").textContent   = fmt$(REPORT.total_value);
-
 // ─── Analysis text ──────────────────────────────────────────────────────────
 const scoreAbs = Math.abs(REPORT.score).toFixed(1);
 const analysisHTML = `
@@ -510,28 +487,6 @@ document.getElementById("rec-icon").textContent  = rec.icon;
 document.getElementById("rec-title").textContent = rec.title;
 document.getElementById("rec-body").textContent  = rec.body;
 
-// ─── ETF table ───────────────────────────────────────────────────────────────
-const tbody = document.getElementById("etf-table-body");
-const maxContrib = Math.max(...REPORT.breakdown.map(r => Math.abs(r.contribution)));
-REPORT.breakdown.forEach(r => {
-  const barPct = maxContrib > 0 ? Math.abs(r.contribution) / maxContrib * 100 : 0;
-  const barClass = r.contribution > 0 ? "bar-pos" : r.contribution < 0 ? "bar-neg" : "bar-zero";
-  const contribClass = r.contribution > 0 ? "contrib-pos" : r.contribution < 0 ? "contrib-neg" : "";
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td class="ticker-cell">${r.ticker}</td>
-    <td class="num">${fmtPct(r.weight)}</td>
-    <td class="num" style="color:${r.point>0?"#22c55e":r.point<0?"#ef4444":"#94a3b8"}">${r.point > 0 ? "+" : ""}${r.point.toFixed(1)}</td>
-    <td>
-      <div class="bar-wrap">
-        <div class="bar-track"><div class="bar-fill ${barClass}" style="width:${barPct}%"></div></div>
-        <span class="${contribClass}" style="font-size:12.5px;font-variant-numeric:tabular-nums;min-width:52px;text-align:right">${fmtScore(r.contribution)}</span>
-      </div>
-    </td>
-    <td class="num">${fmt$(r.value)}</td>
-  `;
-  tbody.appendChild(tr);
-});
 
 // ─── News ────────────────────────────────────────────────────────────────────
 const newsEl = document.getElementById("news-section");
