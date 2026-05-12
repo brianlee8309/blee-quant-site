@@ -91,9 +91,57 @@
     background: var(--card);
   }
   .download-row a:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── SITE NAV ── */
+  .site-nav {
+    background: #0d1829;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 28px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+  }
+  .site-nav-brand {
+    font-size: 16px; font-weight: 800;
+    color: #fff; text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .site-nav-brand span { color: #f59e0b; }
+  .site-nav-links { display: flex; align-items: center; gap: 18px; }
+  .site-nav-links a {
+    color: rgba(255,255,255,0.55); font-size: 13px; text-decoration: none;
+    transition: color .15s;
+  }
+  .site-nav-links a:hover { color: #fff; }
+  .site-nav-links a.nav-cta {
+    background: #f59e0b; color: #000; padding: 5px 13px;
+    border-radius: 6px; font-weight: 700;
+  }
+  .site-nav-links a.nav-cta:hover { background: #fbbf24; color: #000; }
+  @media (max-width: 600px) {
+    .site-nav { padding: 0 14px; }
+    .site-nav-links { gap: 10px; }
+    .site-nav-links a { font-size: 12px; }
+  }
 </style>
 </head>
 <body>
+
+<nav class="site-nav">
+  <a class="site-nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <div class="site-nav-links">
+    <a href="index.html">Home</a>
+    <a href="index_50.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="performance1.html">Backtest</a>
+    <a href="index.html#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
+
 <div class="container">
   <header>
     <h1>BLEE Stock Analysis</h1>
@@ -276,51 +324,4 @@ const cols = [
 const thead = document.createElement("thead");
 const trh = document.createElement("tr");
 cols.forEach(c => {
-  const th = document.createElement("th");
-  th.textContent = c[0]; th.className = c[2];
-  trh.appendChild(th);
-});
-thead.appendChild(trh); tbl.appendChild(thead);
-const tbody = document.createElement("tbody");
-(DATA.today_allocations || []).forEach(a => {
-  const tr = document.createElement("tr");
-  cols.forEach(c => {
-    const td = document.createElement("td");
-    td.className = c[2];
-    const v = a[c[1]];
-    td.textContent = c[3] ? c[3](v) : v;
-    tr.appendChild(td);
-  });
-  tbody.appendChild(tr);
-});
-tbl.appendChild(tbody);
-
-// ---- Stacked area: weight history -----------------------------------------
-const tickers = DATA.all_tickers || [];
-const dates = DATA.dates || [];
-const datasets = tickers.map((t, i) => ({
-  label: t,
-  data: (DATA.weight_history || {})[t] || [],
-  backgroundColor: colorFor(i) + "cc",
-  borderColor: colorFor(i),
-  borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
-}));
-new Chart(document.getElementById("weights-stack"), {
-  type: "line",
-  data: { labels: dates, datasets },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    interaction: { mode: "index", intersect: false },
-    plugins: {
-      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 } } },
-      tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
-    },
-    scales: {
-      y: { stacked: true, max: 100, ticks: { callback: (v) => v + "%" } },
-      x: { stacked: true }
-    }
-  }
-});
-</script>
-</body>
-</html>
+  const th = document.createElement("th"
