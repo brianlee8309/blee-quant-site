@@ -707,6 +707,27 @@ def main() -> int:
 
     log("=== Done ===")
 
+    # ---- Stamp last-updated timestamp into static HTML pages -----------------
+    import re as _re
+    now_str = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p")
+    stamp_pages = ["index.html", "performance1.html"]
+    for page in stamp_pages:
+        page_path = SCRIPT_DIR / page
+        if not page_path.exists():
+            continue
+        try:
+            content = page_path.read_text(encoding="utf-8")
+            updated = _re.sub(
+                r'<span id="blee-updated">[^<]*</span>',
+                f'<span id="blee-updated">{now_str}</span>',
+                content
+            )
+            if updated != content:
+                page_path.write_text(updated, encoding="utf-8")
+                log(f"Stamped last-updated ({now_str}) into {page}")
+        except Exception as e:
+            log(f"  (could not stamp timestamp into {page}: {e})")
+
     # ---- Push updated files to GitHub ----------------------------------------
     log("--- Pushing updates to GitHub ---")
     try:

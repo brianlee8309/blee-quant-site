@@ -75,33 +75,23 @@
     .nav-links a:not(.btn-nav) { display: none; }
   }
 
-  /* ── GOOGLE TRANSLATE ── */
+  /* ── LANGUAGE SWITCHER ── */
   .nav-translate {
-    display: flex; align-items: center; margin-left: 14px;
+    display: flex; align-items: center; gap: 3px;
+    margin-left: 14px;
     border-left: 1px solid rgba(255,255,255,0.12); padding-left: 14px;
   }
-  /* Override Google Translate default ugly styles */
-  #google_translate_element .goog-te-gadget-simple {
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    border-radius: 7px !important;
-    padding: 5px 10px !important;
-    font-size: 13px !important;
-    color: rgba(255,255,255,0.85) !important;
-    cursor: pointer !important;
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.60); font-size: 11.5px; font-weight: 700;
+    padding: 4px 8px; border-radius: 5px; cursor: pointer;
+    transition: all .15s; white-space: nowrap; font-family: inherit;
+    letter-spacing: 0.03em;
   }
-  #google_translate_element .goog-te-gadget-simple span {
-    color: rgba(255,255,255,0.85) !important;
-    font-weight: 600 !important;
-    font-size: 13px !important;
-    font-family: inherit !important;
-  }
-  #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:last-child {
-    display: none;
-  }
-  #google_translate_element img { display: none !important; }
-  .goog-te-banner-frame { display: none !important; }
-  body { top: 0 !important; }
+  .lang-btn:hover { background: rgba(255,255,255,0.10); color: #fff; border-color: rgba(255,255,255,0.35); }
+  .lang-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+  @media (max-width: 780px) { .nav-translate { display: none; } }
 
   /* ── HERO ── */
   .hero {
@@ -701,14 +691,17 @@
     <div class="brand">BLEE <span>Quant Analytics</span></div>
   </a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="profile.html">Profile</a>
-    <a href="analysis1-moderate-gain-low-risk.html">Daily Signal</a>
-    <a href="performance1.html">Backtest</a>
-    <a href="#pricing" class="btn-nav">Subscribe</a>
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="profile.html" data-i18n="nav.profile">Profile</a>
+    <a href="analysis1-moderate-gain-low-risk.html" data-i18n="nav.signal">Daily Signal</a>
+    <a href="performance1.html" data-i18n="nav.backtest">Backtest</a>
+    <a href="#pricing" class="btn-nav" data-i18n="nav.subscribe">Subscribe</a>
   </div>
   <div class="nav-translate">
-    <div id="google_translate_element"></div>
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
 </nav>
 
@@ -727,8 +720,8 @@
 
 <!-- ══════════════════════════════════════ HERO ══ -->
 <div class="hero">
-  <div class="hero-tag">📊 Built by an Investor Who Uses These Signals Every Day</div>
-  <h1>Disciplined ETF Rotation Models<br><em>Built for Long-Term Growth.</em></h1>
+  <div class="hero-tag" data-i18n="hero.tag">📊 Built by an Investor Who Uses These Signals Every Day</div>
+  <h1 data-i18n="hero.h1">Disciplined ETF Rotation Models<br><em>Built for Long-Term Growth.</em></h1>
   <p class="lead">
     Fully automated rebalancing algorithms built by an independent analyst combining
     <strong style="color:#fff">30+ years of software engineering expertise</strong> with
@@ -741,26 +734,26 @@
     maintaining relatively low drawdowns during difficult market conditions.
   </p>
   <div class="hero-btns">
-    <a href="#strategies" class="btn-primary">View Strategies</a>
-    <a href="performance1.html" class="btn-ghost">See the Track Record</a>
+    <a href="#strategies" class="btn-primary" data-i18n="btn.strategies">View Strategies</a>
+    <a href="performance1.html" class="btn-ghost" data-i18n="btn.trackrecord">See the Track Record</a>
   </div>
 
   <div class="hero-stats">
     <div class="hs">
       <div class="num">~18.7%<span style="font-size:18px;font-weight:600">/yr</span></div>
-      <div class="lbl">Full-Period Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
+      <div class="lbl" data-i18n="hs1.lbl">Full-Period Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
     </div>
     <div class="hs">
       <div class="num gold">~28%<span style="font-size:18px;font-weight:600">/yr</span></div>
-      <div class="lbl">Past 3-Year Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
+      <div class="lbl" data-i18n="hs2.lbl">Past 3-Year Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
     </div>
     <div class="hs">
       <div class="num">−5.7%</div>
-      <div class="lbl">Max Drawdown (3yr, vs −18.8% S&amp;P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
+      <div class="lbl" data-i18n="hs3.lbl">Max Drawdown (3yr, vs −18.8% S&amp;P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
     </div>
     <div class="hs">
       <div class="num gold">+11.2%</div>
-      <div class="lbl">Gained in 2022 Bear Market <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
+      <div class="lbl" data-i18n="hs4.lbl">Gained in 2022 Bear Market <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
     </div>
   </div>
 </div>
@@ -768,9 +761,9 @@
 <!-- ══════════════════════════════════════ PERFORMANCE ══ -->
 <section class="light" id="performance">
   <div class="section-inner">
-    <div class="section-label">Historical Backtest</div>
-    <h2 class="section-title">~6 Years of Data. Outperforms S&amp;P 500 in Both Return and Risk.</h2>
-    <p class="section-sub">
+    <div class="section-label" data-i18n="perf.label">Historical Backtest</div>
+    <h2 class="section-title" data-i18n="perf.title">~6 Years of Data. Outperforms S&amp;P 500 in Both Return and Risk.</h2>
+    <p class="section-sub" data-i18n="perf.sub">
       Simulated returns from May 2020 to May 2026, compared against the S&amp;P 500 (SPY).
       Calm Growth Model returned +177% vs SPY's +155% — outperforming with significantly lower drawdowns throughout.
     </p>
@@ -793,9 +786,9 @@
 
     <!-- 2022 Bear Market -->
     <div style="margin-top:48px;">
-      <div class="section-label">Bear Market Resilience</div>
-      <h2 class="section-title" style="margin-bottom:0">When S&amp;P Fell 18.6%, We Gained 11.2%</h2>
-      <p class="section-sub" style="margin-top:10px">
+      <div class="section-label" data-i18n="bear.label">Bear Market Resilience</div>
+      <h2 class="section-title" style="margin-bottom:0" data-i18n="bear.title">When S&amp;P Fell 18.6%, We Gained 11.2%</h2>
+      <p class="section-sub" style="margin-top:10px" data-i18n="bear.sub">
         The 2022 bear market (Jan–Dec 2022) saw the worst S&amp;P 500 performance in over a decade.
         BLEE's bond-rotation logic stepped in and generated positive returns throughout the selloff.
       </p>
@@ -821,65 +814,65 @@
 <!-- ══════════════════════════════════════ COMPARISON TABLE ══ -->
 <section class="white">
   <div class="section-inner">
-    <div class="section-label">Risk-Adjusted Performance</div>
-    <h2 class="section-title">The Numbers Don't Lie</h2>
-    <p class="section-sub">3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.</p>
+    <div class="section-label" data-i18n="cmp.label">Risk-Adjusted Performance</div>
+    <h2 class="section-title" data-i18n="cmp.title">The Numbers Don't Lie</h2>
+    <p class="section-sub" data-i18n="cmp.sub">3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.</p>
 
     <div class="compare-wrap">
       <table>
         <thead>
           <tr>
-            <th>Metric</th>
-            <th>BLEE Strategy</th>
-            <th>S&amp;P 500 (SPY)</th>
-            <th>Edge</th>
+            <th data-i18n="th.metric">Metric</th>
+            <th data-i18n="th.blee">BLEE Strategy</th>
+            <th data-i18n="th.spy">S&amp;P 500 (SPY)</th>
+            <th data-i18n="th.edge">Edge</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="metric">Cumulative Return (3yr)</td>
+            <td class="metric" data-i18n="row1">Cumulative Return (3yr)</td>
             <td class="strategy-val win">+98.5%</td>
             <td class="spy-val">+85.7%</td>
             <td><span class="badge">+12.8pp</span></td>
           </tr>
           <tr>
-            <td class="metric">Annualized Return</td>
+            <td class="metric" data-i18n="row2">Annualized Return</td>
             <td class="strategy-val win">25.8%</td>
             <td class="spy-val">23.0%</td>
             <td><span class="badge">+2.8pp</span></td>
           </tr>
           <tr>
-            <td class="metric">Max Drawdown</td>
+            <td class="metric" data-i18n="row3">Max Drawdown</td>
             <td class="strategy-val win">−5.1%</td>
             <td class="spy-val" style="color:#ef4444">−18.8%</td>
             <td><span class="badge">3.7× safer</span></td>
           </tr>
           <tr>
-            <td class="metric">Calmar Ratio</td>
+            <td class="metric" data-i18n="row4">Calmar Ratio</td>
             <td class="strategy-val win">5.06</td>
             <td class="spy-val">1.23</td>
             <td><span class="badge">4.1× better</span></td>
           </tr>
           <tr>
-            <td class="metric">Sharpe Ratio</td>
+            <td class="metric" data-i18n="row5">Sharpe Ratio</td>
             <td class="strategy-val">1.26</td>
             <td class="spy-val">1.45</td>
             <td>—</td>
           </tr>
           <tr>
-            <td class="metric">Beta (Market Sensitivity)</td>
+            <td class="metric" data-i18n="row6">Beta (Market Sensitivity)</td>
             <td class="strategy-val win">0.55</td>
             <td class="spy-val">1.00</td>
             <td><span class="badge">Low correlation</span></td>
           </tr>
           <tr>
-            <td class="metric">Trailing 3-Month Return</td>
+            <td class="metric" data-i18n="row7">Trailing 3-Month Return</td>
             <td class="strategy-val win">+11.9%</td>
             <td class="spy-val">+6.6%</td>
             <td><span class="badge">+5.3pp</span></td>
           </tr>
           <tr>
-            <td class="metric">Alpha (vs SPY)</td>
+            <td class="metric" data-i18n="row8">Alpha (vs SPY)</td>
             <td class="strategy-val win">+0.13</td>
             <td class="spy-val">0.00</td>
             <td><span class="badge">Consistent alpha</span></td>
@@ -897,8 +890,8 @@
 <section class="founder-section">
   <div class="founder-grid">
     <div>
-      <div class="founder-tag">👤 About the Creator</div>
-      <h2 class="founder-title">Built From <em>Real Experience</em> — and Used in Real Trading</h2>
+      <div class="founder-tag" data-i18n="founder.tag">👤 About the Creator</div>
+      <h2 class="founder-title" data-i18n="founder.title">Built From <em>Real Experience</em> — and Used in Real Trading</h2>
       <div class="founder-body">
         <p>
           Every algorithm model on this site was developed from scratch by a single independent analyst
@@ -966,34 +959,34 @@
 <!-- ══════════════════════════════════════ HOW IT WORKS ══ -->
 <section class="how-section" id="how-it-works">
   <div class="section-inner">
-    <div class="section-label">Under the Hood</div>
-    <h2 class="section-title">Why Calm Growth Model Surges Periodically — and Why That's By Design</h2>
-    <p class="section-sub">
+    <div class="section-label" data-i18n="how.label">Under the Hood</div>
+    <h2 class="section-title" data-i18n="how.title">Why Calm Growth Model Surges Periodically — and Why That's By Design</h2>
+    <p class="section-sub" data-i18n="how.sub">
       If you look at the performance charts, you'll notice Calm Growth Model doesn't grow in a perfectly smooth line.
       There are calm steady periods, and then sudden upward surges. This is intentional — and it's the core of what makes the algorithm powerful.
     </p>
 
     <div class="layer-grid">
       <div class="layer-card l1" data-num="1">
-        <span class="layer-label">Layer 1 · Daily Foundation</span>
-        <h4>🔄 Rotation Across Asset Classes</h4>
-        <p>Every trading day, the algorithm evaluates momentum signals across a universe of 10+ ETFs spanning equity indexes, short-term Treasury bonds (SGOV), and gold. It rotates into whichever assets show the strongest relative strength — and rotates out of weakness. This is the base layer that keeps the portfolio aligned with prevailing market conditions at all times.</p>
+        <span class="layer-label" data-i18n="l1.label">Layer 1 · Daily Foundation</span>
+        <h4 data-i18n="l1.title">🔄 Rotation Across Asset Classes</h4>
+        <p data-i18n="l1.body">Every trading day, the algorithm evaluates momentum signals across a universe of 10+ ETFs spanning equity indexes, short-term Treasury bonds (SGOV), and gold. It rotates into whichever assets show the strongest relative strength — and rotates out of weakness. This is the base layer that keeps the portfolio aligned with prevailing market conditions at all times.</p>
       </div>
       <div class="layer-card l2" data-num="2">
-        <span class="layer-label">Layer 2 · Market Condition Monitoring</span>
-        <h4>📡 Oversold &amp; Overbought Detection</h4>
-        <p>On top of the rotation logic, the algorithm continuously monitors market-wide condition indicators — identifying when key assets become significantly oversold or overbought. These signals go beyond simple momentum; they detect when price dislocations have created a statistically favorable setup that has historically resolved in a predictable direction, validated through years of backtesting across multiple market cycles.</p>
+        <span class="layer-label" data-i18n="l2.label">Layer 2 · Market Condition Monitoring</span>
+        <h4 data-i18n="l2.title">📡 Oversold &amp; Overbought Detection</h4>
+        <p data-i18n="l2.body">On top of the rotation logic, the algorithm continuously monitors market-wide condition indicators — identifying when key assets become significantly oversold or overbought. These signals go beyond simple momentum; they detect when price dislocations have created a statistically favorable setup that has historically resolved in a predictable direction, validated through years of backtesting across multiple market cycles.</p>
       </div>
       <div class="layer-card l3" data-num="3">
-        <span class="layer-label">Layer 3 · Periodic Opportunity Capture</span>
-        <h4>⚡ Calculated Aggressive Moves — Once or Twice a Year</h4>
+        <span class="layer-label" data-i18n="l3.label">Layer 3 · Periodic Opportunity Capture</span>
+        <h4 data-i18n="l3.title">⚡ Calculated Aggressive Moves — Once or Twice a Year</h4>
         <p>When both Layer 1 and Layer 2 align — strong directional signal <em>plus</em> confirmed market condition setup — the algorithm concentrates into a high-conviction position. These opportunities arise roughly <strong>one to two times per year</strong>. Each type of move has been exhaustively backtested to confirm positive expected value and acceptable maximum loss before it was ever included in the live strategy. The result: the periodic performance surges visible in the charts.</p>
       </div>
     </div>
 
     <div class="surge-callout">
       <div>
-        <h4>⚡ The Surges You See in the Charts Are Not Luck</h4>
+        <h4 data-i18n="surge.title">⚡ The Surges You See in the Charts Are Not Luck</h4>
         <p>
           Each sudden jump in the Calm Growth Model performance line corresponds to one of these <strong>once-or-twice-a-year high-conviction moves</strong> — a deliberate, backtested, rules-based action triggered only when specific market conditions are confirmed.
           The rest of the time, the algorithm runs quietly in rotation mode, protecting capital and compounding steadily.
@@ -1003,7 +996,7 @@
       </div>
       <div class="surge-stat">
         <div class="ss-num">1–2×</div>
-        <div class="ss-lbl">High-conviction moves per year</div>
+        <div class="ss-lbl" data-i18n="surge.stat.lbl">High-conviction moves per year</div>
       </div>
     </div>
   </div>
@@ -1012,8 +1005,8 @@
 <!-- ══════════════════════════════════════ STRATEGIES ══ -->
 <section class="light" id="strategies">
   <div class="section-inner">
-    <div class="section-label">Our Strategies</div>
-    <h2 class="section-title">One Algorithm. One Goal: Long-Term Wealth.</h2>
+    <div class="section-label" data-i18n="strat.label">Our Strategies</div>
+    <h2 class="section-title" data-i18n="strat.title">One Algorithm. One Goal: Long-Term Wealth.</h2>
     <p class="section-sub">
       A single, focused strategy — algorithmically managed and published daily around
       <strong>3:55 PM ET</strong>. Rebalance anytime after 3:55 PM ET — before close or after hours, up until midnight — for a consistent, disciplined strategy with no day-trading concerns.
@@ -1023,28 +1016,28 @@
     <div class="compare-strip">
       <div class="cs-item">
         <span class="cs-icon">🏦</span>
-        <div class="cs-name">Bank Savings / CDs</div>
+        <div class="cs-name" data-i18n="cs1.name">Bank Savings / CDs</div>
         <div class="cs-return low">~4%<span style="font-size:14px;font-weight:600">/yr</span></div>
         <div class="cs-risk ok">Near-zero downside risk</div>
         <div class="cs-desc">Safe, but loses ground to inflation over time. After taxes, real gains are minimal.</div>
       </div>
       <div class="cs-item">
         <span class="cs-icon">💰</span>
-        <div class="cs-name">Dividend Stocks</div>
+        <div class="cs-name" data-i18n="cs2.name">Dividend Stocks</div>
         <div class="cs-return mid">~8%<span style="font-size:14px;font-weight:600">/yr</span></div>
         <div class="cs-risk danger">Market roller coaster</div>
         <div class="cs-desc">Better yield, but share prices swing with the market. A bear market can erase years of dividends overnight.</div>
       </div>
       <div class="cs-item">
         <span class="cs-icon">📊</span>
-        <div class="cs-name">S&amp;P 500 Index</div>
+        <div class="cs-name" data-i18n="cs3.name">S&amp;P 500 Index</div>
         <div class="cs-return high">~10–23%<span style="font-size:14px;font-weight:600">/yr</span></div>
         <div class="cs-risk danger">Up to −27% in downturns</div>
         <div class="cs-desc">Strong long-term average, but brutal drawdowns. In 2022 alone, the S&amp;P fell nearly 19% — costing real-money investors months of sleep.</div>
       </div>
       <div class="cs-item highlight">
         <span class="cs-icon">🛡️</span>
-        <div class="cs-name">Calm Growth Model (Backtest)</div>
+        <div class="cs-name" data-i18n="cs4.name">Calm Growth Model (Backtest)</div>
         <div class="cs-return best">~28%<span style="font-size:14px;font-weight:600">/yr (3yr)</span></div>
         <div class="cs-risk safe">Max drawdown about −5.7% (3yr)</div>
         <div class="cs-desc">Designed to outperform while keeping losses contained. In 2022, it gained +11.2% while the S&amp;P fell. Long-term growth — without the sleepless nights.</div>
@@ -1074,7 +1067,7 @@
       <div class="strat-card">
         <div>
           <div class="strat-icon blue">🛡️</div>
-          <h3>Calm Growth Model</h3>
+          <h3 data-i18n="sc.title">Calm Growth Model</h3>
           <div>
             <span class="tag low-risk">Moderate Gain · Low Risk</span>
           </div>
@@ -1086,7 +1079,7 @@
           defensively during market stress.
         </p>
         <div class="for-whom">
-          <h4>🎯 Who is Calm Growth Model for?</h4>
+          <h4 data-i18n="sc.for">🎯 Who is Calm Growth Model for?</h4>
           <ul>
             <li>Investors tired of bank savings at ~4% or CD rates that barely beat inflation</li>
             <li>Those holding dividend stocks (~8%/yr) but sick of watching their portfolio swing with every market headline</li>
@@ -1132,9 +1125,9 @@
 <!-- ══════════════════════════════════════ WHY ══ -->
 <section class="white">
   <div class="section-inner">
-    <div class="section-label">Why BLEE Quant Analytics</div>
-    <h2 class="section-title">Built for Serious Long-Term Investors</h2>
-    <p class="section-sub">
+    <div class="section-label" data-i18n="why.label">Why BLEE Quant Analytics</div>
+    <h2 class="section-title" data-i18n="why.title">Built for Serious Long-Term Investors</h2>
+    <p class="section-sub" data-i18n="why.sub">
       We do the research. You make the decisions. Every day, fresh algorithmic signals so you're never flying blind.
     </p>
 
@@ -1176,9 +1169,9 @@
 <!-- ══════════════════════════════════════ PRICING ══ -->
 <section class="light" id="pricing">
   <div class="section-inner" style="text-align:center;">
-    <div class="section-label">Subscription Plans</div>
-    <h2 class="section-title">Invest in Your Edge</h2>
-    <p class="section-sub" style="margin:0 auto 0;">
+    <div class="section-label" data-i18n="price.label">Subscription Plans</div>
+    <h2 class="section-title" data-i18n="price.title">Invest in Your Edge</h2>
+    <p class="section-sub" style="margin:0 auto 0;" data-i18n="price.sub">
       Affordable access to institutional-grade algorithmic analysis. Cancel anytime.
     </p>
 
@@ -1274,8 +1267,11 @@
     <a href="performance1.html">Backtest Performance</a>
     <a href="#pricing">Subscribe</a>
   </div>
-  <p>© 2026 BLEE Quant Analytics. All rights reserved.</p>
-  <p style="margin-top:6px;">Simulated performance data only. Not investment advice.</p>
+  <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
+  <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
+  <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/11/2026 09:49 PM</span>
+  </p>
 </footer>
 
 <!-- ══════════════════════════════════════ CHART ══ -->
@@ -1386,18 +1382,263 @@
 </script>
 
 
-<!-- ══════════════════════════════════════ GOOGLE TRANSLATE ══ -->
-<script type="text/javascript">
+<!-- ══════════════════════════════════════ GOOGLE TRANSLATE + LANGUAGE SWITCHER ══ -->
+<!-- Hidden Google Translate element — translation is driven by the flag buttons -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+/* ── Google Translate init ── */
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'en',
     includedLanguages: 'en,ja,vi,ko',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
     autoDisplay: false
   }, 'google_translate_element');
 }
+
+/* ── Flag-button driver ── */
+(function () {
+  function setLang(lang) {
+    // Update active button state
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === lang)
+    );
+    localStorage.setItem('blee-lang', lang);
+
+    if (lang === 'en') {
+      // Reset to English via cookie + reload
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+      location.reload();
+      return;
+    }
+
+    // First try the live Google Translate select element (works after widget loads)
+    var sel = document.querySelector('.goog-te-combo');
+    if (sel) {
+      sel.value = lang;
+      sel.dispatchEvent(new Event('change'));
+      return;
+    }
+
+    // Fallback: set googtrans cookie + reload (works on GitHub Pages)
+    document.cookie = 'googtrans=/en/' + lang + '; path=/';
+    document.cookie = 'googtrans=/en/' + lang + '; path=/; domain=' + location.hostname;
+    location.reload();
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  });
+
+  // Restore saved language after Google Translate widget loads
+  var saved = localStorage.getItem('blee-lang');
+  if (saved && saved !== 'en') {
+    setTimeout(function trySwitch(attempts) {
+      var sel = document.querySelector('.goog-te-combo');
+      if (sel) {
+        sel.value = saved;
+        sel.dispatchEvent(new Event('change'));
+        document.querySelectorAll('.lang-btn').forEach(b =>
+          b.classList.toggle('active', b.dataset.lang === saved)
+        );
+      } else if (attempts > 0) {
+        setTimeout(() => trySwitch(attempts - 1), 300);
+      }
+    }, 10);
+  }
+})();
+
+/* ── Hide Google Translate toolbar banner ── */
+(function hideBanner() {
+  var style = document.createElement('style');
+  style.textContent = '.goog-te-banner-frame{display:none!important;}body{top:0!important;}';
+  document.head.appendChild(style);
+})();
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
+<script>
+/* keep data-i18n attributes in place — unused when Google Translate is active */
+(function () {
+  const i18n = {
+    en: {
+      'nav.home':'Home','nav.profile':'Profile','nav.signal':'Daily Signal','nav.backtest':'Backtest','nav.subscribe':'Subscribe',
+      'hero.tag':'📊 Built by an Investor Who Uses These Signals Every Day',
+      'hero.h1':'Disciplined ETF Rotation Models<br><em>Built for Long-Term Growth.</em>',
+      'btn.strategies':'View Strategies','btn.trackrecord':'See the Track Record',
+      'hs1.lbl':'Full-Period Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs2.lbl':'Past 3-Year Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs3.lbl':'Max Drawdown (3yr, vs −18.8% S&P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs4.lbl':'Gained in 2022 Bear Market <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'perf.label':'Historical Backtest',
+      'perf.title':'~6 Years of Data. Outperforms S&amp;P 500 in Both Return and Risk.',
+      'perf.sub':'Simulated returns from May 2020 to May 2026, compared against the S&amp;P 500 (SPY). Calm Growth Model returned +177% vs SPY\'s +155% — outperforming with significantly lower drawdowns throughout.',
+      'bear.label':'Bear Market Resilience','bear.title':'When S&amp;P Fell 18.6%, We Gained 11.2%',
+      'bear.sub':'The 2022 bear market (Jan–Dec 2022) saw the worst S&amp;P 500 performance in over a decade. BLEE\'s bond-rotation logic stepped in and generated positive returns throughout the selloff.',
+      'cmp.label':'Risk-Adjusted Performance','cmp.title':'The Numbers Don\'t Lie',
+      'cmp.sub':'3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.',
+      'th.metric':'Metric','th.blee':'BLEE Strategy','th.spy':'S&amp;P 500 (SPY)','th.edge':'Edge',
+      'row1':'Cumulative Return (3yr)','row2':'Annualized Return','row3':'Max Drawdown','row4':'Calmar Ratio',
+      'row5':'Sharpe Ratio','row6':'Beta (Market Sensitivity)','row7':'Trailing 3-Month Return','row8':'Alpha (vs SPY)',
+      'founder.tag':'👤 About the Creator',
+      'founder.title':'Built From <em>Real Experience</em> — and Used in Real Trading',
+      'how.label':'Under the Hood',
+      'how.title':'Why Calm Growth Model Surges Periodically — and Why That\'s By Design',
+      'how.sub':'If you look at the performance charts, you\'ll notice Calm Growth Model doesn\'t grow in a perfectly smooth line. There are calm steady periods, and then sudden upward surges. This is intentional — and it\'s the core of what makes the algorithm powerful.',
+      'l1.label':'Layer 1 · Daily Foundation','l1.title':'🔄 Rotation Across Asset Classes',
+      'l2.label':'Layer 2 · Market Condition Monitoring','l2.title':'📡 Oversold &amp; Overbought Detection',
+      'l3.label':'Layer 3 · Periodic Opportunity Capture','l3.title':'⚡ Calculated Aggressive Moves — Once or Twice a Year',
+      'surge.title':'⚡ The Surges You See in the Charts Are Not Luck','surge.stat.lbl':'High-conviction moves per year',
+      'strat.label':'Our Strategies','strat.title':'One Algorithm. One Goal: Long-Term Wealth.',
+      'cs1.name':'Bank Savings / CDs','cs2.name':'Dividend Stocks','cs3.name':'S&amp;P 500 Index','cs4.name':'Calm Growth Model (Backtest)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Who is Calm Growth Model for?',
+      'why.label':'Why BLEE Quant Analytics','why.title':'Built for Serious Long-Term Investors',
+      'why.sub':'We do the research. You make the decisions. Every day, fresh algorithmic signals so you\'re never flying blind.',
+      'price.label':'Subscription Plans','price.title':'Invest in Your Edge',
+      'price.sub':'Affordable access to institutional-grade algorithmic analysis. Cancel anytime.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. All rights reserved.',
+      'footer.disclaimer':'Simulated performance data only. Not investment advice.',
+      'lastupdated':'Last Updated:',
+    },
+    ja: {
+      'nav.home':'ホーム','nav.profile':'プロフィール','nav.signal':'デイリーシグナル','nav.backtest':'バックテスト','nav.subscribe':'購読する',
+      'hero.tag':'📊 毎日このシグナルを実際に活用する投資家が構築',
+      'hero.h1':'規律あるETFローテーションモデル<br><em>長期成長のために設計</em>',
+      'btn.strategies':'戦略を見る','btn.trackrecord':'実績を確認する',
+      'hs1.lbl':'全期間平均年率リターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs2.lbl':'過去3年平均年率リターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs3.lbl':'最大ドローダウン（3年、S&P −18.8%比） <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs4.lbl':'2022年弱気市場でのリターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'perf.label':'過去のバックテスト',
+      'perf.title':'約6年のデータ。リターンとリスク両面でS&amp;P 500を上回る。',
+      'perf.sub':'2020年5月〜2026年5月のシミュレーション結果、S&amp;P 500（SPY）との比較。Calm Growth Modelは+177%（SPYの+155%を上回り、ドローダウンも大幅に低い）。',
+      'bear.label':'弱気市場での強さ','bear.title':'S&amp;Pが18.6%下落した時、我々は11.2%の利益を獲得',
+      'bear.sub':'2022年の弱気市場（1月〜12月）は10年以上で最悪のS&amp;P 500パフォーマンスとなりました。BLEEの債券ローテーションロジックが機能し、下落局面でもプラスのリターンを実現しました。',
+      'cmp.label':'リスク調整後パフォーマンス','cmp.title':'数字は嘘をつかない',
+      'cmp.sub':'3年バックテスト（2023年5月〜2026年5月）。BLEE戦略 vs. SPYベンチマーク。',
+      'th.metric':'指標','th.blee':'BLEE戦略','th.spy':'S&amp;P 500（SPY）','th.edge':'優位性',
+      'row1':'累積リターン（3年）','row2':'年率リターン','row3':'最大ドローダウン','row4':'カルマーレシオ',
+      'row5':'シャープレシオ','row6':'ベータ（市場感応度）','row7':'直近3ヶ月リターン','row8':'アルファ（SPY比）',
+      'founder.tag':'👤 創設者について',
+      'founder.title':'<em>実際の経験</em>から構築 — 実際の取引で活用中',
+      'how.label':'仕組みの解説',
+      'how.title':'Calm Growth Modelが定期的に急上昇する理由 — それは設計によるもの',
+      'how.sub':'パフォーマンスチャートを見ると、Calm Growth Modelが完全に滑らかには成長しないことに気づくでしょう。穏やかな安定期があり、その後に突然の上昇局面があります。これは意図的なものであり、アルゴリズムを強力にする核心です。',
+      'l1.label':'レイヤー1・日次基盤','l1.title':'🔄 資産クラス間のローテーション',
+      'l2.label':'レイヤー2・市場環境監視','l2.title':'📡 売られすぎ・買われすぎの検出',
+      'l3.label':'レイヤー3・定期的な機会捕捉','l3.title':'⚡ 計算された積極的ポジション — 年1〜2回',
+      'surge.title':'⚡ チャートに見られる急上昇は運ではない','surge.stat.lbl':'年間の高確信度ポジション',
+      'strat.label':'当社の戦略','strat.title':'1つのアルゴリズム。1つの目標：長期的な資産形成。',
+      'cs1.name':'銀行預金・CD','cs2.name':'配当株','cs3.name':'S&amp;P 500インデックス','cs4.name':'Calm Growth Model（バックテスト）',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Modelは誰に向いているか？',
+      'why.label':'なぜBLEE Quant Analytics','why.title':'真剣な長期投資家のために構築',
+      'why.sub':'我々がリサーチする。あなたが意思決定する。毎日新鮮なアルゴリズムシグナルで、常に把握。',
+      'price.label':'サブスクリプションプラン','price.title':'優位性に投資しよう',
+      'price.sub':'機関投資家グレードのアルゴリズム分析に手頃にアクセス。いつでもキャンセル可能。',
+      'footer.rights':'© 2026 BLEE Quant Analytics. 全著作権所有。',
+      'footer.disclaimer':'シミュレーションパフォーマンスデータのみ。投資アドバイスではありません。',
+      'lastupdated':'最終更新:',
+    },
+    vi: {
+      'nav.home':'Trang chủ','nav.profile':'Hồ sơ','nav.signal':'Tín hiệu hàng ngày','nav.backtest':'Kiểm tra lịch sử','nav.subscribe':'Đăng ký',
+      'hero.tag':'📊 Được xây dựng bởi nhà đầu tư sử dụng tín hiệu này mỗi ngày',
+      'hero.h1':'Mô hình luân chuyển ETF kỷ luật<br><em>được xây dựng cho tăng trưởng dài hạn.</em>',
+      'btn.strategies':'Xem chiến lược','btn.trackrecord':'Xem lịch sử hiệu suất',
+      'hs1.lbl':'Lợi nhuận bình quân hàng năm toàn kỳ <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs2.lbl':'Lợi nhuận bình quân 3 năm gần nhất <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs3.lbl':'Sụt giảm tối đa (3 năm, so với −18.8% S&P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs4.lbl':'Lợi nhuận trong thị trường giảm 2022 <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'perf.label':'Kiểm tra lịch sử',
+      'perf.title':'~6 năm dữ liệu. Vượt trội S&amp;P 500 về cả lợi nhuận và rủi ro.',
+      'perf.sub':'Lợi nhuận mô phỏng từ 5/2020 đến 5/2026, so với S&amp;P 500 (SPY). Calm Growth Model đạt +177% so với +155% của SPY — vượt trội với mức sụt giảm thấp hơn đáng kể.',
+      'bear.label':'Sức mạnh trong thị trường giảm','bear.title':'Khi S&amp;P giảm 18.6%, chúng tôi tăng 11.2%',
+      'bear.sub':'Thị trường giá xuống 2022 (1/2022–12/2022) chứng kiến S&amp;P 500 tệ nhất trong hơn một thập kỷ. Logic luân chuyển trái phiếu của BLEE hoạt động và tạo ra lợi nhuận dương trong suốt đợt bán tháo.',
+      'cmp.label':'Hiệu suất điều chỉnh rủi ro','cmp.title':'Các con số không nói dối',
+      'cmp.sub':'Backtest 3 năm (5/2023 – 5/2026). Chiến lược BLEE so với chuẩn SPY.',
+      'th.metric':'Chỉ số','th.blee':'Chiến lược BLEE','th.spy':'S&amp;P 500 (SPY)','th.edge':'Lợi thế',
+      'row1':'Lợi nhuận tích lũy (3 năm)','row2':'Lợi nhuận hàng năm','row3':'Sụt giảm tối đa','row4':'Tỷ lệ Calmar',
+      'row5':'Tỷ lệ Sharpe','row6':'Beta (Độ nhạy cảm thị trường)','row7':'Lợi nhuận 3 tháng gần nhất','row8':'Alpha (so với SPY)',
+      'founder.tag':'👤 Về người tạo ra',
+      'founder.title':'Được xây dựng từ <em>kinh nghiệm thực tế</em> — và sử dụng trong giao dịch thực',
+      'how.label':'Cơ chế hoạt động',
+      'how.title':'Tại sao Calm Growth Model tăng vọt định kỳ — và tại sao đó là thiết kế có chủ đích',
+      'how.sub':'Nhìn vào biểu đồ hiệu suất, bạn sẽ nhận thấy Calm Growth Model không tăng trưởng theo đường thẳng hoàn toàn. Có những giai đoạn ổn định, và sau đó là những đợt tăng đột ngột. Đây là điều có chủ đích — và đó là cốt lõi tạo nên sức mạnh của thuật toán.',
+      'l1.label':'Lớp 1 · Nền tảng hàng ngày','l1.title':'🔄 Luân chuyển giữa các lớp tài sản',
+      'l2.label':'Lớp 2 · Giám sát điều kiện thị trường','l2.title':'📡 Phát hiện quá bán &amp; quá mua',
+      'l3.label':'Lớp 3 · Nắm bắt cơ hội định kỳ','l3.title':'⚡ Các động thái tích cực có tính toán — Một hoặc hai lần mỗi năm',
+      'surge.title':'⚡ Các đợt tăng vọt trong biểu đồ không phải may mắn','surge.stat.lbl':'Động thái có độ tin cậy cao mỗi năm',
+      'strat.label':'Các chiến lược của chúng tôi','strat.title':'Một thuật toán. Một mục tiêu: Tài sản dài hạn.',
+      'cs1.name':'Tiết kiệm ngân hàng / CD','cs2.name':'Cổ phiếu cổ tức','cs3.name':'Chỉ số S&amp;P 500','cs4.name':'Calm Growth Model (Backtest)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Model dành cho ai?',
+      'why.label':'Tại sao chọn BLEE Quant Analytics','why.title':'Được xây dựng cho các nhà đầu tư dài hạn nghiêm túc',
+      'why.sub':'Chúng tôi nghiên cứu. Bạn quyết định. Mỗi ngày, tín hiệu thuật toán mới để bạn luôn nắm bắt.',
+      'price.label':'Gói đăng ký','price.title':'Đầu tư vào lợi thế của bạn',
+      'price.sub':'Truy cập hợp lý vào phân tích thuật toán cấp tổ chức. Hủy bất cứ lúc nào.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. Bảo lưu mọi quyền.',
+      'footer.disclaimer':'Chỉ là dữ liệu hiệu suất mô phỏng. Không phải tư vấn đầu tư.',
+      'lastupdated':'Cập nhật lần cuối:',
+    },
+    ko: {
+      'nav.home':'홈','nav.profile':'프로필','nav.signal':'일일 신호','nav.backtest':'백테스트','nav.subscribe':'구독',
+      'hero.tag':'📊 매일 이 신호를 직접 사용하는 투자자가 만든 시스템',
+      'hero.h1':'장기 성장을 위해 설계된<br><em>규율 있는 ETF 로테이션 모델</em>',
+      'btn.strategies':'전략 보기','btn.trackrecord':'실적 확인하기',
+      'hs1.lbl':'전체 기간 평균 연간 수익률 <span class="ds-tag sim" style="font-size:9px;">백테스트</span>',
+      'hs2.lbl':'최근 3년 평균 연간 수익률 <span class="ds-tag sim" style="font-size:9px;">백테스트</span>',
+      'hs3.lbl':'최대 낙폭 (3년, S&P −18.8% 대비) <span class="ds-tag sim" style="font-size:9px;">백테스트</span>',
+      'hs4.lbl':'2022년 약세장에서의 수익 <span class="ds-tag sim" style="font-size:9px;">백테스트</span>',
+      'perf.label':'과거 백테스트',
+      'perf.title':'약 6년간의 데이터. 수익률과 리스크 모두에서 S&amp;P 500 초과 성과.',
+      'perf.sub':'2020년 5월~2026년 5월 시뮬레이션 수익률, S&amp;P 500(SPY)과 비교. Calm Growth Model은 +177% 달성(SPY의 +155% 대비) — 낙폭이 훨씬 낮으면서 초과 성과.',
+      'bear.label':'약세장 저항력','bear.title':'S&amp;P가 18.6% 하락했을 때, 우리는 11.2% 수익',
+      'bear.sub':'2022년 약세장(1월~12월)은 10년 이상 최악의 S&amp;P 500 성과를 기록했습니다. BLEE의 채권 로테이션 로직이 작동하여 매도세 내내 플러스 수익을 창출했습니다.',
+      'cmp.label':'위험 조정 성과','cmp.title':'숫자는 거짓말하지 않습니다',
+      'cmp.sub':'3년 백테스트 (2023년 5월 – 2026년 5월). BLEE 전략 vs. SPY 벤치마크.',
+      'th.metric':'지표','th.blee':'BLEE 전략','th.spy':'S&amp;P 500 (SPY)','th.edge':'우위',
+      'row1':'누적 수익률 (3년)','row2':'연간 수익률','row3':'최대 낙폭','row4':'칼마 비율',
+      'row5':'샤프 비율','row6':'베타 (시장 민감도)','row7':'최근 3개월 수익률','row8':'알파 (SPY 대비)',
+      'founder.tag':'👤 창작자 소개',
+      'founder.title':'<em>실제 경험</em>에서 구축 — 실제 거래에 사용 중',
+      'how.label':'작동 원리',
+      'how.title':'Calm Growth Model이 주기적으로 급등하는 이유 — 그것이 설계 의도인 이유',
+      'how.sub':'성과 차트를 보면 Calm Growth Model이 완전히 매끄럽게 성장하지 않는다는 것을 알 수 있습니다. 차분하고 안정적인 기간이 있고, 그 후 갑작스러운 상승이 옵니다. 이는 의도적인 것이며 알고리즘을 강력하게 만드는 핵심입니다.',
+      'l1.label':'레이어 1 · 일일 기반','l1.title':'🔄 자산군 간 로테이션',
+      'l2.label':'레이어 2 · 시장 상태 모니터링','l2.title':'📡 과매도 &amp; 과매수 감지',
+      'l3.label':'레이어 3 · 주기적 기회 포착','l3.title':'⚡ 계산된 적극적 포지션 — 연 1~2회',
+      'surge.title':'⚡ 차트에서 보이는 급등은 운이 아닙니다','surge.stat.lbl':'연간 고확신 포지션',
+      'strat.label':'우리의 전략','strat.title':'하나의 알고리즘. 하나의 목표: 장기 자산 형성.',
+      'cs1.name':'은행 예금 / CD','cs2.name':'배당주','cs3.name':'S&amp;P 500 지수','cs4.name':'Calm Growth Model (백테스트)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Model은 누구를 위한 것인가요?',
+      'why.label':'BLEE Quant Analytics를 선택하는 이유','why.title':'진지한 장기 투자자를 위해 구축됨',
+      'why.sub':'우리가 연구합니다. 당신이 결정합니다. 매일 새로운 알고리즘 신호로 항상 파악.',
+      'price.label':'구독 플랜','price.title':'당신의 우위에 투자하세요',
+      'price.sub':'기관 수준의 알고리즘 분석에 합리적인 접근. 언제든지 취소 가능.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. 모든 권리 보유.',
+      'footer.disclaimer':'시뮬레이션 성과 데이터만 해당. 투자 조언이 아닙니다.',
+      'lastupdated':'마지막 업데이트:',
+    }
+  };
+
+  function applyLanguage(lang) {
+    const t = i18n[lang] || i18n['en'];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang;
+    localStorage.setItem('blee-lang', lang);
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+  });
+
+  // data-i18n fallback only used if Google Translate is unavailable
+})();
+</script>
 
 </body>
 </html>
