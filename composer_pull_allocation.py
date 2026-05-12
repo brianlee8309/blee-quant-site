@@ -440,10 +440,16 @@ def generate_dashboard(
     symphony_name: str,
     account_uuid: str | None,
     password: str | None = None,
+    baseline_date: str | None = None,
 ) -> None:
     """
     Read `csv_path` (this symphony's history) and write `html_path` with the
     BLEE Stock Analysis dashboard for that symphony.
+
+    baseline_date (YYYY-MM-DD): if set, all return/growth metrics and the
+    value history chart are calculated from this date forward, ignoring
+    earlier history (e.g. after a fresh deposit resets the starting point).
+    The CSV itself is never trimmed.
     """
     if not csv_path.exists():
         log(f"(no CSV yet at {csv_path.name}, skipping dashboard generation)")
@@ -502,27 +508,44 @@ def generate_dashboard(
     annualized_pct:   float | None = None
     day_change_pct:   float | None = None
 
-    if len(value_history) >= 2:
-        first = value_history[0]["total"]
-        last  = value_history[-1]["total"]
-        prev  = value_history[-2]["total"]
+    # Apply baseline_date: trim value_history (and weight_history dates) so
+    # all return metrics start from the configured date, not inception.
+    # The CSV is never modified — only the dashboard view is affected.
+    if baseline_date:
+        value_history_view = [v for v in value_history if v["date"] >= baseline_date]
+        dates_view = [d for d in dates_sorted if d >= baseline_date]
+        if not value_history_view:
+            # Baseline is in the future or no data yet — fall back to full history
+            value_history_view = value_history
+            dates_view = dates_sorted
+    else:
+        value_history_view = value_history
+        dates_view = dates_sorted
+
+    if len(value_history_view) >= 2:
+        first = value_history_view[0]["total"]
+        last  = value_history_view[-1]["total"]
+        prev  = value_history_view[-2]["total"]
         if first > 0:
             total_return_pct = round((last / first - 1) * 100, 4)
         if prev > 0:
             day_change_pct = round((last / prev - 1) * 100, 4)
         try:
-            d0 = dt.date.fromisoformat(value_history[0]["date"])
-            d1 = dt.date.fromisoformat(value_history[-1]["date"])
+            d0 = dt.date.fromisoformat(value_history_view[0]["date"])
+            d1 = dt.date.fromisoformat(value_history_view[-1]["date"])
             days = (d1 - d0).days
             if days >= 14 and first > 0:
                 annualized_pct = round(((last / first) ** (365.0 / days) - 1) * 100, 4)
         except (ValueError, ZeroDivisionError):
             pass
+    elif len(value_history_view) == 1:
+        # Only one day at baseline — day change not yet available
+        day_change_pct = None
 
-    # Tickers history for stacked area
+    # Tickers history for stacked area (use baseline-filtered dates if set)
     all_tickers = sorted({r.get("ticker") for r in rows if r.get("ticker")})
     weight_history: dict[str, list[float]] = {t: [] for t in all_tickers}
-    for d in dates_sorted:
+    for d in dates_view:
         ticker_to_w = {
             r.get("ticker"): _safe_float(r.get("weight_pct"))
             for r in by_date[d]
@@ -543,10 +566,11 @@ def generate_dashboard(
         "total_return_pct":      total_return_pct,
         "annualized_return_pct": annualized_pct,
         "today_allocations":     today_alloc,
-        "value_history":         value_history,
+        "value_history":         value_history_view,
         "all_tickers":           all_tickers,
         "weight_history":        weight_history,
-        "dates":                 dates_sorted,
+        "dates":                 dates_view,
+        "baseline_date":         baseline_date,
     }
 
     template = DASHBOARD_TEMPLATE_PATH.read_text(encoding="utf-8")
@@ -645,7 +669,8 @@ def main() -> int:
         sname     = sym["name"]
         csv_path  = SCRIPT_DIR / sym["csv"]
         html_path = SCRIPT_DIR / sym["html"]
-        password  = sym.get("password") or None
+        password      = sym.get("password") or None
+        baseline_date = sym.get("baseline_date") or None
         log(f"--- {sname or sid} ({sid}) ---")
 
         positions: list[dict] = []
@@ -705,7 +730,7 @@ def main() -> int:
 
         # Regenerate this symphony's dashboard.
         try:
-            generate_dashboard(csv_path, html_path, sid, sname, account_uuid, password)
+            generate_dashboard(csv_path, html_path, sid, sname, account_uuid, password, baseline_date)
         except Exception as e:  # pylint: disable=broad-except
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 

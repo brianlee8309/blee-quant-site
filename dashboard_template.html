@@ -160,7 +160,7 @@
       <div class="value" id="stat-day"></div>
     </div>
     <div class="stat">
-      <div class="label">Total Return</div>
+      <div class="label" id="label-total">Total Return</div>
       <div class="value" id="stat-total"></div>
     </div>
     <div class="stat">
@@ -252,6 +252,11 @@ if (DATA.total_return_pct == null) {
 } else {
   totalEl.textContent = fmtPct(DATA.total_return_pct, true);
   totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
+}
+// If a baseline_date is set, relabel "Total Return" to show the start date
+if (DATA.baseline_date) {
+  const lbl = document.getElementById("label-total");
+  if (lbl) lbl.textContent = "Return Since " + DATA.baseline_date;
 }
 
 const annEl = document.getElementById("stat-annual");
