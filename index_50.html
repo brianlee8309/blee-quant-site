@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE Stock Analysis — Daily Update</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --pos: #16a34a;
+    --neg: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1180px; margin: 0 auto; padding: 32px 24px 64px; }
+  header { margin-bottom: 24px; }
+  header h1 {
+    font-size: 28px; font-weight: 700; margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+  header .sub { color: var(--muted); font-size: 14px; }
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin: 24px 0 32px;
+  }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat {
+    background: var(--card); padding: 18px 20px;
+    border-radius: 10px; box-shadow: var(--shadow);
+  }
+  .stat .label {
+    font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 600;
+  }
+  .stat .value {
+    font-size: 26px; font-weight: 700; margin-top: 6px;
+    letter-spacing: -0.01em;
+  }
+  .stat .value.small { font-size: 16px; font-weight: 500; }
+  .pos { color: var(--pos); }
+  .neg { color: var(--neg); }
+  section.card {
+    background: var(--card); border-radius: 10px; box-shadow: var(--shadow);
+    padding: 20px 24px; margin-bottom: 20px;
+  }
+  section.card h2 {
+    margin: 0 0 16px; font-size: 16px; font-weight: 600;
+    color: var(--text);
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+  .chart-wrap { position: relative; height: 340px; }
+  .chart-wrap.tall { height: 380px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 600; color: var(--muted);
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .ticker { font-weight: 600; }
+  footer {
+    color: var(--muted); font-size: 12px; text-align: center;
+    margin-top: 40px;
+  }
+  footer a { color: var(--muted); }
+  .download-row { margin-top: 12px; }
+  .download-row a {
+    display: inline-block; padding: 8px 14px; border: 1px solid var(--border);
+    border-radius: 6px; text-decoration: none; color: var(--text);
+    font-size: 13px; font-weight: 500;
+    background: var(--card);
+  }
+  .download-row a:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body><div id="blee-pw-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0b1120;z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#1e293b;padding:40px;border-radius:16px;text-align:center;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">&#128274; BLEE Quant Analytics</div>
+    <div style="color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:24px;">Daily Signal &mdash; Subscribers Only</div>
+    <input id="blee-pw-input" type="password" placeholder="Enter password" style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:15px;margin-bottom:12px;outline:none;box-sizing:border-box;">
+    <button onclick="bleePwCheck()" style="width:100%;padding:12px;background:#f59e0b;color:#000;font-weight:700;font-size:15px;border:none;border-radius:8px;cursor:pointer;">Access Daily Signal</button>
+    <div id="blee-pw-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+<script>
+(function() {
+  var PW = 'Blee@daily2026';
+  function bleePwCheck() {
+    if (document.getElementById('blee-pw-input').value === PW) {
+      document.getElementById('blee-pw-overlay').style.display = 'none';
+      sessionStorage.setItem('blee_auth', '1');
+    } else {
+      document.getElementById('blee-pw-error').style.display = 'block';
+    }
+  }
+  window.bleePwCheck = bleePwCheck;
+  document.addEventListener('DOMContentLoaded', function() {
+    var inp = document.getElementById('blee-pw-input');
+    if (inp) inp.addEventListener('keypress', function(e) { if (e.key === 'Enter') bleePwCheck(); });
+    if (sessionStorage.getItem('blee_auth') === '1') {
+      document.getElementById('blee-pw-overlay').style.display = 'none';
+    }
+  });
+})();
+</script>
+<div class="container">
+  <header>
+    <h1>BLEE Stock Analysis</h1>
+    <div class="sub">
+      <span id="symphony-name" style="font-weight:600"></span><span id="symphony-name-sep" style="display:none"> &middot; </span>Daily Update — generated <span id="last-updated"></span>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="label">Portfolio Value</div>
+      <div class="value" id="stat-value"></div>
+    </div>
+    <div class="stat">
+      <div class="label">Day Change</div>
+      <div class="value" id="stat-day"></div>
+    </div>
+    <div class="stat">
+      <div class="label">Total Return</div>
+      <div class="value" id="stat-total"></div>
+    </div>
+    <div class="stat">
+      <div class="label">Annualized Return</div>
+      <div class="value" id="stat-annual"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <section class="card">
+      <h2>Today's Allocation</h2>
+      <div class="chart-wrap"><canvas id="pie"></canvas></div>
+    </section>
+    <section class="card">
+      <h2>Portfolio Value Over Time</h2>
+      <div class="chart-wrap"><canvas id="value-line"></canvas></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Holdings — <span id="holdings-date"></span></h2>
+    <div style="overflow-x:auto"><table id="holdings"></table></div>
+    <div class="download-row">
+      <a id="csv-download" href="composer_allocations.csv" download>Download full history (CSV)</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Historical Weight Changes</h2>
+    <div class="chart-wrap tall"><canvas id="weights-stack"></canvas></div>
+  </section>
+
+  <footer>
+    Last Updated: <span id="footer-updated"></span>
+  </footer>
+</div>
+
+<script>
+const DATA = {"symphony_id": "jtQvlI5wINrxpOfxgmgl", "symphony_name": "BLEE - 186 2026 ALL in One", "csv_filename": "composer_allocations.csv", "account_uuid": "", "last_updated": "2026-05-11", "run_datetime": "05/12/2026 05:18 AM", "total_value": 40429.88, "day_change_pct": -1.5562, "total_return_pct": -1.5562, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 26.9788, "shares": 108.54324, "market_value": 10907.5101876}, {"ticker": "VIXY", "weight_pct": 22.1634, "shares": 326.73259, "market_value": 8960.64128075}, {"ticker": "GLD", "weight_pct": 15.9977, "shares": 14.87581, "market_value": 6467.8534299}, {"ticker": "BIL", "weight_pct": 13.4415, "shares": 59.40523, "market_value": 5434.3904404}, {"ticker": "USMV", "weight_pct": 2.9989, "shares": 12.8835, "market_value": 1212.466185}, {"ticker": "TECL", "weight_pct": 2.8451, "shares": 5.72811, "market_value": 1150.2617691}, {"ticker": "EUM", "weight_pct": 2.6346, "shares": 66.48945, "market_value": 1065.160989}, {"ticker": "UDOW", "weight_pct": 2.3369, "shares": 15.47608, "market_value": 944.814684}, {"ticker": "SQQQ", "weight_pct": 2.3254, "shares": 22.26824, "market_value": 940.1650928}, {"ticker": "BTAL", "weight_pct": 2.1878, "shares": 74.3303, "market_value": 884.53057}, {"ticker": "PSQ", "weight_pct": 1.5086, "shares": 23.35069, "market_value": 609.9200228}, {"ticker": "TMV", "weight_pct": 1.4924, "shares": 15.68473, "market_value": 603.3915631}, {"ticker": "UVXY", "weight_pct": 1.492, "shares": 16.32072, "market_value": 603.2138112}, {"ticker": "SHV", "weight_pct": 1.484, "shares": 5.44592, "market_value": 599.9770064}, {"ticker": "$USD", "weight_pct": 0.1127, "shares": 45.58, "market_value": 45.58}], "value_history": [{"date": "2026-05-10", "total": 41069.0}, {"date": "2026-05-11", "total": 40429.88}], "all_tickers": ["$USD", "BIL", "BTAL", "EUM", "GLD", "PSQ", "SGOV", "SHV", "SQQQ", "TECL", "TMV", "TQQQ", "UDOW", "UPRO", "USMV", "UVXY", "VIXY"], "weight_history": {"$USD": [0.141, 0.1127], "BIL": [13.4366, 13.4415], "BTAL": [4.3435, 2.1878], "EUM": [5.2863, 2.6346], "GLD": [15.9779, 15.9977], "PSQ": [1.4915, 1.5086], "SGOV": [26.9715, 26.9788], "SHV": [1.4729, 1.484], "SQQQ": [2.3195, 2.3254], "TECL": [2.851, 2.8451], "TMV": [1.4943, 1.4924], "TQQQ": [1.9411, 0.0], "UDOW": [2.333, 2.3369], "UPRO": [0.4839, 0.0], "USMV": [2.9971, 2.9989], "UVXY": [1.4736, 1.492], "VIXY": [14.9851, 22.1634]}, "dates": ["2026-05-10", "2026-05-11"]};
+
+// ---- Helpers ---------------------------------------------------------------
+const fmt$ = (n) => n == null ? "—" :
+  "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const fmtPct = (n, signed = false) => {
+  if (n == null || isNaN(n)) return "—";
+  const v = Number(n);
+  const s = (signed && v > 0 ? "+" : "") + v.toFixed(2) + "%";
+  return s;
+};
+const colorPalette = [
+  "#2563eb","#dc2626","#16a34a","#ea580c","#9333ea",
+  "#0891b2","#ca8a04","#db2777","#4f46e5","#65a30d",
+  "#0d9488","#b91c1c","#7c3aed","#0284c7","#a16207",
+  "#15803d","#be185d","#1d4ed8","#be123c","#0e7490"
+];
+const colorFor = (i) => colorPalette[i % colorPalette.length];
+
+// ---- Render top section ----------------------------------------------------
+document.getElementById("last-updated").textContent = DATA.last_updated || "—";
+document.getElementById("holdings-date").textContent = DATA.last_updated || "—";
+document.getElementById("footer-updated").textContent = DATA.run_datetime || DATA.last_updated || "—";
+if (DATA.symphony_name) {
+  document.getElementById("symphony-name").textContent = DATA.symphony_name;
+  document.getElementById("symphony-name-sep").style.display = "inline";
+  document.title = "BLEE Stock Analysis — " + DATA.symphony_name;
+}
+if (DATA.csv_filename) {
+  document.getElementById("csv-download").href = DATA.csv_filename;
+}
+
+document.getElementById("stat-value").textContent = fmt$(DATA.total_value);
+
+const dayEl = document.getElementById("stat-day");
+if (DATA.day_change_pct == null) {
+  dayEl.textContent = "—";
+} else {
+  dayEl.textContent = fmtPct(DATA.day_change_pct, true);
+  dayEl.classList.add(DATA.day_change_pct >= 0 ? "pos" : "neg");
+}
+
+const totalEl = document.getElementById("stat-total");
+if (DATA.total_return_pct == null) {
+  totalEl.textContent = "—";
+} else {
+  totalEl.textContent = fmtPct(DATA.total_return_pct, true);
+  totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
+}
+
+const annEl = document.getElementById("stat-annual");
+if (DATA.annualized_return_pct == null) {
+  annEl.textContent = "—";
+  annEl.classList.add("small");
+  annEl.textContent = "needs ≥ 14 days";
+} else {
+  annEl.textContent = fmtPct(DATA.annualized_return_pct, true);
+  annEl.classList.add(DATA.annualized_return_pct >= 0 ? "pos" : "neg");
+}
+
+// ---- Pie chart -------------------------------------------------------------
+const today = (DATA.today_allocations || []).filter(a => a.weight_pct > 0.01);
+new Chart(document.getElementById("pie"), {
+  type: "doughnut",
+  data: {
+    labels: today.map(a => a.ticker),
+    datasets: [{
+      data: today.map(a => a.weight_pct),
+      backgroundColor: today.map((_, i) => colorFor(i)),
+      borderWidth: 1, borderColor: "#fff"
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "right", labels: { boxWidth: 12, font: { size: 12 } } },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const a = today[ctx.dataIndex];
+            return `${a.ticker}: ${a.weight_pct.toFixed(2)}% (${fmt$(a.market_value)})`;
+          }
+        }
+      }
+    }
+  }
+});
+
+// ---- Portfolio value line --------------------------------------------------
+const hist = DATA.value_history || [];
+new Chart(document.getElementById("value-line"), {
+  type: "line",
+  data: {
+    labels: hist.map(p => p.date),
+    datasets: [{
+      label: "Total Value",
+      data: hist.map(p => p.total),
+      borderColor: "#2563eb",
+      backgroundColor: "rgba(37,99,235,0.08)",
+      fill: true, tension: 0.25, pointRadius: 3, borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: (ctx) => fmt$(ctx.parsed.y) } }
+    },
+    scales: {
+      y: { ticks: { callback: (v) => "$" + Number(v).toLocaleString() } }
+    }
+  }
+});
+
+// ---- Holdings table --------------------------------------------------------
+const tbl = document.getElementById("holdings");
+const cols = [
+  ["Ticker", "ticker", "ticker"],
+  ["Weight", "weight_pct", "num", (v) => fmtPct(v)],
+  ["Shares", "shares", "num", (v) => Number(v).toLocaleString(undefined, { maximumFractionDigits: 4 })],
+  ["Market Value", "market_value", "num", (v) => fmt$(v)]
+];
+const thead = document.createElement("thead");
+const trh = document.createElement("tr");
+cols.forEach(c => {
+  const th = document.createElement("th");
+  th.textContent = c[0]; th.className = c[2];
+  trh.appendChild(th);
+});
+thead.appendChild(trh); tbl.appendChild(thead);
+const tbody = document.createElement("tbody");
+(DATA.today_allocations || []).forEach(a => {
+  const tr = document.createElement("tr");
+  cols.forEach(c => {
+    const td = document.createElement("td");
+    td.className = c[2];
+    const v = a[c[1]];
+    td.textContent = c[3] ? c[3](v) : v;
+    tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+});
+tbl.appendChild(tbody);
+
+// ---- Stacked area: weight history -----------------------------------------
+const tickers = DATA.all_tickers || [];
+const dates = DATA.dates || [];
+const datasets = tickers.map((t, i) => ({
+  label: t,
+  data: (DATA.weight_history || {})[t] || [],
+  backgroundColor: colorFor(i) + "cc",
+  borderColor: colorFor(i),
+  borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
+}));
+new Chart(document.getElementById("weights-stack"), {
+  type: "line",
+  data: { labels: dates, datasets },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 } } },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
+    },
+    scales: {
+      y: { stacked: true, max: 100, ticks: { callback: (v) => v + "%" } },
+      x: { stacked: true }
+    }
+  }
+});
+</script>
+</body>
+</html>

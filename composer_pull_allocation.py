@@ -452,8 +452,10 @@ def generate_dashboard(
         log(f"(dashboard template missing at {DASHBOARD_TEMPLATE_PATH.name}, skipping)")
         return
 
-    with open(csv_path, newline="") as f:
-        rows = list(csv.DictReader(f))
+    # Strip NUL bytes that Windows sometimes embeds in CSV files
+    import io as _io
+    raw_bytes = csv_path.read_bytes().replace(b"\x00", b"")
+    rows = list(csv.DictReader(_io.StringIO(raw_bytes.decode("utf-8"))))
     if not rows:
         log("(empty CSV, skipping dashboard generation)")
         return
