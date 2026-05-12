@@ -54,31 +54,67 @@
     border-radius: 7px; font-weight: 700; margin-left: 8px;
   }
   .nav-links .btn-nav:hover { background: #fbbf24; }
+  @media (max-width: 780px) {
+    .nav-links a:not(.btn-nav) { display: none; }
+    .nav-links .btn-nav { display: none; }
+  }
 
-  /* ── GOOGLE TRANSLATE ── */
+  /* ── HAMBURGER ── */
+  .nav-hamburger {
+    display: none; flex-direction: column; justify-content: center;
+    gap: 5px; cursor: pointer; padding: 8px; margin-left: 8px;
+    background: none; border: none;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: rgba(255,255,255,0.80); border-radius: 2px;
+    transition: all .25s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  @media (max-width: 780px) { .nav-hamburger { display: flex; } }
+
+  /* ── MOBILE MENU ── */
+  .mobile-menu {
+    display: none; flex-direction: column;
+    position: absolute; top: 62px; left: 0; right: 0;
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 20px 18px; z-index: 99;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: rgba(255,255,255,0.80); text-decoration: none;
+    font-size: 16px; font-weight: 600;
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    transition: color .15s;
+  }
+  .mobile-menu a:hover { color: #fff; }
+  .mobile-menu a.btn-nav-mob {
+    margin-top: 10px; background: var(--gold); color: #000;
+    padding: 12px 20px; border-radius: 8px; text-align: center;
+    font-weight: 700; border: none;
+  }
+  .mobile-menu .mob-lang { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+  /* ── LANGUAGE SWITCHER ── */
   .nav-translate {
-    display: flex; align-items: center; margin-left: 14px;
+    display: flex; align-items: center; gap: 3px;
+    margin-left: 14px;
     border-left: 1px solid rgba(255,255,255,0.12); padding-left: 14px;
   }
-  #google_translate_element .goog-te-gadget-simple {
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    border-radius: 7px !important;
-    padding: 5px 10px !important;
-    font-size: 13px !important;
-    color: rgba(255,255,255,0.85) !important;
-    cursor: pointer !important;
+  .lang-btn {
+    background: transparent; border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.60); font-size: 11.5px; font-weight: 700;
+    padding: 4px 8px; border-radius: 5px; cursor: pointer;
+    transition: all .15s; white-space: nowrap; font-family: inherit; letter-spacing: 0.03em;
   }
-  #google_translate_element .goog-te-gadget-simple span {
-    color: rgba(255,255,255,0.85) !important;
-    font-weight: 600 !important;
-    font-size: 13px !important;
-    font-family: inherit !important;
-  }
-  #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:last-child {
-    display: none;
-  }
-  #google_translate_element img { display: none !important; }
+  .lang-btn:hover { background: rgba(255,255,255,0.10); color: #fff; border-color: rgba(255,255,255,0.35); }
+  .lang-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+  @media (max-width: 780px) { .nav-translate { display: none; } }
   .goog-te-banner-frame { display: none !important; }
   body { top: 0 !important; }
 
@@ -261,9 +297,46 @@
     <a href="#pricing" class="btn-nav">Subscribe</a>
   </div>
   <div class="nav-translate">
-    <div id="google_translate_element"></div>
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">🏠 Home</a>
+  <a href="profile.html">👤 Profile</a>
+  <a href="analysis1-moderate-gain-low-risk.html">📊 Daily Signal</a>
+  <a href="performance1.html" class="active">📈 Backtest</a>
+  <a href="index.html#pricing" class="btn-nav-mob">Subscribe</a>
+  <div class="mob-lang">
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
+  </div>
+</div>
+<script>
+(function () {
+  var btn = document.getElementById('nav-hamburger');
+  var menu = document.getElementById('mobile-menu');
+  btn.addEventListener('click', function () {
+    var open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+    });
+  });
+})();
+</script>
 
 <!-- LEGAL BAR -->
 <div class="legal-bar">
@@ -876,17 +949,41 @@
 
 
 <!-- ══════════════════════════════════════ GOOGLE TRANSLATE ══ -->
-<script type="text/javascript">
+<div id="google_translate_element" style="display:none;"></div>
+<script>
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en',
-    includedLanguages: 'en,ja,vi,ko',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    autoDisplay: false
-  }, 'google_translate_element');
+  new google.translate.TranslateElement({ pageLanguage:'en', includedLanguages:'en,ja,vi,ko', autoDisplay:false }, 'google_translate_element');
 }
+(function () {
+  function setLang(lang) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    localStorage.setItem('blee-lang', lang);
+    if (lang === 'en') {
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+      location.reload(); return;
+    }
+    var sel = document.querySelector('.goog-te-combo');
+    if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); return; }
+    document.cookie = 'googtrans=/en/' + lang + '; path=/';
+    document.cookie = 'googtrans=/en/' + lang + '; path=/; domain=' + location.hostname;
+    location.reload();
+  }
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
+  var saved = localStorage.getItem('blee-lang');
+  if (saved && saved !== 'en') {
+    setTimeout(function trySwitch(n) {
+      var sel = document.querySelector('.goog-te-combo');
+      if (sel) { sel.value = saved; sel.dispatchEvent(new Event('change')); document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === saved)); }
+      else if (n > 0) setTimeout(() => trySwitch(n - 1), 300);
+    }, 10);
+  }
+  var s = document.createElement('style');
+  s.textContent = '.goog-te-banner-frame{display:none!important;}body{top:0!important;}';
+  document.head.appendChild(s);
+})();
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 
 </body>
 </html>

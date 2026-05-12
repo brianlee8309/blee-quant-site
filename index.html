@@ -71,11 +71,55 @@
   }
   .nav-links .btn-nav:hover { background: #fbbf24; }
 
-  @media (max-width: 680px) {
+  @media (max-width: 780px) {
     .nav-links a:not(.btn-nav) { display: none; }
+    .nav-links .btn-nav { display: none; }
   }
 
-  /* ── LANGUAGE SWITCHER ── */
+  /* ── HAMBURGER ── */
+  .nav-hamburger {
+    display: none; flex-direction: column; justify-content: center;
+    gap: 5px; cursor: pointer; padding: 8px; margin-left: 8px;
+    background: none; border: none;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: rgba(255,255,255,0.80); border-radius: 2px;
+    transition: all .25s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  @media (max-width: 780px) { .nav-hamburger { display: flex; } }
+
+  /* ── MOBILE MENU DROPDOWN ── */
+  .mobile-menu {
+    display: none; flex-direction: column;
+    position: absolute; top: 62px; left: 0; right: 0;
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 20px 18px; z-index: 99;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: rgba(255,255,255,0.80); text-decoration: none;
+    font-size: 16px; font-weight: 600;
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    transition: color .15s;
+  }
+  .mobile-menu a:hover { color: #fff; }
+  .mobile-menu a.btn-nav-mob {
+    margin-top: 10px; background: var(--gold); color: #000;
+    padding: 12px 20px; border-radius: 8px; text-align: center;
+    font-weight: 700; border: none;
+  }
+  .mobile-menu .mob-lang {
+    display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+  }
+
+  /* ── LANGUAGE SWITCHER (desktop) ── */
   .nav-translate {
     display: flex; align-items: center; gap: 3px;
     margin-left: 14px;
@@ -703,7 +747,43 @@
     <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
     <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
+  <!-- Hamburger (mobile only) -->
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">🏠 Home</a>
+  <a href="profile.html">👤 Profile</a>
+  <a href="analysis1-moderate-gain-low-risk.html">📊 Daily Signal</a>
+  <a href="performance1.html">📈 Backtest</a>
+  <a href="#pricing" class="btn-nav-mob" id="mob-subscribe">Subscribe</a>
+  <div class="mob-lang">
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
+  </div>
+</div>
+<script>
+(function () {
+  var btn = document.getElementById('nav-hamburger');
+  var menu = document.getElementById('mobile-menu');
+  btn.addEventListener('click', function () {
+    var open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  });
+  // Close menu when any link is clicked
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+    });
+  });
+})();
+</script>
 
 <!-- ══════════════════════════════════════ LEGAL BAR ══ -->
 <div class="legal-bar">
@@ -1270,7 +1350,7 @@
   <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
   <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
   <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
-    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/11/2026 09:49 PM</span>
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/11/2026 10:18 PM</span>
   </p>
 </footer>
 
