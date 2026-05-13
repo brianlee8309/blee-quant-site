@@ -14,11 +14,11 @@ python composer_pull_allocation.py
 
 echo.
 echo Pushing Daily Signal pages to GitHub Pages...
-git add index2.html index_50.html BackLog\
+git add index2.html index_50.html index_185v2.html composer_config.json Algorithm185History.html BackLog\
 git commit -m "Auto: Daily Signal update %date% %time%"
 git push origin main
 
 echo.
-echo Done - index2.html / index_50.html / BackLog live on GitHub Pages.
+echo Done - index2.html / index_50.html / index_185v2.html / BackLog live on GitHub Pages.
 echo Run run_forecast.bat next to generate the Market Weather Forecast.
 echo.
