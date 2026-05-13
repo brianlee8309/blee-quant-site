@@ -750,3 +750,38 @@
 [2026-05-12T21:06:47] Stamped last-updated (05/12/2026 09:06 PM) into index.html
 [2026-05-12T21:06:47] --- Pushing updates to GitHub ---
 [2026-05-12T21:06:47]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-12T21:06:47]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-12"
+[2026-05-12T21:06:47]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-12T21:06:51] GitHub push successful.
+[2026-05-12T21:06:52] market_report: === Market report generation started ===
+[2026-05-12T21:06:52] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-12T21:06:52] market_report: Loaded 11 ETF allocations from index_50.html
+[2026-05-12T21:06:52] market_report: FATAL: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 61: character maps to <undefined>
+[2026-05-12T21:30:30] market_report: === Market report generation started ===
+[2026-05-12T21:30:30] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-12T21:30:30] market_report: Loaded 11 ETF allocations from index_50.html
+[2026-05-12T21:30:30] market_report: FATAL: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 61: character maps to <undefined>
+[2026-05-12T21:35:23] market_report: === Market report generation started ===
+[2026-05-12T21:35:23] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-12T21:35:23] market_report: Loaded 11 ETF allocations from index_50.html
+[2026-05-12T21:35:23] market_report: Composite score: +24.61 -> Strong Uptrend
+[2026-05-12T21:35:25] market_report: Fetched 3 news items
+[2026-05-12T21:35:25] market_report: Updated marketDailySummary.html with score=+24.61 (Strong Uptrend)
+[2026-05-12T21:35:25] market_report: === Market report generation complete ===
+[2026-05-12T21:59:28] market_report: === Market report generation started ===
+[2026-05-12T21:59:28] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-12T21:59:28] market_report: Loaded 11 ETF allocations from index_50.html
+[2026-05-12T21:59:28] market_report: Composite score: +24.61 -> Partly Clear Sky Likely
+[2026-05-12T21:59:30] market_report:   News: got 3 item(s) so far after WSJ
+[2026-05-12T21:59:30] market_report: Fetched 3 news items
+[2026-05-12T21:59:30] market_report: Updated marketDailySummary.html with score=+24.61 (Partly Clear Sky Likely)
+[2026-05-12T21:59:30] market_report: === Market report generation complete ===
+[2026-05-12T21:59:34] archive: === Archive started ===
+[2026-05-12T22:00:11] market_report: === Market report generation started ===
+[2026-05-12T22:00:11] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-12T22:00:11] market_report: Loaded 11 ETF allocations from index_50.html
+[2026-05-12T22:00:11] market_report: Composite score: +24.61 -> Partly Clear Sky Likely
+[2026-05-12T22:00:12] market_report:   News: got 3 item(s) so far after WSJ
+[2026-05-12T22:00:12] market_report: Fetched 3 news items
+[2026-05-12T22:00:12] market_report: Updated marketDailySummary.html with score=+24.61 (Partly Clear Sky Likely)
+[2026-05-12T22:00:12] market_report: === Market report generation complete ===
