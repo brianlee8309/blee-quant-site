@@ -366,4 +366,80 @@ def main() -> int:
         log(f"ERROR: Points CSV not found at {POINTS_CSV}")
         return 1
     if not ALLOC_HTML.exists():
-      
+        log(f"ERROR: Allocation HTML not found at {ALLOC_HTML}")
+        return 1
+
+    # Load data
+    points = load_points(POINTS_CSV)
+    log(f"Loaded {len(points)} ETF points from {POINTS_CSV.name}")
+
+    allocs, total_value, last_updated = load_allocations(ALLOC_HTML)
+    log(f"Loaded {len(allocs)} ETF allocations from {ALLOC_HTML.name}")
+
+    # Score
+    score, breakdown = calculate_score(allocs, points)
+    label, color, arrow = market_temperature(score)
+    pos_w, neg_w, neu_w = allocation_groups(breakdown)
+
+    log(f"Composite score: {score:+.2f} -> {label}")
+
+    # Dates — for_date = next business day after the allocation date
+    now = dt.datetime.now()
+    generated = now.strftime("%m/%d/%Y %I:%M %p")
+    today_str = now.strftime("%B %d, %Y")
+
+    def next_business_day(date_str: str) -> dt.date:
+        """Return the next weekday (Mon–Fri) after the given ISO date string."""
+        try:
+            base = dt.date.fromisoformat(date_str)
+        except (ValueError, TypeError):
+            base = dt.date.today()
+        nxt = base + dt.timedelta(days=1)
+        while nxt.weekday() >= 5:   # 5=Sat, 6=Sun
+            nxt += dt.timedelta(days=1)
+        return nxt
+
+    for_date_obj = next_business_day(last_updated or dt.date.today().isoformat())
+    for_date_str = for_date_obj.strftime("%B %d, %Y")
+
+    # News
+    news = fetch_news(3)
+    log(f"Fetched {len(news)} news items")
+
+    # Build report dict
+    report = {
+        "generated":      generated,
+        "report_date":    today_str,
+        "for_date":       for_date_str,
+        "score":          score,
+        "temperature":    label,
+        "temp_color":     color,
+        "temp_arrow":     arrow,
+        "weather_label":  {
+            "Thunderstorm Warning":      "⛈️ Thunderstorm Warning",
+            "Rain in the Forecast":      "🌧️ Rain in the Forecast",
+            "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
+            "Partly Clear Sky Likely":   "🌤️ Partly Clear Sky",
+            "Almost Clear Sky All Day":  "☀️ Almost Clear Sky All Day",
+            "Nice Blue Sky Ahead":       "🌈 Nice Blue Sky Ahead",
+        }.get(label, label),
+        "positive_weight": pos_w,
+        "negative_weight": neg_w,
+        "neutral_weight":  neu_w,
+        "total_value":     round(total_value, 2),
+        "breakdown":       breakdown,
+        "news":            news,
+    }
+
+    patch_html(report)
+    log(f"Updated {OUTPUT_HTML.name} with score={score:+.2f} ({label})")
+    log("=== Market report generation complete ===")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception as e:
+        log(f"FATAL: {type(e).__name__}: {e}")
+        sys.exit(1)
