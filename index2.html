@@ -259,7 +259,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "uP4EOQmkexROiO18SaiN", "symphony_name": "BLEE - 185 2026 SGOV Bond 20% Yield (Rate high yield year only over 4%) and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 09:06 PM", "total_value": 1002.13, "day_change_pct": -0.0339, "total_return_pct": 0.0, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.8, "shares": 8.28, "market_value": 829.76}, {"ticker": "GLDM", "weight_pct": 9.2, "shares": 1.92, "market_value": 92.20}, {"ticker": "TQQQ", "weight_pct": 8.0, "shares": 1.38, "market_value": 80.17}], "value_history": [{"date": "2026-05-12", "total": 1002.13}], "all_tickers": ["GLDM", "SGOV", "TQQQ"], "weight_history": {"GLDM": [9.2], "SGOV": [82.8], "TQQQ": [8.0]}, "dates": ["2026-05-12"], "baseline_date": "2026-05-12"};
+const DATA = {"symphony_id": "ZGersOlsQFRHg7U2qnSw", "symphony_name": "BLEE - 185 2026 SGOV Bond and min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-13", "run_datetime": "05/13/2026 06:38 PM", "total_value": 1001.37, "day_change_pct": -0.0758, "total_return_pct": 1115.2549, "annualized_return_pct": null, "today_allocations": [{"ticker": "SQQQ", "weight_pct": 99.8993, "shares": 23.82381, "market_value": 1000.3617819}, {"ticker": "$USD", "weight_pct": 0.1009, "shares": 1.01, "market_value": 1.01}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}], "all_tickers": ["$USD", "GLDM", "SGOV", "SQQQ"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009], "GLDM": [9.3751, 9.9937, 9.9587, 0.0], "SGOV": [85.4824, 89.9035, 89.9385, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -282,7 +282,6 @@ const colorFor = (i) => colorPalette[i % colorPalette.length];
 // Friendly display names per symphony ID
 const SYMPHONY_DISPLAY = {
   "ZGersOlsQFRHg7U2qnSw": "BLEE - 185 Algorithm",
-  "uP4EOQmkexROiO18SaiN": "BLEE - 185 Algorithm",
 };
 const displayName = SYMPHONY_DISPLAY[DATA.symphony_id] || DATA.symphony_name;
 
@@ -452,7 +451,7 @@ new Chart(document.getElementById("weights-stack"), {
   }
 });
 
-// ---- Allocation Status vs. Yesterday ---------------------------------------
+// ── Allocation Status vs. Yesterday ─────────────────────────────────────────
 (function renderAllocStatus() {
   const dates  = DATA.dates  || [];
   const wh     = DATA.weight_history || {};
@@ -460,18 +459,15 @@ new Chart(document.getElementById("weights-stack"), {
   const el     = document.getElementById("alloc-status-content");
   if (!el) return;
 
-  // Build price-per-share map from today's allocations
   const priceMap = {};
   allocs.forEach(a => {
     const isCash = a.ticker === "$USD" || a.ticker === "USD";
     priceMap[a.ticker] = (isCash || !a.shares || a.shares === 0) ? 1 : (a.market_value / a.shares);
   });
 
-  // Today's weights
   const todayW = {};
   allocs.forEach(a => { todayW[a.ticker] = a.weight_pct; });
 
-  // ── First day at baseline — no prior data to compare ──
   if (dates.length < 2) {
     el.innerHTML = `
       <div style="background:#0f2744;border:2px solid #2563eb;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;">
@@ -484,7 +480,7 @@ new Chart(document.getElementById("weights-stack"), {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 18px;">
           <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">✋ Existing Members</div>
-          <div style="font-size:13px;color:#e2e8f0;line-height:1.5;">No prior-day data yet. Use the <strong>Adjustment Guide</strong> when history builds after tomorrow.</div>
+          <div style="font-size:13px;color:#e2e8f0;line-height:1.5;">No prior-day data yet. Use the Adjustment Guide when history builds after tomorrow.</div>
         </div>
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 18px;">
           <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">👋 New Members</div>
@@ -496,14 +492,11 @@ new Chart(document.getElementById("weights-stack"), {
 
   const yestIdx  = dates.length - 2;
   const yestDate = dates[yestIdx];
-
-  // Yesterday's weights from weight_history
   const yestW = {};
   Object.keys(wh).forEach(t => {
     if (wh[t] && wh[t][yestIdx] !== undefined) yestW[t] = wh[t][yestIdx];
   });
 
-  // Collect all tickers and compute diffs
   const allTickers = new Set([...Object.keys(todayW), ...Object.keys(yestW)]);
   const changes = [];
   allTickers.forEach(t => {
@@ -516,38 +509,27 @@ new Chart(document.getElementById("weights-stack"), {
   const maxAbsDiff = changes.length ? Math.max(...changes.map(c => Math.abs(c.diff))) : 0;
   const needsRealloc = maxAbsDiff >= 1.0;
 
-  // ── No reallocation needed ──────────────────────────────────────────────
   if (!needsRealloc) {
     el.innerHTML = `
       <div style="background:#052e16;border:2px solid #16a34a;border-radius:12px;padding:18px 22px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;">
         <div style="font-size:30px;line-height:1;">✅</div>
         <div>
           <div style="font-size:18px;font-weight:900;color:#4ade80;margin-bottom:4px;">Allocation Unchanged — No Reallocation Needed</div>
-          <div style="font-size:13px;color:#bbf7d0;line-height:1.6;">
-            All positions are within <strong>1%</strong> of yesterday's allocation (${yestDate}). Your portfolio is already aligned with today's strategy.
-          </div>
+          <div style="font-size:13px;color:#bbf7d0;line-height:1.6;">All positions are within <strong>1%</strong> of yesterday's allocation (${yestDate}). Your portfolio is already aligned with today's strategy.</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
           <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
-          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">
-            Your current holdings are within tolerance of today's targets.<br>
-            <strong style="color:#4ade80;">Skip reallocation today</strong> — no trades required.
-          </div>
+          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Your current holdings are within tolerance of today's targets.<br><strong style="color:#4ade80;">Skip reallocation today</strong> — no trades required.</div>
         </div>
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
           <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
-          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">
-            Follow today's allocation using the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.
-          </div>
+          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Follow today's allocation using the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.</div>
         </div>
       </div>`;
     return;
   }
-
-  // ── Reallocation needed ─────────────────────────────────────────────────
-  const significant = [...changes].filter(c => Math.abs(c.diff) >= 1.0).sort((a,b) => a.diff - b.diff);
 
   const rowsHtml = [...changes].sort((a,b) => a.diff - b.diff).map(c => {
     const sign   = c.diff > 0 ? "+" : "";
@@ -571,13 +553,9 @@ new Chart(document.getElementById("weights-stack"), {
       <div style="font-size:30px;line-height:1;">⚡</div>
       <div>
         <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-bottom:4px;">Allocation Changed — Reallocation Recommended</div>
-        <div style="font-size:13px;color:#fde68a;line-height:1.6;">
-          Some positions shifted by more than 1% since yesterday (${yestDate}). Existing members should make the targeted adjustments below — <strong>no need to liquidate and rebuild from scratch</strong>.
-        </div>
+        <div style="font-size:13px;color:#fde68a;line-height:1.6;">Some positions shifted by more than 1% since yesterday (${yestDate}). Existing members should make targeted adjustments — <strong>no need to liquidate and rebuild</strong>.</div>
       </div>
     </div>
-
-    <!-- Change summary table -->
     <div style="overflow-x:auto;margin-bottom:18px;">
       <table style="width:100%;border-collapse:collapse;background:#0d1829;border-radius:12px;overflow:hidden;border:1px solid #1e3a5f;">
         <thead>
@@ -592,8 +570,6 @@ new Chart(document.getElementById("weights-stack"), {
         <tbody>${rowsHtml}</tbody>
       </table>
     </div>
-
-    <!-- Adjustment calculator for existing members -->
     <div style="background:#1e293b;border:1.5px solid #f59e0b;border-radius:12px;padding:18px 22px;margin-bottom:16px;">
       <div style="font-size:15px;font-weight:800;color:#fbbf24;margin-bottom:4px;">🔧 Adjustment Guide for Existing Members</div>
       <div style="font-size:13px;color:#94a3b8;margin-bottom:14px;">Enter your <em>current total portfolio value</em> to calculate exactly how much to sell and buy.</div>
@@ -609,13 +585,12 @@ new Chart(document.getElementById("weights-stack"), {
           Calculate Adjustments
         </button>
       </div>
-      <div id="adj-results" style="display:flex;flex-direction:column;gap:10px;display:none;"></div>
+      <div id="adj-results" style="display:none;flex-direction:column;gap:10px;"></div>
     </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
         <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
-        <div style="font-size:13px;color:#e2e8f0;line-height:1.6;">Only adjust the positions shown above. Use the Adjustment Guide to find your exact sell/buy amounts — no need to start over.</div>
+        <div style="font-size:13px;color:#e2e8f0;line-height:1.6;">Only adjust the positions above. Use the Adjustment Guide for exact amounts — no need to start over.</div>
       </div>
       <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
         <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
@@ -623,7 +598,6 @@ new Chart(document.getElementById("weights-stack"), {
       </div>
     </div>`;
 
-  // Bind Enter key on adj input
   const adjInp = document.getElementById("adj-input");
   if (adjInp) adjInp.addEventListener("keydown", e => { if (e.key === "Enter") runAdjCalc(); });
 })();
@@ -637,17 +611,14 @@ function runAdjCalc() {
   const allocs  = DATA.today_allocations || [];
   const yestIdx = dates.length - 2;
 
-  // Price map
   const priceMap = {};
   allocs.forEach(a => {
     const isCash = a.ticker === "$USD" || a.ticker === "USD";
     priceMap[a.ticker] = (isCash || !a.shares || a.shares === 0) ? 1 : (a.market_value / a.shares);
   });
-
   const todayW = {};
   allocs.forEach(a => { todayW[a.ticker] = a.weight_pct; });
 
-  // Compute per-ETF adjustments (only those with >= 1% change)
   const rows = [];
   Object.keys(wh).forEach(t => {
     const today = todayW[t] ?? 0;
@@ -680,26 +651,23 @@ function runAdjCalc() {
       ? "Hold as cash"
       : `~${r.shares.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} shares @ ~$${r.price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}/share`;
     return `<div style="background:${bg};border:2px solid ${border};border-radius:10px;padding:16px 20px;
-         display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+         display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="background:${border};color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:5px;">${verb} ${arrow}</span>
         <span style="font-size:20px;font-weight:900;color:${color};">${r.ticker}</span>
         <span style="font-size:13px;color:#94a3b8;">${r.diff > 0 ? "+" : ""}${r.diff.toFixed(1)} pp shift</span>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:26px;font-weight:900;color:${color};letter-spacing:-0.01em;">
-          $${Math.abs(r.dollarChange).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
-        </div>
+        <div style="font-size:26px;font-weight:900;color:${color};letter-spacing:-0.01em;">$${Math.abs(r.dollarChange).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
         <div style="font-size:12px;color:#64748b;margin-top:2px;">${sharesText}</div>
       </div>
     </div>`;
   }).join("");
   resultsEl.style.display = "flex";
   resultsEl.style.flexDirection = "column";
-  resultsEl.style.gap = "10px";
 }
 
-// ---- Investment Calculator --------------------------------------------------
+// ── Investment Calculator ────────────────────────────────────────────────────
 const CALC_COLORS = [
   { bg: "#0f2744", border: "#2563eb", badge: "#2563eb" },
   { bg: "#0f2d1e", border: "#16a34a", badge: "#16a34a" },
@@ -715,10 +683,7 @@ function runCalc() {
     return;
   }
   const allocs = (DATA.today_allocations || []).filter(a => a.weight_pct > 0);
-  if (!allocs.length) {
-    alert("No allocation data available yet. Please check back after the daily update.");
-    return;
-  }
+  if (!allocs.length) { alert("No allocation data available."); return; }
 
   const container = document.getElementById("calc-cards");
   container.innerHTML = "";
@@ -744,14 +709,12 @@ function runCalc() {
     card.style.cssText = `background:${c.bg};border:2px solid ${c.border};border-radius:14px;padding:18px 22px;
       display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center;`;
     card.innerHTML = `
-      <!-- LEFT: ticker + allocation -->
       <div>
         <div style="display:inline-block;background:${c.badge};color:#fff;font-size:13px;font-weight:800;
              padding:3px 10px;border-radius:6px;letter-spacing:0.04em;margin-bottom:8px;">${a.ticker}</div>
         <div style="font-size:28px;font-weight:900;color:#f1f5f9;line-height:1;">${a.weight_pct.toFixed(1)}%</div>
         <div style="font-size:12px;color:#94a3b8;margin-top:2px;">of portfolio</div>
       </div>
-      <!-- MIDDLE: dollar amount -->
       <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.1);border-right:1px solid rgba(255,255,255,0.1);padding:0 12px;">
         <div style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Invest</div>
         <div style="font-size:30px;font-weight:900;color:#34d399;letter-spacing:-0.01em;line-height:1;">
@@ -759,7 +722,6 @@ function runCalc() {
         </div>
         <div style="font-size:12px;color:#64748b;margin-top:4px;">${priceText}</div>
       </div>
-      <!-- RIGHT: shares -->
       <div style="text-align:right;">
         <div style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Buy approx.</div>
         <div style="line-height:1.2;">${sharesText}</div>

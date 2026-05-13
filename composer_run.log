@@ -785,3 +785,52 @@
 [2026-05-12T22:00:12] market_report: Fetched 3 news items
 [2026-05-12T22:00:12] market_report: Updated marketDailySummary.html with score=+24.61 (Partly Clear Sky Likely)
 [2026-05-12T22:00:12] market_report: === Market report generation complete ===
+[2026-05-13T15:51:01] archive: === Archive started ===
+[2026-05-13T15:51:01] === Composer daily allocation pull ===
+[2026-05-13T15:51:01] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw', 'uP4EOQmkexROiO18SaiN']
+[2026-05-13T15:51:01] No account_uuid in config; discovering via /accounts/list...
+[2026-05-13T15:51:13] Network error on GET /api/v0.1/accounts/list: <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-05-13T15:51:13] FATAL: URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-05-13T15:53:01] market_report: === Market report generation started ===
+[2026-05-13T15:53:01] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-13T15:53:01] market_report: Loaded 11 ETF allocations from index_50.html
+[2026-05-13T15:53:01] market_report: Composite score: +24.61 -> Partly Clear Sky Likely
+[2026-05-13T15:53:13] market_report:   RSS fetch failed (WSJ): <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-05-13T15:53:13] market_report:   WSJ: RSS unavailable, using hardcoded fallback
+[2026-05-13T15:53:13] market_report:   Selected [WSJ] topic=FED: Fed Signals Patience as Rate Path Stays Data-Dependent
+[2026-05-13T15:53:14] market_report:   RSS fetch failed (Yahoo Finance): <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-05-13T15:53:14] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-05-13T15:53:14] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-05-13T15:53:14] market_report:   RSS fetch failed (Barron's): <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-05-13T15:53:14] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-13T15:53:14] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-13T15:53:14] market_report: Fetched 3 news items
+[2026-05-13T15:53:14] market_report: Updated marketDailySummary.html with score=+24.61 (Partly Clear Sky Likely)
+[2026-05-13T15:53:14] market_report: === Market report generation complete ===
+[2026-05-13T18:38:00] archive: === Archive started ===
+[2026-05-13T18:38:00] archive:   Already archived today (has real data): marketForecast_2026-05-13.html
+[2026-05-13T18:38:00] === Composer daily allocation pull ===
+[2026-05-13T18:38:00] Configured symphonies: ['jtQvlI5wINrxpOfxgmgl', 'ZGersOlsQFRHg7U2qnSw', 'uP4EOQmkexROiO18SaiN']
+[2026-05-13T18:38:00] No account_uuid in config; discovering via /accounts/list...
+[2026-05-13T18:38:02] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-13T18:38:02] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-13T18:38:02] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-13T18:38:02] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-13T18:38:03] Saved symphony-stats response to composer_symphony_stats_2026-05-13.json
+[2026-05-13T18:38:03] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-13T18:38:03]   Got 11 positions from symphony-stats-meta
+[2026-05-13T18:38:03]   Saved today's slice to composer_allocations_2026-05-13.json
+[2026-05-13T18:38:03]   Wrote 11 rows for 2026-05-13 to composer_allocations.csv (kept 43 prior rows, source=symphony-stats-meta)
+[2026-05-13T18:38:03] Generated dashboard -> index_50.html (value=$178.15, days=4)
+[2026-05-13T18:38:03] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-13T18:38:03]   Got 2 positions from symphony-stats-meta
+[2026-05-13T18:38:03]   Saved today's slice to composer_allocations_185_2026-05-13.json
+[2026-05-13T18:38:03]   Wrote 2 rows for 2026-05-13 to composer_allocations_185.csv (kept 9 prior rows, source=symphony-stats-meta)
+[2026-05-13T18:38:03] Generated dashboard -> index2.html (value=$1,001.37, days=4)
+[2026-05-13T18:38:03] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-13T18:38:03]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-13 JSON to verify the id matches one in the response)
+[2026-05-13T18:38:03]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-13T18:38:03] === Done ===
+[2026-05-13T18:38:03] Stamped last-updated (05/13/2026 06:38 PM) into index.html
+[2026-05-13T18:38:04] --- Pushing updates to GitHub ---
+[2026-05-13T18:38:04]   $ git -C "C:\Kei\ComposerInvest" add .
