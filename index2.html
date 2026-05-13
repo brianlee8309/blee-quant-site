@@ -259,7 +259,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "ZGersOlsQFRHg7U2qnSw", "symphony_name": "BLEE - 185 2026 SGOV Bond and min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 09:06 PM", "total_value": 1002.13, "day_change_pct": -0.0339, "total_return_pct": 0.0, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 89.9385, "shares": 8.96861, "market_value": 901.30046195}, {"ticker": "GLDM", "weight_pct": 9.9587, "shares": 1.06954, "market_value": 99.7987774}, {"ticker": "$USD", "weight_pct": 0.1028, "shares": 1.03, "market_value": 1.03}], "value_history": [{"date": "2026-05-12", "total": 1002.13}], "all_tickers": ["$USD", "GLDM", "SGOV"], "weight_history": {"$USD": [0.1028], "GLDM": [9.9587], "SGOV": [89.9385]}, "dates": ["2026-05-12"], "baseline_date": "2026-05-12"};
+const DATA = {"symphony_id": "uP4EOQmkexROiO18SaiN", "symphony_name": "BLEE - 185 2026 SGOV Bond 20% Yield (Rate high yield year only over 4%) and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 09:06 PM", "total_value": 1002.13, "day_change_pct": -0.0339, "total_return_pct": 0.0, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.8, "shares": 8.28, "market_value": 829.76}, {"ticker": "GLDM", "weight_pct": 9.2, "shares": 1.92, "market_value": 92.20}, {"ticker": "TQQQ", "weight_pct": 8.0, "shares": 1.38, "market_value": 80.17}], "value_history": [{"date": "2026-05-12", "total": 1002.13}], "all_tickers": ["GLDM", "SGOV", "TQQQ"], "weight_history": {"GLDM": [9.2], "SGOV": [82.8], "TQQQ": [8.0]}, "dates": ["2026-05-12"], "baseline_date": "2026-05-12"};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -282,6 +282,7 @@ const colorFor = (i) => colorPalette[i % colorPalette.length];
 // Friendly display names per symphony ID
 const SYMPHONY_DISPLAY = {
   "ZGersOlsQFRHg7U2qnSw": "BLEE - 185 Algorithm",
+  "uP4EOQmkexROiO18SaiN": "BLEE - 185 Algorithm",
 };
 const displayName = SYMPHONY_DISPLAY[DATA.symphony_id] || DATA.symphony_name;
 
