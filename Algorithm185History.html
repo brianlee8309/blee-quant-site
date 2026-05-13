@@ -1034,7 +1034,8 @@ function setFilter(f) {
 function filterTable() { searchTerm = document.getElementById("searchBox").value.toLowerCase(); currentPage = 1; renderTable(); }
 
 function getFiltered() {
-  return ALLOC_DATA.filter(r => {
+  // Skip the most recent row — today's signal is members-only (index2.html)
+  return ALLOC_DATA.slice(1).filter(r => {
     const ms = !searchTerm || r.join(" ").toLowerCase().includes(searchTerm);
     const mf = activeFilter==="all" ? true
       : activeFilter==="special"  ? isSpecial(r)
