@@ -188,6 +188,54 @@
     </div>
   </section>
 
+  <!-- ── Investment Calculator ─────────────────────────────────────────── -->
+  <section class="card" id="calc-section">
+    <h2>💰 Investment Calculator</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">
+      Enter your total amount to invest. The calculator splits it across today's ETF allocations and shows approximate shares based on the latest prices.
+    </p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+      <div style="position:relative;flex:1;min-width:200px;max-width:320px;">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted);font-size:16px;">$</span>
+        <input id="calc-input" type="number" min="1" step="1" placeholder="e.g. 12000"
+          style="width:100%;padding:12px 14px 12px 30px;border:1.5px solid var(--border);border-radius:8px;
+                 font-size:16px;font-weight:600;background:var(--card);color:var(--text);outline:none;box-sizing:border-box;">
+      </div>
+      <button id="calc-btn" onclick="runCalc()"
+        style="padding:12px 28px;background:#2563eb;color:#fff;font-weight:700;font-size:14px;
+               border:none;border-radius:8px;cursor:pointer;white-space:nowrap;">
+        Calculate
+      </button>
+      <button onclick="document.getElementById('calc-input').value='';document.getElementById('calc-results').style.display='none';"
+        style="padding:12px 16px;background:transparent;color:var(--muted);font-size:13px;
+               border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+        Clear
+      </button>
+    </div>
+
+    <div id="calc-results" style="display:none;">
+      <div style="overflow-x:auto;">
+        <table id="calc-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#f3f4f6;">
+              <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid var(--border);">ETF / Asset</th>
+              <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid var(--border);">Allocation</th>
+              <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid var(--border);">Amount to Invest</th>
+              <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid var(--border);">Est. Price/Share</th>
+              <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid var(--border);">Approx. Shares</th>
+            </tr>
+          </thead>
+          <tbody id="calc-tbody"></tbody>
+          <tfoot id="calc-tfoot"></tfoot>
+        </table>
+      </div>
+      <p style="margin-top:12px;font-size:11px;color:var(--muted);">
+        ⚠️ Prices are estimated from the latest portfolio snapshot and may differ from live market prices.
+        Always verify before placing orders. Fractional shares availability depends on your broker.
+      </p>
+    </div>
+  </section>
+
   <section class="card">
     <h2>Historical Weight Changes</h2>
     <div class="chart-wrap tall"><canvas id="weights-stack"></canvas></div>
@@ -378,6 +426,85 @@ new Chart(document.getElementById("weights-stack"), {
       x: { stacked: true }
     }
   }
+});
+
+// ── Investment Calculator ────────────────────────────────────────────────────
+function runCalc() {
+  const raw = parseFloat(document.getElementById("calc-input").value);
+  if (!raw || raw <= 0) {
+    alert("Please enter a valid investment amount greater than $0.");
+    return;
+  }
+
+  const allocs = (DATA.today_allocations || []).filter(a => a.weight_pct > 0);
+  if (!allocs.length) { alert("No allocation data available."); return; }
+
+  const tbody = document.getElementById("calc-tbody");
+  const tfoot = document.getElementById("calc-tfoot");
+  tbody.innerHTML = "";
+  tfoot.innerHTML = "";
+
+  let totalDollars = 0;
+
+  allocs.forEach((a, i) => {
+    const isCash = a.ticker === "$USD" || a.ticker === "USD";
+    // Derive price from market_value ÷ shares; fall back to $1 for cash
+    const pricePerShare = (isCash || !a.shares || a.shares === 0)
+      ? 1
+      : (a.market_value / a.shares);
+    const dollarAmt  = (a.weight_pct / 100) * raw;
+    const sharesNeeded = isCash ? null : (dollarAmt / pricePerShare);
+    totalDollars += dollarAmt;
+
+    const tr = document.createElement("tr");
+    tr.style.borderBottom = "1px solid var(--border)";
+    if (i % 2 === 1) tr.style.background = "#f9fafb";
+
+    const sharesDisplay = isCash
+      ? '<span style="color:var(--muted)">Hold as cash</span>'
+      : sharesNeeded.toLocaleString(undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3});
+
+    const priceDisplay = isCash
+      ? '<span style="color:var(--muted)">—</span>'
+      : "$" + pricePerShare.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    tr.innerHTML = `
+      <td style="padding:11px 14px;font-weight:700;color:#111827;">${a.ticker}</td>
+      <td style="padding:11px 14px;text-align:right;color:var(--muted);">${a.weight_pct.toFixed(2)}%</td>
+      <td style="padding:11px 14px;text-align:right;font-weight:600;color:var(--pos);">
+        $${dollarAmt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+      </td>
+      <td style="padding:11px 14px;text-align:right;">${priceDisplay}</td>
+      <td style="padding:11px 14px;text-align:right;font-weight:600;">${sharesDisplay}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Total row
+  tfoot.innerHTML = `
+    <tr style="background:#eff6ff;border-top:2px solid #2563eb;">
+      <td style="padding:11px 14px;font-weight:800;color:#1d4ed8;">TOTAL</td>
+      <td style="padding:11px 14px;text-align:right;font-weight:700;color:#1d4ed8;">100%</td>
+      <td style="padding:11px 14px;text-align:right;font-weight:800;color:#1d4ed8;">
+        $${raw.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+      </td>
+      <td colspan="2" style="padding:11px 14px;text-align:right;color:var(--muted);font-size:12px;">
+        Based on ${DATA.last_updated || "latest"} allocation
+      </td>
+    </tr>
+  `;
+
+  document.getElementById("calc-results").style.display = "block";
+
+  // Allow Enter key to trigger calculate
+  document.getElementById("calc-input").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") runCalc();
+  }, { once: true });
+}
+
+// Allow Enter key on load
+document.getElementById("calc-input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") runCalc();
 });
 </script>
 </body>
