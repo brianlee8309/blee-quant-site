@@ -942,3 +942,48 @@
 [2026-05-13T19:28:02] Stamped last-updated (05/13/2026 07:28 PM) into index.html
 [2026-05-13T19:28:02] --- Pushing updates to GitHub ---
 [2026-05-13T19:28:02]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-13T19:28:02]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-13"
+[2026-05-13T19:28:03]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-13T19:28:06] GitHub push successful.
+[2026-05-13T19:32:12] market_report: === Market report generation started ===
+[2026-05-13T19:32:12] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-13T19:32:12] market_report: Loaded 16 ETF allocations from index_50.html
+[2026-05-13T19:32:12] market_report: Composite score: -36.61 -> Rain in the Forecast
+[2026-05-13T19:32:13] market_report:   RSS WSJ: 20 items fetched
+[2026-05-13T19:32:13] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-05-13T19:32:15] market_report:   RSS Yahoo Finance: 47 items fetched
+[2026-05-13T19:32:15] market_report:   Selected [Yahoo Finance] topic=OTHER: Explained: What is a perpetual DEX? A Wall Street primer featuring Dec
+[2026-05-13T19:32:16] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-05-13T19:32:16] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-13T19:32:16] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-13T19:32:16] market_report: Fetched 3 news items
+[2026-05-13T19:32:16] market_report: Updated marketDailySummary.html with score=-36.61 (Rain in the Forecast)
+[2026-05-13T19:32:16] market_report: === Market report generation complete ===
+[2026-05-13T19:32:59] archive: === Archive started ===
+[2026-05-13T19:32:59] archive:   Already archived today (has real data): marketForecast_2026-05-13.html
+[2026-05-13T19:32:59] archive:   Already archived today (has real data): dailySignal_2026-05-13.html
+[2026-05-13T19:32:59] archive: Rebuilt BackLog/index.html — 2 dates, 4 files
+[2026-05-13T19:32:59] archive: === Archive complete ===
+[2026-05-13T19:32:59] === Composer daily allocation pull ===
+[2026-05-13T19:32:59] Configured symphonies: ['sRxc0F27TQYj10bWwIlO', 'qjmHJ3IR19kmaAlbgkNj', 'uP4EOQmkexROiO18SaiN']
+[2026-05-13T19:32:59] No account_uuid in config; discovering via /accounts/list...
+[2026-05-13T19:33:01] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-13T19:33:01] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-13T19:33:01] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-13T19:33:01] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-13T19:33:02] Saved symphony-stats response to composer_symphony_stats_2026-05-13.json
+[2026-05-13T19:33:02] --- BLEE - 186 2026 ALL in One (sRxc0F27TQYj10bWwIlO) ---
+[2026-05-13T19:33:02]   Got 16 positions from symphony-stats-meta
+[2026-05-13T19:33:02]   Saved today's slice to composer_allocations_2026-05-13.json
+[2026-05-13T19:33:02]   Wrote 16 rows for 2026-05-13 to composer_allocations.csv (kept 43 prior rows, source=symphony-stats-meta)
+[2026-05-13T19:33:02] Generated dashboard -> index_50.html (value=$50,218.76, days=4)
+[2026-05-13T19:33:02] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-13T19:33:02]   WARN: symphony-stats-meta returned no positions for qjmHJ3IR19kmaAlbgkNj (check 2026-05-13 JSON to verify the id matches one in the response)
+[2026-05-13T19:33:02]   ERROR: no positions found for qjmHJ3IR19kmaAlbgkNj; skipping CSV/HTML for this symphony
+[2026-05-13T19:33:02] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-13T19:33:02]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-13 JSON to verify the id matches one in the response)
+[2026-05-13T19:33:02]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-13T19:33:02] === Done ===
+[2026-05-13T19:33:02] Stamped last-updated (05/13/2026 07:33 PM) into index.html
+[2026-05-13T19:33:02] --- Pushing updates to GitHub ---
+[2026-05-13T19:33:02]   $ git -C "C:\Kei\ComposerInvest" add .
