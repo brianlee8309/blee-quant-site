@@ -700,6 +700,188 @@
   .annual-saving .as-num { font-size: 26px; font-weight: 900; color: #6ee7b7; }
   .annual-saving .as-lbl { font-size: 12px; opacity: 0.75; margin-top: 2px; }
 
+  /* ── LANDING HERO (image) ── */
+  .landing-hero {
+    position: relative;
+    min-height: 620px;
+    background-image: url('HomeLandingImage1.png');
+    background-size: cover;
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-color: #07111f;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .landing-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right,
+      rgba(5,15,35,0.96) 0%,
+      rgba(5,15,35,0.88) 30%,
+      rgba(5,15,35,0.55) 55%,
+      rgba(5,15,35,0.10) 75%,
+      rgba(5,15,35,0.00) 100%);
+  }
+  .landing-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px 52px;
+    width: 100%;
+  }
+  .landing-pre {
+    font-size: 18px;
+    color: rgba(255,255,255,0.80);
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+  .landing-hero h1 {
+    font-size: clamp(38px, 6vw, 70px);
+    font-weight: 900;
+    line-height: 1.06;
+    color: #fff;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+  }
+  .landing-hero h1 .h1-gold {
+    color: var(--gold);
+    display: block;
+  }
+  .landing-tagline {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 18px 0 22px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .landing-tagline span { display: flex; align-items: center; gap: 6px; }
+  .landing-hero-body {
+    max-width: 540px;
+    color: rgba(255,255,255,0.82);
+    font-size: 16px;
+    line-height: 1.72;
+    margin-bottom: 0;
+  }
+  .landing-features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 44px;
+    max-width: 860px;
+  }
+  .landing-feat {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 12px;
+    padding: 18px 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .landing-feat .fi { font-size: 26px; margin-bottom: 10px; }
+  .landing-feat h4 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .landing-feat p {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.5;
+    margin: 0;
+  }
+  /* ── CTA BAND ── */
+  .cta-band {
+    background: #07111f;
+    border-top: 1px solid rgba(245,158,11,0.25);
+    padding: 36px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .cta-band-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex: 1;
+    min-width: 260px;
+  }
+  .cta-crown {
+    width: 66px; height: 66px;
+    background: rgba(245,158,11,0.12);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+  }
+  .cta-band-title {
+    font-size: clamp(16px, 2.2vw, 22px);
+    font-weight: 900;
+    color: var(--gold);
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+  }
+  .cta-band-sub {
+    color: rgba(255,255,255,0.72);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .cta-band-sub strong { color: var(--gold); }
+  .cta-band-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .cta-btn-gold {
+    background: var(--gold);
+    color: #000;
+    font-weight: 800;
+    padding: 14px 26px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.3;
+    transition: opacity .15s;
+  }
+  .cta-btn-gold:hover { opacity: .88; }
+  .cta-btn-gold .cta-sub { font-size: 11px; font-weight: 500; display: block; opacity: .75; }
+  .cta-btn-outline {
+    background: transparent;
+    color: #fff;
+    font-weight: 800;
+    padding: 14px 26px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.30);
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.3;
+    transition: border-color .15s;
+  }
+  .cta-btn-outline:hover { border-color: rgba(255,255,255,0.70); }
+  .cta-btn-outline .cta-sub { font-size: 11px; font-weight: 500; display: block; opacity: .65; }
+  @media (max-width: 860px) {
+    .landing-features { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .landing-hero-inner { padding: 52px 24px 40px; }
+    .cta-band { flex-direction: column; text-align: center; padding: 32px 24px; }
+    .cta-band-left { flex-direction: column; text-align: center; }
+    .cta-band-btns { justify-content: center; }
+  }
+
   /* ── DISCLAIMER ── */
   .disclaimer {
     background: #f0f2f5; border-top: 1px solid var(--border);
@@ -800,43 +982,73 @@
   </p>
 </div>
 
-<!-- ══════════════════════════════════════ HERO ══ -->
-<div class="hero">
-  <div class="hero-tag" data-i18n="hero.tag">📊 Built by an Investor Who Uses These Signals Every Day</div>
-  <h1 data-i18n="hero.h1">Disciplined ETF Rotation Models<br><em>Built for Long-Term Growth.</em></h1>
-  <p class="lead">
-    Fully automated rebalancing algorithms built by an independent analyst combining
-    <strong style="color:#fff">30+ years of software engineering expertise</strong> with
-    <strong style="color:#fff">20+ years of market analysis and observation</strong>.<br><br>
-    These models are actively used in a personal Roth IRA and are designed for disciplined,
-    long-term investing using rule-based ETF allocation and defensive risk management.<br><br>
-    Historically, the Calm Growth Model averaged approximately
-    <strong style="color:var(--gold)">33% annually over the past 3 years</strong> and about
-    <strong style="color:var(--gold)">20% annually over the full ~6-year period</strong> in backtesting, while
-    maintaining relatively low drawdowns during difficult market conditions.
-  </p>
-  <div class="hero-btns">
-    <a href="#strategies" class="btn-primary" data-i18n="btn.strategies">View Strategies</a>
-    <a href="performance1.html" class="btn-ghost" data-i18n="btn.trackrecord">See the Track Record</a>
+<!-- ══════════════════════════════════════ LANDING HERO ══ -->
+<div class="landing-hero">
+  <div class="landing-hero-inner">
+    <div class="landing-pre">Turn Smart Strategies Into</div>
+    <h1>
+      Financial Freedom
+      <span class="h1-gold">and Build Your Future</span>
+    </h1>
+    <div class="landing-tagline">
+      <span>💎 Dream More.</span>
+      <span>📈 Invest Smarter.</span>
+      <span>☀️ Live Freely.</span>
+    </div>
+    <div class="landing-hero-body">
+      Our disciplined ETF rotation models are designed to
+      <strong style="color:var(--gold)">grow your wealth steadily</strong> while
+      <strong style="color:var(--gold)">protecting your capital.</strong>
+      With low risk and proven results, this tool gives you the opportunity to reach
+      your financial goals — and
+      <strong style="color:var(--gold)">potentially become a millionaire</strong> over time.
+    </div>
+    <div class="landing-features">
+      <div class="landing-feat">
+        <div class="fi">🛡️</div>
+        <h4>Low Risk<br>by Design</h4>
+        <p>Focus on capital preservation with proven risk management.</p>
+      </div>
+      <div class="landing-feat">
+        <div class="fi">📊</div>
+        <h4>Disciplined<br>ETF Rotation</h4>
+        <p>Data-driven allocation adjusted to market conditions daily.</p>
+      </div>
+      <div class="landing-feat">
+        <div class="fi">📈</div>
+        <h4>Long-Term<br>Growth</h4>
+        <p>Historical 3-year results show strong, consistent outperformance.</p>
+      </div>
+      <div class="landing-feat">
+        <div class="fi">🌴</div>
+        <h4>Financial Freedom<br>Lifestyle</h4>
+        <p>More time. More choices. Live life on your terms.</p>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div class="hero-stats">
-    <div class="hs">
-      <div class="num">~20%<span style="font-size:18px;font-weight:600">/yr</span></div>
-      <div class="lbl" data-i18n="hs1.lbl">Full-Period Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
+<!-- ══════════════════════════════════════ CTA BAND ══ -->
+<div class="cta-band">
+  <div class="cta-band-left">
+    <div class="cta-crown">👑</div>
+    <div>
+      <div class="cta-band-title">Dream Bigger. Plan Smarter. Live Richer.</div>
+      <div class="cta-band-sub">
+        Start with as little as you can. Stay consistent. Let compounding and discipline work for you.
+        <strong>Your millionaire journey can begin today.</strong>
+      </div>
     </div>
-    <div class="hs">
-      <div class="num gold">~33%<span style="font-size:18px;font-weight:600">/yr</span></div>
-      <div class="lbl" data-i18n="hs2.lbl">Past 3-Year Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
-    </div>
-    <div class="hs">
-      <div class="num">−4.9%</div>
-      <div class="lbl" data-i18n="hs3.lbl">Max Drawdown (3yr, vs −18.8% S&amp;P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
-    </div>
-    <div class="hs">
-      <div class="num gold">+11.2%</div>
-      <div class="lbl" data-i18n="hs4.lbl">Gained in 2022 Bear Market <span class="ds-tag sim" style="font-size:9px;">Backtest</span></div>
-    </div>
+  </div>
+  <div class="cta-band-btns">
+    <a href="#strategies" class="cta-btn-gold">
+      <strong>View Strategies</strong>
+      <span class="cta-sub">Explore our proven models</span>
+    </a>
+    <a href="performance1.html" class="cta-btn-outline">
+      <strong>See the Track Record</strong>
+      <span class="cta-sub">3-Year backtest results</span>
+    </a>
   </div>
 </div>
 
