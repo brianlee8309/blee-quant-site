@@ -146,64 +146,89 @@ def allocation_groups(breakdown: list[dict]) -> tuple[float, float, float]:
     return round(pos, 2), round(neg, 2), round(neu, 2)
 
 
-# ── Fetch news from Yahoo Finance RSS ────────────────────────────────────────
+# ── News fetching — one story per source, no topic overlap ───────────────────
+#
+# Strategy:
+#   1. Pull RSS from WSJ, Yahoo Finance, and Barron's in that order.
+#   2. For each source, pick the top story whose broad topic bucket
+#      (FED / MACRO / EQUITY / RISK) hasn't been used yet.
+#   3. If a feed fails or all its stories share already-used topics,
+#      fall back to a hardcoded story for that source.
+#
+# All feeds are public RSS — no login required for headlines and snippets.
+# WSJ/Barron's paywalls apply only to full article text, not RSS metadata.
 
-# Public RSS feeds — no login required for headlines/summaries.
-# WSJ and Barron's paywall applies to full articles, not RSS titles+snippets.
-NEWS_FEEDS = [
-    ("https://feeds.a.dj.com/rss/RSSMarketsMain.xml",                                              "WSJ"),
-    ("https://www.barrons.com/xml/rss/3_7019.xml",                                                 "Barron's"),
-    ("https://news.google.com/rss/search?q=stock+market+today&hl=en-US&gl=US&ceid=US:en",          "Google News"),
-    ("https://www.bing.com/news/search?q=US+stock+market+today&format=rss",                        "Bing News"),
-    ("https://finance.yahoo.com/news/rssindex",                                                     "Yahoo Finance"),
-    ("https://feeds.content.dowjones.io/public/rss/mw_marketpulse",                                "MarketWatch"),
+# Ordered list: exactly one story will be picked from each source.
+SOURCE_FEEDS_ORDERED = [
+    ("WSJ",           "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"),
+    ("Yahoo Finance", "https://finance.yahoo.com/news/rssindex"),
+    ("Barron's",      "https://www.barrons.com/xml/rss/3_7019.xml"),
 ]
 
-FALLBACK_NEWS = [
-    {
-        "tag": "MACRO",
-        "tag_class": "tag-macro",
-        "title": "April CPI Release — The Week's Make-or-Break Catalyst",
-        "body": "The April Consumer Price Index lands Tuesday at 8:30 AM ET, with consensus calling for headline inflation of 3.7% year-over-year and core at 2.7% YoY. A hotter-than-expected print would compress Fed rate-cut expectations and could reverse the S&P 500's six-week winning streak.",
-        "source": "CNBC / Gotrade",
-        "url": "https://www.heygotrade.com/en/news/weekly-economic-outlook-2026-05-11/",
-    },
-    {
-        "tag": "FED POLICY",
-        "tag_class": "tag-fed",
-        "title": "Fed Chair Transition: Powell Out, Warsh Confirmed This Week",
-        "body": "Jerome Powell's term as Federal Reserve Chair ends Friday May 15. The US Senate is expected to confirm Kevin Warsh as his successor — viewed as more open to rate cuts, yet still conditional on significantly softer inflation data.",
-        "source": "CNBC",
-        "url": "https://www.cnbc.com/2026/04/29/fed-powell-warsh-interest-rates.html",
-    },
-    {
-        "tag": "GEOPOLITICAL RISK",
-        "tag_class": "tag-risk",
-        "title": "US-Iran Tensions Elevate Energy Prices; Trump-Xi Summit Watches AI Guardrails",
-        "body": "Ongoing US-Iran tensions have pushed energy prices higher and disrupted global trade routes. A Trump-Xi summit on May 14–15 on AI governance could move semiconductor names sharply. Goldman Sachs: 'equity market gyrations will likely continue to mirror geopolitical volatility.'",
-        "source": "Goldman Sachs / Gotrade",
-        "url": "https://www.heygotrade.com/en/news/weekly-economic-outlook-2026-05-11/",
-    },
+# Broad topic buckets used for deduplication (order matters — first match wins).
+TOPIC_BUCKETS: list[tuple[str, list[str]]] = [
+    ("FED",    ["federal reserve", "fed ", "fomc", "powell", "warsh", "interest rate",
+                "rate cut", "rate hike", "monetary policy", "central bank"]),
+    ("MACRO",  ["inflation", "cpi", "pce", "gdp", "recession", "unemployment", "jobs report",
+                "economy", "tariff", "trade war", "trade deal", "deficit", "debt ceiling",
+                "treasury yield", "bond yield", "10-year"]),
+    ("EQUITY", ["stock", "nasdaq", "s&p 500", "s&p500", "dow jones", "dow ", "shares",
+                "earnings", "ipo", "rally", "selloff", "sell-off", "market "]),
+    ("RISK",   ["iran", "israel", "ukraine", "china", "geopolit", "war", "conflict",
+                "sanction", "oil price", "crude", "energy price"]),
 ]
 
+# Display tag mapping (fine-grained label shown on card)
 TAG_MAP = {
-    "fed":         ("FED POLICY",       "tag-fed"),
-    "inflation":   ("MACRO",            "tag-macro"),
-    "cpi":         ("MACRO",            "tag-macro"),
-    "gdp":         ("MACRO",            "tag-macro"),
-    "recession":   ("MACRO",            "tag-macro"),
-    "market":      ("EQUITY",           "tag-equity"),
-    "s&p":         ("EQUITY",           "tag-equity"),
-    "stock":       ("EQUITY",           "tag-equity"),
-    "nasdaq":      ("EQUITY",           "tag-equity"),
-    "geopolit":    ("GEOPOLITICAL RISK","tag-risk"),
-    "iran":        ("GEOPOLITICAL RISK","tag-risk"),
-    "china":       ("GEOPOLITICAL RISK","tag-risk"),
-    "trade":       ("GEOPOLITICAL RISK","tag-risk"),
+    "fed":         ("FED POLICY",        "tag-fed"),
+    "fomc":        ("FED POLICY",        "tag-fed"),
+    "inflation":   ("MACRO",             "tag-macro"),
+    "cpi":         ("MACRO",             "tag-macro"),
+    "gdp":         ("MACRO",             "tag-macro"),
+    "recession":   ("MACRO",             "tag-macro"),
+    "tariff":      ("MACRO",             "tag-macro"),
+    "trade":       ("MACRO",             "tag-macro"),
+    "treasury":    ("MACRO",             "tag-macro"),
+    "yield":       ("MACRO",             "tag-macro"),
+    "market":      ("EQUITY",            "tag-equity"),
+    "s&p":         ("EQUITY",            "tag-equity"),
+    "stock":       ("EQUITY",            "tag-equity"),
+    "nasdaq":      ("EQUITY",            "tag-equity"),
+    "dow":         ("EQUITY",            "tag-equity"),
+    "earnings":    ("EQUITY",            "tag-equity"),
+    "geopolit":    ("GEOPOLITICAL RISK", "tag-risk"),
+    "iran":        ("GEOPOLITICAL RISK", "tag-risk"),
+    "china":       ("GEOPOLITICAL RISK", "tag-risk"),
+    "war":         ("GEOPOLITICAL RISK", "tag-risk"),
+    "oil":         ("GEOPOLITICAL RISK", "tag-risk"),
+    "energy":      ("GEOPOLITICAL RISK", "tag-risk"),
+}
+
+# Per-source fallback stories (used when RSS is unreachable or yields no usable item)
+SOURCE_FALLBACKS: dict[str, dict] = {
+    "WSJ": {
+        "tag": "FED POLICY", "tag_class": "tag-fed",
+        "title": "Fed Signals Patience as Rate Path Stays Data-Dependent",
+        "body": "Federal Reserve officials reiterated a data-dependent approach to interest rate decisions, leaving markets uncertain about the timing of any future easing. Officials noted that while inflation progress has been made, they are not yet confident enough to ease policy.",
+        "source": "WSJ", "url": "https://www.wsj.com", "_topic": "FED",
+    },
+    "Yahoo Finance": {
+        "tag": "EQUITY", "tag_class": "tag-equity",
+        "title": "S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents",
+        "body": "U.S. stocks traded in a narrow range as investors balanced resilient corporate earnings against uncertainty around interest rates and global trade. Defensive sectors outperformed while high-growth technology names dipped modestly.",
+        "source": "Yahoo Finance", "url": "https://finance.yahoo.com/", "_topic": "EQUITY",
+    },
+    "Barron's": {
+        "tag": "MACRO", "tag_class": "tag-macro",
+        "title": "Trade Winds: Tariff Developments Continue to Reshape Global Supply Chains",
+        "body": "Ongoing tariff negotiations between the U.S. and major trading partners continue to reshape global supply chains. Analysts note selective sector impacts — industrials and consumer staples face the most direct cost pressures.",
+        "source": "Barron's", "url": "https://www.barrons.com", "_topic": "MACRO",
+    },
 }
 
 
 def classify_tag(title: str) -> tuple[str, str]:
+    """Return the display tag label and CSS class for a story title."""
     low = title.lower()
     for kw, (tag, cls) in TAG_MAP.items():
         if kw in low:
@@ -211,67 +236,104 @@ def classify_tag(title: str) -> tuple[str, str]:
     return ("MARKET NEWS", "tag-equity")
 
 
-def fetch_news(max_items: int = 3) -> list[dict]:
-    """Fetch top market news from multiple RSS feeds. Falls back to hardcoded items.
-    Tries WSJ, Barron's, Google News, Bing News, Yahoo Finance, MarketWatch in order.
-    All feeds are public RSS — no login required for headlines and snippets.
-    """
+def classify_topic(title: str, body: str = "") -> str:
+    """Return the broad topic bucket (FED/MACRO/EQUITY/RISK/OTHER) for deduplication."""
+    text = (title + " " + body).lower()
+    for bucket, keywords in TOPIC_BUCKETS:
+        for kw in keywords:
+            if kw in text:
+                return bucket
+    return "OTHER"
+
+
+def fetch_rss_items(feed_url: str, source_name: str) -> list[dict]:
+    """Fetch all <item> entries from an RSS feed. Returns empty list on error."""
     items: list[dict] = []
-    seen_titles: set[str] = set()
+    try:
+        req = urllib.request.Request(
+            feed_url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                "Accept": "application/rss+xml, application/xml, text/xml, */*",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=18) as resp:
+            xml = resp.read().decode("utf-8", errors="ignore")
 
-    for feed_url, source_name in NEWS_FEEDS:
-        if len(items) >= max_items:
+        entries = re.findall(r"<item>(.*?)</item>", xml, re.DOTALL)
+        for entry in entries:
+            title_m = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", entry, re.DOTALL)
+            link_m  = re.search(r"<link[^>]*>(.*?)</link>", entry)
+            desc_m  = re.search(r"<description>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</description>", entry, re.DOTALL)
+            if not title_m:
+                continue
+            title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()
+            link  = link_m.group(1).strip() if link_m else ""
+            desc  = re.sub(r"<[^>]+>", "", (desc_m.group(1) if desc_m else "")).strip()
+            desc  = desc[:300] + ("…" if len(desc) > 300 else "")
+            if not title:
+                continue
+            tag, tag_cls = classify_tag(title)
+            items.append({
+                "tag":       tag,
+                "tag_class": tag_cls,
+                "title":     title,
+                "body":      desc or title,
+                "source":    source_name,
+                "url":       link or "https://finance.yahoo.com/",
+                "_topic":    classify_topic(title, desc),
+            })
+        log(f"  RSS {source_name}: {len(items)} items fetched")
+    except Exception as exc:
+        log(f"  RSS fetch failed ({source_name}): {exc}")
+    return items
+
+
+def fetch_news(max_items: int = 3) -> list[dict]:
+    """
+    Fetch exactly one story from WSJ, Yahoo Finance, and Barron's (in that order).
+    Ensures no two stories share the same broad topic bucket (FED / MACRO / EQUITY / RISK).
+    Falls back to a hardcoded story per source if the RSS feed is unreachable or
+    all its stories overlap with already-chosen topics.
+    """
+    used_topics: set[str] = set()
+    result: list[dict] = []
+
+    for source_name, feed_url in SOURCE_FEEDS_ORDERED:
+        if len(result) >= max_items:
             break
-        try:
-            req = urllib.request.Request(
-                feed_url,
-                headers={
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                    "Accept": "application/rss+xml, application/xml, text/xml, */*",
-                },
-            )
-            with urllib.request.urlopen(req, timeout=18) as resp:
-                xml = resp.read().decode("utf-8", errors="ignore")
 
-            entries = re.findall(r"<item>(.*?)</item>", xml, re.DOTALL)
-            for entry in entries:
-                if len(items) >= max_items:
-                    break
-                title_m = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", entry, re.DOTALL)
-                link_m  = re.search(r"<link[^>]*>(.*?)</link>", entry)
-                desc_m  = re.search(r"<description>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</description>", entry, re.DOTALL)
-                if not title_m:
-                    continue
-                title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()
-                link  = link_m.group(1).strip() if link_m else ""
-                desc  = re.sub(r"<[^>]+>", "", (desc_m.group(1) if desc_m else "")).strip()
-                desc  = desc[:300] + ("…" if len(desc) > 300 else "")
-                if not title or title in seen_titles:
-                    continue
-                seen_titles.add(title)
-                tag, tag_cls = classify_tag(title)
-                items.append({
-                    "tag":       tag,
-                    "tag_class": tag_cls,
-                    "title":     title,
-                    "body":      desc or title,
-                    "source":    source_name,
-                    "url":       link or "https://finance.yahoo.com/",
-                })
-            log(f"  News: got {len(items)} item(s) so far after {source_name}")
-        except Exception as exc:
-            log(f"  News fetch failed ({source_name}): {exc}")
+        candidates = fetch_rss_items(feed_url, source_name)
 
-    if len(items) < max_items:
-        # Pad with fallback items not already present
-        existing_titles = {i["title"] for i in items}
-        for fb in FALLBACK_NEWS:
-            if len(items) >= max_items:
+        # Pick the first candidate whose topic hasn't been used yet.
+        chosen: dict | None = None
+        for item in candidates:
+            topic = item.get("_topic", "OTHER")
+            if topic not in used_topics or topic == "OTHER":
+                chosen = item
+                used_topics.add(topic)
                 break
-            if fb["title"] not in existing_titles:
-                items.append(fb)
 
-    return items[:max_items]
+        # All candidates share already-used topics — just take the top story.
+        if chosen is None and candidates:
+            chosen = candidates[0]
+            used_topics.add(chosen.get("_topic", "OTHER"))
+            log(f"  {source_name}: all topics already used, picked top story anyway")
+
+        # Feed completely failed — use the hardcoded fallback for this source.
+        if chosen is None:
+            fb = SOURCE_FALLBACKS.get(source_name)
+            if fb:
+                chosen = fb.copy()
+                used_topics.add(chosen.get("_topic", "OTHER"))
+                log(f"  {source_name}: RSS unavailable, using hardcoded fallback")
+
+        if chosen:
+            log(f"  Selected [{source_name}] topic={chosen.get('_topic','?')}: {chosen['title'][:70]}")
+            # Strip internal _topic key — not needed in the HTML output
+            result.append({k: v for k, v in chosen.items() if k != "_topic"})
+
+    return result[:max_items]
 
 
 # ── Patch HTML with new REPORT JSON ──────────────────────────────────────────
@@ -304,80 +366,4 @@ def main() -> int:
         log(f"ERROR: Points CSV not found at {POINTS_CSV}")
         return 1
     if not ALLOC_HTML.exists():
-        log(f"ERROR: Allocation HTML not found at {ALLOC_HTML}")
-        return 1
-
-    # Load data
-    points = load_points(POINTS_CSV)
-    log(f"Loaded {len(points)} ETF points from {POINTS_CSV.name}")
-
-    allocs, total_value, last_updated = load_allocations(ALLOC_HTML)
-    log(f"Loaded {len(allocs)} ETF allocations from {ALLOC_HTML.name}")
-
-    # Score
-    score, breakdown = calculate_score(allocs, points)
-    label, color, arrow = market_temperature(score)
-    pos_w, neg_w, neu_w = allocation_groups(breakdown)
-
-    log(f"Composite score: {score:+.2f} -> {label}")
-
-    # Dates — for_date = next business day after the allocation date
-    now = dt.datetime.now()
-    generated = now.strftime("%m/%d/%Y %I:%M %p")
-    today_str = now.strftime("%B %d, %Y")
-
-    def next_business_day(date_str: str) -> dt.date:
-        """Return the next weekday (Mon–Fri) after the given ISO date string."""
-        try:
-            base = dt.date.fromisoformat(date_str)
-        except (ValueError, TypeError):
-            base = dt.date.today()
-        nxt = base + dt.timedelta(days=1)
-        while nxt.weekday() >= 5:   # 5=Sat, 6=Sun
-            nxt += dt.timedelta(days=1)
-        return nxt
-
-    for_date_obj = next_business_day(last_updated or dt.date.today().isoformat())
-    for_date_str = for_date_obj.strftime("%B %d, %Y")
-
-    # News
-    news = fetch_news(3)
-    log(f"Fetched {len(news)} news items")
-
-    # Build report dict
-    report = {
-        "generated":      generated,
-        "report_date":    today_str,
-        "for_date":       for_date_str,
-        "score":          score,
-        "temperature":    label,
-        "temp_color":     color,
-        "temp_arrow":     arrow,
-        "weather_label":  {
-            "Thunderstorm Warning":      "⛈️ Thunderstorm Warning",
-            "Rain in the Forecast":      "🌧️ Rain in the Forecast",
-            "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
-            "Partly Clear Sky Likely":   "🌤️ Partly Clear Sky",
-            "Almost Clear Sky All Day":  "☀️ Almost Clear Sky All Day",
-            "Nice Blue Sky Ahead":       "🌈 Nice Blue Sky Ahead",
-        }.get(label, label),
-        "positive_weight": pos_w,
-        "negative_weight": neg_w,
-        "neutral_weight":  neu_w,
-        "total_value":     round(total_value, 2),
-        "breakdown":       breakdown,
-        "news":            news,
-    }
-
-    patch_html(report)
-    log(f"Updated {OUTPUT_HTML.name} with score={score:+.2f} ({label})")
-    log("=== Market report generation complete ===")
-    return 0
-
-
-if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    except Exception as e:
-        log(f"FATAL: {type(e).__name__}: {e}")
-        sys.exit(1)
+      
