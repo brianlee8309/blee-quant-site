@@ -897,3 +897,20 @@
 [2026-05-13T18:53:20] Stamped last-updated (05/13/2026 06:53 PM) into index.html
 [2026-05-13T18:53:20] --- Pushing updates to GitHub ---
 [2026-05-13T18:53:20]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-13T18:53:21]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-13"
+[2026-05-13T18:53:21]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-13T18:53:25] GitHub push successful.
+[2026-05-13T18:54:06] market_report: === Market report generation started ===
+[2026-05-13T18:54:06] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-13T18:54:06] market_report: Loaded 16 ETF allocations from index_50.html
+[2026-05-13T18:54:06] market_report: Composite score: -36.61 -> Rain in the Forecast
+[2026-05-13T18:54:07] market_report:   RSS WSJ: 20 items fetched
+[2026-05-13T18:54:07] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-05-13T18:54:08] market_report:   RSS Yahoo Finance: 47 items fetched
+[2026-05-13T18:54:08] market_report:   Selected [Yahoo Finance] topic=OTHER: Explained: What is a perpetual DEX? A Wall Street primer featuring Dec
+[2026-05-13T18:54:10] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-05-13T18:54:10] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-13T18:54:10] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-13T18:54:10] market_report: Fetched 3 news items
+[2026-05-13T18:54:10] market_report: Updated marketDailySummary.html with score=-36.61 (Rain in the Forecast)
+[2026-05-13T18:54:10] market_report: === Market report generation complete ===
