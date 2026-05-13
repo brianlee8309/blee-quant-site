@@ -131,37 +131,6 @@
 </head>
 <body>
 
-<div id="blee-pw-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0b1120;z-index:9999;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#1e293b;padding:40px;border-radius:16px;text-align:center;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">&#128274; BLEE Quant Analytics</div>
-    <div style="color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:24px;">Daily Signal &mdash; Subscribers Only</div>
-    <input id="blee-pw-input" type="password" placeholder="Enter password" style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:15px;margin-bottom:12px;outline:none;box-sizing:border-box;">
-    <button onclick="bleePwCheck()" style="width:100%;padding:12px;background:#f59e0b;color:#000;font-weight:700;font-size:15px;border:none;border-radius:8px;cursor:pointer;">Access Daily Signal</button>
-    <div id="blee-pw-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;">Incorrect password. Please try again.</div>
-  </div>
-</div>
-<script>
-(function() {
-  var PW = 'Blee@daily2026';
-  function bleePwCheck() {
-    if (document.getElementById('blee-pw-input').value === PW) {
-      document.getElementById('blee-pw-overlay').style.display = 'none';
-      sessionStorage.setItem('blee_auth', '1');
-    } else {
-      document.getElementById('blee-pw-error').style.display = 'block';
-    }
-  }
-  window.bleePwCheck = bleePwCheck;
-  document.addEventListener('DOMContentLoaded', function() {
-    var inp = document.getElementById('blee-pw-input');
-    if (inp) inp.addEventListener('keypress', function(e) { if (e.key === 'Enter') bleePwCheck(); });
-    if (sessionStorage.getItem('blee_auth') === '1') {
-      document.getElementById('blee-pw-overlay').style.display = 'none';
-    }
-  });
-})();
-</script>
-
 <nav class="site-nav">
   <a class="site-nav-brand" href="index.html">BLEE <span>Quant</span></a>
   <div class="site-nav-links">
@@ -191,7 +160,7 @@
       <div class="value" id="stat-day"></div>
     </div>
     <div class="stat">
-      <div class="label">Total Return</div>
+      <div class="label" id="label-total">Total Return</div>
       <div class="value" id="stat-total"></div>
     </div>
     <div class="stat">
@@ -235,7 +204,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "ZGersOlsQFRHg7U2qnSw", "symphony_name": "BLEE - 185 2026 SGOV Bond and min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 06:23 AM", "total_value": 1002.49, "day_change_pct": 0.002, "total_return_pct": 1116.6141, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 89.9017, "shares": 8.96861, "market_value": 901.2556189}, {"ticker": "GLDM", "weight_pct": 9.9956, "shares": 1.06954, "market_value": 100.2052026}, {"ticker": "$USD", "weight_pct": 0.1027, "shares": 1.03, "market_value": 1.03}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.49}], "all_tickers": ["$USD", "GLDM", "SGOV"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1027], "GLDM": [9.3751, 9.9937, 9.9956], "SGOV": [85.4824, 89.9035, 89.9017]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12"]};
+const DATA = {"symphony_id": "ZGersOlsQFRHg7U2qnSw", "symphony_name": "BLEE - 185 2026 SGOV Bond and min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-12", "run_datetime": "05/12/2026 08:26 PM", "total_value": 1002.13, "day_change_pct": -0.0339, "total_return_pct": 1116.1772, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 89.9385, "shares": 8.96861, "market_value": 901.30046195}, {"ticker": "GLDM", "weight_pct": 9.9587, "shares": 1.06954, "market_value": 99.7987774}, {"ticker": "$USD", "weight_pct": 0.1028, "shares": 1.03, "market_value": 1.03}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}], "all_tickers": ["$USD", "GLDM", "SGOV"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028], "GLDM": [9.3751, 9.9937, 9.9587], "SGOV": [85.4824, 89.9035, 89.9385]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -283,6 +252,11 @@ if (DATA.total_return_pct == null) {
 } else {
   totalEl.textContent = fmtPct(DATA.total_return_pct, true);
   totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
+}
+// If a baseline_date is set, relabel "Total Return" to show the start date
+if (DATA.baseline_date) {
+  const lbl = document.getElementById("label-total");
+  if (lbl) lbl.textContent = "Return Since " + DATA.baseline_date;
 }
 
 const annEl = document.getElementById("stat-annual");
