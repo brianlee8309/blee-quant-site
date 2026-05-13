@@ -20,6 +20,7 @@ Usage (called automatically by run.bat):
 from __future__ import annotations
 
 import datetime as dt
+import json
 import re
 import shutil
 from pathlib import Path
@@ -48,6 +49,33 @@ PAGES = [
         "icon":   "📊",
     },
 ]
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _is_hollow(path: Path) -> bool:
+    """Return True if the HTML file has no real REPORT/DATA — i.e. market_report.py
+    or composer_pull_allocation.py never successfully wrote data into it.
+    Detected by looking for the empty placeholder patterns."""
+    try:
+        snippet = path.read_text(encoding="utf-8", errors="ignore")
+        # marketDailySummary: placeholder is an empty or near-empty REPORT object
+        if "const REPORT = /* __REPORT_JSON__ */" in snippet:
+            m = re.search(r"const REPORT = /\* __REPORT_JSON__ \*/ (\{.*?\});", snippet, re.DOTALL)
+            if m:
+                try:
+                    data = json.loads(m.group(1))
+                    # Hollow if score is missing or generated date is missing
+                    return not data.get("generated") and not data.get("score")
+                except Exception:
+                    return True
+            return True  # pattern found but couldn't parse → hollow
+        # dashboard pages: check for empty DATA object
+        if "const DATA = {};" in snippet or 'const DATA = {"symphony_id": ""' in snippet:
+            return True
+        return False
+    except Exception:
+        return False
 
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -303,10 +331,16 @@ def main() -> None:
         dest_name = f"{page['prefix']}_{today}.html"
         dest      = BACKLOG_DIR / dest_name
 
-        if dest.exists():
-            log(f"  Already archived today: {dest_name}")
+        if dest.exists() and not _is_hollow(dest):
+            log(f"  Already archived today (has real data): {dest_name}")
         else:
+            if dest.exists():
+                log(f"  Re-archiving today (previous copy had no real data): {dest_name}")
             html = src.read_text(encoding="utf-8")
+            # Only archive if the source itself has real data
+            if _is_hollow(src):
+                log(f"  SKIP — source {src.name} has no real data yet (market_report.py hasn't run successfully)")
+                continue
             html = patch_archive(html, page["label"], today)
             dest.write_text(html, encoding="utf-8")
             log(f"  Archived → {dest_name}")
