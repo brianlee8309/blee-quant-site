@@ -16,8 +16,32 @@ import csv
 import datetime as dt
 import io
 import json
+import os
 import re
 import sys
+import threading
+
+# ── 3-minute hard cap ─────────────────────────────────────────────────────────
+# If the script is still running after 2m55s (e.g. a hung network call),
+# the watchdog thread forces a clean exit so run.bat is never stalled.
+_TIMEOUT_SECONDS = 175   # 2m55s — leaves 5s margin before the 3-min window
+
+def _watchdog() -> None:
+    import time
+    from pathlib import Path as _Path
+    time.sleep(_TIMEOUT_SECONDS)
+    _ts = dt.datetime.now().isoformat(timespec="seconds")
+    msg = f"[{_ts}] market_report: WATCHDOG — exceeded {_TIMEOUT_SECONDS}s, forcing exit"
+    print(msg)
+    try:
+        _log = _Path(__file__).resolve().parent / "composer_run.log"
+        with open(_log, "a") as f:
+            f.write(msg + "\n")
+    except Exception:
+        pass
+    os._exit(1)
+
+threading.Thread(target=_watchdog, daemon=True).start()
 import urllib.request
 from pathlib import Path
 
@@ -32,8 +56,13 @@ LOG_PATH      = SCRIPT_DIR / "composer_run.log"
 def log(msg: str) -> None:
     ts = dt.datetime.now().isoformat(timespec="seconds")
     line = f"[{ts}] market_report: {msg}"
-    print(line)
-    with open(LOG_PATH, "a") as f:
+    # Windows cmd uses cp1252 by default — safely replace un-encodable chars
+    try:
+        print(line)
+    except UnicodeEncodeError:
+        enc = sys.stdout.encoding or "cp1252"
+        print(line.encode(enc, errors="replace").decode(enc))
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
         f.write(line + "\n")
 
 
@@ -97,14 +126,16 @@ def calculate_score(allocs: list[dict], points: dict[str, float]) -> tuple[float
 
 
 def market_temperature(score: float) -> tuple[str, str, str]:
-    """Returns (label, hex_color, arrow)."""
-    if score > 20:   return ("Strong Uptrend",            "#16a34a", "↑↑")
-    if score > 10:   return ("Positive (Uptrend)",         "#22c55e", "↑")
-    if score > 0:    return ("Leaning Positive",           "#86efac", "↗")
-    if score == 0:   return ("Neutral — Hold Gold/SGOV",   "#f59e0b", "→")
-    if score > -10:  return ("Leaning Negative",           "#fca5a5", "↘")
-    if score > -20:  return ("Negative (Downtrend)",       "#ef4444", "↓")
-    return                  ("Clear Downtrend",            "#dc2626", "↓↓")
+    """Returns (label, hex_color, arrow).
+    Positive tiers (0–30 / 30–50 / 50+) use clear-sky language.
+    Negative tiers (0 to -50 = rain, below -50 = thunderstorm).
+    """
+    if score > 50:   return ("Nice Blue Sky Ahead",        "#16a34a", "^")
+    if score > 30:   return ("Almost Clear Sky All Day",   "#22c55e", "^")
+    if score > 0:    return ("Partly Clear Sky Likely",    "#86efac", "^")
+    if score == 0:   return ("Neutral — Hold Gold/SGOV",   "#f59e0b", "-")
+    if score > -50:  return ("Rain in the Forecast",       "#ef4444", "v")
+    return                  ("Thunderstorm Warning",       "#dc2626", "v")
 
 
 def allocation_groups(breakdown: list[dict]) -> tuple[float, float, float]:
@@ -117,9 +148,15 @@ def allocation_groups(breakdown: list[dict]) -> tuple[float, float, float]:
 
 # ── Fetch news from Yahoo Finance RSS ────────────────────────────────────────
 
+# Public RSS feeds — no login required for headlines/summaries.
+# WSJ and Barron's paywall applies to full articles, not RSS titles+snippets.
 NEWS_FEEDS = [
-    "https://finance.yahoo.com/news/rssindex",           # Yahoo Finance general
-    "https://feeds.content.dowjones.io/public/rss/mw_marketpulse",  # MarketWatch
+    ("https://feeds.a.dj.com/rss/RSSMarketsMain.xml",                                              "WSJ"),
+    ("https://www.barrons.com/xml/rss/3_7019.xml",                                                 "Barron's"),
+    ("https://news.google.com/rss/search?q=stock+market+today&hl=en-US&gl=US&ceid=US:en",          "Google News"),
+    ("https://www.bing.com/news/search?q=US+stock+market+today&format=rss",                        "Bing News"),
+    ("https://finance.yahoo.com/news/rssindex",                                                     "Yahoo Finance"),
+    ("https://feeds.content.dowjones.io/public/rss/mw_marketpulse",                                "MarketWatch"),
 ]
 
 FALLBACK_NEWS = [
@@ -175,46 +212,55 @@ def classify_tag(title: str) -> tuple[str, str]:
 
 
 def fetch_news(max_items: int = 3) -> list[dict]:
-    """Fetch top market news from RSS feeds. Falls back to hardcoded items."""
+    """Fetch top market news from multiple RSS feeds. Falls back to hardcoded items.
+    Tries WSJ, Barron's, Google News, Bing News, Yahoo Finance, MarketWatch in order.
+    All feeds are public RSS — no login required for headlines and snippets.
+    """
     items: list[dict] = []
-    for feed_url in NEWS_FEEDS:
+    seen_titles: set[str] = set()
+
+    for feed_url, source_name in NEWS_FEEDS:
         if len(items) >= max_items:
             break
         try:
             req = urllib.request.Request(
                 feed_url,
-                headers={"User-Agent": "Mozilla/5.0 (blee-market-report/1.0)"},
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                    "Accept": "application/rss+xml, application/xml, text/xml, */*",
+                },
             )
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=18) as resp:
                 xml = resp.read().decode("utf-8", errors="ignore")
 
-            # Minimal RSS parser (no external libs)
             entries = re.findall(r"<item>(.*?)</item>", xml, re.DOTALL)
             for entry in entries:
                 if len(items) >= max_items:
                     break
                 title_m = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", entry, re.DOTALL)
-                link_m  = re.search(r"<link>(.*?)</link>", entry)
+                link_m  = re.search(r"<link[^>]*>(.*?)</link>", entry)
                 desc_m  = re.search(r"<description>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</description>", entry, re.DOTALL)
                 if not title_m:
                     continue
                 title = re.sub(r"<[^>]+>", "", title_m.group(1)).strip()
                 link  = link_m.group(1).strip() if link_m else ""
                 desc  = re.sub(r"<[^>]+>", "", (desc_m.group(1) if desc_m else "")).strip()
-                desc  = desc[:280] + ("…" if len(desc) > 280 else "")
-                if not title:
+                desc  = desc[:300] + ("…" if len(desc) > 300 else "")
+                if not title or title in seen_titles:
                     continue
+                seen_titles.add(title)
                 tag, tag_cls = classify_tag(title)
                 items.append({
                     "tag":       tag,
                     "tag_class": tag_cls,
                     "title":     title,
                     "body":      desc or title,
-                    "source":    "Yahoo Finance",
+                    "source":    source_name,
                     "url":       link or "https://finance.yahoo.com/",
                 })
+            log(f"  News: got {len(items)} item(s) so far after {source_name}")
         except Exception as exc:
-            log(f"  (news fetch failed for {feed_url}: {exc})")
+            log(f"  News fetch failed ({source_name}): {exc}")
 
     if len(items) < max_items:
         # Pad with fallback items not already present
@@ -273,7 +319,7 @@ def main() -> int:
     label, color, arrow = market_temperature(score)
     pos_w, neg_w, neu_w = allocation_groups(breakdown)
 
-    log(f"Composite score: {score:+.2f} → {label}")
+    log(f"Composite score: {score:+.2f} -> {label}")
 
     # Dates — for_date = next business day after the allocation date
     now = dt.datetime.now()
@@ -308,13 +354,12 @@ def main() -> int:
         "temp_color":     color,
         "temp_arrow":     arrow,
         "weather_label":  {
-            "Clear Downtrend":          "⛈️ Thunderstorm",
-            "Negative (Downtrend)":     "🌧️ Rainy",
-            "Leaning Negative":         "🌦️ Cloudy with Showers",
-            "Neutral — Hold Gold/SGOV": "⛅ Overcast",
-            "Leaning Positive":         "🌤️ Partly Sunny",
-            "Positive (Uptrend)":       "☀️ Sunny",
-            "Strong Uptrend":           "🌈 Clear Blue Skies",
+            "Thunderstorm Warning":      "⛈️ Thunderstorm Warning",
+            "Rain in the Forecast":      "🌧️ Rain in the Forecast",
+            "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
+            "Partly Clear Sky Likely":   "🌤️ Partly Clear Sky",
+            "Almost Clear Sky All Day":  "☀️ Almost Clear Sky All Day",
+            "Nice Blue Sky Ahead":       "🌈 Nice Blue Sky Ahead",
         }.get(label, label),
         "positive_weight": pos_w,
         "negative_weight": neg_w,
