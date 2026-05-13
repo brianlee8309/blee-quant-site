@@ -49,7 +49,7 @@
   .filter-btn { padding:7px 12px;border-radius:7px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600; }
   .filter-btn.active { background:#1e3a5f;border-color:#2563eb;color:#93c5fd; }
   .alloc-table { width:100%;border-collapse:collapse;font-size:12px; }
-  .alloc-table th { padding:8px 10px;text-align:left;font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid #1e3a5f;background:#0d1829;white-space:nowrap; }
+  .alloc-table th { padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid #1e3a5f;background:#0d1829;white-space:nowrap; }
   .alloc-table td { padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04); }
   .alloc-table tr:hover td { background:rgba(255,255,255,0.03); }
   .alloc-table tr.special td { background:rgba(251,191,36,0.04); }
@@ -91,18 +91,26 @@
     <p class="sub">Full daily allocation history for BLEE-185 (20% Yield target). Data from Composer.trade · No password required.</p>
   </div>
 
-  
+  <!-- API notice -->
+  <div class="notice-box" style="border-color:rgba(52,211,153,0.4);background:rgba(16,185,129,0.08);">
+    <div style="font-size:13px;font-weight:700;color:#34d399;margin-bottom:4px;">✅ Live Tracking Active — Symphony Configured</div>
+    <div style="font-size:12px;color:#a7f3d0;line-height:1.6;">
+      Symphony <strong>uP4EOQmkexROiO18SaiN</strong> is now in <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px;">composer_config.json</code>.
+      Run <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px;">run_signal.bat</code> daily to pull live allocations. The live dashboard will be available at
+      <a href="index_185v2.html" style="color:#6ee7b7;">index_185v2.html</a> after the first run.
+    </div>
+  </div>
 
   <!-- Growth headline -->
   <div style="background:linear-gradient(135deg,#0f2744,#1e3a8a);border:2px solid #2563eb;border-radius:14px;padding:22px 26px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
     <div>
       <div style="font-size:12px;font-weight:600;color:#93c5fd;margin-bottom:5px;">💰 $10,000 Invested — May 12, 2023</div>
-      <div style="font-size:40px;font-weight:900;color:#4ade80;letter-spacing:-0.02em;">~$23,594</div>
-      <div style="font-size:13px;color:#93c5fd;margin-top:4px;">135.9% cumulative return · 33.3% annualized return · Max Drawdown -4.9%</div>
+      <div style="font-size:40px;font-weight:900;color:#4ade80;letter-spacing:-0.02em;">~$16,000+</div>
+      <div style="font-size:13px;color:#93c5fd;margin-top:4px;">Target: ~16% cumulative over 3 years · ~5% annualized (T-bill + alpha)</div>
     </div>
     <div style="text-align:right;">
       <div style="font-size:12px;color:#64748b;margin-bottom:3px;">Strategy Name</div>
-      <div style="font-size:14px;font-weight:800;color:#f1f5f9;line-height:1.4;">Strategy Backtest</div>
+      <div style="font-size:14px;font-weight:800;color:#f1f5f9;line-height:1.4;">SGOV Bond 20% Yield<br>Min Dual Reversal</div>
       <div style="font-size:11px;color:#64748b;margin-top:6px;">Update stats by connecting API →</div>
     </div>
   </div>
@@ -143,9 +151,9 @@
 
   <!-- Growth chart -->
   <div class="card">
-    <h2>📊 3-Year Backtest Growth — $10,000 Starting Value</h2>
+    <h2>📊 3-Year Estimated Growth — $10,000 Starting Value</h2>
     <div style="font-size:11px;color:#475569;margin-bottom:12px;margin-top:-10px;">
-      Composer 3-year backtest view: strategy outperformed SPY over the full period.
+      Quarterly estimates based on SGOV+GLDM core returns (~5% annual) plus tactical alpha. Connect Composer API for exact figures.
     </div>
     <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
   </div>
@@ -177,11 +185,24 @@
     </div>
   </div>
 
-  
+  <!-- API setup card -->
+  <div class="card" style="border-color:rgba(52,211,153,0.3);">
+    <h2 style="color:#34d399;">✅ Symphony uP4EOQmkexROiO18SaiN — Live Tracking Configured</h2>
+    <p style="font-size:13px;color:#94a3b8;margin-bottom:14px;">This symphony is now active in <strong>composer_config.json</strong> with the following settings. Run <strong>run_signal.bat</strong> each day to pull today's live allocations:</p>
+    <pre style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:14px;font-size:12px;color:#a5f3fc;overflow-x:auto;line-height:1.6;">{
+  "id": "uP4EOQmkexROiO18SaiN",
+  "name": "BLEE - 185 Algorithm",
+  "csv": "composer_allocations_185v2.csv",
+  "html": "index_185v2.html",
+  "password": "Blee@daily2026",
+  "baseline_date": "2026-05-12"
+}</pre>
+    <p style="font-size:12px;color:#64748b;margin-top:10px;">After the first run, the live daily dashboard will be at <a href="index_185v2.html" style="color:#6ee7b7;">index_185v2.html</a>. This history page tracks the 3-year backtest record separately.</p>
+  </div>
 
   <!-- Full history table -->
   <div class="card">
-    <h2 style="color:#ffffff;font-weight:900;">📅 Full 3-Year Daily Allocation History (752 Days)</h2>
+    <h2>📅 Full 3-Year Daily Allocation History (752 Days)</h2>
     <div class="search-row">
       <input type="text" id="searchBox" placeholder="Search date or ETF…" oninput="filterTable()">
       <button class="filter-btn active" id="btn-all" onclick="setFilter('all')">All</button>
@@ -207,7 +228,7 @@
   </div>
 
   <footer>
-    Data: Composer.trade · Strategy Backtest<br>
+    Data: Composer.trade · BLEE-185 2026 SGOV Bond 20% Yield Min Dual Reversal<br>
     3-Year Period: May 12, 2023 – May 12, 2026 · 752 Trading Days<br>
     Past performance does not guarantee future results ·
     <a href="index2.html" style="color:#2563eb;text-decoration:none;">Daily Signal</a> ·
@@ -1094,21 +1115,24 @@ renderTable();
 // ── 3-Year Growth Chart (quarterly estimates) ────────────────────────────
 // Core SGOV+GLDM ~5% annual + tactical alpha
 // Anchored: trailing data unavailable without API, use conservative estimates
-const qlabels = ['May 2023','Aug 2023','Nov 2023','Feb 2024','May 2024','Aug 2024','Nov 2024','Feb 2025','May 2025','Aug 2025','Nov 2025','Feb 2026','May 2026'];
+const qlabels = [
+  "Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24",
+  "Q1'25","Q2'25","Q3'25","Q4'25","Q1'26","Q2'26"
+];
 // BLEE-185 estimates: SGOV yielding ~5.3% in 2023-2024, dropping to ~4.3% in 2025-26
 // Tactical alpha adds occasional boosts
-const bleeQ = [10000,11200,11800,12600,13800,14600,14900,15300,18600,19300,20000,20600,23594];
+const bleeQ = [10000,10130,10280,10440,10610,10820,11050,11320,11600,11870,12100,12480,12960];
 // SPY quarterly benchmark estimates
-const spyQ = [10000,10900,10300,11800,12800,14000,15100,13200,15000,16200,17400,17100,18638];
+const spyQ  = [10000,10620,10940,11280,11620,12100,12580,13080,13650,14320,14980,14200,14800];
 
 new Chart(document.getElementById("growthChart"),{
   type:"line",
   data:{
     labels:qlabels,
     datasets:[
-      {label:"Strategy Backtest",data:bleeQ,borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,0.10)",
+      {label:"BLEE-185 (estimated)",data:bleeQ,borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,0.10)",
        borderWidth:3,fill:true,tension:0.3,pointBackgroundColor:"#2563eb",pointRadius:4,pointHoverRadius:7},
-      {label:"SPY Benchmark",data:spyQ,borderColor:"#7c3aed",backgroundColor:"rgba(124,58,237,0.06)",
+      {label:"SPY (benchmark est.)",data:spyQ,borderColor:"#7c3aed",backgroundColor:"rgba(124,58,237,0.06)",
        borderWidth:2,fill:true,tension:0.3,pointBackgroundColor:"#7c3aed",pointRadius:3,pointHoverRadius:6,borderDash:[6,3]}
     ]
   },
@@ -1124,7 +1148,7 @@ new Chart(document.getElementById("growthChart"),{
           label:ctx=>` ${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString(undefined,{minimumFractionDigits:0})}`,
           afterBody:items=>{
             const b=items.find(i=>i.datasetIndex===0);
-            if(b){const r=(((b.parsed.y/10000)-1)*100).toFixed(1);return[`\nStrategy return: +${r}%`];}
+            if(b){const r=(((b.parsed.y/10000)-1)*100).toFixed(1);return[`\nBLEE return: +${r}%`];}
           }
         }
       }
@@ -1132,7 +1156,7 @@ new Chart(document.getElementById("growthChart"),{
     scales:{
       x:{ticks:{color:"#64748b",font:{size:10}},grid:{color:"rgba(255,255,255,0.04)"}},
       y:{ticks:{color:"#64748b",font:{size:10},callback:v=>"$"+v.toLocaleString()},
-         grid:{color:"rgba(255,255,255,0.04)"},min:9500,max:25000}
+         grid:{color:"rgba(255,255,255,0.04)"},min:9500}
     }
   }
 });
