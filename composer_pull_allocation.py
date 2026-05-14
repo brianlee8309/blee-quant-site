@@ -706,6 +706,51 @@ def main() -> int:
             log(f"  ERROR: no positions found for {sid}; skipping CSV/HTML for this symphony")
             continue
 
+        # ── RSI Override: if RSI-14 > 76 today AND any prior day > 76,
+        #    replace VIXY and SPXU allocations with TQQQ ──────────────────
+        try:
+            import rsi_tracker as _rsi_mod
+            _override = _rsi_mod.check_rsi_override(threshold=76.0, lookback=10)
+            if _override["active"]:
+                log(f"  *** RSI OVERRIDE ACTIVE for {sname} — remapping VIXY/SPXU → TQQQ 65% / UPRO 35% ***")
+                log(f"  {_override['reason']}")
+                # Split ratios for the freed weight (must sum to 1.0)
+                _SPLIT = {"TQQQ": 0.65, "UPRO": 0.35}
+                _override_tickers = {"VIXY", "SPXU"}
+                _extra_weight = 0.0
+                _extra_value  = 0.0
+                _kept = []
+                for _p in positions:
+                    if _p.get("ticker") in _override_tickers:
+                        _extra_weight += _p.get("weight_pct", 0.0)
+                        _extra_value  += _p.get("market_value", 0.0)
+                        log(f"    Removing {_p['ticker']} ({_p.get('weight_pct',0):.2f}%) — will redistribute")
+                    else:
+                        _kept.append(_p)
+                if _extra_weight > 0:
+                    for _dest, _ratio in _SPLIT.items():
+                        _add_w = round(_extra_weight * _ratio, 4)
+                        _add_v = round(_extra_value  * _ratio, 2)
+                        _row = next((_p for _p in _kept if _p.get("ticker") == _dest), None)
+                        if _row:
+                            _row["weight_pct"]  = round(_row.get("weight_pct", 0)  + _add_w, 4)
+                            _row["market_value"] = round(_row.get("market_value", 0) + _add_v, 2)
+                            log(f"    +{_add_w:.2f}% → {_dest} (merged, now {_row['weight_pct']:.2f}%)")
+                        else:
+                            _kept.append({
+                                "ticker":       _dest,
+                                "weight_pct":   _add_w,
+                                "market_value": _add_v,
+                                "shares":       None,
+                                "price":        None,
+                            })
+                            log(f"    +{_add_w:.2f}% → {_dest} (new row)")
+                    positions = _kept
+            else:
+                log(f"  RSI override not triggered: {_override['reason']}")
+        except Exception as _rsi_err:
+            log(f"  (RSI override check failed: {type(_rsi_err).__name__}: {_rsi_err})")
+
         # Save a per-symphony JSON snapshot of today's slice (handy for
         # debugging). Includes the raw symphony entry from the API so you can
         # inspect cash, value, and any other fields Composer returned.
@@ -734,13 +779,64 @@ def main() -> int:
         except Exception as e:  # pylint: disable=broad-except
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 
+        # ── Update Algorithm185History.html ALLOC_DATA with today's row ───
+        # Only runs for the Daily Signal symphony (qjmHJ3IR19kmaAlbgkNj)
+        if sid == "qjmHJ3IR19kmaAlbgkNj":
+            try:
+                import re as _re185
+                _hist_path = SCRIPT_DIR / "Algorithm185History.html"
+                if _hist_path.exists():
+                    # Map positions to the fixed column order
+                    _COLS = ["UPRO", "GLDM", "$USD", "SPXU", "TECL",
+                             "TQQQ", "VIXY", "SGOV", "GLD", "UDOW", "SQQQ", "PSQ"]
+                    _pos_map = {
+                        p["ticker"]: p.get("weight_pct", 0.0)
+                        for p in positions if p.get("ticker")
+                    }
+
+                    def _fmt_w(ticker):
+                        w = _pos_map.get(ticker, 0.0)
+                        return f"{round(w, 1)}%" if w > 0 else "-"
+
+                    _new_row_vals = [f'"{today}"'] + [f'"{_fmt_w(t)}"' for t in _COLS]
+                    _new_row_js   = f'  [{", ".join(_new_row_vals)}]'
+
+                    _hist_html = _hist_path.read_text(encoding="utf-8")
+
+                    # Check if today's date is already in ALLOC_DATA
+                    if f'"{today}"' in _hist_html:
+                        # Replace existing row for today
+                        _hist_html = _re185.sub(
+                            rf'  \["{today}"[^\]]*\]',
+                            _new_row_js,
+                            _hist_html
+                        )
+                        log(f"  Updated today's row in Algorithm185History.html")
+                    else:
+                        # Prepend new row just after the opening bracket
+                        _hist_html = _hist_html.replace(
+                            "const ALLOC_DATA = [\n",
+                            "const ALLOC_DATA = [\n" + _new_row_js + ",\n"
+                        )
+                        log(f"  Prepended {today} row to Algorithm185History.html ALLOC_DATA")
+
+                    _hist_path.write_text(_hist_html, encoding="utf-8")
+            except Exception as _e185:
+                log(f"  (Algorithm185History update failed: {type(_e185).__name__}: {_e185})")
+
     log("=== Done ===")
 
     # ---- Stamp last-updated timestamp into static HTML pages -----------------
     import re as _re
-    now_str = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p")
-    stamp_pages = ["index.html", "performance1.html"]
-    for page in stamp_pages:
+    try:
+        import pytz as _pytz
+        _et = _pytz.timezone("America/New_York")
+        now_str = dt.datetime.now(_et).strftime("%m/%d/%Y %I:%M %p ET")
+    except ImportError:
+        now_str = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p ET")
+
+    # Pages that use <span id="blee-updated"> (main landing + performance)
+    for page in ["index.html"]:
         page_path = SCRIPT_DIR / page
         if not page_path.exists():
             continue
@@ -749,6 +845,24 @@ def main() -> int:
             updated = _re.sub(
                 r'<span id="blee-updated">[^<]*</span>',
                 f'<span id="blee-updated">{now_str}</span>',
+                content
+            )
+            if updated != content:
+                page_path.write_text(updated, encoding="utf-8")
+                log(f"Stamped last-updated ({now_str}) into {page}")
+        except Exception as e:
+            log(f"  (could not stamp timestamp into {page}: {e})")
+
+    # Pages that use <span id="page-last-updated"> (performance, backtest)
+    for page in ["performance1.html", "Algorithm185History.html"]:
+        page_path = SCRIPT_DIR / page
+        if not page_path.exists():
+            continue
+        try:
+            content = page_path.read_text(encoding="utf-8")
+            updated = _re.sub(
+                r'<span id="page-last-updated">[^<]*</span>',
+                f'<span id="page-last-updated">{now_str}</span>',
                 content
             )
             if updated != content:

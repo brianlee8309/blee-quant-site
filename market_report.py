@@ -378,6 +378,37 @@ def main() -> int:
 
     # Score
     score, breakdown = calculate_score(allocs, points)
+
+    # ── RSI-14 signal adjustment + override ──────────────────────────────
+    rsi_info = {"rsi_today": None, "avg_10d": None, "signal": "RSI unavailable",
+                "score_adj": 0, "history": [], "available": False}
+    rsi_override = {"active": False, "reason": "not checked"}
+    try:
+        import rsi_tracker as _rsi
+        _rsi_row = _rsi.fetch_and_store()
+        if _rsi_row:
+            log(f"  RSI-14 fetched: {_rsi_row['rsi14']} (SPY close={_rsi_row['close']})")
+
+        rsi_info = _rsi.get_rsi_signal(lookback=10)
+        if rsi_info["available"]:
+            score = round(score + rsi_info["score_adj"], 4)
+            log(f"  RSI signal: {rsi_info['signal']} "
+                f"(10d avg={rsi_info['avg_10d']}, adj={rsi_info['score_adj']:+d}, "
+                f"new score={score:+.2f})")
+        else:
+            log(f"  RSI signal: {rsi_info['signal']} (no adjustment)")
+
+        # ── RSI override: today > 76 AND at least one prior day > 76 ─────
+        rsi_override = _rsi.check_rsi_override(threshold=76.0, lookback=10)
+        if rsi_override["active"]:
+            score = round(score + 50, 4)
+            log(f"  *** RSI OVERRIDE ACTIVE *** +50 pts → score={score:+.2f}")
+            log(f"  Reason: {rsi_override['reason']}")
+        else:
+            log(f"  RSI override not triggered: {rsi_override['reason']}")
+    except Exception as _e:
+        log(f"  RSI integration error: {type(_e).__name__}: {_e}")
+
     label, color, arrow = market_temperature(score)
     pos_w, neg_w, neu_w = allocation_groups(breakdown)
 
@@ -429,10 +460,46 @@ def main() -> int:
         "total_value":     round(total_value, 2),
         "breakdown":       breakdown,
         "news":            news,
+        "rsi14_today":        rsi_info.get("rsi_today"),
+        "rsi14_avg10d":       rsi_info.get("avg_10d"),
+        "rsi14_signal":       rsi_info.get("signal", ""),
+        "rsi14_score_adj":    rsi_info.get("score_adj", 0),
+        "rsi14_history":      rsi_info.get("history", []),
+        "rsi14_override":     rsi_override.get("active", False),
+        "rsi14_override_why": rsi_override.get("reason", ""),
     }
 
     patch_html(report)
     log(f"Updated {OUTPUT_HTML.name} with score={score:+.2f} ({label})")
+
+    # ── Stamp last-updated on all static pages ─────────────────────────────
+    import re as _re
+    try:
+        import pytz as _pytz
+        _et = _pytz.timezone("America/New_York")
+        _now_str = dt.datetime.now(_et).strftime("%m/%d/%Y %I:%M %p ET")
+    except ImportError:
+        _now_str = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p ET")
+
+    _stamp_map = {
+        "index.html":               r'<span id="blee-updated">[^<]*</span>',
+        "performance1.html":        r'<span id="page-last-updated">[^<]*</span>',
+        "Algorithm185History.html": r'<span id="page-last-updated">[^<]*</span>',
+    }
+    for _pg, _pat in _stamp_map.items():
+        _pp = SCRIPT_DIR / _pg
+        if not _pp.exists():
+            continue
+        try:
+            _html = _pp.read_text(encoding="utf-8")
+            _span_id = "blee-updated" if "blee-updated" in _pat else "page-last-updated"
+            _new_html = _re.sub(_pat, f'<span id="{_span_id}">{_now_str}</span>', _html)
+            if _new_html != _html:
+                _pp.write_text(_new_html, encoding="utf-8")
+                log(f"Stamped last-updated ({_now_str}) into {_pg}")
+        except Exception as _e:
+            log(f"  (stamp failed for {_pg}: {_e})")
+
     log("=== Market report generation complete ===")
     return 0
 
