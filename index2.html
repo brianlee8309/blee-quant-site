@@ -170,12 +170,24 @@
     </div>
   </div>
 
-  <div id="rsi-override-banner" style="display:flex;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:12px;padding:14px 20px;margin-bottom:16px;align-items:center;gap:14px;">
+  <!-- RSI Override Banner (shown when override is active) -->
+  <div id="rsi-override-banner" style="display:none;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:12px;padding:14px 20px;margin-bottom:16px;align-items:center;gap:14px;">
     <span style="font-size:24px;">⚡</span>
     <div>
-      <div style="font-size:14px;font-weight:800;color:#fff;">RSI OVERRIDE ACTIVE — Distribution Monitored</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.80);margin-top:3px;">SPY RSI-14 is 76.2 today — exceeded 76 on 2026-05-09 as well. VIXY &amp; SPXU (if allocated) are redirected: TQQQ 65% · UPRO 35%. No VIXY/SPXU in current positions.</div>
+      <div style="font-size:14px;font-weight:800;color:#fff;">RSI OVERRIDE ACTIVE — Distribution Adjusted</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.80);margin-top:3px;">
+        SPY RSI-14 exceeded 76 today and was sustained over the past 10 days.
+        VIXY &amp; SPXU allocations (if any) redistributed: TQQQ 65% · UPRO 35%.
+        <span id="rsi-override-detail"></span>
+      </div>
     </div>
+  </div>
+
+  <!-- RSI Signal Strip -->
+  <div id="rsi-strip" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
+    <div style="font-size:22px;font-weight:800;" id="rsi-val-display">—</div>
+    <div style="font-size:12px;color:#64748b;" id="rsi-signal-display">—</div>
   </div>
 
   <div class="row">
@@ -267,7 +279,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id":"qjmHJ3IR19kmaAlbgkNj","symphony_name":"BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal","csv_filename":"composer_allocations_185.csv","account_uuid":"b0d61a36-f329-4226-9d82-4494deaee5f5","last_updated":"2026-05-13","run_datetime":"05/13/2026 09:45 PM ET","total_value":1001.37,"day_change_pct":-0.0758,"total_return_pct":0.0,"annualized_return_pct":null,"today_allocations":[{"ticker":"GLDM","weight_pct":9.2,"shares":null,"market_value":92.13},{"ticker":"TQQQ","weight_pct":8.0,"shares":null,"market_value":80.11},{"ticker":"SGOV","weight_pct":82.8,"shares":null,"market_value":829.13}],"value_history":[{"date":"2026-05-11","total":1002.47},{"date":"2026-05-12","total":1002.13},{"date":"2026-05-13","total":1001.37}],"all_tickers":["GLDM","SGOV","TECL","TQQQ"],"weight_history":{"GLDM":[9.2,9.2,9.2,9.2],"SGOV":[82.8,82.8,82.8,82.8],"TECL":[8.0,8.0,0.0,0.0],"TQQQ":[0.0,0.0,8.0,8.0]},"dates":["2026-05-08","2026-05-11","2026-05-12","2026-05-13"],"baseline_date":"2026-05-13","rsi14_today":76.18,"rsi14_avg10d":76.03,"rsi14_signal":"Severely Overbought - strong bear lean","rsi14_score_adj":-20,"rsi14_history":[{"date":"2026-05-09","ticker":"SPY","rsi14":"76.53","close":"0"},{"date":"2026-05-12","ticker":"SPY","rsi14":"75.38","close":"0"},{"date":"2026-05-13","ticker":"SPY","rsi14":"76.18","close":"0"}],"rsi14_override":true,"rsi14_override_why":"Today RSI 76.2 > 76.0 AND 2026-05-09 also exceeded 76.0 - override ACTIVE"};
+const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-14", "run_datetime": "05/14/2026 07:15 PM", "total_value": 997.89, "day_change_pct": -0.3475, "total_return_pct": 1111.0316, "annualized_return_pct": null, "today_allocations": [{"ticker": "VIXY", "weight_pct": 59.693, "shares": 22.30977, "market_value": 595.670859}, {"ticker": "SPXU", "weight_pct": 32.2018, "shares": 8.58504, "market_value": 321.3380472}, {"ticker": "TQQQ", "weight_pct": 8.003, "shares": 1.01154, "market_value": 79.861083}, {"ticker": "$USD", "weight_pct": 0.1022, "shares": 1.02, "market_value": 1.02}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -753,6 +765,35 @@ document.addEventListener("DOMContentLoaded", function() {
   const inp = document.getElementById("calc-input");
   if (inp) inp.addEventListener("keydown", function(e) { if (e.key === "Enter") runCalc(); });
 });
+
+// ── RSI Override banner ──────────────────────────────────────────────────────
+(function() {
+  const rsiToday = DATA.rsi14_today;
+  const rsiSignal = DATA.rsi14_signal || "";
+  const rsiOverride = DATA.rsi14_override || false;
+
+  if (rsiToday != null) {
+    const strip = document.getElementById("rsi-strip");
+    if (strip) {
+      strip.style.display = "flex";
+      const rsiColor = rsiToday >= 70 ? "#ef4444" : rsiToday <= 30 ? "#22c55e" : rsiToday >= 55 ? "#f97316" : "#64748b";
+      document.getElementById("rsi-val-display").textContent = rsiToday.toFixed(1);
+      document.getElementById("rsi-val-display").style.color = rsiColor;
+      document.getElementById("rsi-signal-display").textContent = rsiSignal;
+    }
+  }
+
+  if (rsiOverride) {
+    const banner = document.getElementById("rsi-override-banner");
+    if (banner) {
+      banner.style.display = "flex";
+      const detailEl = document.getElementById("rsi-override-detail");
+      if (detailEl && DATA.rsi14_override_why) {
+        detailEl.textContent = " — " + DATA.rsi14_override_why;
+      }
+    }
+  }
+})();
 </script>
 </body>
 </html>

@@ -1209,3 +1209,38 @@
 [2026-05-13T22:46:30] Stamped last-updated (05/13/2026 10:46 PM ET) into Algorithm185History.html
 [2026-05-13T22:46:30] --- Pushing updates to GitHub ---
 [2026-05-13T22:46:30]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-13T22:46:30]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-13"
+[2026-05-13T22:46:30]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-13T22:46:34] GitHub push successful.
+[2026-05-14T19:15:50] archive: === Archive started ===
+[2026-05-14T19:15:51] === Composer daily allocation pull ===
+[2026-05-14T19:15:51] Configured symphonies: ['sRxc0F27TQYj10bWwIlO', 'qjmHJ3IR19kmaAlbgkNj', 'uP4EOQmkexROiO18SaiN']
+[2026-05-14T19:15:51] No account_uuid in config; discovering via /accounts/list...
+[2026-05-14T19:15:53] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-14T19:15:53] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-14T19:15:53] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-14T19:15:53] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-14T19:15:54] Saved symphony-stats response to composer_symphony_stats_2026-05-14.json
+[2026-05-14T19:15:54] --- BLEE - 186 2026 ALL in One (sRxc0F27TQYj10bWwIlO) ---
+[2026-05-14T19:15:54]   Got 15 positions from symphony-stats-meta
+[2026-05-14T19:15:55]   (RSI override check failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 101: character maps to <undefined>)
+[2026-05-14T19:15:55]   Saved today's slice to composer_allocations_2026-05-14.json
+[2026-05-14T19:15:55]   Wrote 15 rows for 2026-05-14 to composer_allocations.csv (kept 59 prior rows, source=symphony-stats-meta)
+[2026-05-14T19:15:55] Generated dashboard -> index_50.html (value=$39,222.65, days=5)
+[2026-05-14T19:15:55] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-14T19:15:55]   Got 4 positions from symphony-stats-meta
+[2026-05-14T19:15:55]   (RSI override check failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 132: character maps to <undefined>)
+[2026-05-14T19:15:55]   Saved today's slice to composer_allocations_185_2026-05-14.json
+[2026-05-14T19:15:55]   Wrote 4 rows for 2026-05-14 to composer_allocations_185.csv (kept 11 prior rows, source=symphony-stats-meta)
+[2026-05-14T19:15:55] Generated dashboard -> index2.html (value=$997.89, days=5)
+[2026-05-14T19:15:55]   Prepended 2026-05-14 row to composer_allocations_185_3yr2.csv
+[2026-05-14T19:15:55]   Prepended 2026-05-14 row to Algorithm185History.html ALLOC_DATA
+[2026-05-14T19:15:55] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-14T19:15:55]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-14 JSON to verify the id matches one in the response)
+[2026-05-14T19:15:55]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-14T19:15:55] === Done ===
+[2026-05-14T19:16:08] Stamped last-updated (05/14/2026 07:16 PM ET) into index.html
+[2026-05-14T19:16:08] Stamped last-updated (05/14/2026 07:16 PM ET) into performance1.html
+[2026-05-14T19:16:08] Stamped last-updated (05/14/2026 07:16 PM ET) into Algorithm185History.html
+[2026-05-14T19:16:08] --- Pushing updates to GitHub ---
+[2026-05-14T19:16:08]   $ git -C "C:\Kei\ComposerInvest" add .

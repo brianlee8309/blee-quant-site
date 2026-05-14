@@ -1,0 +1,21 @@
+date,run_datetime,mode,account,portfolio_value,ticker,action,target_pct,target_value,qty_shares,limit_price,order_id,status
+2026-05-14,2026-05-14 04:45:30,live,U25734106,1000.0,GLDM,BUY,9.2,91.54,0.986635,92.97,4,Cancelled
+2026-05-14,2026-05-14 04:45:30,live,U25734106,1000.0,TQQQ,BUY,8.0,79.6,1.030554,77.39,6,Cancelled
+2026-05-14,2026-05-14 04:45:30,live,U25734106,1000.0,SGOV,BUY,82.8,823.86,8.196796,100.71,8,Cancelled
+2026-05-14,2026-05-14 04:56:16,live,U25734106,1000.0,GLDM,HOLD,9.2,,,,,no change
+2026-05-14,2026-05-14 04:56:16,live,U25734106,1000.0,TQQQ,HOLD,8.0,,,,,no change
+2026-05-14,2026-05-14 04:56:16,live,U25734106,1000.0,SGOV,HOLD,82.8,,,,,no change
+2026-05-14,2026-05-14 04:59:25,live,U25734106,1000.0,GLDM,BUY,9.2,91.54,0.986635,92.97,12,Cancelled: Error 10243: Fractional-sized order cannot be placed via API. Please use desktop version to place this order.
+2026-05-14,2026-05-14 04:59:25,live,U25734106,1000.0,TQQQ,BUY,8.0,79.6,1.030554,77.39,14,Cancelled: Error 10243: Fractional-sized order cannot be placed via API. Please use desktop version to place this order.
+2026-05-14,2026-05-14 04:59:25,live,U25734106,1000.0,SGOV,BUY,82.8,823.86,8.196796,100.71,16,Cancelled: Error 10243: Fractional-sized order cannot be placed via API. Please use desktop version to place this order.
+2026-05-14,2026-05-14 05:18:25,live,U25734106,1000.0,GLDM,BUY,9.2,91.54,0.986635,92.97,20,Cancelled: Error 10243: Fractional-sized order cannot be placed via API. Please use desktop version to place this order.
+2026-05-14,2026-05-14 05:18:25,live,U25734106,1000.0,TQQQ,BUY,8.0,79.6,1.030554,77.39,22,Cancelled: Error 10243: Fractional-sized order cannot be placed via API. Please use desktop version to place this order.
+2026-05-14,2026-05-14 05:18:25,live,U25734106,1000.0,SGOV,BUY,82.8,823.86,8.196796,100.71,24,Cancelled: Error 10243: Fractional-sized order cannot be placed via API. Please use desktop version to place this order.
+2026-05-14,2026-05-14 05:23:08,live,U25734106,1000.0,TQQQ,BUY,8.0,79.6,1.0,77.39,28,PendingSubmit
+2026-05-14,2026-05-14 05:23:08,live,U25734106,1000.0,SGOV,BUY,82.8,823.86,8.0,100.71,30,PendingSubmit
+2026-05-14,2026-05-14 05:26:14,live,U25734106,1000.0,GLDM,HOLD,9.2,,,,,no change
+2026-05-14,2026-05-14 05:26:14,live,U25734106,1000.0,TQQQ,HOLD,8.0,,,,,no change
+2026-05-14,2026-05-14 05:26:14,live,U25734106,1000.0,SGOV,HOLD,82.8,,,,,no change
+2026-05-14,2026-05-14 05:27:28,live,U25734106,1000.0,GLDM,BUY,9.2,91.54,1.0,92.97,34,Submitted
+2026-05-14,2026-05-14 05:27:28,live,U25734106,1000.0,TQQQ,BUY,8.0,79.6,1.0,77.39,36,"Cancelled: Error 201: Order rejected - reason:No Trading Permission, Customer Ineligible; Ineligibility reasons:<br>Restricted: Must request Complex or Leveraged Exchange-Traded Product permissions to trade. Restriction does <br>not apply to existing positions you want to close. To close an existing position, select Close."
+2026-05-14,2026-05-14 05:27:28,live,U25734106,1000.0,SGOV,BUY,82.8,823.86,8.0,100.71,38,PreSubmitted
