@@ -779,41 +779,74 @@ def main() -> int:
         except Exception as e:  # pylint: disable=broad-except
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 
-        # ── Update Algorithm185History.html ALLOC_DATA with today's row ───
+        # ── Update Algorithm185History.html ALLOC_DATA + source CSV ──────────
         # Only runs for the Daily Signal symphony (qjmHJ3IR19kmaAlbgkNj)
+        # Source CSV: composer_allocations_185_3yr2.csv  (10 ticker cols, no SPXU/VIXY)
         if sid == "qjmHJ3IR19kmaAlbgkNj":
             try:
-                import re as _re185
+                import re as _re185, csv as _csv185
                 _hist_path = SCRIPT_DIR / "Algorithm185History.html"
+                _csv185_path = SCRIPT_DIR / "composer_allocations_185_3yr2.csv"
+
+                # Column order matches the new CSV schema (no SPXU, no VIXY)
+                _COLS = ["UPRO", "GLDM", "$USD", "TECL",
+                         "TQQQ", "SGOV", "GLD", "UDOW", "SQQQ", "PSQ"]
+                _pos_map = {
+                    p["ticker"]: p.get("weight_pct", 0.0)
+                    for p in positions if p.get("ticker")
+                }
+
+                def _fmt_w185(ticker):
+                    w = _pos_map.get(ticker, 0.0)
+                    if w <= 0:
+                        return "-"
+                    # Match CSV style: integer % or one decimal
+                    v = round(w, 1)
+                    return f"{int(v)}%" if v == int(v) else f"{v}%"
+
+                # ── 1. Prepend/update row in composer_allocations_185_3yr2.csv ──
+                if _csv185_path.exists():
+                    _csv_text = _csv185_path.read_text(encoding="utf-8-sig")
+                    # Normalize line endings
+                    _csv_text = _csv_text.replace("\r\n", "\n").replace("\r", "\n")
+                    _csv_lines = _csv_text.splitlines()
+                    _header = _csv_lines[0] if _csv_lines else "Date,Day Traded," + ",".join(_COLS)
+                    # M/D/YYYY format for CSV
+                    _today_dt = dt.date.fromisoformat(today)
+                    _today_csv = f"{_today_dt.month}/{_today_dt.day}/{_today_dt.year}"
+                    _new_csv_vals = [_today_csv, "Yes"] + [_fmt_w185(t) for t in _COLS]
+                    _new_csv_row = ",".join(_new_csv_vals)
+                    # Check if date already in CSV (M/D/YYYY match)
+                    _data_lines = [l for l in _csv_lines[1:] if l.strip()]
+                    _existing_dates = [l.split(",")[0].strip() for l in _data_lines]
+                    if _today_csv in _existing_dates:
+                        _data_lines = [
+                            _new_csv_row if l.split(",")[0].strip() == _today_csv else l
+                            for l in _data_lines
+                        ]
+                        log(f"  Updated {today} row in composer_allocations_185_3yr2.csv")
+                    else:
+                        _data_lines = [_new_csv_row] + _data_lines
+                        log(f"  Prepended {today} row to composer_allocations_185_3yr2.csv")
+                    _csv185_path.write_text(
+                        _header + "\n" + "\n".join(_data_lines) + "\n",
+                        encoding="utf-8"
+                    )
+
+                # ── 2. Prepend/update row in Algorithm185History.html ALLOC_DATA ──
                 if _hist_path.exists():
-                    # Map positions to the fixed column order
-                    _COLS = ["UPRO", "GLDM", "$USD", "SPXU", "TECL",
-                             "TQQQ", "VIXY", "SGOV", "GLD", "UDOW", "SQQQ", "PSQ"]
-                    _pos_map = {
-                        p["ticker"]: p.get("weight_pct", 0.0)
-                        for p in positions if p.get("ticker")
-                    }
-
-                    def _fmt_w(ticker):
-                        w = _pos_map.get(ticker, 0.0)
-                        return f"{round(w, 1)}%" if w > 0 else "-"
-
-                    _new_row_vals = [f'"{today}"'] + [f'"{_fmt_w(t)}"' for t in _COLS]
+                    _new_row_vals = [f'"{today}"'] + [f'"{_fmt_w185(t)}"' for t in _COLS]
                     _new_row_js   = f'  [{", ".join(_new_row_vals)}]'
-
                     _hist_html = _hist_path.read_text(encoding="utf-8")
 
-                    # Check if today's date is already in ALLOC_DATA
                     if f'"{today}"' in _hist_html:
-                        # Replace existing row for today
-                        _hist_html = _re185.sub(
-                            rf'  \["{today}"[^\]]*\]',
-                            _new_row_js,
-                            _hist_html
-                        )
+                        # Replace existing row for today (single-line array)
+                        _start = _hist_html.find(f'"{today}"')
+                        _row_start = _hist_html.rfind("  [", 0, _start)
+                        _row_end   = _hist_html.find("]", _start) + 1
+                        _hist_html = _hist_html[:_row_start] + _new_row_js + _hist_html[_row_end:]
                         log(f"  Updated today's row in Algorithm185History.html")
                     else:
-                        # Prepend new row just after the opening bracket
                         _hist_html = _hist_html.replace(
                             "const ALLOC_DATA = [\n",
                             "const ALLOC_DATA = [\n" + _new_row_js + ",\n"
