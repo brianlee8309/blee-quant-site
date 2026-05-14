@@ -1107,4 +1107,35 @@ new Chart(document.getElementById("growthChart"),{
   data:{
     labels:qlabels,
     datasets:[
-      {label:"Strategy Backtest",data:bleeQ,borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,0.1
+      {label:"Strategy Backtest",data:bleeQ,borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,0.10)",
+       borderWidth:3,fill:true,tension:0.3,pointBackgroundColor:"#2563eb",pointRadius:4,pointHoverRadius:7},
+      {label:"SPY Benchmark",data:spyQ,borderColor:"#7c3aed",backgroundColor:"rgba(124,58,237,0.06)",
+       borderWidth:2,fill:true,tension:0.3,pointBackgroundColor:"#7c3aed",pointRadius:3,pointHoverRadius:6,borderDash:[6,3]}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:"index",intersect:false},
+    plugins:{
+      legend:{labels:{color:"#94a3b8",font:{size:12},boxWidth:12}},
+      tooltip:{
+        backgroundColor:"#0d1829",borderColor:"#1e3a5f",borderWidth:1,
+        titleColor:"#f1f5f9",bodyColor:"#94a3b8",
+        callbacks:{
+          label:ctx=>" "+ctx.dataset.label+": $"+ctx.parsed.y.toLocaleString(undefined,{minimumFractionDigits:0}),
+          afterBody:items=>{
+            const b=items.find(i=>i.datasetIndex===0);
+            if(b){const r=(((b.parsed.y/10000)-1)*100).toFixed(1);return["\nStrategy return: +"+r+"%"];}
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ticks:{color:"#64748b",font:{size:10}},grid:{color:"rgba(255,255,255,0.04)"}},
+      y:{ticks:{color:"#64748b",callback:v=>"$"+v.toLocaleString()},grid:{color:"rgba(255,255,255,0.04)"}}
+    }
+  }
+});
+</script>
+</body>
+</html>
