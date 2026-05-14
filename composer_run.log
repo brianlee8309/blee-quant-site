@@ -1046,3 +1046,34 @@
 [2026-05-13T20:55:54] Stamped last-updated (05/13/2026 08:55 PM) into index.html
 [2026-05-13T20:55:54] --- Pushing updates to GitHub ---
 [2026-05-13T20:55:54]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-13T20:55:54]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-13"
+[2026-05-13T20:55:54]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-13T20:55:57] GitHub push successful.
+[2026-05-13T20:58:29] archive: === Archive started ===
+[2026-05-13T20:58:29] archive:   Already archived today (has real data): marketForecast_2026-05-13.html
+[2026-05-13T20:58:29] archive:   Already archived today (has real data): dailySignal_2026-05-13.html
+[2026-05-13T20:58:29] archive: Rebuilt BackLog/index.html — 2 dates, 4 files
+[2026-05-13T20:58:29] archive: === Archive complete ===
+[2026-05-13T20:58:30] === Composer daily allocation pull ===
+[2026-05-13T20:58:30] Configured symphonies: ['sRxc0F27TQYj10bWwIlO', 'qjmHJ3IR19kmaAlbgkNj', 'uP4EOQmkexROiO18SaiN']
+[2026-05-13T20:58:30] No account_uuid in config; discovering via /accounts/list...
+[2026-05-13T20:58:31] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-13T20:58:31] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-13T20:58:31] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-13T20:58:31] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-13T20:58:32] Saved symphony-stats response to composer_symphony_stats_2026-05-13.json
+[2026-05-13T20:58:32] --- BLEE - 186 2026 ALL in One (sRxc0F27TQYj10bWwIlO) ---
+[2026-05-13T20:58:32]   Got 16 positions from symphony-stats-meta
+[2026-05-13T20:58:32]   Saved today's slice to composer_allocations_2026-05-13.json
+[2026-05-13T20:58:32]   Wrote 16 rows for 2026-05-13 to composer_allocations.csv (kept 43 prior rows, source=symphony-stats-meta)
+[2026-05-13T20:58:32] Generated dashboard -> index_50.html (value=$50,218.76, days=4)
+[2026-05-13T20:58:32] --- BLEE - 185 2026 SGOV Bond and min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-13T20:58:32]   WARN: symphony-stats-meta returned no positions for qjmHJ3IR19kmaAlbgkNj (check 2026-05-13 JSON to verify the id matches one in the response)
+[2026-05-13T20:58:32]   ERROR: no positions found for qjmHJ3IR19kmaAlbgkNj; skipping CSV/HTML for this symphony
+[2026-05-13T20:58:32] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-13T20:58:32]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-13 JSON to verify the id matches one in the response)
+[2026-05-13T20:58:32]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-13T20:58:32] === Done ===
+[2026-05-13T20:58:32] Stamped last-updated (05/13/2026 08:58 PM) into index.html
+[2026-05-13T20:58:32] --- Pushing updates to GitHub ---
+[2026-05-13T20:58:32]   $ git -C "C:\Kei\ComposerInvest" add .
