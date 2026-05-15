@@ -1108,5 +1108,33 @@ new Chart(document.getElementById("growthChart"),{
   data:{
     labels:qlabels,
     datasets:[
-      {label:"Strategy Backtest",data:bleeQ,borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,0.10)",
-       borderWidth:3,fill:true,tension:0.3,pointBackgroundColor:"#2563eb",pointRadius:4,pointHoverR
+      {label:"BLEE-185 Strategy",data:bleeQ,borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,0.10)",
+       borderWidth:3,fill:true,tension:0.3,pointBackgroundColor:"#2563eb",pointRadius:4,pointHoverRadius:6},
+      {label:"SPY Benchmark",data:spyQ,borderColor:"#94a3b8",backgroundColor:"rgba(148,163,184,0.05)",
+       borderWidth:2,fill:false,tension:0.3,pointBackgroundColor:"#94a3b8",pointRadius:3,pointHoverRadius:5}
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    interaction:{mode:"index",intersect:false},
+    plugins:{
+      legend:{labels:{color:"#cbd5e1",font:{size:13}}},
+      tooltip:{
+        backgroundColor:"#1e293b",borderColor:"#334155",borderWidth:1,
+        titleColor:"#e2e8f0",bodyColor:"#cbd5e1",
+        callbacks:{label:ctx=>`${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}`}
+      }
+    },
+    scales:{
+      x:{ticks:{color:"#64748b",maxRotation:30},grid:{color:"rgba(51,65,85,0.5)"}},
+      y:{
+        ticks:{color:"#64748b",callback:v=>"$"+v.toLocaleString()},
+        grid:{color:"rgba(51,65,85,0.5)"}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
