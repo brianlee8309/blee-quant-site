@@ -19,12 +19,13 @@
 // ============================================================
 
 const FIREBASE_CONFIG = {
-  apiKey:            "PASTE_YOUR_API_KEY_HERE",
-  authDomain:        "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "PASTE_YOUR_PROJECT_ID",
-  storageBucket:     "PASTE_YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId:             "PASTE_YOUR_APP_ID",
+  apiKey:            "AIzaSyBRppmBgkdFUWx2raZi9K593843XaCxXso",
+  authDomain:        "blee-quant.firebaseapp.com",
+  projectId:         "blee-quant",
+  storageBucket:     "blee-quant.firebasestorage.app",
+  messagingSenderId: "924733444755",
+  appId:             "1:924733444755:web:f1931828a0a91cca1cb366",
+  measurementId:     "G-JYD4LP56QM",
 };
 
 // Admin email — this account gets full admin dashboard access
