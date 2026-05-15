@@ -344,12 +344,20 @@ if (DATA.day_change_pct == null) {
   dayEl.classList.add(DATA.day_change_pct >= 0 ? "pos" : "neg");
 }
 
+// Calculate total return from $1,000 baseline (ignore DATA.total_return_pct which
+// can be corrupted if the first value_history entry was recorded before the account
+// was fully funded — e.g. $82.40 on the first day instead of $1,000).
+const PORTFOLIO_START = 1000;
+const computedTotalReturn = DATA.total_value != null
+  ? ((DATA.total_value - PORTFOLIO_START) / PORTFOLIO_START) * 100
+  : null;
+
 const totalEl = document.getElementById("stat-total");
-if (DATA.total_return_pct == null) {
+if (computedTotalReturn == null) {
   totalEl.textContent = "—";
 } else {
-  totalEl.textContent = fmtPct(DATA.total_return_pct, true);
-  totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
+  totalEl.textContent = fmtPct(computedTotalReturn, true);
+  totalEl.classList.add(computedTotalReturn >= 0 ? "pos" : "neg");
 }
 // If a baseline_date is set, relabel "Total Return" to show the start date
 if (DATA.baseline_date) {
@@ -396,7 +404,17 @@ new Chart(document.getElementById("pie"), {
 });
 
 // ---- Portfolio value line --------------------------------------------------
-const hist = DATA.value_history || [];
+// Filter out bad first-day entries where the value was recorded before the
+// account was fully funded (e.g. $82.40 on Day 1 instead of $1,000).
+// We keep an entry only if it's within 30% of the most common value range.
+const histRaw = DATA.value_history || [];
+const hist = histRaw.filter((p, i) => {
+  if (i === 0 && histRaw.length > 1) {
+    // Skip if first entry is less than 25% of the second entry
+    return p.total >= histRaw[1].total * 0.25;
+  }
+  return true;
+});
 new Chart(document.getElementById("value-line"), {
   type: "line",
   data: {

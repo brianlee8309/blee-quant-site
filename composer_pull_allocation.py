@@ -526,6 +526,12 @@ def generate_dashboard(
         first = value_history_view[0]["total"]
         last  = value_history_view[-1]["total"]
         prev  = value_history_view[-2]["total"]
+        # Guard against corrupted first-day values (e.g. $82 when account
+        # started at $1,000). If the first entry is less than 25% of the
+        # second entry, it was recorded before the account was fully funded —
+        # treat $1,000 as the true starting value instead.
+        if len(value_history_view) >= 2 and first < value_history_view[1]["total"] * 0.25:
+            first = 1000.0
         if first > 0:
             total_return_pct = round((last / first - 1) * 100, 4)
         if prev > 0:
