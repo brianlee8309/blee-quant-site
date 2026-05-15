@@ -4,13 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BLEE Market Analysis — Daily Update</title>
-<!-- BLEE Auth Guard (Basic+ required) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script>const BLEE_REQUIRED_TIER = "basic";</script>
-<script src="auth_guard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
@@ -286,7 +279,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-14", "run_datetime": "05/14/2026 10:42 PM", "total_value": 997.89, "day_change_pct": -0.3475, "total_return_pct": 1111.0316, "annualized_return_pct": null, "today_allocations": [{"ticker": "VIXY", "weight_pct": 59.693, "shares": 22.30977, "market_value": 595.670859}, {"ticker": "SPXU", "weight_pct": 32.2018, "shares": 8.58504, "market_value": 321.3380472}, {"ticker": "TQQQ", "weight_pct": 8.003, "shares": 1.01154, "market_value": 79.861083}, {"ticker": "$USD", "weight_pct": 0.1022, "shares": 1.02, "market_value": 1.02}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14"], "baseline_date": null};
+const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-15", "run_datetime": "05/15/2026 04:33 PM", "total_value": 1007.12, "day_change_pct": 0.925, "total_return_pct": 0.712, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.7765, "shares": 8.2914, "market_value": 833.658813}, {"ticker": "GLDM", "weight_pct": 9.1905, "shares": 1.0289, "market_value": 92.559844}, {"ticker": "TECL", "weight_pct": 7.9321, "shares": 0.41005, "market_value": 79.885941}, {"ticker": "$USD", "weight_pct": 0.1013, "shares": 1.02, "market_value": 1.02}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -344,20 +337,12 @@ if (DATA.day_change_pct == null) {
   dayEl.classList.add(DATA.day_change_pct >= 0 ? "pos" : "neg");
 }
 
-// Calculate total return from $1,000 baseline (ignore DATA.total_return_pct which
-// can be corrupted if the first value_history entry was recorded before the account
-// was fully funded — e.g. $82.40 on the first day instead of $1,000).
-const PORTFOLIO_START = 1000;
-const computedTotalReturn = DATA.total_value != null
-  ? ((DATA.total_value - PORTFOLIO_START) / PORTFOLIO_START) * 100
-  : null;
-
 const totalEl = document.getElementById("stat-total");
-if (computedTotalReturn == null) {
+if (DATA.total_return_pct == null) {
   totalEl.textContent = "—";
 } else {
-  totalEl.textContent = fmtPct(computedTotalReturn, true);
-  totalEl.classList.add(computedTotalReturn >= 0 ? "pos" : "neg");
+  totalEl.textContent = fmtPct(DATA.total_return_pct, true);
+  totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
 }
 // If a baseline_date is set, relabel "Total Return" to show the start date
 if (DATA.baseline_date) {
@@ -404,17 +389,7 @@ new Chart(document.getElementById("pie"), {
 });
 
 // ---- Portfolio value line --------------------------------------------------
-// Filter out bad first-day entries where the value was recorded before the
-// account was fully funded (e.g. $82.40 on Day 1 instead of $1,000).
-// We keep an entry only if it's within 30% of the most common value range.
-const histRaw = DATA.value_history || [];
-const hist = histRaw.filter((p, i) => {
-  if (i === 0 && histRaw.length > 1) {
-    // Skip if first entry is less than 25% of the second entry
-    return p.total >= histRaw[1].total * 0.25;
-  }
-  return true;
-});
+const hist = DATA.value_history || [];
 new Chart(document.getElementById("value-line"), {
   type: "line",
   data: {
