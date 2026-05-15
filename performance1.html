@@ -937,7 +937,7 @@
     <a href="index.html#pricing">Subscribe</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/14/2026 07:16 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/14/2026 10:42 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
@@ -1092,26 +1092,4 @@ function googleTranslateElementInit() {
       location.reload(); return;
     }
     var sel = document.querySelector('.goog-te-combo');
-    if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); return; }
-    document.cookie = 'googtrans=/en/' + lang + '; path=/';
-    document.cookie = 'googtrans=/en/' + lang + '; path=/; domain=' + location.hostname;
-    location.reload();
-  }
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
-  var saved = localStorage.getItem('blee-lang');
-  if (saved && saved !== 'en') {
-    setTimeout(function trySwitch(n) {
-      var sel = document.querySelector('.goog-te-combo');
-      if (sel) { sel.value = saved; sel.dispatchEvent(new Event('change')); document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === saved)); }
-      else if (n > 0) setTimeout(() => trySwitch(n - 1), 300);
-    }, 10);
-  }
-  var s = document.createElement('style');
-  s.textContent = '.goog-te-banner-frame{display:none!important;}body{top:0!important;}';
-  document.head.appendChild(s);
-})();
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
-
-</body>
-</html>
+    if (sel) { sel.value = lang; se

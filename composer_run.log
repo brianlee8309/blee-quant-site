@@ -1244,3 +1244,61 @@
 [2026-05-14T19:16:08] Stamped last-updated (05/14/2026 07:16 PM ET) into Algorithm185History.html
 [2026-05-14T19:16:08] --- Pushing updates to GitHub ---
 [2026-05-14T19:16:08]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-14T19:16:08]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-14"
+[2026-05-14T19:16:09]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-14T19:16:16] GitHub push successful.
+[2026-05-15T00:12:19] market_report: === Market report generation started ===
+[2026-05-15T00:12:19] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-15T00:12:19] market_report: Loaded 15 ETF allocations from index_50.html
+[2026-05-15T00:12:19] market_report:   RSI signal: Severely Overbought — strong bear lean (10d avg=76.03, adj=-20, new score=-191.48)
+[2026-05-15T00:12:19] market_report:   *** RSI OVERRIDE ACTIVE *** +50 pts → score=-141.48
+[2026-05-15T00:12:19] market_report:   Reason: Today RSI 76.2 > 76.0 AND 1 of last 2 days also exceeded 76.0 — override ACTIVE
+[2026-05-15T00:12:19] market_report: Composite score: -141.48 -> Thunderstorm Warning
+[2026-05-15T00:12:19] market_report:   RSS fetch failed (WSJ): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-15T00:12:19] market_report:   WSJ: RSS unavailable, using hardcoded fallback
+[2026-05-15T00:12:19] market_report:   Selected [WSJ] topic=FED: Fed Signals Patience as Rate Path Stays Data-Dependent
+[2026-05-15T00:12:19] market_report:   RSS fetch failed (Yahoo Finance): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-15T00:12:19] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-05-15T00:12:19] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-05-15T00:12:19] market_report:   RSS fetch failed (Barron's): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-15T00:12:19] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-15T00:12:19] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-15T00:12:19] market_report: Fetched 3 news items
+[2026-05-15T00:12:19] market_report: Updated marketDailySummary.html with score=-141.48 (Thunderstorm Warning)
+[2026-05-15T00:12:20] market_report: Stamped last-updated (05/14/2026 08:12 PM ET) into index.html
+[2026-05-15T00:12:20] market_report: Stamped last-updated (05/14/2026 08:12 PM ET) into performance1.html
+[2026-05-15T00:12:20] market_report: Stamped last-updated (05/14/2026 08:12 PM ET) into Algorithm185History.html
+[2026-05-15T00:12:20] market_report: === Market report generation complete ===
+[2026-05-14T22:42:45] archive: === Archive started ===
+[2026-05-14T22:42:45] archive:   Already archived today (has real data): marketForecast_2026-05-14.html
+[2026-05-14T22:42:46] === Composer daily allocation pull ===
+[2026-05-14T22:42:46] Configured symphonies: ['sRxc0F27TQYj10bWwIlO', 'qjmHJ3IR19kmaAlbgkNj', 'uP4EOQmkexROiO18SaiN']
+[2026-05-14T22:42:46] No account_uuid in config; discovering via /accounts/list...
+[2026-05-14T22:42:47] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-14T22:42:47] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-14T22:42:47] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-14T22:42:47] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-14T22:42:48] Saved symphony-stats response to composer_symphony_stats_2026-05-14.json
+[2026-05-14T22:42:48] --- BLEE - 186 2026 ALL in One (sRxc0F27TQYj10bWwIlO) ---
+[2026-05-14T22:42:48]   Got 15 positions from symphony-stats-meta
+[2026-05-14T22:42:49]   (RSI override check failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 101: character maps to <undefined>)
+[2026-05-14T22:42:49]   Saved today's slice to composer_allocations_2026-05-14.json
+[2026-05-14T22:42:49]   Wrote 15 rows for 2026-05-14 to composer_allocations.csv (kept 59 prior rows, source=symphony-stats-meta)
+[2026-05-14T22:42:49] Generated dashboard -> index_50.html (value=$39,222.65, days=5)
+[2026-05-14T22:42:49] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-14T22:42:49]   Got 4 positions from symphony-stats-meta
+[2026-05-14T22:42:49]   (RSI override check failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 132: character maps to <undefined>)
+[2026-05-14T22:42:49]   Saved today's slice to composer_allocations_185_2026-05-14.json
+[2026-05-14T22:42:49]   Wrote 4 rows for 2026-05-14 to composer_allocations_185.csv (kept 11 prior rows, source=symphony-stats-meta)
+[2026-05-14T22:42:49] Generated dashboard -> index2.html (value=$997.89, days=5)
+[2026-05-14T22:42:49]   Updated 2026-05-14 row in composer_allocations_185_3yr2.csv
+[2026-05-14T22:42:49]   Updated today's row in Algorithm185History.html
+[2026-05-14T22:42:49] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-14T22:42:49]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-14 JSON to verify the id matches one in the response)
+[2026-05-14T22:42:49]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-14T22:42:49] === Done ===
+[2026-05-14T22:42:54] Stamped last-updated (05/14/2026 10:42 PM ET) into index.html
+[2026-05-14T22:42:54] Stamped last-updated (05/14/2026 10:42 PM ET) into performance1.html
+[2026-05-14T22:42:54] Stamped last-updated (05/14/2026 10:42 PM ET) into Algorithm185History.html
+[2026-05-14T22:42:54] --- Pushing updates to GitHub ---
+[2026-05-14T22:42:54]   $ git -C "C:\Kei\ComposerInvest" add .

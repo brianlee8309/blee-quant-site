@@ -43,13 +43,18 @@ IB_PORT        = _PORTS[MODE]
 IB_CLIENT_ID   = 10               # any unique integer; change if conflict
 
 # Order settings
-LIMIT_BUY_SLIP   = 0.002          # +0.2% above close → improves overnight fill probability
+LIMIT_BUY_SLIP   = 0.002          # +0.2% above close → overnight GTC fill buffer
 LIMIT_SELL_SLIP  = 0.002          # −0.2% below close
 MIN_ORDER_USD    = 1.00           # skip orders smaller than this (avoids tiny adjustments)
 CASH_BUFFER_PCT  = 0.005          # keep 0.5% cash buffer to cover fees / rounding
-USE_FRACTIONAL   = False           # True  = send fractional qty (requires account feature)
-                                   # False = round DOWN to whole shares (safe fallback)
-ORDER_SETTLE_SEC = 8              # seconds to wait for IBKR to confirm / reject each order
+USE_FRACTIONAL   = False          # True  = fractional qty (requires IBKR account feature)
+                                  # False = round to nearest whole share
+ORDER_SETTLE_SEC = 8             # seconds to wait for IBKR to confirm / reject each order
+
+# Scheduled-run settings
+RUN_PULLER_FIRST = True           # run composer_pull_allocation.py before trading
+AUTO_CONFIRM     = True           # skip y/N prompt (set False for manual/interactive runs)
+# Symphony: qjmHJ3IR19kmaAlbgkNj → BLEE-187 2026 SGOV Bond 20% Yield and Min Dual Reversal
 
 # Paths (all in the same folder as this script)
 from pathlib import Path
@@ -57,6 +62,7 @@ SCRIPT_DIR        = Path(__file__).parent
 INDEX2_HTML       = SCRIPT_DIR / "index2.html"
 TRADE_LOG_CSV     = SCRIPT_DIR / "ibkr_trade_log.csv"
 LAST_ALLOC_JSON   = SCRIPT_DIR / "ibkr_last_allocation.json"
+PULLER_SCRIPT     = SCRIPT_DIR / "composer_pull_allocation.py"
 
 # ── Imports ───────────────────────────────────────────────────────────────────
 import asyncio
@@ -144,26 +150,47 @@ def allocation_changed(current_sig: dict) -> bool:
     return True
 
 
-# ── 3. Fetch last close prices via yfinance ───────────────────────────────────
+# ── 3. Market-hours detection + price fetch ───────────────────────────────────
+
+def _is_market_hours() -> bool:
+    """True if current time is within regular US equity market hours (9:30–16:00 ET)."""
+    try:
+        import pytz
+        now = dt.datetime.now(pytz.timezone("US/Eastern"))
+    except ImportError:
+        # fallback: assume EDT (UTC-4)
+        now = dt.datetime.now(dt.timezone(dt.timedelta(hours=-4)))
+    mins = now.hour * 60 + now.minute
+    return now.weekday() < 5 and (9 * 60 + 30) <= mins < (16 * 60)
+
 
 def fetch_prices(tickers: list[str]) -> dict[str, float]:
-    """Return {ticker: last_close} for all tickers."""
+    """
+    Return {ticker: price} for all tickers.
+    During market hours uses 1-minute intraday data for a real-time price.
+    Outside market hours uses the last daily close.
+    """
     try:
         import yfinance as yf
     except ImportError:
         raise RuntimeError("yfinance not installed. Run: pip install yfinance --break-system-packages")
 
+    intraday = _is_market_hours()
     prices = {}
     for ticker in tickers:
         try:
-            df = yf.download(ticker, period="5d", progress=False, auto_adjust=True)
-            # yfinance 1.x may return MultiIndex columns when downloading single ticker
+            if intraday:
+                df = yf.download(ticker, period="1d", interval="1m",
+                                 progress=False, auto_adjust=True)
+            else:
+                df = yf.download(ticker, period="5d", progress=False, auto_adjust=True)
             close = df["Close"]
-            if hasattr(close, "columns"):          # MultiIndex — squeeze to Series
+            if hasattr(close, "columns"):   # MultiIndex — squeeze to Series
                 close = close.iloc[:, 0]
             price = float(close.dropna().iloc[-1])
             prices[ticker] = round(price, 4)
-            log.info(f"  {ticker:6s}  last price = ${prices[ticker]:,.4f}")
+            src = "real-time" if intraday else "last close"
+            log.info(f"  {ticker:6s}  {src} price = ${prices[ticker]:,.4f}")
         except Exception as e:
             raise RuntimeError(f"Could not fetch price for {ticker}: {e}")
 
@@ -352,7 +379,11 @@ def place_orders(ib, account_id: str, orders: list[dict]) -> list[dict]:
     so the returned status accurately reflects Cancelled / Filled / Submitted.
     Returns enriched order list with order_id and status fields.
     """
-    from ib_insync import Stock, LimitOrder
+    from ib_insync import Stock, LimitOrder, MarketOrder
+
+    market_hours = _is_market_hours()
+    order_mode   = "MARKET" if market_hours else "GTC-LIMIT"
+    log.info(f"  Order mode: {order_mode} ({'real-time fill' if market_hours else 'overnight GTC'})")
 
     # States that indicate IBKR has finished processing (terminal or stable)
     SETTLED = {"Submitted", "PreSubmitted", "Filled",
@@ -374,13 +405,20 @@ def place_orders(ib, account_id: str, orders: list[dict]) -> list[dict]:
             contract = Stock(ticker, "SMART", "USD")
             ib.qualifyContracts(contract)
 
-            ibkr_order = LimitOrder(
-                action        = o["action"],
-                totalQuantity = o["qty"],
-                lmtPrice      = o["limit_price"],
-                tif           = "GTC",
-                account       = account_id,
-            )
+            if market_hours:
+                ibkr_order = MarketOrder(
+                    action        = o["action"],
+                    totalQuantity = o["qty"],
+                    account       = account_id,
+                )
+            else:
+                ibkr_order = LimitOrder(
+                    action        = o["action"],
+                    totalQuantity = o["qty"],
+                    lmtPrice      = o["limit_price"],
+                    tif           = "GTC",
+                    account       = account_id,
+                )
 
             trade    = ib.placeOrder(contract, ibkr_order)
             order_id = trade.order.orderId
@@ -490,6 +528,22 @@ def log_no_change(portfolio_value: float, account_id: str, sig: dict) -> None:
 def main() -> int:
     log.info(f"═══ IBKR Auto-Trader  mode={MODE.upper()}  ═══")
 
+    # ── Step 0: Pull latest Composer allocation ───────────────────────────────
+    if RUN_PULLER_FIRST:
+        import subprocess
+        log.info("Step 0: Running composer_pull_allocation.py ...")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(PULLER_SCRIPT)],
+                timeout=300,
+            )
+            if result.returncode != 0:
+                log.warning(f"  Puller exited with code {result.returncode} — continuing anyway.")
+            else:
+                log.info("  Puller completed successfully.")
+        except Exception as e:
+            log.warning(f"  Puller failed ({e}) — continuing with existing index2.html.")
+
     # ── Step 1: Parse today's allocation ──────────────────────────────────────
     log.info("Step 1: Reading allocation from index2.html ...")
     try:
@@ -566,11 +620,14 @@ def main() -> int:
               f"(≈${o['qty']*o['limit_price']:.2f})")
     print("═" * 60)
 
-    confirm = input("\nProceed? [y/N] → ").strip().lower()
-    if confirm != "y":
-        log.info("Aborted by user.")
-        ib.disconnect()
-        return 0
+    if AUTO_CONFIRM:
+        log.info("AUTO_CONFIRM=True — proceeding without prompt.")
+    else:
+        confirm = input("\nProceed? [y/N] → ").strip().lower()
+        if confirm != "y":
+            log.info("Aborted by user.")
+            ib.disconnect()
+            return 0
 
     # ── Step 9: Cancel stale GTC orders for these tickers ─────────────────────
     log.info("Step 9: Cancelling stale GTC orders ...")
