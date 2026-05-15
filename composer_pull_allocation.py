@@ -857,6 +857,52 @@ def main() -> int:
             except Exception as _e185:
                 log(f"  (Algorithm185History update failed: {type(_e185).__name__}: {_e185})")
 
+    # ---- Publish signal_latest.json for subscriber signal fetcher -----------
+    try:
+        _signal_path = SCRIPT_DIR / "signal_latest.json"
+        # Find the most recent composer_allocations_185_*.json
+        _alloc_files = sorted(
+            SCRIPT_DIR.glob("composer_allocations_185_*.json"),
+            reverse=True
+        )
+        if not _alloc_files:
+            # Fall back to any allocation file
+            _alloc_files = sorted(
+                SCRIPT_DIR.glob("composer_allocations_*.json"),
+                reverse=True
+            )
+        if _alloc_files:
+            with open(_alloc_files[0], encoding="utf-8") as _f:
+                _raw = json.load(_f)
+            # Build a clean, stable signal payload for subscribers
+            _positions = [
+                p for p in (_raw.get("positions") or [])
+                if p.get("ticker") and p["ticker"] not in ("$USD", "USD", "CASH")
+            ]
+            _signal = {
+                "date":          _raw.get("date", today),
+                "symphony_id":   _raw.get("symphony_id", ""),
+                "symphony_name": _raw.get("symphony_name", ""),
+                "source":        "blee-quant-site",
+                "published_at":  dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "positions": [
+                    {
+                        "ticker":     p["ticker"],
+                        "weight_pct": round(float(p.get("weight_pct", 0)), 4),
+                    }
+                    for p in _positions
+                ],
+            }
+            _signal_path.write_text(
+                json.dumps(_signal, indent=2), encoding="utf-8"
+            )
+            log(f"Published signal_latest.json ({len(_positions)} positions, "
+                f"date={_signal['date']})")
+        else:
+            log("WARNING: No allocation JSON found — signal_latest.json not updated.")
+    except Exception as _se:
+        log(f"  (signal_latest.json publish failed: {type(_se).__name__}: {_se})")
+
     log("=== Done ===")
 
     # ---- Stamp last-updated timestamp into static HTML pages -----------------

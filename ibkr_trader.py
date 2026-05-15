@@ -52,7 +52,7 @@ USE_FRACTIONAL   = False          # True  = fractional qty (requires IBKR accoun
 ORDER_SETTLE_SEC = 8             # seconds to wait for IBKR to confirm / reject each order
 
 # Scheduled-run settings
-RUN_PULLER_FIRST = True           # run composer_pull_allocation.py before trading
+RUN_PULLER_FIRST = False          # run_signal.bat already pulls at 3:51 PM before this runs
 AUTO_CONFIRM     = True           # skip y/N prompt (set False for manual/interactive runs)
 # Symphony: qjmHJ3IR19kmaAlbgkNj → BLEE-187 2026 SGOV Bond 20% Yield and Min Dual Reversal
 

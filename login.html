@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sign In — BLEE Quant Analytics</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
+       background:#0a0f1e;color:#fff;min-height:100vh;
+       display:flex;flex-direction:column;align-items:center;
+       justify-content:center;padding:24px;}
+  .card{background:#111827;border:1px solid #1f2937;border-radius:14px;
+        padding:36px 40px;width:100%;max-width:420px;}
+  .logo{font-size:20px;font-weight:800;color:#f5a623;
+        letter-spacing:0.05em;margin-bottom:6px;}
+  .logo span{color:#fff;}
+  .subtitle{font-size:13px;color:#6b7280;margin-bottom:28px;}
+  .tabs{display:flex;gap:0;margin-bottom:24px;
+        border-bottom:1px solid #1f2937;}
+  .tab{flex:1;text-align:center;padding:10px;font-size:14px;
+       font-weight:600;cursor:pointer;color:#6b7280;
+       border-bottom:2px solid transparent;transition:all .2s;}
+  .tab.active{color:#f5a623;border-bottom-color:#f5a623;}
+  label{display:block;font-size:11px;color:#9ca3af;font-weight:600;
+        text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+  input{width:100%;padding:10px 12px;background:#1f2937;border:1px solid #374151;
+        border-radius:8px;color:#fff;font-size:14px;margin-bottom:14px;}
+  input:focus{outline:none;border-color:#f5a623;}
+  input::placeholder{color:#4b5563;}
+  .btn{width:100%;padding:12px;border:0;border-radius:8px;font-size:15px;
+       font-weight:700;cursor:pointer;transition:opacity .2s;}
+  .btn-primary{background:#f5a623;color:#000;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-google{background:#fff;color:#111;display:flex;align-items:center;
+              justify-content:center;gap:10px;margin-top:10px;}
+  .btn-google:hover{opacity:.9;}
+  .divider{display:flex;align-items:center;gap:10px;margin:16px 0;
+           color:#4b5563;font-size:12px;}
+  .divider::before,.divider::after{content:'';flex:1;
+    border-top:1px solid #1f2937;}
+  .msg{padding:10px 12px;border-radius:8px;font-size:13px;
+       margin-bottom:14px;display:none;}
+  .msg.error{background:#3b0a14;color:#f87171;border:1px solid #7f1d1d;}
+  .msg.success{background:#052e16;color:#4ade80;border:1px solid #14532d;}
+  .forgot{text-align:right;margin-top:-8px;margin-bottom:14px;}
+  .forgot a{color:#f5a623;font-size:12px;text-decoration:none;}
+  .hint-row{display:flex;gap:8px;}
+  .hint-row input{flex:1;}
+  .terms{font-size:11px;color:#6b7280;margin-top:12px;text-align:center;}
+  .terms a{color:#f5a623;text-decoration:none;}
+  .back{text-align:center;margin-top:20px;font-size:13px;color:#6b7280;}
+  .back a{color:#f5a623;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">BLEE <span>Quant</span></div>
+  <div class="subtitle">Member portal — sign in to access your signals</div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-login"  onclick="showTab('login')">Sign In</div>
+    <div class="tab"        id="tab-signup" onclick="showTab('signup')">Create Account</div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <!-- ── SIGN IN ── -->
+  <div id="panel-login">
+    <label>Email</label>
+    <input id="li-email" type="email" placeholder="you@example.com" autocomplete="email"/>
+    <label>Password</label>
+    <input id="li-pass"  type="password" placeholder="••••••••" autocomplete="current-password"/>
+    <div class="forgot"><a href="#" onclick="forgotPassword()">Forgot password?</a></div>
+    <button class="btn btn-primary" onclick="signIn()">Sign In</button>
+    <div class="divider">or</div>
+    <button class="btn btn-google" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.1 0 5.9 1.1 8.1 2.9l6-6C34.4 3.1 29.5 1 24 1 14.9 1 7.2 6.4 3.6 14.1l7 5.4C12.4 13.1 17.7 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.7-9.9 7.2-16.9z"/>
+        <path fill="#FBBC05" d="M10.6 28.5A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.7-4.5l-7-5.4A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.4-5.7c-.2-.8-.4-1.6-.4-2.5z"/>
+        <path fill="#34A853" d="M24 47c5.5 0 10.1-1.8 13.5-4.9l-7.4-5.7c-1.8 1.2-4.1 2-6.1 2-6.3 0-11.6-3.6-13.4-8.9l-7.4 5.7C7.2 41.6 14.9 47 24 47z"/>
+      </svg>
+      Continue with Google
+    </button>
+  </div>
+
+  <!-- ── SIGN UP ── -->
+  <div id="panel-signup" style="display:none;">
+    <label>Email</label>
+    <input id="su-email" type="email" placeholder="you@example.com" autocomplete="email"/>
+    <label>Password (min 8 characters)</label>
+    <input id="su-pass"  type="password" placeholder="••••••••" autocomplete="new-password"/>
+    <label>Confirm Password</label>
+    <input id="su-pass2" type="password" placeholder="••••••••"/>
+    <label>Security Hint <span style="color:#4b5563;font-weight:400;">(e.g. "My dog's name")</span></label>
+    <input id="su-hint" type="text" placeholder="A memorable hint for yourself"/>
+    <button class="btn btn-primary" onclick="signUp()">Create Account</button>
+    <div class="divider">or</div>
+    <button class="btn btn-google" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.1 0 5.9 1.1 8.1 2.9l6-6C34.4 3.1 29.5 1 24 1 14.9 1 7.2 6.4 3.6 14.1l7 5.4C12.4 13.1 17.7 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.7-9.9 7.2-16.9z"/>
+        <path fill="#FBBC05" d="M10.6 28.5A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.7-4.5l-7-5.4A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.4-5.7c-.2-.8-.4-1.6-.4-2.5z"/>
+        <path fill="#34A853" d="M24 47c5.5 0 10.1-1.8 13.5-4.9l-7.4-5.7c-1.8 1.2-4.1 2-6.1 2-6.3 0-11.6-3.6-13.4-8.9l-7.4 5.7C7.2 41.6 14.9 47 24 47z"/>
+      </svg>
+      Continue with Google
+    </button>
+    <div class="terms">
+      By creating an account you agree to our
+      <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+    </div>
+  </div>
+</div>
+
+<div class="back"><a href="index.html">← Back to BLEE Quant home</a></div>
+
+<!-- Local file bypass: skip login entirely and go straight to the site -->
+<script>
+  if (window.location.protocol === "file:") {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get("next") || "index.html";
+    window.location.replace(next);
+  }
+</script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// If already logged in, redirect to intended page or signal
+auth.onAuthStateChanged(user => {
+  if (user) {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get("next") || BLEE_PAGES.signal;
+    window.location.href = next;
+  }
+});
+
+function showTab(tab) {
+  document.getElementById("panel-login").style.display  = tab==="login"  ? "" : "none";
+  document.getElementById("panel-signup").style.display = tab==="signup" ? "" : "none";
+  document.getElementById("tab-login").classList.toggle("active",  tab==="login");
+  document.getElementById("tab-signup").classList.toggle("active", tab==="signup");
+  clearMsg();
+}
+
+function showMsg(txt, type) {
+  const el = document.getElementById("msg");
+  el.textContent = txt;
+  el.className = "msg " + type;
+  el.style.display = "block";
+}
+function clearMsg() {
+  const el = document.getElementById("msg");
+  el.style.display = "none";
+}
+
+async function signIn() {
+  clearMsg();
+  const email = document.getElementById("li-email").value.trim();
+  const pass  = document.getElementById("li-pass").value;
+  if (!email || !pass) { showMsg("Please fill in all fields.", "error"); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+    // onAuthStateChanged will redirect
+  } catch (e) {
+    showMsg(friendlyError(e), "error");
+  }
+}
+
+async function signUp() {
+  clearMsg();
+  const email = document.getElementById("su-email").value.trim();
+  const pass  = document.getElementById("su-pass").value;
+  const pass2 = document.getElementById("su-pass2").value;
+  const hint  = document.getElementById("su-hint").value.trim();
+  if (!email || !pass || !pass2) { showMsg("Please fill in all fields.", "error"); return; }
+  if (pass !== pass2)  { showMsg("Passwords do not match.", "error"); return; }
+  if (pass.length < 8) { showMsg("Password must be at least 8 characters.", "error"); return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    // Create Firestore user record
+    await db.collection("users").doc(cred.user.uid).set({
+      email:                email,
+      tier:                 "none",       // admin sets to basic/premium after payment
+      subscriptionStatus:   "pending",
+      securityHint:         hint,
+      createdAt:            firebase.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt:          firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    showMsg("Account created! Please subscribe to access member content.", "success");
+    setTimeout(() => window.location.href = BLEE_PAGES.subscribe, 1800);
+  } catch (e) {
+    showMsg(friendlyError(e), "error");
+  }
+}
+
+async function signInGoogle() {
+  clearMsg();
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    const result = await auth.signInWithPopup(provider);
+    const user   = result.user;
+    // Create Firestore record if first sign-in
+    const snap = await db.collection("users").doc(user.uid).get();
+    if (!snap.exists) {
+      await db.collection("users").doc(user.uid).set({
+        email:              user.email,
+        tier:               "none",
+        subscriptionStatus: "pending",
+        securityHint:       "",
+        createdAt:          firebase.firestore.FieldValue.serverTimestamp(),
+        lastLoginAt:        firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      window.location.href = BLEE_PAGES.subscribe;
+    }
+    // onAuthStateChanged will redirect existing users
+  } catch (e) {
+    showMsg(friendlyError(e), "error");
+  }
+}
+
+async function forgotPassword() {
+  const email = document.getElementById("li-email").value.trim();
+  if (!email) { showMsg("Enter your email address first.", "error"); return; }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showMsg("Password reset email sent — check your inbox.", "success");
+  } catch (e) {
+    showMsg(friendlyError(e), "error");
+  }
+}
+
+function friendlyError(e) {
+  const map = {
+    "auth/user-not-found":       "No account found with that email.",
+    "auth/wrong-password":       "Incorrect password.",
+    "auth/email-already-in-use": "An account with this email already exists.",
+    "auth/invalid-email":        "Invalid email address.",
+    "auth/weak-password":        "Password is too weak (min 8 characters).",
+    "auth/too-many-requests":    "Too many attempts. Try again later.",
+    "auth/popup-closed-by-user": "Google sign-in was cancelled.",
+  };
+  return map[e.code] || e.message;
+}
+</script>
+</body>
+</html>

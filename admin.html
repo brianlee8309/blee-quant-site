@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin — BLEE Quant</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
+       background:#0a0f1e;color:#fff;min-height:100vh;padding:24px;}
+  header{display:flex;align-items:center;justify-content:space-between;
+         margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid #1f2937;}
+  .logo{font-size:18px;font-weight:800;color:#f5a623;}
+  .logo span{color:#fff;}
+  .logo sub{font-size:11px;color:#6b7280;font-weight:400;margin-left:6px;}
+  .stats{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+  .stat{background:#111827;border:1px solid #1f2937;border-radius:10px;
+        padding:16px 20px;flex:1;min-width:130px;}
+  .stat-val{font-size:28px;font-weight:800;color:#f5a623;}
+  .stat-lbl{font-size:12px;color:#6b7280;margin-top:2px;}
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+  input.search{background:#111827;border:1px solid #1f2937;color:#fff;
+               padding:8px 12px;border-radius:8px;font-size:13px;width:220px;}
+  input.search::placeholder{color:#4b5563;}
+  input.search:focus{outline:none;border-color:#f5a623;}
+  select.filter{background:#111827;border:1px solid #1f2937;color:#fff;
+                padding:8px 12px;border-radius:8px;font-size:13px;}
+  .btn{padding:8px 14px;border:0;border-radius:8px;font-size:13px;
+       font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .btn-gold{background:#f5a623;color:#000;}
+  .btn-outline{background:transparent;border:1px solid #374151;color:#d1d5db;}
+  .btn-danger{background:#7f1d1d;color:#fca5a5;}
+  .btn-sm{padding:4px 10px;font-size:12px;}
+  .btn:hover{opacity:.8;}
+  .card{background:#111827;border:1px solid #1f2937;border-radius:12px;
+        overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:#0d1525;padding:10px 14px;text-align:left;font-size:11px;
+     color:#6b7280;text-transform:uppercase;letter-spacing:.06em;
+     white-space:nowrap;}
+  td{padding:11px 14px;border-bottom:1px solid #1a2035;vertical-align:middle;}
+  tr:last-child td{border-bottom:0;}
+  tr:hover td{background:#0f1928;}
+  .tier-badge{display:inline-block;padding:2px 9px;border-radius:12px;
+              font-size:11px;font-weight:700;}
+  .tier-premium{background:#422006;color:#f5a623;}
+  .tier-basic{background:#052e16;color:#4ade80;}
+  .tier-none{background:#1f2937;color:#6b7280;}
+  .tier-pending{background:#1c1a06;color:#ca8a04;}
+  .status-active{color:#4ade80;}
+  .status-inactive,.status-pending{color:#ca8a04;}
+  .status-cancelled{color:#f87171;}
+  .actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+            align-items:center;justify-content:center;z-index:100;}
+  .modal-bg.show{display:flex;}
+  .modal{background:#111827;border:1px solid #1f2937;border-radius:14px;
+         padding:28px;max-width:480px;width:90%;}
+  .modal h3{font-size:16px;font-weight:700;margin-bottom:16px;}
+  label{display:block;font-size:11px;color:#9ca3af;font-weight:600;
+        text-transform:uppercase;margin-bottom:4px;margin-top:12px;}
+  input.field,select.field{width:100%;padding:9px 12px;background:#1f2937;
+    border:1px solid #374151;border-radius:8px;color:#fff;font-size:13px;}
+  input.field:focus,select.field:focus{outline:none;border-color:#f5a623;}
+  .hint-box{background:#1f2937;border-radius:8px;padding:10px 12px;
+            font-size:13px;color:#9ca3af;margin-top:4px;}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+  .toast{position:fixed;bottom:24px;right:24px;background:#052e16;color:#4ade80;
+         border:1px solid #14532d;border-radius:8px;padding:10px 16px;
+         font-size:13px;display:none;z-index:200;}
+  .empty{padding:32px;text-align:center;color:#4b5563;font-size:14px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">BLEE <span>Quant</span> <sub>Admin Dashboard</sub></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span id="admin-email" style="font-size:12px;color:#6b7280;"></span>
+    <button class="btn btn-outline btn-sm" onclick="signOut()">Sign out</button>
+  </div>
+</header>
+
+<!-- Stats row -->
+<div class="stats">
+  <div class="stat"><div class="stat-val" id="stat-total">—</div><div class="stat-lbl">Total Members</div></div>
+  <div class="stat"><div class="stat-val" id="stat-basic">—</div><div class="stat-lbl">Starter</div></div>
+  <div class="stat"><div class="stat-val" id="stat-premium">—</div><div class="stat-lbl">Pro</div></div>
+  <div class="stat"><div class="stat-val" id="stat-mrr" style="font-size:20px;">—</div><div class="stat-lbl">Est. MRR</div></div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <input class="search" id="search" type="text" placeholder="Search email…" oninput="renderTable()"/>
+  <select class="filter" id="filter-tier" onchange="renderTable()">
+    <option value="">All tiers</option>
+    <option value="basic">Starter</option>
+    <option value="premium">Pro</option>
+    <option value="none">No plan</option>
+  </select>
+  <select class="filter" id="filter-status" onchange="renderTable()">
+    <option value="">All statuses</option>
+    <option value="active">Active</option>
+    <option value="pending">Pending</option>
+    <option value="inactive">Inactive</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
+  <button class="btn btn-gold" onclick="openAddUser()">+ Add user</button>
+  <button class="btn btn-outline" onclick="loadUsers()" style="margin-left:auto;">↻ Refresh</button>
+</div>
+
+<!-- User table -->
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Plan</th>
+        <th>Status</th>
+        <th>Joined</th>
+        <th>Last Login</th>
+        <th>Security Hint</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="user-tbody">
+      <tr><td colspan="7" class="empty">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Edit user modal -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <h3 id="modal-title">Edit Member</h3>
+    <input type="hidden" id="edit-uid"/>
+    <label>Email</label>
+    <input class="field" id="edit-email" type="email" readonly
+           style="color:#6b7280;cursor:not-allowed;"/>
+    <label>Plan</label>
+    <select class="field" id="edit-tier">
+      <option value="none">No plan</option>
+      <option value="basic">Starter ($19/mo)</option>
+      <option value="premium">Pro ($49/mo)</option>
+    </select>
+    <label>Subscription Status</label>
+    <select class="field" id="edit-status">
+      <option value="pending">Pending</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+    <label>Security Hint</label>
+    <div class="hint-box" id="edit-hint">—</div>
+    <label>Notes (internal)</label>
+    <input class="field" id="edit-notes" type="text" placeholder="Optional internal notes"/>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="sendReset()">📧 Send Password Reset</button>
+      <button class="btn btn-gold" onclick="saveUser()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add user modal -->
+<div class="modal-bg" id="add-modal">
+  <div class="modal">
+    <h3>Add Member Manually</h3>
+    <label>Email</label>
+    <input class="field" id="add-email" type="email" placeholder="member@example.com"/>
+    <label>Plan</label>
+    <select class="field" id="add-tier">
+      <option value="basic">Starter ($19/mo)</option>
+      <option value="premium">Pro ($49/mo)</option>
+    </select>
+    <label>Subscription Status</label>
+    <select class="field" id="add-status">
+      <option value="active">Active</option>
+      <option value="pending">Pending</option>
+    </select>
+    <label>Security Hint (optional)</label>
+    <input class="field" id="add-hint" type="text" placeholder="Hint they can use to recover"/>
+    <p style="font-size:11px;color:#6b7280;margin-top:10px;">
+      ℹ️ This creates a Firestore record. The member still needs to register at
+      <a href="login.html" style="color:#f5a623;">login.html</a> to set their password.
+    </p>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="addUser()">Add Member</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+let allUsers = [];
+
+// ── Auth gate: admin only ────────────────────────────────────────────────
+auth.onAuthStateChanged(user => {
+  if (!user) { window.location.href = BLEE_PAGES.login; return; }
+  if (user.email !== BLEE_ADMIN_EMAIL) {
+    alert("Admin access only.");
+    window.location.href = BLEE_PAGES.home;
+    return;
+  }
+  document.getElementById("admin-email").textContent = user.email;
+  loadUsers();
+});
+
+// ── Load all users from Firestore ────────────────────────────────────────
+async function loadUsers() {
+  document.querySelector("#user-tbody").innerHTML =
+    '<tr><td colspan="7" class="empty">Loading…</td></tr>';
+  try {
+    const snap = await db.collection("users").orderBy("createdAt","desc").get();
+    allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    updateStats();
+    renderTable();
+  } catch (e) {
+    document.querySelector("#user-tbody").innerHTML =
+      `<tr><td colspan="7" class="empty" style="color:#f87171;">Error: ${e.message}</td></tr>`;
+  }
+}
+
+// ── Stats ────────────────────────────────────────────────────────────────
+function updateStats() {
+  const active   = allUsers.filter(u => u.subscriptionStatus === "active");
+  const basic    = active.filter(u => u.tier === "basic").length;
+  const premium  = active.filter(u => u.tier === "premium").length;
+  const mrr      = basic * 19 + premium * 49;
+  document.getElementById("stat-total").textContent   = allUsers.length;
+  document.getElementById("stat-basic").textContent   = basic;
+  document.getElementById("stat-premium").textContent = premium;
+  document.getElementById("stat-mrr").textContent     = "$" + mrr.toLocaleString();
+}
+
+// ── Render table with filters ────────────────────────────────────────────
+function renderTable() {
+  const q      = document.getElementById("search").value.toLowerCase();
+  const tier   = document.getElementById("filter-tier").value;
+  const status = document.getElementById("filter-status").value;
+
+  let rows = allUsers.filter(u => {
+    if (q && !(u.email||"").toLowerCase().includes(q)) return false;
+    if (tier   && u.tier               !== tier)   return false;
+    if (status && u.subscriptionStatus !== status) return false;
+    return true;
+  });
+
+  if (!rows.length) {
+    document.querySelector("#user-tbody").innerHTML =
+      '<tr><td colspan="7" class="empty">No members found.</td></tr>';
+    return;
+  }
+
+  document.querySelector("#user-tbody").innerHTML = rows.map(u => {
+    const joined  = u.createdAt   ? fmtDate(u.createdAt)   : "—";
+    const lastLog = u.lastLoginAt ? fmtDate(u.lastLoginAt) : "—";
+    const tierBadge = `<span class="tier-badge tier-${u.tier||'none'}">
+      ${u.tier === "premium" ? "⭐ Pro" : u.tier === "basic" ? "✅ Starter" : "— None"}
+    </span>`;
+    const statusClass = "status-" + (u.subscriptionStatus || "pending");
+    return `<tr>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;"
+          title="${u.email}">${u.email || "—"}</td>
+      <td>${tierBadge}</td>
+      <td class="${statusClass}">${u.subscriptionStatus || "pending"}</td>
+      <td style="color:#9ca3af;white-space:nowrap;">${joined}</td>
+      <td style="color:#9ca3af;white-space:nowrap;">${lastLog}</td>
+      <td style="color:#6b7280;max-width:140px;overflow:hidden;
+                 text-overflow:ellipsis;" title="${u.securityHint||''}">
+        ${u.securityHint || <span style="color:#374151;">not set</span>}
+      </td>
+      <td><div class="actions">
+        <button class="btn btn-outline btn-sm" onclick="openEdit('${u.uid}')">Edit</button>
+        <button class="btn btn-outline btn-sm" onclick="sendResetFor('${u.email}')">
+          📧 Reset
+        </button>
+      </div></td>
+    </tr>`;
+  }).join("");
+}
+
+function fmtDate(ts) {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+}
+
+// ── Edit modal ───────────────────────────────────────────────────────────
+function openEdit(uid) {
+  const u = allUsers.find(x => x.uid === uid);
+  if (!u) return;
+  document.getElementById("edit-uid").value    = uid;
+  document.getElementById("edit-email").value  = u.email || "";
+  document.getElementById("edit-tier").value   = u.tier  || "none";
+  document.getElementById("edit-status").value = u.subscriptionStatus || "pending";
+  document.getElementById("edit-hint").textContent = u.securityHint || "— not set —";
+  document.getElementById("edit-notes").value  = u.notes || "";
+  document.getElementById("modal-title").textContent = "Edit: " + u.email;
+  document.getElementById("edit-modal").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("edit-modal").classList.remove("show");
+}
+
+async function saveUser() {
+  const uid    = document.getElementById("edit-uid").value;
+  const tier   = document.getElementById("edit-tier").value;
+  const status = document.getElementById("edit-status").value;
+  const notes  = document.getElementById("edit-notes").value.trim();
+  try {
+    await db.collection("users").doc(uid).update({
+      tier: tier, subscriptionStatus: status, notes: notes,
+    });
+    // Update local cache
+    const idx = allUsers.findIndex(u => u.uid === uid);
+    if (idx >= 0) {
+      allUsers[idx].tier = tier;
+      allUsers[idx].subscriptionStatus = status;
+      allUsers[idx].notes = notes;
+    }
+    closeModal();
+    updateStats();
+    renderTable();
+    showToast("✅ Member updated.");
+  } catch (e) {
+    alert("Save failed: " + e.message);
+  }
+}
+
+async function sendReset() {
+  const email = document.getElementById("edit-email").value;
+  await sendResetFor(email);
+}
+
+async function sendResetFor(email) {
+  if (!email) return;
+  if (!confirm(`Send password reset email to ${email}?`)) return;
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showToast("📧 Reset email sent to " + email);
+  } catch (e) {
+    alert("Failed: " + e.message);
+  }
+}
+
+// ── Add user modal ───────────────────────────────────────────────────────
+function openAddUser() {
+  document.getElementById("add-modal").classList.add("show");
+}
+function closeAddModal() {
+  document.getElementById("add-modal").classList.remove("show");
+}
+
+async function addUser() {
+  const email  = document.getElementById("add-email").value.trim();
+  const tier   = document.getElementById("add-tier").value;
+  const status = document.getElementById("add-status").value;
+  const hint   = document.getElementById("add-hint").value.trim();
+  if (!email) { alert("Email required."); return; }
+  try {
+    // Use email as a temporary UID placeholder (real UID set when they register)
+    const docId = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+    await db.collection("users").doc(docId).set({
+      email, tier, subscriptionStatus: status,
+      securityHint: hint,
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt: null,
+      notes:       "Manually added by admin",
+    });
+    closeAddModal();
+    showToast("✅ Member added. They can register at login.html.");
+    loadUsers();
+  } catch (e) {
+    alert("Failed: " + e.message);
+  }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  setTimeout(() => { t.style.display = "none"; }, 3000);
+}
+
+function signOut() {
+  auth.signOut().then(() => window.location.href = BLEE_PAGES.login);
+}
+</script>
+</body>
+</html>
