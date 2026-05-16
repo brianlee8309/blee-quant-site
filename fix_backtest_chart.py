@@ -29,6 +29,19 @@ if m is None:
     raise SystemExit(1)
 
 prefix = text[: m.start()].rstrip() + "\n"
+
+# Defensive: strip any earlier inline <script>…</script> block that creates a
+# Chart on #growthChart. Otherwise we end up with two new Chart() calls on the
+# same canvas and Chart.js throws "Canvas is already in use", which halts the
+# rest of the page's JS (breaking GA, table render, etc).
+import re as _re
+prefix = _re.sub(
+    r"<script>[^<]*?new Chart\([^<]*?growthChart[^<]*?</script>\s*",
+    "",
+    prefix,
+    flags=_re.DOTALL,
+)
+
 tail = TAIL_FILE.read_text(encoding="utf-8")
 
 new = prefix + tail
