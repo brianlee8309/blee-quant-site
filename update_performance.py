@@ -237,12 +237,45 @@ else:
 
 
 # ── 6. inject into Algorithm185History.html ──────────────────────────────
+# Sample the equity curves down to ~30 evenly-spaced points so the chart
+# stays readable. Both BLEE and SPY are aligned on the same date axis.
+def _sample(dates, values, n=30):
+    if len(values) <= n:
+        return list(dates), [round(v, 2) for v in values]
+    step = (len(values) - 1) / (n - 1)
+    out_d, out_v = [], []
+    for i in range(n):
+        idx = min(int(round(i * step)), len(values) - 1)
+        out_d.append(dates[idx])
+        out_v.append(round(values[idx], 2))
+    return out_d, out_v
+
+curve_dates, curve_blee = _sample(equity_dates, equity_values, n=30)
+# Re-sample SPY curve on the same date indices when available
+if spy_prices:
+    spy_eq_dict = dict(zip(spy_eq_dates, spy_eq_values))
+    # For each sample date, find the closest SPY date <= it
+    spy_dates_sorted = sorted(spy_eq_dict.keys())
+    curve_spy = []
+    j = 0
+    for d in curve_dates:
+        while j + 1 < len(spy_dates_sorted) and spy_dates_sorted[j + 1] <= d:
+            j += 1
+        curve_spy.append(round(spy_eq_dict[spy_dates_sorted[j]], 2))
+else:
+    curve_spy = None
+
 payload = {
-    "updated":     datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "stats_1yr":   stats_1yr,
-    "stats_3yr":   stats_3yr,
-    "spy_1yr":     spy_stats_1yr,
-    "spy_3yr":     spy_stats_3yr,
+    "updated":      datetime.now().strftime("%Y-%m-%d %H:%M"),
+    "stats_1yr":    stats_1yr,
+    "stats_3yr":    stats_3yr,
+    "spy_1yr":      spy_stats_1yr,
+    "spy_3yr":      spy_stats_3yr,
+    "equity_curve": {
+        "labels": curve_dates,
+        "blee":   curve_blee,
+        "spy":    curve_spy,
+    },
 }
 new_block = (
     f"{MARKER_START} (auto-updated by update_performance.py — do not edit manually) "
@@ -265,6 +298,13 @@ new_html = pattern.sub(new_block, html_text)
 HTML_FILE.write_text(new_html, encoding="utf-8")
 print(f"\nInjected stats into {HTML_FILE.name} ({len(new_html):,} bytes)")
 print(f"Updated: {payload['updated']}")
+
+# Also write a standalone JSON file so the chart can fetch() it without
+# embedding the equity curve into the HTML (keeps Algorithm185History.html
+# from getting bloated with sample data).
+JSON_FILE = SCRIPT_DIR / "performance_data.json"
+JSON_FILE.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+print(f"Wrote standalone {JSON_FILE.name} ({JSON_FILE.stat().st_size} bytes)")
 
 
 # ── 7. patch index.html + performance1.html via data-perf attributes ─────
@@ -319,16 +359,39 @@ def patch_file(path: Path, replacements: dict):
     text = path.read_text(encoding="utf-8")
     n = 0
     for key, val in replacements.items():
-        # Match opening tag containing data-perf="key", capture it, then replace the cell contents
-        pat = re.compile(
-            r'(<[^>]+data-perf="' + re.escape(key) + r'"[^>]*>)([^<]*)(</[^>]+>)'
-        )
-        new_text, count = pat.subn(lambda m: m.group(1) + val + m.group(3), text)
-        if count:
-            text = new_text
-            n += count
+        # Match data-perf="key" OR data-perf-label="key"
+        for attr in ("data-perf", "data-perf-label"):
+            pat = re.compile(
+                r'(<[^>]+' + attr + r'="' + re.escape(key) + r'"[^>]*>)([^<]*)(</[^>]+>)'
+            )
+            new_text, count = pat.subn(lambda m: m.group(1) + val + m.group(3), text)
+            if count:
+                text = new_text
+                n += count
     path.write_text(text, encoding="utf-8")
     print(f"  {path.name}: patched {n} cells")
+
+
+# Build period-header labels using actual start/end dates from the equity curve
+def iso_to_mdy(iso):
+    if not iso or "-" not in iso:
+        return iso or ""
+    y, m, d = iso.split("-")
+    return f"{int(m):02d}/{int(d):02d}/{int(y)}"
+
+period_3yr_label = (
+    "\U0001F4C5 Performance on 3 year period from "
+    + iso_to_mdy(stats_3yr["start_date"]) + " to " + iso_to_mdy(stats_3yr["end_date"])
+)
+period_6yr_label = (
+    "\U0001F4C5 Performance on full "
+    + str(round(stats_3yr["n_days"] / 252)) + "-year period from "
+    + iso_to_mdy(stats_3yr["start_date"]) + " to " + iso_to_mdy(stats_3yr["end_date"])
+    + " (Full Backtest)"
+)
+
+perf_replacements["period_3yr"] = period_3yr_label
+perf_replacements["period_6yr"] = period_6yr_label
 
 print()
 print("Patching index.html + performance1.html...")
