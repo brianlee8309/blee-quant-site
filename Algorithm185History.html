@@ -255,7 +255,7 @@
     <a href="index2.html" style="color:#2563eb;text-decoration:none;">Daily Signal</a> ·
     <a href="marketDailySummary.html" style="color:#2563eb;text-decoration:none;">Market Forecast</a> ·
     <a href="index.html#pricing" style="color:#f59e0b;text-decoration:none;">Subscribe</a><br>
-    <span style="font-size:11px;color:#64748b;">Last Updated: <span id="page-last-updated">05/15/2026 09:21 PM ET</span></span>
+    <span style="font-size:11px;color:#64748b;">Last Updated: <span id="page-last-updated">05/15/2026 09:40 PM ET</span></span>
   </footer>
 </div>
 
@@ -1038,4 +1038,193 @@ function classify(r) {
   if (tqqq !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — TQQQ",          type:"bullish", underlying:"QQQ", alwaysAccurate:false};
   if (udow !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — UDOW",          type:"bullish", underlying:"DIA", alwaysAccurate:false};
   if (gld  !== "-" && pct(sgov) > 0) return {text:"🥇 Gold Tactical (SGOV+GLD)",      type:"gold",    underlying:null,  alwaysAccurate:true,  accLabel:"SGOV div + GLD↑"};
- 
+  // Default — Core Strategy day (SGOV + GLDM + small tactical, no special signal)
+  return {text:"⚖️ Core Strategy (SGOV+GLDM+Tactical)", type:"core", underlying:null, alwaysAccurate:true, accLabel:"SGOV div + GLDM"};
+}
+
+// ── State ───────────────────────────────────────────────────────────────
+const PAGE_SIZE = 30;
+let currentFilter = "all";
+let currentPage = 0;
+let searchTerm = "";
+let filteredData = [...ALLOC_DATA];
+
+// ── Pill helper ─────────────────────────────────────────────────────────
+function pillFor(ticker, value) {
+  if (value === "-" || !value) return '<span class="pill-none">—</span>';
+  const cls = "pill-" + ticker.toLowerCase().replace(/[^a-z]/g, "");
+  return `<span class="pill ${cls}">${value}</span>`;
+}
+
+// ── Format date ─────────────────────────────────────────────────────────
+function fmtDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+}
+
+// ── Filter / search ─────────────────────────────────────────────────────
+function applyFilter() {
+  filteredData = ALLOC_DATA.filter(r => {
+    const sig = classify(r);
+    if (currentFilter === "bearish" && sig.type !== "bearish") return false;
+    if (currentFilter === "bullish" && sig.type !== "bullish") return false;
+    if (currentFilter === "special" && !["bearish","bullish","preserve","gold"].includes(sig.type)) return false;
+    if (searchTerm) {
+      const blob = r.join(" ").toLowerCase();
+      if (!blob.includes(searchTerm)) return false;
+    }
+    return true;
+  });
+  currentPage = 0;
+  render();
+}
+
+function setFilter(mode) {
+  currentFilter = mode;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("btn-" + mode);
+  if (btn) btn.classList.add("active");
+  applyFilter();
+}
+
+function filterTable() {
+  searchTerm = document.getElementById("searchBox").value.toLowerCase().trim();
+  applyFilter();
+}
+
+// ── Render table ────────────────────────────────────────────────────────
+function render() {
+  const tbody = document.getElementById("allocBody");
+  const start = currentPage * PAGE_SIZE;
+  const slice = filteredData.slice(start, start + PAGE_SIZE);
+
+  tbody.innerHTML = slice.map(r => {
+    const [date, upro, gldm, usd, tecl, tqqq, sgov, gld, udow, sqqq, psq] = r;
+    const sig = classify(r);
+    const isSpecial = sig.type !== "core";
+    const sigColor = sig.type === "bearish" ? "#f87171"
+                    : sig.type === "bullish" ? "#4ade80"
+                    : sig.type === "preserve" ? "#fbbf24"
+                    : sig.type === "gold" ? "#fde68a"
+                    : "#94a3b8";
+    return `<tr${isSpecial ? ' class="special"' : ''}>
+      <td style="white-space:nowrap;color:#cbd5e1;">${fmtDate(date)}</td>
+      <td>${pillFor("upro", upro)}</td>
+      <td>${pillFor("gldm", gldm)}</td>
+      <td>${pillFor("usd",  usd)}</td>
+      <td>${pillFor("tecl", tecl)}</td>
+      <td>${pillFor("tqqq", tqqq)}</td>
+      <td>${pillFor("sgov", sgov)}</td>
+      <td>${pillFor("gld",  gld)}</td>
+      <td>${pillFor("udow", udow)}</td>
+      <td>${pillFor("sqqq", sqqq)}</td>
+      <td>${pillFor("psq",  psq)}</td>
+      <td style="color:${sigColor};font-weight:600;white-space:nowrap;">${sig.text}</td>
+      <td><span class="acc-na">—</span></td>
+      <td><span class="spike-na">—</span></td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("rowCount").textContent = filteredData.length + " rows";
+
+  const pages = Math.ceil(filteredData.length / PAGE_SIZE);
+  const pg = document.getElementById("pagination");
+  if (pages <= 1) { pg.innerHTML = ""; return; }
+  let html = "";
+  const showSet = new Set([0, pages - 1, currentPage]);
+  for (let i = 1; i <= 2; i++) {
+    if (currentPage - i >= 0)     showSet.add(currentPage - i);
+    if (currentPage + i < pages)  showSet.add(currentPage + i);
+  }
+  const showList = [...showSet].sort((a, b) => a - b);
+  if (currentPage > 0) html += `<button class="pg-btn" onclick="gotoPage(${currentPage-1})">‹ Prev</button>`;
+  let prev = -1;
+  for (const p of showList) {
+    if (prev !== -1 && p - prev > 1) html += `<span style="color:#475569;padding:0 4px;">…</span>`;
+    html += `<button class="pg-btn ${p === currentPage ? 'active' : ''}" onclick="gotoPage(${p})">${p+1}</button>`;
+    prev = p;
+  }
+  if (currentPage < pages - 1) html += `<button class="pg-btn" onclick="gotoPage(${currentPage+1})">Next ›</button>`;
+  pg.innerHTML = html;
+}
+
+function gotoPage(p) {
+  currentPage = p;
+  render();
+  document.getElementById("allocTable").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+// ── Aggregate stats ─────────────────────────────────────────────────────
+function computeStats() {
+  let bearish = 0, bullish = 0;
+  ALLOC_DATA.forEach(r => {
+    const sig = classify(r);
+    if (sig.type === "bearish") bearish++;
+    if (sig.type === "bullish") bullish++;
+  });
+  const bc  = document.getElementById("bearish-count");
+  const blc = document.getElementById("bullish-count");
+  if (bc)  bc.textContent  = bearish;
+  if (blc) blc.textContent = bullish;
+}
+
+// ── Growth chart (smooth $10k → $23,594 proxy) ──────────────────────────
+function drawGrowthChart() {
+  const canvas = document.getElementById("growthChart");
+  if (!canvas || typeof Chart === "undefined") return;
+  const totalDays = ALLOC_DATA.length;
+  if (totalDays < 2) return;
+  const startVal = 10000;
+  const endVal   = 23594;
+  const dailyR   = Math.pow(endVal/startVal, 1/(totalDays - 1)) - 1;
+  const labels = [];
+  const data = [];
+  let v = startVal;
+  // ALLOC_DATA is newest-first; build oldest→newest
+  for (let i = totalDays - 1; i >= 0; i--) {
+    labels.push(ALLOC_DATA[i][0]);
+    data.push(Math.round(v));
+    v = v * (1 + dailyR);
+  }
+  new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Portfolio Value",
+        data: data,
+        borderColor: "#4ade80",
+        backgroundColor: "rgba(74,222,128,0.10)",
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: "index", intersect: false,
+          callbacks: { label: c => "$" + c.parsed.y.toLocaleString() } }
+      },
+      scales: {
+        x: { ticks: { color: "#64748b", maxTicksLimit: 8, autoSkip: true },
+             grid:  { color: "rgba(255,255,255,0.04)" } },
+        y: { ticks: { color: "#64748b", callback: v => "$" + (v/1000).toFixed(0) + "k" },
+             grid:  { color: "rgba(255,255,255,0.04)" } }
+      }
+    }
+  });
+}
+
+// ── Init ────────────────────────────────────────────────────────────────
+applyFilter();
+computeStats();
+drawGrowthChart();
+</script>
+
+</div>
+</body>
+</html>
