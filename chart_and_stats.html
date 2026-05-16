@@ -217,10 +217,56 @@ function gotoPage(p) {
   if (tbl) tbl.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
+// ── Populate the 1-Year / 3-Year stat cards from PERFORMANCE_DATA ─────
+function renderPerformance() {
+  function setT(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; }
+  function fmtPct(n) {
+    if (n == null) return "—";
+    var s = n.toFixed(2) + "%";
+    if (n > 0) s = "+" + s;
+    if (s.charAt(0) === "-") s = "−" + s.slice(1);
+    return s;
+  }
+  function fmtDD(n) { return n == null ? "—" : n.toFixed(2) + "%"; }
+  var s1 = (typeof PERFORMANCE_DATA !== "undefined") ? PERFORMANCE_DATA.stats_1yr : null;
+  var s3 = (typeof PERFORMANCE_DATA !== "undefined") ? PERFORMANCE_DATA.stats_3yr : null;
+  if (s1) {
+    setT("perf-1yr-ann", fmtPct(s1.ann_return));
+    setT("perf-1yr-cum", fmtPct(s1.cum_return));
+    setT("perf-1yr-dd",  fmtDD(s1.max_drawdown));
+    setT("perf-1yr-period", s1.start_date + " to " + s1.end_date + " (" + s1.n_days + " trading days)");
+  } else {
+    setT("perf-1yr-ann", "—");
+    setT("perf-1yr-cum", "—");
+    setT("perf-1yr-dd",  "—");
+    setT("perf-1yr-period", "Run update_performance.py to populate");
+  }
+  if (s3) {
+    setT("perf-3yr-ann", fmtPct(s3.ann_return));
+    setT("perf-3yr-cum", fmtPct(s3.cum_return));
+    setT("perf-3yr-dd",  fmtDD(s3.max_drawdown));
+    setT("perf-3yr-period", s3.start_date + " to " + s3.end_date + " (" + s3.n_days + " trading days)");
+    setT("perf-3yr-value", "$" + Math.round(s3.end_value).toLocaleString());
+    setT("perf-3yr-details", fmtPct(s3.cum_return) + " cumulative return  ·  "
+                           + fmtPct(s3.ann_return) + " annualized return  ·  Max Drawdown " + fmtDD(s3.max_drawdown));
+    setT("perf-3yr-label", "$" + Math.round(s3.start_value).toLocaleString()
+                          + " Invested - " + s3.start_date + " (" + s3.n_days + " trading days)");
+  } else {
+    setT("perf-3yr-ann", "—");
+    setT("perf-3yr-cum", "—");
+    setT("perf-3yr-dd",  "—");
+    setT("perf-3yr-period", "Run update_performance.py to populate");
+  }
+  if (typeof PERFORMANCE_DATA !== "undefined" && PERFORMANCE_DATA.updated && PERFORMANCE_DATA.updated !== "never") {
+    setT("perf-last-updated", "Stats updated " + PERFORMANCE_DATA.updated);
+  }
+}
+
 // Initial paint
 applyFilter();
 computeStats();
 computeAccuracyStats();
+renderPerformance();
 </script>
 
 <script>
@@ -368,6 +414,41 @@ computeAccuracyStats();
 </body>
 </html>
 ript>
+
+</body>
+</html>
+() {
+  if (typeof Chart === "undefined") return;
+  var canvas = document.getElementById("growthChart");
+  if (!canvas) return;
+  var labels = ["May 2020","Aug 2020","Nov 2020","Feb 2021","May 2021","Aug 2021","Nov 2021","Feb 2022","May 2022","Aug 2022","Nov 2022","Feb 2023","May 2023","Aug 2023","Nov 2023","Feb 2024","May 2024","Aug 2024","Nov 2024","Feb 2025","May 2025","Aug 2025","Nov 2025","Feb 2026","May 2026"];
+  var strategy = [10000,10300,11000,12000,12500,13000,13700,14000,15200,15700,16400,16700,17000,17800,18500,19400,20700,21500,22900,22200,23800,24800,24400,25500,27197];
+  var spy = [10000,11400,13100,14500,15800,17400,18900,17200,13600,14200,15100,16000,16600,17600,18500,20200,21800,22500,24600,22400,24200,25800,25000,24200,26650];
+  new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: { labels: labels, datasets: [
+      { label:"BLEE Strategy", data: strategy, borderColor:"#10b981", backgroundColor:"rgba(16,185,129,0.10)", borderWidth:2.5, fill:true, tension:0.4, pointRadius:0, pointHoverRadius:6, pointHoverBackgroundColor:"#10b981" },
+      { label:"S&P 500 (SPY)", data: spy, borderColor:"#f472b6", backgroundColor:"rgba(244,114,182,0.06)", borderWidth:2, fill:true, tension:0.4, pointRadius:0, pointHoverRadius:6, pointHoverBackgroundColor:"#f472b6" }
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:"index", intersect:false },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:"#1e293b", titleColor:"rgba(255,255,255,0.70)", bodyColor:"#fff",
+          borderColor:"rgba(255,255,255,0.10)", borderWidth:1, padding:12,
+          callbacks:{ label:function(ctx){ var v=ctx.raw, p=((v-10000)/10000*100).toFixed(1); return " "+ctx.dataset.label+": $"+v.toLocaleString()+"  ("+(p>0?"+":"")+p+"%)"; } }
+        }
+      },
+      scales:{
+        x:{ grid:{ color:"rgba(255,255,255,0.06)" }, ticks:{ color:"rgba(255,255,255,0.35)", font:{ size:11 }, maxTicksLimit:8 } },
+        y:{ grid:{ color:"rgba(255,255,255,0.06)" }, ticks:{ color:"rgba(255,255,255,0.35)", font:{ size:11 }, callback:function(v){ return "$"+v.toLocaleString(); } } }
+      }
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
