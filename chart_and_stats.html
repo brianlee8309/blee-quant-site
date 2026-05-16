@@ -13,7 +13,14 @@ const PAGE_SIZE = 30;
 let currentFilter = "all";
 let currentPage = 0;
 let searchTerm = "";
-let filteredData = (typeof ALLOC_DATA !== "undefined") ? ALLOC_DATA.slice() : [];
+
+// Hide the most-recent allocation row from the public Backtest page —
+// today's live signal is a paid feature (visible on the Daily Signal page).
+// ALLOC_DATA is newest-first, so dropping index 0 hides today.
+const PUBLIC_ALLOC = (typeof ALLOC_DATA !== "undefined")
+  ? ALLOC_DATA.slice(1)
+  : [];
+let filteredData = PUBLIC_ALLOC.slice();
 
 function pillFor(ticker, value) {
   if (value === "-" || !value) return '<span class="pill-none">-</span>';
@@ -121,7 +128,8 @@ function computeStats() {
 // ── Filter / search ─────────────────────────────────────────────────────
 function applyFilter() {
   if (typeof ALLOC_DATA === "undefined") return;
-  filteredData = ALLOC_DATA.filter(function(r) {
+  // PUBLIC_ALLOC = ALLOC_DATA minus today's row (subscriber-only).
+  filteredData = PUBLIC_ALLOC.filter(function(r) {
     var sig = classify(r);
     if (currentFilter === "bearish" && sig.type !== "bearish") return false;
     if (currentFilter === "bullish" && sig.type !== "bullish") return false;
