@@ -88,8 +88,19 @@
     <a href="Algorithm185History.html" class="active">Backtest</a>
     <a href="performance1.html">Performance</a>
     <a href="index.html#pricing" class="nav-cta">Subscribe</a>
+    <div class="nav-translate" style="display:flex;align-items:center;gap:3px;margin-left:14px;border-left:1px solid rgba(255,255,255,0.12);padding-left:14px;">
+      <button class="lang-btn active" data-lang="en" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇺🇸 EN</button>
+      <button class="lang-btn"        data-lang="ja" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇯🇵 JP</button>
+      <button class="lang-btn"        data-lang="vi" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇻🇳 VI</button>
+      <button class="lang-btn"        data-lang="ko" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇰🇷 KR</button>
+    </div>
   </div>
 </nav>
+<style>
+  .lang-btn.active{background:#f59e0b!important;color:#000!important;border-color:#f59e0b!important;}
+  .lang-btn:hover{background:rgba(255,255,255,0.10)!important;color:#fff!important;}
+</style>
+<script src="i18n.js" defer></script>
 
 <div class="container">
   <div class="page-header">
@@ -1097,7 +1108,7 @@ const PRICE_DATA_UPDATED = "2026-05-15 23:04";
 // ── PRICE_DATA_END ──
 
 // ── PERFORMANCE_DATA_START (auto-updated by update_performance.py — do not edit manually) ──
-const PERFORMANCE_DATA = {"updated":"2026-05-15 23:24","stats_1yr":{"start_date":"2025-05-15","end_date":"2026-05-15","start_value":17246.88,"end_value":22154.22,"cum_return":28.45,"ann_return":28.45,"max_drawdown":-1.79,"n_days":252},"stats_3yr":{"start_date":"2023-05-15","end_date":"2026-05-15","start_value":10000.0,"end_value":22154.22,"cum_return":121.54,"ann_return":30.45,"max_drawdown":-4.75,"n_days":754},"spy_1yr":{"start_date":"2025-05-14","end_date":"2026-05-15","start_value":14616.74,"end_value":18598.18,"cum_return":27.24,"ann_return":27.24,"max_drawdown":-8.88,"n_days":252},"spy_3yr":{"start_date":"2023-05-15","end_date":"2026-05-15","start_value":10000.0,"end_value":18598.18,"cum_return":85.98,"ann_return":23.08,"max_drawdown":-18.76,"n_days":753}};
+const PERFORMANCE_DATA = {"updated":"2026-05-15 23:49","stats_1yr":{"start_date":"2025-05-15","end_date":"2026-05-15","start_value":17246.87,"end_value":22154.21,"cum_return":28.45,"ann_return":28.45,"max_drawdown":-1.79,"n_days":252},"stats_3yr":{"start_date":"2023-05-15","end_date":"2026-05-15","start_value":10000.0,"end_value":22154.21,"cum_return":121.54,"ann_return":30.45,"max_drawdown":-4.75,"n_days":754},"spy_1yr":{"start_date":"2025-05-14","end_date":"2026-05-15","start_value":14616.74,"end_value":18598.19,"cum_return":27.24,"ann_return":27.24,"max_drawdown":-8.88,"n_days":252},"spy_3yr":{"start_date":"2023-05-15","end_date":"2026-05-15","start_value":10000.0,"end_value":18598.19,"cum_return":85.98,"ann_return":23.08,"max_drawdown":-18.76,"n_days":753}};
 // ── PERFORMANCE_DATA_END ──
 
 const PAGE_SIZE = 30;
