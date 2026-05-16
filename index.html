@@ -1145,21 +1145,21 @@
         <tbody>
           <tr>
             <td class="metric" data-i18n="row1">Cumulative Return (3yr)</td>
-            <td class="strategy-val win">+106%</td>
-            <td class="spy-val">+85.7%</td>
-            <td><span class="badge">+49.5pp</span></td>
+            <td class="strategy-val win" data-perf="blee_cum_3yr">+121.54%</td>
+            <td class="spy-val" data-perf="spy_cum_3yr">+85.98%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+35.6pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row2">Annualized Return</td>
-            <td class="strategy-val win">27.0%</td>
-            <td class="spy-val">23.0%</td>
-            <td><span class="badge">+10.0pp</span></td>
+            <td class="strategy-val win" data-perf="blee_ann_3yr">+30.45%</td>
+            <td class="spy-val" data-perf="spy_ann_3yr">+23.08%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+7.4pp</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row3">Max Drawdown</td>
-            <td class="strategy-val win">−4.9%</td>
-            <td class="spy-val" style="color:#ef4444">−18.8%</td>
-            <td><span class="badge">3.8× safer</span></td>
+            <td class="strategy-val win" data-perf="blee_dd_3yr">−4.75%</td>
+            <td class="spy-val" style="color:#ef4444" data-perf="spy_dd_3yr">−18.76%</td>
+            <td><span class="badge" data-perf="edge_dd_3yr">3.9× safer</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row4">Calmar Ratio</td>
@@ -1196,6 +1196,9 @@
     </div>
     <p style="font-size:12px;color:var(--muted);margin-top:12px;">
       * Past simulated performance is not indicative of future results. All data generated using full historical backtesting of proprietary algorithm models.
+      Live values for Cumulative Return, Annualized Return, and Max Drawdown above are auto-refreshed daily from the
+      <a href="Algorithm185History.html" style="color:#60a5fa;text-decoration:underline;">Backtest page</a>
+      after market close. Calmar, Sharpe, Beta, Trailing 3-Month, and Alpha are static reference values from the most recent full backtest.
     </p>
   </div>
 </section>

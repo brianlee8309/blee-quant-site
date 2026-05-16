@@ -22,7 +22,7 @@ python update_accuracy.py
 
 echo.
 echo Pushing Daily Signal pages to GitHub Pages...
-git add index2.html index_50.html index_185v2.html composer_config.json Algorithm185History.html BackLog\
+git add index.html index2.html index_50.html index_185v2.html composer_config.json Algorithm185History.html performance1.html BackLog\
 git commit -m "Auto: Daily Signal update %date% %time%"
 git push origin main
 

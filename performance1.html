@@ -461,22 +461,29 @@
     <!-- Result strip -->
     <div class="result-strip">
       <div class="rs">
-        <div class="rv g">+106%</div>
+        <div class="rv g" data-perf="blee_cum_3yr">+121.54%</div>
         <div class="rl">BLEE Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv" style="color:var(--muted)">+86.4%</div>
+        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+85.98%</div>
         <div class="rl">SPY Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv g">$20,600</div>
+        <div class="rv g" data-perf="blee_final_3yr">$22,154</div>
         <div class="rl">BLEE Final Value</div>
       </div>
       <div class="rs">
-        <div class="rv r">−5.9%</div>
+        <div class="rv r" data-perf="blee_dd_3yr">−4.75%</div>
         <div class="rl">BLEE Max Drawdown</div>
       </div>
     </div>
+
+    <!-- Live-update notice -->
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin:14px auto 0;max-width:780px;">
+      ℹ️ The four numbers above (Cumulative, Final Value, Max Drawdown) are <strong>auto-refreshed daily</strong> from the
+      <a href="Algorithm185History.html" style="color:#60a5fa;text-decoration:underline;">Backtest page</a>
+      using yfinance closing prices applied to the full 3-year allocation history.
+    </p>
 
     <!-- Key insight -->
     <div class="insight green">
@@ -496,27 +503,27 @@
         <tbody>
           <tr>
             <td class="metric">Cumulative Return</td>
-            <td class="blee blee-win">+106%</td>
-            <td class="spy">+86.4%</td>
-            <td><span class="badge">+19.6pp ahead</span></td>
+            <td class="blee blee-win" data-perf="blee_cum_3yr">+121.54%</td>
+            <td class="spy" data-perf="spy_cum_3yr">+85.98%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+35.6pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric">Annualized Return</td>
-            <td class="blee blee-win">27%</td>
-            <td class="spy">23.2%</td>
-            <td><span class="badge">+3.8pp/yr</span></td>
+            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.45%</td>
+            <td class="spy" data-perf="spy_ann_3yr">+23.08%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+7.4pp</span></td>
           </tr>
           <tr>
             <td class="metric">Final Value ($10K start)</td>
-            <td class="blee blee-win">$20,600</td>
-            <td class="spy">~$18,640</td>
-            <td><span class="badge">+$4,776</span></td>
+            <td class="blee blee-win" data-perf="blee_final_3yr">$22,154</td>
+            <td class="spy" data-perf="spy_final_3yr">$18,598</td>
+            <td><span class="badge" data-perf="edge_final_3yr">+$3,556</span></td>
           </tr>
           <tr>
             <td class="metric">Max Drawdown</td>
-            <td class="blee blee-win">−5.9%</td>
-            <td class="spy" style="color:#ef4444">−18.8%</td>
-            <td><span class="badge">3.2× safer</span></td>
+            <td class="blee blee-win" data-perf="blee_dd_3yr">−4.75%</td>
+            <td class="spy" style="color:#ef4444" data-perf="spy_dd_3yr">−18.76%</td>
+            <td><span class="badge" data-perf="edge_dd_3yr">3.9× safer</span></td>
           </tr>
           <tr>
             <td class="metric">Calmar Ratio</td>

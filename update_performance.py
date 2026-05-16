@@ -46,6 +46,7 @@ HTML_FILE = SCRIPT_DIR / "Algorithm185History.html"
 CSV_FILE  = SCRIPT_DIR / "composer_allocations_185_3yr2.csv"
 
 TICKERS = ["SGOV", "GLDM", "UPRO", "TQQQ", "TECL", "GLD", "UDOW", "SQQQ", "PSQ"]
+BENCHMARK = "SPY"           # used for index.html / performance1.html comparisons
 START_DATE = "2023-05-10"   # 2 days before first allocation
 END_DATE   = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
 
@@ -57,8 +58,9 @@ MARKER_END   = "// ── PERFORMANCE_DATA_END ──"
 
 
 # ── 1. download prices ───────────────────────────────────────────────────
-print(f"Downloading {len(TICKERS)} ETFs from {START_DATE} to {END_DATE}...")
-raw = yf.download(TICKERS, start=START_DATE, end=END_DATE,
+all_symbols = TICKERS + [BENCHMARK]
+print(f"Downloading {len(all_symbols)} symbols from {START_DATE} to {END_DATE}...")
+raw = yf.download(all_symbols, start=START_DATE, end=END_DATE,
                   auto_adjust=True, progress=False, group_by="ticker")
 
 if raw.empty:
@@ -67,7 +69,7 @@ if raw.empty:
 
 # Flatten multi-level columns into {ticker: {date_iso: close}}
 prices = {}
-for t in TICKERS:
+for t in all_symbols:
     try:
         col = raw[t]["Close"] if (t, "Close") in raw.columns else raw["Close"][t]
     except (KeyError, AttributeError):
@@ -207,11 +209,40 @@ print(f"1-year: {stats_1yr['cum_return']:+.2f}% cumulative, "
       f"{stats_1yr['ann_return']:+.2f}% annualized, max DD {stats_1yr['max_drawdown']:.2f}%")
 
 
-# ── 5. inject into HTML ──────────────────────────────────────────────────
+# ── 5. SPY benchmark over the same windows ──────────────────────────────
+spy_prices = prices.get(BENCHMARK, {})
+if not spy_prices:
+    print(f"\nWARN: no {BENCHMARK} data; benchmark stats will be skipped.")
+    spy_stats_1yr = spy_stats_3yr = None
+else:
+    # Build SPY equity curve matching our trading-day window
+    spy_dates = sorted(spy_prices.keys())
+    # Align to first equity date we have
+    try:
+        first_idx = next(i for i, d in enumerate(spy_dates) if d >= equity_dates[0])
+        last_idx  = max(i for i, d in enumerate(spy_dates) if d <= equity_dates[-1])
+    except (ValueError, StopIteration):
+        first_idx, last_idx = 0, len(spy_dates) - 1
+    spy_window  = spy_dates[first_idx:last_idx + 1]
+    spy_p0 = spy_prices[spy_window[0]]
+    spy_eq_dates  = list(spy_window)
+    spy_eq_values = [START_VALUE * (spy_prices[d] / spy_p0) for d in spy_window]
+    spy_stats_3yr = compute_stats(spy_eq_dates, spy_eq_values)
+    if len(spy_eq_values) >= 253:
+        spy_stats_1yr = compute_stats(spy_eq_dates[-253:], spy_eq_values[-253:])
+    else:
+        spy_stats_1yr = spy_stats_3yr
+    print(f"\nSPY 3-yr: {spy_stats_3yr['cum_return']:+.2f}% cum, "
+          f"{spy_stats_3yr['ann_return']:+.2f}% ann, max DD {spy_stats_3yr['max_drawdown']:.2f}%")
+
+
+# ── 6. inject into Algorithm185History.html ──────────────────────────────
 payload = {
-    "updated":    datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "stats_1yr":  stats_1yr,
-    "stats_3yr":  stats_3yr,
+    "updated":     datetime.now().strftime("%Y-%m-%d %H:%M"),
+    "stats_1yr":   stats_1yr,
+    "stats_3yr":   stats_3yr,
+    "spy_1yr":     spy_stats_1yr,
+    "spy_3yr":     spy_stats_3yr,
 }
 new_block = (
     f"{MARKER_START} (auto-updated by update_performance.py — do not edit manually) "
@@ -234,3 +265,72 @@ new_html = pattern.sub(new_block, html_text)
 HTML_FILE.write_text(new_html, encoding="utf-8")
 print(f"\nInjected stats into {HTML_FILE.name} ({len(new_html):,} bytes)")
 print(f"Updated: {payload['updated']}")
+
+
+# ── 7. patch index.html + performance1.html via data-perf attributes ─────
+def fmt_pct(n, no_decimal=False, plus_for_positive=True):
+    if n is None:
+        return "—"
+    s = f"{n:.0f}%" if no_decimal else f"{n:.2f}%"
+    if plus_for_positive and n > 0 and not s.startswith("+"):
+        s = "+" + s
+    # Use the proper minus sign (−) for negative values to match style on the pages
+    if s.startswith("-"):
+        s = "−" + s[1:]
+    return s
+
+def fmt_pp(n):
+    """percentage-points delta, with + sign"""
+    if n is None: return "—"
+    return ("+" if n >= 0 else "−") + f"{abs(n):.1f}pp"
+
+def fmt_dollar(n):
+    if n is None: return "—"
+    return f"${round(n):,}"
+
+# Build the replacement map keyed by data-perf id
+edge_cum = (stats_3yr['cum_return'] - (spy_stats_3yr['cum_return'] if spy_stats_3yr else 0))
+edge_ann = (stats_3yr['ann_return'] - (spy_stats_3yr['ann_return'] if spy_stats_3yr else 0))
+edge_dd_ratio = abs(spy_stats_3yr['max_drawdown'] / stats_3yr['max_drawdown']) if (spy_stats_3yr and stats_3yr['max_drawdown'] != 0) else 0
+edge_final = stats_3yr['end_value'] - (spy_stats_3yr['end_value'] if spy_stats_3yr else 0)
+
+perf_replacements = {
+    "blee_cum_3yr":   fmt_pct(stats_3yr['cum_return']),
+    "blee_ann_3yr":   fmt_pct(stats_3yr['ann_return']),
+    "blee_dd_3yr":    fmt_pct(stats_3yr['max_drawdown']),
+    "blee_final_3yr": fmt_dollar(stats_3yr['end_value']),
+}
+if spy_stats_3yr:
+    perf_replacements.update({
+        "spy_cum_3yr":   fmt_pct(spy_stats_3yr['cum_return']),
+        "spy_ann_3yr":   fmt_pct(spy_stats_3yr['ann_return']),
+        "spy_dd_3yr":    fmt_pct(spy_stats_3yr['max_drawdown']),
+        "spy_final_3yr": fmt_dollar(spy_stats_3yr['end_value']),
+        "edge_cum_3yr":  fmt_pp(edge_cum) + " ahead",
+        "edge_ann_3yr":  fmt_pp(edge_ann),
+        "edge_dd_3yr":   f"{edge_dd_ratio:.1f}× safer" if edge_dd_ratio else "—",
+        "edge_final_3yr": ("+" if edge_final >= 0 else "−") + fmt_dollar(abs(edge_final)).lstrip("$").join(["$", ""]),
+    })
+
+def patch_file(path: Path, replacements: dict):
+    if not path.exists():
+        print(f"  SKIP: {path.name} not found")
+        return
+    text = path.read_text(encoding="utf-8")
+    n = 0
+    for key, val in replacements.items():
+        # Match opening tag containing data-perf="key", capture it, then replace the cell contents
+        pat = re.compile(
+            r'(<[^>]+data-perf="' + re.escape(key) + r'"[^>]*>)([^<]*)(</[^>]+>)'
+        )
+        new_text, count = pat.subn(lambda m: m.group(1) + val + m.group(3), text)
+        if count:
+            text = new_text
+            n += count
+    path.write_text(text, encoding="utf-8")
+    print(f"  {path.name}: patched {n} cells")
+
+print()
+print("Patching index.html + performance1.html...")
+for fp in [SCRIPT_DIR / "index.html", SCRIPT_DIR / "performance1.html"]:
+    patch_file(fp, perf_replacements)
