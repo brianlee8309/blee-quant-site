@@ -398,14 +398,21 @@ def main() -> int:
         else:
             log(f"  RSI signal: {rsi_info['signal']} (no adjustment)")
 
-        # ── RSI override: today > 76 AND at least one prior day > 76 ─────
+        # ── RSI override DISABLED (2026-05-15) ───────────────────────────
+        # Previously added +50 pts to score and surfaced a banner about
+        # "VIXY/SPXU redistributed to TQQQ/UPRO". Disabled because the
+        # symphony itself handles bull/bear rotation; the manual override
+        # was producing misleading banner text and double-counting score.
+        # The check is still RUN so we can see the RSI state in logs, but
+        # neither the score adjustment nor the banner is applied.
         rsi_override = _rsi.check_rsi_override(threshold=76.0, lookback=10)
         if rsi_override["active"]:
-            score = round(score + 50, 4)
-            log(f"  *** RSI OVERRIDE ACTIVE *** +50 pts → score={score:+.2f}")
-            log(f"  Reason: {rsi_override['reason']}")
+            log(f"  RSI override condition met but DISABLED: {rsi_override['reason']}")
+            log(f"  (no score adj, no banner — symphony handles rotation natively)")
         else:
             log(f"  RSI override not triggered: {rsi_override['reason']}")
+        # Force inactive so banner stays hidden
+        rsi_override = {"active": False, "reason": "override disabled (symphony handles rotation)"}
     except Exception as _e:
         log(f"  RSI integration error: {type(_e).__name__}: {_e}")
 

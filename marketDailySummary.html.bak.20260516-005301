@@ -350,13 +350,12 @@
     </div>
   </div>
 
-  <!-- RSI Override Banner (hidden — manual override disabled 2026-05-15;
-       the symphony now handles bull/bear rotation natively) -->
-  <div id="rsi-override-banner" style="display:none;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:12px;padding:14px 20px;margin-bottom:12px;align-items:center;gap:14px;">
+  <!-- RSI Override Banner (hidden unless active) -->
+  <div id="rsi-override-banner" style="display:none;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:12px;padding:14px 20px;margin-bottom:12px;display:none;align-items:center;gap:14px;">
     <span style="font-size:24px;">⚡</span>
     <div>
-      <div style="font-size:14px;font-weight:800;color:#fff;letter-spacing:.02em;">RSI ELEVATED — Symphony Rotation Active</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.75);margin-top:3px;">SPY RSI-14 is in an extended overbought zone. The BLEE-187 symphony is rotating between defensive (SQQQ / VIXY / SGOV) and growth (TECL / TQQQ / UPRO) positions on its own — no manual redistribution is being applied.</div>
+      <div style="font-size:14px;font-weight:800;color:#fff;letter-spacing:.02em;">RSI OVERRIDE ACTIVE — Distribution Adjusted</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.75);margin-top:3px;">SPY RSI-14 exceeded 76 today and was sustained over the past 10 days. VIXY &amp; SPXU allocations have been redistributed: TQQQ 65% · UPRO 35%. Market forecast score +50 pts applied.</div>
     </div>
   </div>
 

@@ -712,18 +712,50 @@ def main() -> int:
             log(f"  ERROR: no positions found for {sid}; skipping CSV/HTML for this symphony")
             continue
 
-        # ── RSI Override DISABLED (2026-05-15) ───────────────────────────
-        # Previously redistributed VIXY/SPXU → TQQQ 65% / UPRO 35% when SPY
-        # RSI-14 > 76. Disabled because the symphony itself already handles
-        # bull/bear rotation (e.g. May 14 → May 15 went SQQQ/VIXY → TECL/SGOV
-        # via Composer's own logic). Manual redistribution was double-counting
-        # and producing wrong rows in Algorithm185History.html and the Market
-        # Forecast banner. Source-of-truth is now the official Composer 3-year
-        # CSV download (composer_allocations_185_3yr2.csv).
-        #
-        # To re-enable: restore the block from composer_pull_allocation.py.bak.*
-        # and verify rsi_tracker.check_rsi_override still matches your intent.
-        log(f"  RSI override: DISABLED (symphony handles its own rotation)")
+        # ── RSI Override: if RSI-14 > 76 today AND any prior day > 76,
+        #    replace VIXY and SPXU allocations with TQQQ ──────────────────
+        try:
+            import rsi_tracker as _rsi_mod
+            _override = _rsi_mod.check_rsi_override(threshold=76.0, lookback=10)
+            if _override["active"]:
+                log(f"  *** RSI OVERRIDE ACTIVE for {sname} — remapping VIXY/SPXU → TQQQ 65% / UPRO 35% ***")
+                log(f"  {_override['reason']}")
+                # Split ratios for the freed weight (must sum to 1.0)
+                _SPLIT = {"TQQQ": 0.65, "UPRO": 0.35}
+                _override_tickers = {"VIXY", "SPXU"}
+                _extra_weight = 0.0
+                _extra_value  = 0.0
+                _kept = []
+                for _p in positions:
+                    if _p.get("ticker") in _override_tickers:
+                        _extra_weight += _p.get("weight_pct", 0.0)
+                        _extra_value  += _p.get("market_value", 0.0)
+                        log(f"    Removing {_p['ticker']} ({_p.get('weight_pct',0):.2f}%) — will redistribute")
+                    else:
+                        _kept.append(_p)
+                if _extra_weight > 0:
+                    for _dest, _ratio in _SPLIT.items():
+                        _add_w = round(_extra_weight * _ratio, 4)
+                        _add_v = round(_extra_value  * _ratio, 2)
+                        _row = next((_p for _p in _kept if _p.get("ticker") == _dest), None)
+                        if _row:
+                            _row["weight_pct"]  = round(_row.get("weight_pct", 0)  + _add_w, 4)
+                            _row["market_value"] = round(_row.get("market_value", 0) + _add_v, 2)
+                            log(f"    +{_add_w:.2f}% → {_dest} (merged, now {_row['weight_pct']:.2f}%)")
+                        else:
+                            _kept.append({
+                                "ticker":       _dest,
+                                "weight_pct":   _add_w,
+                                "market_value": _add_v,
+                                "shares":       None,
+                                "price":        None,
+                            })
+                            log(f"    +{_add_w:.2f}% → {_dest} (new row)")
+                    positions = _kept
+            else:
+                log(f"  RSI override not triggered: {_override['reason']}")
+        except Exception as _rsi_err:
+            log(f"  (RSI override check failed: {type(_rsi_err).__name__}: {_rsi_err})")
 
         # Save a per-symphony JSON snapshot of today's slice (handy for
         # debugging). Includes the raw symphony entry from the API so you can
@@ -890,71 +922,4 @@ def main() -> int:
 
     # Pages that use <span id="blee-updated"> (main landing + performance)
     for page in ["index.html"]:
-        page_path = SCRIPT_DIR / page
-        if not page_path.exists():
-            continue
-        try:
-            content = page_path.read_text(encoding="utf-8")
-            updated = _re.sub(
-                r'<span id="blee-updated">[^<]*</span>',
-                f'<span id="blee-updated">{now_str}</span>',
-                content
-            )
-            if updated != content:
-                page_path.write_text(updated, encoding="utf-8")
-                log(f"Stamped last-updated ({now_str}) into {page}")
-        except Exception as e:
-            log(f"  (could not stamp timestamp into {page}: {e})")
-
-    # Pages that use <span id="page-last-updated"> (performance, backtest)
-    for page in ["performance1.html", "Algorithm185History.html"]:
-        page_path = SCRIPT_DIR / page
-        if not page_path.exists():
-            continue
-        try:
-            content = page_path.read_text(encoding="utf-8")
-            updated = _re.sub(
-                r'<span id="page-last-updated">[^<]*</span>',
-                f'<span id="page-last-updated">{now_str}</span>',
-                content
-            )
-            if updated != content:
-                page_path.write_text(updated, encoding="utf-8")
-                log(f"Stamped last-updated ({now_str}) into {page}")
-        except Exception as e:
-            log(f"  (could not stamp timestamp into {page}: {e})")
-
-    # ---- Push updated files to GitHub ----------------------------------------
-    log("--- Pushing updates to GitHub ---")
-    try:
-        import os
-        git_dir = str(SCRIPT_DIR)
-        def git(cmd: str) -> int:
-            full = f'git -C "{git_dir}" {cmd}'
-            log(f"  $ {full}")
-            rc = os.system(full)
-            if rc != 0:
-                log(f"  WARNING: command exited with code {rc}")
-            return rc
-
-        git("add .")
-        git(f'commit -m "daily auto update {today}"')
-        rc = git("push")
-        if rc == 0:
-            log("GitHub push successful.")
-        else:
-            log("GitHub push failed — check remote/auth settings.")
-    except Exception as e:  # pylint: disable=broad-except
-        log(f"  (GitHub push failed: {type(e).__name__}: {e})")
-
-    return 0
-
-
-if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    except SystemExit:
-        raise
-    except Exception as e:  # pylint: disable=broad-except
-        log(f"FATAL: {type(e).__name__}: {e}")
-        sys.exit(1)
+        page_path = SCRIPT_DIR / pag
