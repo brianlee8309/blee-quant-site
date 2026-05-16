@@ -8,6 +8,25 @@ const PRICE_DATA_UPDATED = "never";
 const PERFORMANCE_DATA = {"updated": "never", "stats_1yr": null, "stats_3yr": null};
 // ── PERFORMANCE_DATA_END ──
 
+// ── Allocation-history pagination state ────────────────────────────────
+const PAGE_SIZE = 30;
+let currentFilter = "all";
+let currentPage = 0;
+let searchTerm = "";
+let filteredData = (typeof ALLOC_DATA !== "undefined") ? ALLOC_DATA.slice() : [];
+
+function pillFor(ticker, value) {
+  if (value === "-" || !value) return '<span class="pill-none">-</span>';
+  var cls = "pill-" + ticker.toLowerCase().replace(/[^a-z]/g, "");
+  return '<span class="pill ' + cls + '">' + value + '</span>';
+}
+
+function fmtDate(iso) {
+  var d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+}
+
+// ── Per-row accuracy / spike helpers ─────────────────────────────────────
 function accuracyFor(r, sig) {
   if (sig.alwaysAccurate) {
     var lbl = sig.accLabel ? ' <span class="acc-sym">' + sig.accLabel + '</span>' : '';
@@ -43,6 +62,7 @@ function spikeFor(r, sig, accuracy) {
   };
 }
 
+// ── Aggregate stat-card population ──────────────────────────────────────
 function computeAccuracyStats() {
   if (typeof ALLOC_DATA === "undefined") return;
   var today = new Date();
@@ -98,6 +118,107 @@ function computeStats() {
   if (blc) blc.textContent = bullish;
 }
 
+// ── Filter / search ─────────────────────────────────────────────────────
+function applyFilter() {
+  if (typeof ALLOC_DATA === "undefined") return;
+  filteredData = ALLOC_DATA.filter(function(r) {
+    var sig = classify(r);
+    if (currentFilter === "bearish" && sig.type !== "bearish") return false;
+    if (currentFilter === "bullish" && sig.type !== "bullish") return false;
+    if (currentFilter === "special" && ["bearish","bullish","preserve","gold"].indexOf(sig.type) === -1) return false;
+    if (searchTerm) {
+      var blob = r.join(" ").toLowerCase();
+      if (blob.indexOf(searchTerm) === -1) return false;
+    }
+    return true;
+  });
+  currentPage = 0;
+  render();
+}
+
+function setFilter(mode) {
+  currentFilter = mode;
+  document.querySelectorAll(".filter-btn").forEach(function(b) { b.classList.remove("active"); });
+  var btn = document.getElementById("btn-" + mode);
+  if (btn) btn.classList.add("active");
+  applyFilter();
+}
+
+function filterTable() {
+  var box = document.getElementById("searchBox");
+  searchTerm = box ? box.value.toLowerCase().trim() : "";
+  applyFilter();
+}
+
+// ── Render table + pagination ──────────────────────────────────────────
+function render() {
+  var tbody = document.getElementById("allocBody");
+  if (!tbody) return;
+  var start = currentPage * PAGE_SIZE;
+  var slice = filteredData.slice(start, start + PAGE_SIZE);
+  tbody.innerHTML = slice.map(function(r) {
+    var date=r[0], upro=r[1], gldm=r[2], usd=r[3], tecl=r[4], tqqq=r[5], sgov=r[6], gld=r[7], udow=r[8], sqqq=r[9], psq=r[10];
+    var sig = classify(r);
+    var isSpecial = sig.type !== "core";
+    var sigColor = sig.type === "bearish" ? "#f87171"
+                  : sig.type === "bullish" ? "#4ade80"
+                  : sig.type === "preserve" ? "#fbbf24"
+                  : sig.type === "gold" ? "#fde68a"
+                  : "#94a3b8";
+    var acc = accuracyFor(r, sig);
+    var spk = spikeFor(r, sig, acc);
+    return '<tr' + (isSpecial ? ' class="special"' : '') + '>'
+      + '<td style="white-space:nowrap;color:#cbd5e1;">' + fmtDate(date) + '</td>'
+      + '<td>' + pillFor("upro", upro) + '</td>'
+      + '<td>' + pillFor("gldm", gldm) + '</td>'
+      + '<td>' + pillFor("usd",  usd) + '</td>'
+      + '<td>' + pillFor("tecl", tecl) + '</td>'
+      + '<td>' + pillFor("tqqq", tqqq) + '</td>'
+      + '<td>' + pillFor("sgov", sgov) + '</td>'
+      + '<td>' + pillFor("gld",  gld) + '</td>'
+      + '<td>' + pillFor("udow", udow) + '</td>'
+      + '<td>' + pillFor("sqqq", sqqq) + '</td>'
+      + '<td>' + pillFor("psq",  psq) + '</td>'
+      + '<td style="color:' + sigColor + ';font-weight:600;white-space:nowrap;">' + sig.text + '</td>'
+      + '<td>' + acc.html + '</td>'
+      + '<td>' + spk.html + '</td>'
+      + '</tr>';
+  }).join("");
+  var rc = document.getElementById("rowCount");
+  if (rc) rc.textContent = filteredData.length + " rows";
+  var pages = Math.ceil(filteredData.length / PAGE_SIZE);
+  var pg = document.getElementById("pagination");
+  if (!pg) return;
+  if (pages <= 1) { pg.innerHTML = ""; return; }
+  var html = "";
+  var showSet = {};
+  showSet[0]=true; showSet[pages-1]=true; showSet[currentPage]=true;
+  for (var i = 1; i <= 2; i++) {
+    if (currentPage - i >= 0)    showSet[currentPage - i] = true;
+    if (currentPage + i < pages) showSet[currentPage + i] = true;
+  }
+  var showList = Object.keys(showSet).map(Number).sort(function(a,b){return a-b;});
+  if (currentPage > 0) html += '<button class="pg-btn" onclick="gotoPage(' + (currentPage-1) + ')">Prev</button>';
+  var prev = -1;
+  for (var j = 0; j < showList.length; j++) {
+    var p = showList[j];
+    if (prev !== -1 && p - prev > 1) html += '<span style="color:#475569;padding:0 4px;">...</span>';
+    html += '<button class="pg-btn ' + (p === currentPage ? 'active' : '') + '" onclick="gotoPage(' + p + ')">' + (p+1) + '</button>';
+    prev = p;
+  }
+  if (currentPage < pages - 1) html += '<button class="pg-btn" onclick="gotoPage(' + (currentPage+1) + ')">Next</button>';
+  pg.innerHTML = html;
+}
+
+function gotoPage(p) {
+  currentPage = p;
+  render();
+  var tbl = document.getElementById("allocTable");
+  if (tbl) tbl.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+// Initial paint
+applyFilter();
 computeStats();
 computeAccuracyStats();
 </script>
@@ -135,6 +256,118 @@ computeAccuracyStats();
   });
 })();
 </script>
+
+</body>
+</html>
+─────────────────────────────────────
+function render() {
+  var tbody = document.getElementById("allocBody");
+  if (!tbody) return;
+  var start = currentPage * PAGE_SIZE;
+  var slice = filteredData.slice(start, start + PAGE_SIZE);
+  tbody.innerHTML = slice.map(function(r) {
+    var date=r[0], upro=r[1], gldm=r[2], usd=r[3], tecl=r[4], tqqq=r[5], sgov=r[6], gld=r[7], udow=r[8], sqqq=r[9], psq=r[10];
+    var sig = classify(r);
+    var isSpecial = sig.type !== "core";
+    var sigColor = sig.type === "bearish" ? "#f87171"
+                  : sig.type === "bullish" ? "#4ade80"
+                  : sig.type === "preserve" ? "#fbbf24"
+                  : sig.type === "gold" ? "#fde68a"
+                  : "#94a3b8";
+    var acc = accuracyFor(r, sig);
+    var spk = spikeFor(r, sig, acc);
+    return '<tr' + (isSpecial ? ' class="special"' : '') + '>'
+      + '<td style="white-space:nowrap;color:#cbd5e1;">' + fmtDate(date) + '</td>'
+      + '<td>' + pillFor("upro", upro) + '</td>'
+      + '<td>' + pillFor("gldm", gldm) + '</td>'
+      + '<td>' + pillFor("usd",  usd) + '</td>'
+      + '<td>' + pillFor("tecl", tecl) + '</td>'
+      + '<td>' + pillFor("tqqq", tqqq) + '</td>'
+      + '<td>' + pillFor("sgov", sgov) + '</td>'
+      + '<td>' + pillFor("gld",  gld) + '</td>'
+      + '<td>' + pillFor("udow", udow) + '</td>'
+      + '<td>' + pillFor("sqqq", sqqq) + '</td>'
+      + '<td>' + pillFor("psq",  psq) + '</td>'
+      + '<td style="color:' + sigColor + ';font-weight:600;white-space:nowrap;">' + sig.text + '</td>'
+      + '<td>' + acc.html + '</td>'
+      + '<td>' + spk.html + '</td>'
+      + '</tr>';
+  }).join("");
+  var rc = document.getElementById("rowCount");
+  if (rc) rc.textContent = filteredData.length + " rows";
+  var pages = Math.ceil(filteredData.length / PAGE_SIZE);
+  var pg = document.getElementById("pagination");
+  if (!pg) return;
+  if (pages <= 1) { pg.innerHTML = ""; return; }
+  var html = "";
+  var showSet = {};
+  showSet[0]=true; showSet[pages-1]=true; showSet[currentPage]=true;
+  for (var i = 1; i <= 2; i++) {
+    if (currentPage - i >= 0)    showSet[currentPage - i] = true;
+    if (currentPage + i < pages) showSet[currentPage + i] = true;
+  }
+  var showList = Object.keys(showSet).map(Number).sort(function(a,b){return a-b;});
+  if (currentPage > 0) html += '<button class="pg-btn" onclick="gotoPage(' + (currentPage-1) + ')">Prev</button>';
+  var prev = -1;
+  for (var j = 0; j < showList.length; j++) {
+    var p = showList[j];
+    if (prev !== -1 && p - prev > 1) html += '<span style="color:#475569;padding:0 4px;">...</span>';
+    html += '<button class="pg-btn ' + (p === currentPage ? 'active' : '') + '" onclick="gotoPage(' + p + ')">' + (p+1) + '</button>';
+    prev = p;
+  }
+  if (currentPage < pages - 1) html += '<button class="pg-btn" onclick="gotoPage(' + (currentPage+1) + ')">Next</button>';
+  pg.innerHTML = html;
+}
+
+function gotoPage(p) {
+  currentPage = p;
+  render();
+  var tbl = document.getElementById("allocTable");
+  if (tbl) tbl.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+applyFilter();
+computeStats();
+computeAccuracyStats();
+</script>
+
+<script>
+(function () {
+  if (typeof Chart === "undefined") return;
+  var canvas = document.getElementById("growthChart");
+  if (!canvas) return;
+  var labels = ["May 2020","Aug 2020","Nov 2020","Feb 2021","May 2021","Aug 2021","Nov 2021","Feb 2022","May 2022","Aug 2022","Nov 2022","Feb 2023","May 2023","Aug 2023","Nov 2023","Feb 2024","May 2024","Aug 2024","Nov 2024","Feb 2025","May 2025","Aug 2025","Nov 2025","Feb 2026","May 2026"];
+  var strategy = [10000,10300,11000,12000,12500,13000,13700,14000,15200,15700,16400,16700,17000,17800,18500,19400,20700,21500,22900,22200,23800,24800,24400,25500,27197];
+  var spy = [10000,11400,13100,14500,15800,17400,18900,17200,13600,14200,15100,16000,16600,17600,18500,20200,21800,22500,24600,22400,24200,25800,25000,24200,26650];
+  new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: { labels: labels, datasets: [
+      { label:"BLEE Strategy", data: strategy, borderColor:"#10b981", backgroundColor:"rgba(16,185,129,0.10)", borderWidth:2.5, fill:true, tension:0.4, pointRadius:0, pointHoverRadius:6, pointHoverBackgroundColor:"#10b981" },
+      { label:"S&P 500 (SPY)", data: spy, borderColor:"#f472b6", backgroundColor:"rgba(244,114,182,0.06)", borderWidth:2, fill:true, tension:0.4, pointRadius:0, pointHoverRadius:6, pointHoverBackgroundColor:"#f472b6" }
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:"index", intersect:false },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:"#1e293b", titleColor:"rgba(255,255,255,0.70)", bodyColor:"#fff",
+          borderColor:"rgba(255,255,255,0.10)", borderWidth:1, padding:12,
+          callbacks:{ label:function(ctx){ var v=ctx.raw, p=((v-10000)/10000*100).toFixed(1); return " "+ctx.dataset.label+": $"+v.toLocaleString()+"  ("+(p>0?"+":"")+p+"%)"; } }
+        }
+      },
+      scales:{
+        x:{ grid:{ color:"rgba(255,255,255,0.06)" }, ticks:{ color:"rgba(255,255,255,0.35)", font:{ size:11 }, maxTicksLimit:8 } },
+        y:{ grid:{ color:"rgba(255,255,255,0.06)" }, ticks:{ color:"rgba(255,255,255,0.35)", font:{ size:11 }, callback:function(v){ return "$"+v.toLocaleString(); } } }
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
+ript>
 
 </body>
 </html>
