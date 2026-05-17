@@ -196,20 +196,27 @@ auth.onAuthStateChanged(async user => {
   document.getElementById("header-email").textContent = user.email;
 
   try {
-    if (user.email === BLEE_ADMIN_EMAIL) {
+    // Always load Firestore record (needed for manager/admin-tier check)
+    let userData = null;
+    if (user.email !== BLEE_ADMIN_EMAIL) {
+      const snap = await db.collection("users").doc(user.uid).get();
+      if (snap.exists) userData = { uid: user.uid, ...snap.data() };
+    }
+
+    const isAdmin = user.email === BLEE_ADMIN_EMAIL
+      || (userData && (userData.tier === "admin" || userData.tier === "manager")
+          && userData.subscriptionStatus === "active");
+
+    if (isAdmin) {
       document.getElementById("admin-link").style.display = "";
       document.getElementById("page-subtitle").textContent = "Marketing Dashboard (Admin)";
       await initAdminView();
-    } else {
-      const snap = await db.collection("users").doc(user.uid).get();
-      if (!snap.exists) { window.location.href = BLEE_PAGES.home || "index.html"; return; }
-      const data = snap.data();
-      if (data.tier !== "marketer" || data.subscriptionStatus !== "active") {
-        window.location.href = BLEE_PAGES.home || "index.html";
-        return;
-      }
-      currentUserData = { uid: user.uid, ...data };
+    } else if (userData && userData.tier === "marketer"
+               && userData.subscriptionStatus === "active") {
+      currentUserData = userData;
       await initMarketerView();
+    } else {
+      window.location.href = BLEE_PAGES.home || "index.html";
     }
   } catch (e) {
     console.error(e);

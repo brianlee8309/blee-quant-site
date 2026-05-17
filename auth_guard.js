@@ -79,7 +79,8 @@
   }
 
   // ── Tier hierarchy ──────────────────────────────────────────────────────
-  const TIER_RANK = { basic: 1, premium: 2, admin: 99 };
+  // manager: 10 — above premium, can access all member pages
+  const TIER_RANK = { basic: 1, premium: 2, manager: 10, admin: 99 };
 
   function tierSufficient(userTier, required) {
     return (TIER_RANK[userTier] || 0) >= (TIER_RANK[required] || 1);
@@ -164,10 +165,12 @@
     ].join(";");
 
     const tierLabel = tier === "admin"    ? "🔑 Admin"
+                    : tier === "manager"  ? "🛡️ Manager"
                     : tier === "premium"  ? "🚀 Pro"
                     : tier === "marketer" ? "🎯 Marketer"
                     : "⭐ Starter";
     const tierColor = tier === "admin"    ? "#f5a623"
+                    : tier === "manager"  ? "#38bdf8"
                     : tier === "premium"  ? "#facc15"
                     : tier === "marketer" ? "#a78bfa"
                     : "#4ade80";
@@ -183,7 +186,7 @@
         ? `<a href="${BLEE_PAGES.marketing || 'marketing.html'}"
              style="color:#a78bfa;text-decoration:none;">My Dashboard</a>`
         : ""}
-      ${tier === "admin"
+      ${tier === "admin" || tier === "manager"
         ? `<a href="${BLEE_PAGES.admin}"
              style="color:#f5a623;text-decoration:none;">Admin</a>`
         : ""}

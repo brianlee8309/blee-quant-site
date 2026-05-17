@@ -14,31 +14,28 @@
   .logo span{color:#fff;}
   .logo sub{font-size:11px;color:#6b7280;font-weight:400;margin-left:6px;}
 
-  /* Quick links */
   .quick-links{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-  .quick-link{display:flex;align-items:center;gap:10px;
-    background:#111827;border:1px solid #1f2937;border-radius:10px;
-    padding:12px 18px;text-decoration:none;transition:border-color .2s,background .2s;
-    flex:1;min-width:180px;}
+  .quick-link{display:flex;align-items:center;gap:10px;background:#111827;
+    border:1px solid #1f2937;border-radius:10px;padding:12px 18px;text-decoration:none;
+    transition:border-color .2s,background .2s;flex:1;min-width:180px;}
   .quick-link:hover{border-color:#f5a623;background:#1a1f2e;}
   .quick-link-icon{font-size:22px;line-height:1;}
   .quick-link-title{font-size:13px;font-weight:700;color:#f5a623;}
   .quick-link-sub{font-size:11px;color:#6b7280;margin-top:1px;}
   .quick-link-arrow{margin-left:auto;color:#374151;font-size:14px;}
 
-  /* Stats */
   .stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
   .stat{background:#111827;border:1px solid #1f2937;border-radius:10px;
-        padding:14px 18px;flex:1;min-width:100px;}
+        padding:14px 18px;flex:1;min-width:90px;}
   .stat-val{font-size:26px;font-weight:800;color:#f5a623;}
   .stat-lbl{font-size:11px;color:#6b7280;margin-top:2px;}
   .stat.s-free     .stat-val{color:#9ca3af;}
   .stat.s-starter  .stat-val{color:#4ade80;}
   .stat.s-pro      .stat-val{color:#f5a623;}
   .stat.s-marketer .stat-val{color:#a78bfa;}
+  .stat.s-manager  .stat-val{color:#38bdf8;}
   .stat.s-mrr      .stat-val{font-size:20px;color:#60a5fa;}
 
-  /* Toolbar */
   .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
   input.search{background:#111827;border:1px solid #1f2937;color:#fff;
                padding:8px 12px;border-radius:8px;font-size:13px;width:220px;}
@@ -54,7 +51,6 @@
   .btn-sm{padding:4px 10px;font-size:12px;}
   .btn:hover{opacity:.8;}
 
-  /* Table */
   .card{background:#111827;border:1px solid #1f2937;border-radius:12px;overflow:hidden;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
   th{background:#0d1525;padding:10px 14px;text-align:left;font-size:11px;
@@ -63,24 +59,22 @@
   tr:last-child td{border-bottom:0;}
   tr:hover td{background:#0f1928;}
 
-  /* Role badges */
-  .role-badge{display:inline-flex;align-items:center;gap:4px;
-              padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;}
+  .role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+              border-radius:12px;font-size:11px;font-weight:700;}
   .role-admin   {background:#3b1f06;color:#f5a623;border:1px solid #78350f;}
+  .role-manager {background:#0c1f2e;color:#38bdf8;border:1px solid #0e4f6e;}
   .role-pro     {background:#1a1f06;color:#facc15;border:1px solid #3f3f00;}
   .role-starter {background:#052e16;color:#4ade80;border:1px solid #14532d;}
   .role-free    {background:#1f2937;color:#9ca3af;border:1px solid #374151;}
   .role-marketer{background:#1a0a2e;color:#a78bfa;border:1px solid #4c1d95;}
   .role-none    {background:#111827;color:#4b5563;border:1px solid #1f2937;}
 
-  /* Status badges */
   .status-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
   .status-active   {background:#052e16;color:#4ade80;}
   .status-pending  {background:#1c1a06;color:#ca8a04;}
   .status-inactive {background:#1f1f1f;color:#6b7280;}
   .status-cancelled{background:#2b0a0a;color:#f87171;}
 
-  /* Modals */
   .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
             align-items:center;justify-content:center;z-index:100;}
   .modal-bg.show{display:flex;}
@@ -101,19 +95,24 @@
   .info-label{color:#4b5563;}
   .promo-field{display:none;}
 
-  /* Toast */
   .toast{position:fixed;bottom:24px;right:24px;background:#052e16;color:#4ade80;
          border:1px solid #14532d;border-radius:8px;padding:10px 16px;
          font-size:13px;display:none;z-index:200;}
   .empty{padding:32px;text-align:center;color:#4b5563;font-size:14px;}
   .actions{display:flex;gap:6px;flex-wrap:wrap;}
+
+  /* Manager notice banner */
+  .manager-notice{background:#0c1f2e;border:1px solid #0e4f6e;border-radius:8px;
+                  padding:10px 16px;margin-bottom:16px;font-size:12px;color:#7dd3fc;display:none;}
 </style>
 </head>
 <body>
 
 <header>
   <div>
-    <div class="logo">BLEE <span>Quant</span> <sub>Admin Dashboard</sub></div>
+    <div class="logo">BLEE <span>Quant</span>
+      <sub id="header-role-label">Admin Dashboard</sub>
+    </div>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <span id="admin-email" style="font-size:12px;color:#6b7280;"></span>
@@ -121,50 +120,84 @@
   </div>
 </header>
 
+<!-- Manager notice -->
+<div class="manager-notice" id="manager-notice">
+  🛡️ You are logged in as <strong>Manager</strong>. Admin accounts are not shown.
+  You can manage Free, Starter, Pro, and Marketer users.
+</div>
+
 <!-- Quick Links -->
 <div class="quick-links">
   <a href="data_flow_diagram.html" class="quick-link">
     <span class="quick-link-icon">📊</span>
-    <div><div class="quick-link-title">System Data Flow</div><div class="quick-link-sub">Architecture diagram</div></div>
+    <div><div class="quick-link-title">System Data Flow</div>
+         <div class="quick-link-sub">Architecture diagram</div></div>
     <span class="quick-link-arrow">›</span>
   </a>
   <a href="index2.html" class="quick-link">
     <span class="quick-link-icon">📈</span>
-    <div><div class="quick-link-title">Daily Signal</div><div class="quick-link-sub">Today's allocation</div></div>
+    <div><div class="quick-link-title">Daily Signal</div>
+         <div class="quick-link-sub">Today's allocation</div></div>
     <span class="quick-link-arrow">›</span>
   </a>
   <a href="Algorithm185History.html" class="quick-link">
     <span class="quick-link-icon">📉</span>
-    <div><div class="quick-link-title">Backtest History</div><div class="quick-link-sub">3-year performance</div></div>
+    <div><div class="quick-link-title">Backtest History</div>
+         <div class="quick-link-sub">3-year performance</div></div>
     <span class="quick-link-arrow">›</span>
   </a>
   <a href="marketing.html" class="quick-link">
     <span class="quick-link-icon">🎯</span>
-    <div><div class="quick-link-title">Marketing</div><div class="quick-link-sub">Referral & commission tracking</div></div>
+    <div><div class="quick-link-title">Marketing</div>
+         <div class="quick-link-sub">Referral & commission</div></div>
     <span class="quick-link-arrow">›</span>
   </a>
 </div>
 
 <!-- Stats -->
 <div class="stats">
-  <div class="stat"><div class="stat-val" id="stat-total">—</div><div class="stat-lbl">Total Users</div></div>
-  <div class="stat s-free"><div class="stat-val" id="stat-free">—</div><div class="stat-lbl">📧 Free</div></div>
-  <div class="stat s-starter"><div class="stat-val" id="stat-starter">—</div><div class="stat-lbl">⭐ Starter</div></div>
-  <div class="stat s-pro"><div class="stat-val" id="stat-pro">—</div><div class="stat-lbl">🚀 Pro</div></div>
-  <div class="stat s-marketer"><div class="stat-val" id="stat-marketer">—</div><div class="stat-lbl">🎯 Marketers</div></div>
-  <div class="stat s-mrr"><div class="stat-val" id="stat-mrr">—</div><div class="stat-lbl">Est. MRR</div></div>
+  <div class="stat">
+    <div class="stat-val" id="stat-total">—</div>
+    <div class="stat-lbl">Total Users</div>
+  </div>
+  <div class="stat s-free">
+    <div class="stat-val" id="stat-free">—</div>
+    <div class="stat-lbl">📧 Free</div>
+  </div>
+  <div class="stat s-starter">
+    <div class="stat-val" id="stat-starter">—</div>
+    <div class="stat-lbl">⭐ Starter</div>
+  </div>
+  <div class="stat s-pro">
+    <div class="stat-val" id="stat-pro">—</div>
+    <div class="stat-lbl">🚀 Pro</div>
+  </div>
+  <div class="stat s-marketer">
+    <div class="stat-val" id="stat-marketer">—</div>
+    <div class="stat-lbl">🎯 Marketers</div>
+  </div>
+  <!-- Admin-only stats -->
+  <div class="stat s-manager" id="stat-manager-card" style="display:none;">
+    <div class="stat-val" id="stat-manager">—</div>
+    <div class="stat-lbl">🛡️ Managers</div>
+  </div>
+  <div class="stat s-mrr">
+    <div class="stat-val" id="stat-mrr">—</div>
+    <div class="stat-lbl">Est. MRR</div>
+  </div>
 </div>
 
 <!-- Toolbar -->
 <div class="toolbar">
-  <input class="search" id="search" type="text" placeholder="Search email…" oninput="renderTable()"/>
+  <input class="search" id="search" type="text"
+         placeholder="Search email…" oninput="renderTable()"/>
   <select class="filter" id="filter-role" onchange="renderTable()">
     <option value="">All roles</option>
     <option value="free">📧 Free</option>
     <option value="basic">⭐ Starter</option>
     <option value="premium">🚀 Pro</option>
     <option value="marketer">🎯 Marketer</option>
-    <option value="none">— None</option>
+    <!-- admin-only options added by JS -->
   </select>
   <select class="filter" id="filter-status" onchange="renderTable()">
     <option value="">All statuses</option>
@@ -204,19 +237,21 @@
     <input type="hidden" id="edit-uid"/>
 
     <label class="f">Email</label>
-    <input class="field" id="edit-email" type="email" readonly style="opacity:.6;cursor:default;"/>
+    <input class="field" id="edit-email" type="email" readonly
+           style="opacity:.6;cursor:default;"/>
 
     <label class="f">Role / Tier</label>
     <select class="field" id="edit-tier" onchange="togglePromoField('edit')">
       <option value="none">— None (no access)</option>
       <option value="free">📧 Free (newsletter only)</option>
-      <option value="basic">⭐ Starter ($19/mo) — member pages</option>
+      <option value="basic">⭐ Starter ($19/mo)</option>
       <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
       <option value="marketer">🎯 Marketer (referral partner)</option>
+      <!-- admin-only options injected by JS -->
     </select>
 
     <div class="promo-field" id="edit-promo-row">
-      <label class="f">Promo Code <span style="color:#6b7280;font-weight:400;">(unique identifier for this marketer)</span></label>
+      <label class="f">Promo Code</label>
       <input class="field" id="edit-promoCode" type="text"
              placeholder="e.g. BLEE-JOHN-01" style="text-transform:uppercase;"
              oninput="this.value=this.value.toUpperCase()"/>
@@ -225,7 +260,7 @@
     <label class="f">Subscription Status</label>
     <select class="field" id="edit-status">
       <option value="active">✅ Active</option>
-      <option value="pending">⏳ Pending (awaiting payment/activation)</option>
+      <option value="pending">⏳ Pending</option>
       <option value="inactive">❌ Inactive</option>
       <option value="cancelled">🚫 Cancelled</option>
     </select>
@@ -234,13 +269,17 @@
     <div class="hint-box" id="edit-hint">—</div>
 
     <label class="f">Admin Notes</label>
-    <textarea class="field" id="edit-notes" rows="2" placeholder="Internal notes…"></textarea>
+    <textarea class="field" id="edit-notes" rows="2"
+              placeholder="Internal notes…"></textarea>
 
     <div class="info-row" id="edit-info"></div>
 
     <div class="modal-btns">
-      <button class="btn btn-danger btn-sm" onclick="deleteUser()">Delete</button>
-      <button class="btn btn-outline" onclick="sendResetFromModal()">📧 Send Reset</button>
+      <button class="btn btn-danger btn-sm" id="btn-delete"
+              onclick="deleteUser()">Delete</button>
+      <button class="btn btn-outline" onclick="sendResetFromModal()">
+        📧 Send Reset
+      </button>
       <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
       <button class="btn btn-gold" onclick="saveUser()">Save & Sync</button>
     </div>
@@ -252,24 +291,29 @@
   <div class="modal">
     <h3>Add / Invite User</h3>
     <p style="font-size:12px;color:#6b7280;margin-bottom:16px;line-height:1.6;">
-      Creates a Firestore record so the user's role is pre-set when they register at
-      <a href="login.html" style="color:#f5a623;">login.html</a>.
-      For Marketers, the promo code is activated when they complete registration.
+      Creates a Firestore record so the user's role is pre-set when they register.
+      For Marketers, the promo code activates on first login.
     </p>
 
     <label class="f">Email Address</label>
-    <input class="field" id="add-email" type="email" placeholder="member@example.com"/>
+    <input class="field" id="add-email" type="email"
+           placeholder="member@example.com"/>
 
     <label class="f">Role / Tier</label>
     <select class="field" id="add-tier" onchange="togglePromoField('add')">
       <option value="free">📧 Free (newsletter only)</option>
-      <option value="basic">⭐ Starter ($19/mo) — member pages</option>
+      <option value="basic">⭐ Starter ($19/mo)</option>
       <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
       <option value="marketer">🎯 Marketer (referral partner)</option>
+      <!-- admin-only options injected by JS -->
     </select>
 
     <div class="promo-field" id="add-promo-row">
-      <label class="f">Promo Code <span style="color:#6b7280;font-weight:400;">(unique — marketer shares this to recruit members)</span></label>
+      <label class="f">Promo Code
+        <span style="color:#6b7280;font-weight:400;">
+          (unique — marketer shares this to recruit members)
+        </span>
+      </label>
       <input class="field" id="add-promoCode" type="text"
              placeholder="e.g. BLEE-JOHN-01" style="text-transform:uppercase;"
              oninput="this.value=this.value.toUpperCase()"/>
@@ -282,10 +326,12 @@
     </select>
 
     <label class="f">Security Hint (optional)</label>
-    <input class="field" id="add-hint" type="text" placeholder="Optional hint for the user"/>
+    <input class="field" id="add-hint" type="text"
+           placeholder="Optional hint for the user"/>
 
     <label class="f">Admin Notes</label>
-    <input class="field" id="add-notes" type="text" placeholder="e.g. 'Beta tester', 'Partner from conference'"/>
+    <input class="field" id="add-notes" type="text"
+           placeholder="e.g. 'Beta tester', 'Partner from conference'"/>
 
     <div class="modal-btns">
       <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
@@ -306,23 +352,78 @@ if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-let allUsers = [];
+let allUsers    = [];
+let currentRole = "";   // "admin" | "manager"
 
-// ── Auth gate: admin only ────────────────────────────────────────────────
-auth.onAuthStateChanged(user => {
+// ── Auth gate ─────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user => {
   if (!user) { window.location.href = BLEE_PAGES.login; return; }
-  if (user.email !== BLEE_ADMIN_EMAIL) {
-    alert("Admin access only.");
-    window.location.href = BLEE_PAGES.home;
+
+  // Super-admin by email
+  if (user.email === BLEE_ADMIN_EMAIL) {
+    currentRole = "admin";
+    initDashboard(user);
     return;
   }
-  document.getElementById("admin-email").textContent = user.email;
-  loadUsers();
+
+  // Check Firestore for admin or manager tier
+  try {
+    const snap = await db.collection("users").doc(user.uid).get();
+    if (snap.exists) {
+      const { tier, subscriptionStatus } = snap.data();
+      if (tier === "admin" && subscriptionStatus === "active") {
+        currentRole = "admin";
+        initDashboard(user);
+        return;
+      }
+      if (tier === "manager" && subscriptionStatus === "active") {
+        currentRole = "manager";
+        initDashboard(user);
+        return;
+      }
+    }
+  } catch (e) { /* fall through */ }
+
+  alert("Admin or Manager access required.");
+  window.location.href = BLEE_PAGES.home;
 });
 
-// ── Role helpers ─────────────────────────────────────────────────────────
+function initDashboard(user) {
+  document.getElementById("admin-email").textContent = user.email;
+
+  if (currentRole === "manager") {
+    document.getElementById("header-role-label").textContent = "Manager Dashboard";
+    document.getElementById("manager-notice").style.display = "block";
+    // Manager cannot add admin/manager options — those selects already lack them
+  } else {
+    // Admin: inject admin/manager options into tier selects + filter dropdown
+    injectAdminOptions();
+    document.getElementById("stat-manager-card").style.display = "";
+  }
+
+  loadUsers();
+}
+
+// Inject admin/manager role options visible only to admin
+function injectAdminOptions() {
+  const adminOpts = `
+    <option value="manager">🛡️ Manager (admin panel + all pages)</option>
+    <option value="admin">🔑 Admin (full access)</option>`;
+
+  ["edit-tier", "add-tier"].forEach(id => {
+    document.getElementById(id).insertAdjacentHTML("beforeend", adminOpts);
+  });
+
+  // Add to filter dropdown
+  document.getElementById("filter-role").insertAdjacentHTML("beforeend", `
+    <option value="manager">🛡️ Manager</option>
+    <option value="admin">🔑 Admin</option>`);
+}
+
+// ── Role helpers ──────────────────────────────────────────────────────────
 const ROLE_LABEL = {
   admin:    { label:"🔑 Admin",    cls:"role-admin" },
+  manager:  { label:"🛡️ Manager",  cls:"role-manager" },
   premium:  { label:"🚀 Pro",      cls:"role-pro" },
   basic:    { label:"⭐ Starter",  cls:"role-starter" },
   free:     { label:"📧 Free",     cls:"role-free" },
@@ -334,18 +435,16 @@ function roleBadge(tier) {
   return `<span class="role-badge ${r.cls}">${r.label}</span>`;
 }
 function statusBadge(s) {
-  const map = {
-    active:    "✅ Active",
-    pending:   "⏳ Pending",
-    inactive:  "❌ Inactive",
-    cancelled: "🚫 Cancelled",
-  };
-  return `<span class="status-badge status-${s||'inactive'}">${map[s]||s||"—"}</span>`;
+  const m = { active:"✅ Active", pending:"⏳ Pending",
+              inactive:"❌ Inactive", cancelled:"🚫 Cancelled" };
+  return `<span class="status-badge status-${s||'inactive'}">${m[s]||s||"—"}</span>`;
 }
 function planLabel(u) {
   if (u.tier === "marketer") return u.promoCode
     ? `<span style="color:#a78bfa;font-size:11px;font-weight:700;">${u.promoCode}</span>`
     : "Marketer";
+  if (u.tier === "manager") return "Manager";
+  if (u.tier === "admin")   return "Admin";
   return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Free", none:"—" }[u.tier] || "—";
 }
 function fmtDate(ts) {
@@ -354,7 +453,7 @@ function fmtDate(ts) {
   return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
 }
 
-// ── Load users ───────────────────────────────────────────────────────────
+// ── Load users ────────────────────────────────────────────────────────────
 async function loadUsers() {
   document.querySelector("#user-tbody").innerHTML =
     '<tr><td colspan="7" class="empty">Loading…</td></tr>';
@@ -365,33 +464,49 @@ async function loadUsers() {
     renderTable();
   } catch (e) {
     document.querySelector("#user-tbody").innerHTML =
-      `<tr><td colspan="7" class="empty" style="color:#f87171;">Error: ${e.message}</td></tr>`;
+      `<tr><td colspan="7" class="empty" style="color:#f87171;">
+        Error: ${e.message}</td></tr>`;
   }
 }
 
-// ── Stats ────────────────────────────────────────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────────
 function updateStats() {
-  const active    = allUsers.filter(u => u.subscriptionStatus === "active");
-  const free      = active.filter(u => u.tier === "free").length;
-  const starter   = active.filter(u => u.tier === "basic").length;
-  const pro       = active.filter(u => u.tier === "premium").length;
-  const marketers = allUsers.filter(u => u.tier === "marketer").length;
-  const mrr       = starter * 19 + pro * 49;
-  document.getElementById("stat-total").textContent    = allUsers.length;
+  // Managers see stats for the accounts they can manage (not admin/manager)
+  const visible = currentRole === "manager"
+    ? allUsers.filter(u => !isAdminTier(u))
+    : allUsers;
+
+  const active   = visible.filter(u => u.subscriptionStatus === "active");
+  const free     = active.filter(u => u.tier === "free").length;
+  const starter  = active.filter(u => u.tier === "basic").length;
+  const pro      = active.filter(u => u.tier === "premium").length;
+  const mktr     = visible.filter(u => u.tier === "marketer").length;
+  const mgr      = allUsers.filter(u => u.tier === "manager").length;
+  const mrr      = starter * 19 + pro * 49;
+
+  document.getElementById("stat-total").textContent    = visible.length;
   document.getElementById("stat-free").textContent     = free;
   document.getElementById("stat-starter").textContent  = starter;
   document.getElementById("stat-pro").textContent      = pro;
-  document.getElementById("stat-marketer").textContent = marketers;
+  document.getElementById("stat-marketer").textContent = mktr;
+  document.getElementById("stat-manager").textContent  = mgr;
   document.getElementById("stat-mrr").textContent      = "$" + mrr.toLocaleString();
 }
 
-// ── Render table ─────────────────────────────────────────────────────────
+// ── Which tiers are "admin-level" (hidden from managers) ──────────────────
+function isAdminTier(u) {
+  return u.tier === "admin" || u.tier === "manager" || u.email === BLEE_ADMIN_EMAIL;
+}
+
+// ── Render table ──────────────────────────────────────────────────────────
 function renderTable() {
   const q      = document.getElementById("search").value.toLowerCase();
   const role   = document.getElementById("filter-role").value;
   const status = document.getElementById("filter-status").value;
 
-  const rows = allUsers.filter(u => {
+  let rows = allUsers.filter(u => {
+    // Managers cannot see admin or manager accounts
+    if (currentRole === "manager" && isAdminTier(u)) return false;
     if (q      && !(u.email||"").toLowerCase().includes(q)) return false;
     if (role   && u.tier               !== role)            return false;
     if (status && u.subscriptionStatus !== status)          return false;
@@ -407,37 +522,46 @@ function renderTable() {
   document.querySelector("#user-tbody").innerHTML = rows.map(u => {
     const isPending = u.uid.startsWith("pending_");
     return `<tr>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;" title="${u.email||''}">
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;"
+          title="${u.email||''}">
         ${u.email||"—"}
-        ${isPending ? '<span style="font-size:10px;color:#ca8a04;margin-left:4px;">(invited)</span>' : ''}
+        ${isPending
+          ? '<span style="font-size:10px;color:#ca8a04;margin-left:4px;">(invited)</span>'
+          : ''}
       </td>
       <td>${roleBadge(u.tier)}</td>
       <td>${statusBadge(u.subscriptionStatus)}</td>
       <td style="color:#9ca3af;font-size:12px;">${planLabel(u)}</td>
-      <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">${fmtDate(u.createdAt)}</td>
-      <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">${fmtDate(u.lastLoginAt)}</td>
+      <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">
+        ${fmtDate(u.createdAt)}</td>
+      <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">
+        ${fmtDate(u.lastLoginAt)}</td>
       <td><div class="actions">
-        <button class="btn btn-outline btn-sm" onclick="openEditModal('${u.uid}')">Edit</button>
-        <button class="btn btn-outline btn-sm" onclick="sendResetFor('${u.email}')">📧</button>
+        <button class="btn btn-outline btn-sm"
+                onclick="openEditModal('${u.uid}')">Edit</button>
+        <button class="btn btn-outline btn-sm"
+                onclick="sendResetFor('${u.email}')">📧</button>
         ${u.tier === "marketer"
-          ? `<a href="marketing.html" class="btn btn-outline btn-sm" style="text-decoration:none;">🎯</a>`
+          ? `<a href="marketing.html" class="btn btn-outline btn-sm"
+               style="text-decoration:none;">🎯</a>`
           : ""}
       </div></td>
     </tr>`;
   }).join("");
 }
 
-// ── Promo code field toggle ───────────────────────────────────────────────
+// ── Promo code visibility ─────────────────────────────────────────────────
 function togglePromoField(prefix) {
   const tier = document.getElementById(prefix + "-tier").value;
-  const row  = document.getElementById(prefix + "-promo-row");
-  row.style.display = (tier === "marketer") ? "block" : "none";
+  document.getElementById(prefix + "-promo-row").style.display =
+    (tier === "marketer") ? "block" : "none";
 }
 
-// ── Edit modal ───────────────────────────────────────────────────────────
+// ── Edit modal ────────────────────────────────────────────────────────────
 function openEditModal(uid) {
   const u = allUsers.find(x => x.uid === uid);
   if (!u) return;
+
   document.getElementById("edit-uid").value        = uid;
   document.getElementById("edit-email").value      = u.email || "";
   document.getElementById("edit-tier").value       = u.tier  || "none";
@@ -450,20 +574,27 @@ function openEditModal(uid) {
   // Build info row
   let infoHtml = `
     <span class="info-label">UID:</span>
-    <span style="color:#6b7280;font-size:11px;">${uid}</span> &nbsp;·&nbsp;
+    <span style="font-size:11px;">${uid}</span> &nbsp;·&nbsp;
     <span class="info-label">Source:</span>
-    <span style="color:#6b7280;font-size:11px;">${u.source||"—"}</span> &nbsp;·&nbsp;
+    <span style="font-size:11px;">${u.source||"—"}</span> &nbsp;·&nbsp;
     <span class="info-label">Plan:</span>
-    <span style="color:#6b7280;font-size:11px;">${u.plan||"—"}</span>`;
-  if (u.referredBy) {
+    <span style="font-size:11px;">${u.plan||"—"}</span>`;
+  if (u.referredBy)
     infoHtml += ` &nbsp;·&nbsp;<span class="info-label">Referred by:</span>
       <span style="color:#a78bfa;font-size:11px;">${u.referredBy}</span>`;
-  }
+
   document.getElementById("edit-info").innerHTML = infoHtml;
   document.getElementById("modal-title").textContent = "Edit: " + (u.email || uid);
+
+  // Manager: hide Delete button to reduce risk
+  document.getElementById("btn-delete").style.display =
+    currentRole === "manager" ? "none" : "";
+
   document.getElementById("edit-modal").classList.add("show");
 }
-function closeEditModal() { document.getElementById("edit-modal").classList.remove("show"); }
+function closeEditModal() {
+  document.getElementById("edit-modal").classList.remove("show");
+}
 
 async function saveUser() {
   const uid       = document.getElementById("edit-uid").value;
@@ -473,21 +604,18 @@ async function saveUser() {
   const promoCode = document.getElementById("edit-promoCode").value.trim().toUpperCase();
 
   const updates = { tier, subscriptionStatus: status, notes };
-  if (tier === "marketer" && promoCode) {
-    updates.promoCode = promoCode;
-  }
+  if (tier === "marketer" && promoCode) updates.promoCode = promoCode;
 
   try {
     await db.collection("users").doc(uid).update(updates);
 
-    // If marketer with promo code, sync promoCodes collection
     if (tier === "marketer" && promoCode) {
       const u = allUsers.find(x => x.uid === uid);
-      await db.collection("promoCodes").doc(promoCode).set({
-        uid, email: u ? u.email : "",
-        code: promoCode,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true });
+      await db.collection("promoCodes").doc(promoCode).set(
+        { uid, email: u ? u.email : "", code: promoCode,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
     }
 
     const idx = allUsers.findIndex(u => u.uid === uid);
@@ -502,7 +630,10 @@ async function saveUser() {
 async function deleteUser() {
   const uid   = document.getElementById("edit-uid").value;
   const email = document.getElementById("edit-email").value;
-  if (!confirm(`Delete Firestore record for ${email}?\n\nNote: This removes their membership data only. Their Firebase Auth login is NOT deleted.`)) return;
+  if (!confirm(
+    `Delete Firestore record for ${email}?\n\n` +
+    `Note: This removes membership data only. Firebase Auth login is NOT deleted.`
+  )) return;
   try {
     await db.collection("users").doc(uid).delete();
     allUsers = allUsers.filter(u => u.uid !== uid);
@@ -517,13 +648,16 @@ function sendResetFromModal() {
   sendResetFor(document.getElementById("edit-email").value);
 }
 
-// ── Add user modal ───────────────────────────────────────────────────────
-function openAddModal()  {
+// ── Add user modal ────────────────────────────────────────────────────────
+function openAddModal() {
   document.getElementById("add-tier").value = "free";
+  document.getElementById("add-status").value = "active";
   togglePromoField("add");
   document.getElementById("add-modal").classList.add("show");
 }
-function closeAddModal() { document.getElementById("add-modal").classList.remove("show"); }
+function closeAddModal() {
+  document.getElementById("add-modal").classList.remove("show");
+}
 
 async function addUser() {
   const email     = document.getElementById("add-email").value.trim();
@@ -538,43 +672,40 @@ async function addUser() {
     alert("Please set a promo code for this marketer."); return;
   }
 
-  const docId  = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+  const docId   = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+  const planMap = { premium:"pro", basic:"starter", marketer:"marketer",
+                    manager:"manager", admin:"admin", free:"free" };
   const docData = {
     email, tier, subscriptionStatus: status,
-    plan: tier === "premium" ? "pro" : tier === "basic" ? "starter"
-          : tier === "marketer" ? "marketer" : "free",
+    plan:         planMap[tier] || "free",
     securityHint: hint,
-    notes: notes || "Manually added by admin",
-    createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
-    lastLoginAt: null,
-    source:      "admin_invited",
+    notes:        notes || "Manually added by admin",
+    createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+    lastLoginAt:  null,
+    source:       "admin_invited",
   };
   if (tier === "marketer" && promoCode) docData.promoCode = promoCode;
 
   try {
     await db.collection("users").doc(docId).set(docData);
 
-    // Also create promoCodes entry so it's immediately usable
     if (tier === "marketer" && promoCode) {
       await db.collection("promoCodes").doc(promoCode).set({
-        uid:       null, // will be filled in when marketer registers
-        email,
-        code:      promoCode,
+        uid: null, email, code: promoCode,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
     }
 
     closeAddModal();
-    showToast(`✅ ${tier === "marketer" ? "Marketer" : "Invitation"} created for ${email}.${
-      tier === "marketer" ? " Promo code: " + promoCode : " Access activates when they register."
-    }`);
+    const roleDisplay = ROLE_LABEL[tier]?.label || tier;
+    showToast(`✅ ${roleDisplay} invitation created for ${email}.`);
     loadUsers();
     ["add-email","add-hint","add-notes","add-promoCode"].forEach(id =>
       document.getElementById(id).value = "");
   } catch (e) { alert("Failed: " + e.message); }
 }
 
-// ── Password reset ───────────────────────────────────────────────────────
+// ── Password reset ────────────────────────────────────────────────────────
 async function sendResetFor(email) {
   if (!email) return;
   if (!confirm(`Send password reset email to ${email}?`)) return;
@@ -584,14 +715,15 @@ async function sendResetFor(email) {
   } catch (e) { alert("Failed: " + e.message); }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.style.display = "block";
-  setTimeout(() => { t.style.display = "none"; }, 4000);
+  setTimeout(() => t.style.display = "none", 4000);
 }
 function signOut() {
-  auth.signOut().then(() => window.location.href = BLEE_PAGES.login + "?next=admin.html");
+  auth.signOut().then(() =>
+    window.location.href = BLEE_PAGES.login + "?next=admin.html");
 }
 </script>
 </body>

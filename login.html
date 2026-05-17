@@ -168,15 +168,29 @@ if (planParam && PLANS[planParam]) {
 }
 
 // ── Redirect if already logged in ───────────────────────────────────────
-auth.onAuthStateChanged(user => {
-  if (user) {
-    // Admin always goes to admin dashboard
-    if (user.email === BLEE_ADMIN_EMAIL) {
-      window.location.href = nextParam || BLEE_PAGES.admin;
-    } else {
-      window.location.href = nextParam || BLEE_PAGES.signal;
-    }
+auth.onAuthStateChanged(async user => {
+  if (!user) return;
+  // Super-admin by email → admin dashboard
+  if (user.email === BLEE_ADMIN_EMAIL) {
+    window.location.href = nextParam || BLEE_PAGES.admin;
+    return;
   }
+  // Check Firestore tier for admin/manager redirect
+  try {
+    const snap = await db.collection("users").doc(user.uid).get();
+    if (snap.exists) {
+      const tier = snap.data().tier;
+      if (tier === "admin" || tier === "manager") {
+        window.location.href = nextParam || BLEE_PAGES.admin;
+        return;
+      }
+      if (tier === "marketer") {
+        window.location.href = nextParam || (BLEE_PAGES.marketing || "marketing.html");
+        return;
+      }
+    }
+  } catch (e) { /* ignore — fall through to default */ }
+  window.location.href = nextParam || BLEE_PAGES.signal;
 });
 
 function showTab(tab) {
