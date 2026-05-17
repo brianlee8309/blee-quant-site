@@ -853,7 +853,7 @@ async function saveMyPromoCode() {
     myPromoCode = code;
     document.getElementById("my-promo-display").textContent = code;
     document.getElementById("copy-my-promo").style.display = "";
-    showToast("✅ Promo code "" + code + "" saved. Share the referral link to start recruiting!");
+    showToast('✅ Promo code "' + code + '" saved. Share the referral link to start recruiting!');
   } catch (e) { alert("Failed to save: " + e.message); }
 }
 
