@@ -46,4 +46,5 @@ const BLEE_PAGES = {
   signal:    "index2.html",
   forecast:  "marketDailySummary.html",
   admin:     "admin.html",
+  marketing: "marketing.html",
 };

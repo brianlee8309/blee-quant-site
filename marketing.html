@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Marketing — BLEE Quant</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
+       background:#0a0f1e;color:#fff;min-height:100vh;padding:24px;}
+  header{display:flex;align-items:center;justify-content:space-between;
+         margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #1f2937;}
+  .logo{font-size:18px;font-weight:800;color:#f5a623;}
+  .logo span{color:#fff;}
+  .logo sub{font-size:11px;color:#6b7280;font-weight:400;margin-left:6px;}
+
+  .stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+  .stat{background:#111827;border:1px solid #1f2937;border-radius:10px;
+        padding:14px 18px;flex:1;min-width:130px;}
+  .stat-val{font-size:26px;font-weight:800;color:#f5a623;}
+  .stat-lbl{font-size:11px;color:#6b7280;margin-top:2px;}
+  .stat.s-recruited .stat-val{color:#a78bfa;}
+  .stat.s-active    .stat-val{color:#4ade80;}
+  .stat.s-commission .stat-val{color:#60a5fa;font-size:20px;}
+
+  .promo-banner{background:#120820;border:1px solid #4c1d95;border-radius:12px;
+                padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;
+                gap:16px;flex-wrap:wrap;}
+  .promo-code-label{font-size:10px;color:#a78bfa;font-weight:700;
+                    text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .promo-code-value{font-size:22px;font-weight:800;color:#fff;letter-spacing:.12em;}
+  .copy-btn{background:#4c1d95;color:#e9d5ff;border:0;border-radius:6px;
+            padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .copy-btn:hover{background:#5b21b6;}
+  .promo-share-text{font-size:12px;color:#6b7280;flex:1;line-height:1.6;}
+
+  .section-title{font-size:12px;font-weight:700;color:#6b7280;margin-bottom:10px;
+                 text-transform:uppercase;letter-spacing:.08em;}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap;}
+  select.filter{background:#111827;border:1px solid #1f2937;color:#fff;
+                padding:8px 12px;border-radius:8px;font-size:13px;}
+  .btn{padding:7px 14px;border:0;border-radius:8px;font-size:13px;
+       font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .btn-outline{background:transparent;border:1px solid #374151;color:#d1d5db;}
+  .btn:hover{opacity:.8;}
+
+  .card{background:#111827;border:1px solid #1f2937;border-radius:12px;
+        overflow:hidden;margin-bottom:20px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:#0d1525;padding:10px 14px;text-align:left;font-size:11px;
+     color:#6b7280;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+  td{padding:11px 14px;border-bottom:1px solid #1a2035;vertical-align:middle;}
+  tr:last-child td{border-bottom:0;}
+  tr:hover td{background:#0f1928;}
+
+  .role-badge{display:inline-flex;align-items:center;gap:4px;
+              padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;}
+  .role-pro    {background:#1a1f06;color:#facc15;border:1px solid #3f3f00;}
+  .role-starter{background:#052e16;color:#4ade80;border:1px solid #14532d;}
+  .status-badge{display:inline-block;padding:2px 8px;border-radius:10px;
+                font-size:11px;font-weight:600;}
+  .status-active   {background:#052e16;color:#4ade80;}
+  .status-pending  {background:#1c1a06;color:#ca8a04;}
+  .status-inactive {background:#1f1f1f;color:#6b7280;}
+  .status-cancelled{background:#2b0a0a;color:#f87171;}
+
+  .commission-pill{display:inline-block;background:#0d1e38;color:#60a5fa;
+                   border:1px solid #1e3a5f;border-radius:8px;padding:2px 8px;
+                   font-size:12px;font-weight:700;}
+
+  .empty{padding:32px;text-align:center;color:#4b5563;font-size:14px;}
+
+  /* Admin marketer grid */
+  .marketer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+                 gap:12px;margin-bottom:20px;}
+  .marketer-card{background:#111827;border:1px solid #1f2937;border-radius:10px;
+                 padding:14px 18px;cursor:pointer;transition:border-color .2s,background .2s;}
+  .marketer-card:hover{border-color:#a78bfa;}
+  .marketer-card.selected{border-color:#a78bfa;background:#160d2a;}
+  .marketer-code{font-size:15px;font-weight:800;color:#a78bfa;letter-spacing:.06em;}
+  .marketer-email{font-size:12px;color:#6b7280;margin-top:2px;
+                  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .marketer-stats{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
+  .marketer-stat{font-size:11px;color:#4b5563;}
+  .marketer-stat strong{color:#d1d5db;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">BLEE <span>Quant</span> <sub id="page-subtitle">Marketing Dashboard</sub></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span id="header-email" style="font-size:12px;color:#6b7280;"></span>
+    <a href="admin.html" id="admin-link" style="display:none;font-size:12px;
+       color:#f5a623;text-decoration:none;">Admin ›</a>
+    <button class="btn btn-outline" style="padding:4px 10px;font-size:12px;"
+            onclick="doSignOut()">Sign out</button>
+  </div>
+</header>
+
+<!-- Promo code banner — marketer view only -->
+<div class="promo-banner" id="promo-banner" style="display:none;">
+  <div style="min-width:160px;">
+    <div class="promo-code-label">Your Promo Code</div>
+    <div class="promo-code-value" id="my-promo-code">—</div>
+  </div>
+  <button class="copy-btn" onclick="copyPromoLink()">📋 Copy Referral Link</button>
+  <div class="promo-share-text">
+    Share this code with potential members. They enter it on the subscribe page when signing up
+    for Starter or Pro. You earn <strong style="color:#60a5fa;">70%</strong>
+    of each member's monthly payment.
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats" id="stats-row" style="display:none;">
+  <div class="stat s-recruited">
+    <div class="stat-val" id="stat-recruited">—</div>
+    <div class="stat-lbl" id="lbl-recruited">Total Recruited</div>
+  </div>
+  <div class="stat s-active">
+    <div class="stat-val" id="stat-active">—</div>
+    <div class="stat-lbl">Active Members</div>
+  </div>
+  <div class="stat s-commission">
+    <div class="stat-val" id="stat-commission">—</div>
+    <div class="stat-lbl" id="lbl-commission">Monthly Commission</div>
+  </div>
+</div>
+
+<!-- Admin: marketer selector -->
+<div id="admin-section" style="display:none;">
+  <div class="section-title">All Marketers — click to filter recruits</div>
+  <div class="marketer-grid" id="marketer-grid"></div>
+  <div class="section-title" id="recruits-title">All Recruited Members</div>
+</div>
+
+<!-- Recruit table toolbar -->
+<div class="toolbar" id="recruits-toolbar" style="display:none;">
+  <select class="filter" id="filter-status" onchange="renderRecruits()">
+    <option value="">All statuses</option>
+    <option value="active">✅ Active</option>
+    <option value="pending">⏳ Pending</option>
+    <option value="inactive">❌ Inactive</option>
+    <option value="cancelled">🚫 Cancelled</option>
+  </select>
+  <button class="btn btn-outline" onclick="refreshData()">⟳ Refresh</button>
+</div>
+
+<!-- Recruit table -->
+<div class="card" id="recruits-card" style="display:none;">
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Start Date</th>
+        <th>Monthly Plan</th>
+        <th>Commission</th>
+      </tr>
+    </thead>
+    <tbody id="recruits-tbody">
+      <tr><td colspan="6" class="empty">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+const COMMISSION_RATE = 0.70;
+const PLAN_MRR = { basic: 19, premium: 49 };
+
+let currentUserData  = null;  // for marketer view
+let allMarketers     = [];    // for admin view
+let allRecruits      = [];    // currently displayed recruits
+let selectedMarketer = null;  // admin: which marketer card is selected
+
+// ── Auth gate ────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user => {
+  if (!user) {
+    window.location.href = (BLEE_PAGES.login || "login.html") + "?next=marketing.html";
+    return;
+  }
+  document.getElementById("header-email").textContent = user.email;
+
+  try {
+    if (user.email === BLEE_ADMIN_EMAIL) {
+      document.getElementById("admin-link").style.display = "";
+      document.getElementById("page-subtitle").textContent = "Marketing Dashboard (Admin)";
+      await initAdminView();
+    } else {
+      const snap = await db.collection("users").doc(user.uid).get();
+      if (!snap.exists) { window.location.href = BLEE_PAGES.home || "index.html"; return; }
+      const data = snap.data();
+      if (data.tier !== "marketer" || data.subscriptionStatus !== "active") {
+        window.location.href = BLEE_PAGES.home || "index.html";
+        return;
+      }
+      currentUserData = { uid: user.uid, ...data };
+      await initMarketerView();
+    }
+  } catch (e) {
+    console.error(e);
+    showError(e.message);
+  }
+});
+
+// ════════════════════════════════════════════════════════════════
+//  MARKETER VIEW
+// ════════════════════════════════════════════════════════════════
+async function initMarketerView() {
+  const code = currentUserData.promoCode || "";
+  if (code) {
+    document.getElementById("my-promo-code").textContent = code;
+    document.getElementById("promo-banner").style.display = "flex";
+  }
+  document.getElementById("stats-row").style.display     = "flex";
+  document.getElementById("recruits-toolbar").style.display = "flex";
+  document.getElementById("recruits-card").style.display = "";
+  await loadMyRecruits();
+}
+
+async function loadMyRecruits() {
+  setTbody("Loading…");
+  const snap = await db.collection("users")
+    .where("referredByUid", "==", currentUserData.uid).get();
+  allRecruits = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+  updateMarketerStats();
+  renderRecruits();
+}
+
+function updateMarketerStats() {
+  const active = allRecruits.filter(u => u.subscriptionStatus === "active");
+  const comm   = active.reduce((s, u) => s + ((PLAN_MRR[u.tier] || 0) * COMMISSION_RATE), 0);
+  document.getElementById("stat-recruited").textContent  = allRecruits.length;
+  document.getElementById("stat-active").textContent     = active.length;
+  document.getElementById("stat-commission").textContent = "$" + comm.toFixed(2) + "/mo";
+}
+
+function copyPromoLink() {
+  const code = currentUserData.promoCode || "";
+  const base = window.location.href.replace("marketing.html", "");
+  const url  = base + "subscribe.html?promoCode=" + encodeURIComponent(code);
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector(".copy-btn");
+    const orig = btn.textContent;
+    btn.textContent = "✅ Copied!";
+    setTimeout(() => btn.textContent = orig, 2200);
+  }).catch(() => prompt("Copy this referral link:", url));
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN VIEW
+// ════════════════════════════════════════════════════════════════
+async function initAdminView() {
+  document.getElementById("admin-section").style.display  = "";
+  document.getElementById("stats-row").style.display      = "flex";
+  document.getElementById("recruits-toolbar").style.display = "flex";
+  document.getElementById("recruits-card").style.display  = "";
+  document.getElementById("lbl-recruited").textContent    = "Total Marketers";
+  document.getElementById("lbl-commission").textContent   = "Total Commission / mo";
+
+  // Load all marketers
+  const snap = await db.collection("users").where("tier", "==", "marketer").get();
+  allMarketers = snap.docs.map(d => ({ uid: d.id, ...d.data(), _recruits: [], _active: 0, _commission: 0 }));
+  document.getElementById("stat-recruited").textContent = allMarketers.length;
+
+  // Load recruits for every marketer (parallel)
+  await Promise.all(allMarketers.map(async m => {
+    const rSnap = await db.collection("users").where("referredByUid", "==", m.uid).get();
+    m._recruits   = rSnap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    m._active     = m._recruits.filter(u => u.subscriptionStatus === "active").length;
+    m._commission = m._recruits
+      .filter(u => u.subscriptionStatus === "active")
+      .reduce((s, u) => s + ((PLAN_MRR[u.tier] || 0) * COMMISSION_RATE), 0);
+  }));
+
+  // Totals
+  const totActive = allMarketers.reduce((s, m) => s + m._active, 0);
+  const totComm   = allMarketers.reduce((s, m) => s + m._commission, 0);
+  document.getElementById("stat-active").textContent     = totActive;
+  document.getElementById("stat-commission").textContent = "$" + totComm.toFixed(2) + "/mo";
+
+  // Default: show all recruits
+  allRecruits = allMarketers.flatMap(m => m._recruits);
+  renderMarketerGrid();
+  renderRecruits();
+}
+
+function renderMarketerGrid() {
+  const grid = document.getElementById("marketer-grid");
+  if (!allMarketers.length) {
+    grid.innerHTML = `<div style="color:#4b5563;font-size:13px;grid-column:1/-1;">
+      No marketers yet. Add a user with the Marketer role in Admin.</div>`;
+    return;
+  }
+  const totalRec = allMarketers.reduce((s, m) => s + m._recruits.length, 0);
+  const cards = [
+    // "All" card
+    `<div class="marketer-card ${!selectedMarketer ? 'selected' : ''}"
+         onclick="selectMarketer(null)">
+      <div class="marketer-code">📊 All</div>
+      <div class="marketer-email">${allMarketers.length} marketer${allMarketers.length!==1?'s':''}</div>
+      <div class="marketer-stats">
+        <div class="marketer-stat"><strong>${totalRec}</strong> recruited</div>
+      </div>
+    </div>`,
+    ...allMarketers.map(m => `
+      <div class="marketer-card ${selectedMarketer && selectedMarketer.uid===m.uid ? 'selected' : ''}"
+           onclick="selectMarketer('${m.uid}')">
+        <div class="marketer-code" title="${m.promoCode||'no code'}">${m.promoCode || '(no code)'}</div>
+        <div class="marketer-email" title="${m.email}">${m.email || '—'}</div>
+        <div class="marketer-stats">
+          <div class="marketer-stat"><strong>${m._recruits.length}</strong> recruited</div>
+          <div class="marketer-stat"><strong>${m._active}</strong> active</div>
+          <div class="marketer-stat" style="color:#60a5fa;">
+            <strong>$${m._commission.toFixed(0)}/mo</strong>
+          </div>
+        </div>
+      </div>`)
+  ];
+  grid.innerHTML = cards.join("");
+}
+
+function selectMarketer(uid) {
+  if (!uid) {
+    selectedMarketer = null;
+    allRecruits      = allMarketers.flatMap(m => m._recruits);
+    document.getElementById("recruits-title").textContent = "All Recruited Members";
+  } else {
+    selectedMarketer = allMarketers.find(m => m.uid === uid) || null;
+    allRecruits      = selectedMarketer ? selectedMarketer._recruits : [];
+    document.getElementById("recruits-title").textContent =
+      "Recruited by: " + (selectedMarketer.promoCode || selectedMarketer.email || uid);
+  }
+  renderMarketerGrid();
+  renderRecruits();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SHARED — render recruit table
+// ════════════════════════════════════════════════════════════════
+function renderRecruits() {
+  const sf = document.getElementById("filter-status").value;
+  const rows = allRecruits.filter(u => !sf || u.subscriptionStatus === sf);
+
+  if (!rows.length) {
+    setTbody("No recruited members" + (sf ? " with status "" + sf + """ : "") + ".");
+    return;
+  }
+
+  document.getElementById("recruits-tbody").innerHTML = rows.map(u => {
+    const mrr  = PLAN_MRR[u.tier] || 0;
+    const comm = (mrr * COMMISSION_RATE).toFixed(2);
+    const isActive = u.subscriptionStatus === "active";
+    return `<tr>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+          title="${u.email||''}">${u.email || "—"}</td>
+      <td>${roleBadge(u.tier)}</td>
+      <td>${statusBadge(u.subscriptionStatus)}</td>
+      <td style="color:#9ca3af;font-size:12px;white-space:nowrap;">${fmtDate(u.createdAt)}</td>
+      <td style="color:#9ca3af;font-size:12px;">${mrr ? "$" + mrr + "/mo" : "—"}</td>
+      <td>${mrr && isActive
+        ? `<span class="commission-pill">$${comm}/mo</span>`
+        : `<span style="color:#4b5563;font-size:12px;">—</span>`}
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+async function refreshData() {
+  if (currentUserData) { await loadMyRecruits(); }
+  else                  { await initAdminView(); }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────
+function roleBadge(tier) {
+  if (tier === "premium") return '<span class="role-badge role-pro">🚀 Pro</span>';
+  if (tier === "basic")   return '<span class="role-badge role-starter">⭐ Starter</span>';
+  return `<span style="color:#4b5563;font-size:12px;">${tier||"—"}</span>`;
+}
+function statusBadge(s) {
+  const map = { active:"✅ Active", pending:"⏳ Pending",
+                inactive:"❌ Inactive", cancelled:"🚫 Cancelled" };
+  return `<span class="status-badge status-${s||'inactive'}">${map[s]||s||"—"}</span>`;
+}
+function fmtDate(ts) {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+}
+function setTbody(msg, color) {
+  document.getElementById("recruits-tbody").innerHTML =
+    `<tr><td colspan="6" class="empty" style="${color?'color:'+color:''}">${msg}</td></tr>`;
+}
+function showError(msg) {
+  setTbody("Error: " + msg, "#f87171");
+  document.getElementById("recruits-card").style.display = "";
+}
+function doSignOut() {
+  auth.signOut().then(() => window.location.href = BLEE_PAGES.login || "login.html");
+}
+</script>
+</body>
+</html>

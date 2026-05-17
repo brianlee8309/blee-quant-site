@@ -163,12 +163,14 @@
       "font-family:-apple-system,system-ui,'Segoe UI',sans-serif",
     ].join(";");
 
-    const tierLabel = tier === "admin"   ? "🔑 Admin"
-                    : tier === "premium" ? "⭐ Premium"
-                    : "✅ Basic";
-    const tierColor = tier === "admin"   ? "#f5a623"
-                    : tier === "premium" ? "#f5a623"
-                    : "#4caf50";
+    const tierLabel = tier === "admin"    ? "🔑 Admin"
+                    : tier === "premium"  ? "🚀 Pro"
+                    : tier === "marketer" ? "🎯 Marketer"
+                    : "⭐ Starter";
+    const tierColor = tier === "admin"    ? "#f5a623"
+                    : tier === "premium"  ? "#facc15"
+                    : tier === "marketer" ? "#a78bfa"
+                    : "#4ade80";
 
     bar.innerHTML = `
       <span style="color:#888;">${user.email}</span>
@@ -176,6 +178,10 @@
       ${tier === "premium" || tier === "basic"
         ? `<a href="${STRIPE.portalLink}" target="_blank"
              style="color:#00a0df;text-decoration:none;">Manage plan</a>`
+        : ""}
+      ${tier === "marketer"
+        ? `<a href="${BLEE_PAGES.marketing || 'marketing.html'}"
+             style="color:#a78bfa;text-decoration:none;">My Dashboard</a>`
         : ""}
       ${tier === "admin"
         ? `<a href="${BLEE_PAGES.admin}"

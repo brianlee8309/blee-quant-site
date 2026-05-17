@@ -93,7 +93,7 @@
       <li><span class="icon off">—</span><span class="off">Email &amp; SMS alerts</span></li>
       <li><span class="icon off">—</span><span class="off">Auto-trade tools</span></li>
     </ul>
-    <a href="login.html?plan=free&tab=signup" class="btn btn-gray">Join Free</a>
+    <a href="javascript:void(0)" onclick="goPlan('free')" class="btn btn-gray">Join Free</a>
     <div class="plan-note">Instant access · No credit card</div>
   </div>
 
@@ -111,7 +111,7 @@
       <li><span class="icon off">—</span><span class="off">BLEETrader desktop app</span></li>
       <li><span class="icon off">—</span><span class="off">Auto-trade (Schwab/IBKR)</span></li>
     </ul>
-    <a href="login.html?plan=starter&tab=signup" class="btn btn-outline">Get Started — $19/mo</a>
+    <a href="javascript:void(0)" onclick="goPlan('starter')" class="btn btn-outline">Get Started — $19/mo</a>
     <div class="plan-note">Register now · Admin activates within 24h<br>Stripe billing coming soon</div>
   </div>
 
@@ -130,13 +130,30 @@
       <li><span class="icon">✅</span> IBKR/TWS auto-rebalance</li>
       <li><span class="icon">✅</span> Priority email support</li>
     </ul>
-    <a href="login.html?plan=pro&tab=signup" class="btn btn-gold">Go Pro — $49/mo</a>
+    <a href="javascript:void(0)" onclick="goPlan('pro')" class="btn btn-gold">Go Pro — $49/mo</a>
     <div class="plan-note">Register now · Admin activates within 24h<br>Stripe billing coming soon</div>
   </div>
 
 </div>
 
-<p class="guarantee">🔒 Cancel anytime · No contracts · Stripe billing coming soon</p>
+<!-- Promo / referral code -->
+<div style="max-width:480px;margin:28px auto 0;text-align:center;">
+  <label style="font-size:12px;color:#6b7280;font-weight:600;
+                display:block;margin-bottom:8px;letter-spacing:.04em;">
+    🎯 Have a referral / promo code? Enter it below (optional)
+  </label>
+  <div style="display:flex;gap:8px;justify-content:center;align-items:center;">
+    <input id="promo-input" type="text" placeholder="e.g. BLEE-JOHN-01"
+           maxlength="30"
+           style="background:#111827;border:1px solid #374151;color:#fff;
+                  padding:9px 14px;border-radius:8px;font-size:14px;width:220px;
+                  text-transform:uppercase;font-family:inherit;"
+           oninput="this.value=this.value.toUpperCase()"/>
+    <span id="promo-msg" style="font-size:12px;color:#6b7280;"></span>
+  </div>
+</div>
+
+<p class="guarantee" style="margin-top:16px;">🔒 Cancel anytime · No contracts · Stripe billing coming soon</p>
 
 <div class="faq">
   <h2>Frequently asked questions</h2>
@@ -159,6 +176,24 @@
 </div>
 
 <div class="back"><a href="login.html">← Already a member? Sign in</a></div>
+
+<script>
+function goPlan(plan) {
+  const code = (document.getElementById("promo-input").value || "").trim().toUpperCase();
+  let url = "login.html?plan=" + plan + "&tab=signup";
+  if (code) url += "&promoCode=" + encodeURIComponent(code);
+  window.location.href = url;
+}
+// Pre-fill promo code from URL (e.g. marketer shared a referral link)
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const c = p.get("promoCode");
+  if (c) {
+    const el = document.getElementById("promo-input");
+    if (el) { el.value = c.toUpperCase(); document.getElementById("promo-msg").textContent = "✅ Code applied"; }
+  }
+})();
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>

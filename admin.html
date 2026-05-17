@@ -29,13 +29,14 @@
   /* Stats */
   .stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
   .stat{background:#111827;border:1px solid #1f2937;border-radius:10px;
-        padding:14px 18px;flex:1;min-width:110px;}
+        padding:14px 18px;flex:1;min-width:100px;}
   .stat-val{font-size:26px;font-weight:800;color:#f5a623;}
   .stat-lbl{font-size:11px;color:#6b7280;margin-top:2px;}
-  .stat.s-free .stat-val{color:#9ca3af;}
-  .stat.s-starter .stat-val{color:#4ade80;}
-  .stat.s-pro .stat-val{color:#f5a623;}
-  .stat.s-mrr .stat-val{font-size:20px;color:#60a5fa;}
+  .stat.s-free     .stat-val{color:#9ca3af;}
+  .stat.s-starter  .stat-val{color:#4ade80;}
+  .stat.s-pro      .stat-val{color:#f5a623;}
+  .stat.s-marketer .stat-val{color:#a78bfa;}
+  .stat.s-mrr      .stat-val{font-size:20px;color:#60a5fa;}
 
   /* Toolbar */
   .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
@@ -62,20 +63,21 @@
   tr:last-child td{border-bottom:0;}
   tr:hover td{background:#0f1928;}
 
-  /* Role / tier badges */
+  /* Role badges */
   .role-badge{display:inline-flex;align-items:center;gap:4px;
               padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;}
-  .role-admin  {background:#3b1f06;color:#f5a623;border:1px solid #78350f;}
-  .role-pro    {background:#1a1f06;color:#facc15;border:1px solid #3f3f00;}
-  .role-starter{background:#052e16;color:#4ade80;border:1px solid #14532d;}
-  .role-free   {background:#1f2937;color:#9ca3af;border:1px solid #374151;}
-  .role-none   {background:#111827;color:#4b5563;border:1px solid #1f2937;}
+  .role-admin   {background:#3b1f06;color:#f5a623;border:1px solid #78350f;}
+  .role-pro     {background:#1a1f06;color:#facc15;border:1px solid #3f3f00;}
+  .role-starter {background:#052e16;color:#4ade80;border:1px solid #14532d;}
+  .role-free    {background:#1f2937;color:#9ca3af;border:1px solid #374151;}
+  .role-marketer{background:#1a0a2e;color:#a78bfa;border:1px solid #4c1d95;}
+  .role-none    {background:#111827;color:#4b5563;border:1px solid #1f2937;}
 
   /* Status badges */
   .status-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
-  .status-active  {background:#052e16;color:#4ade80;}
-  .status-pending {background:#1c1a06;color:#ca8a04;}
-  .status-inactive{background:#1f1f1f;color:#6b7280;}
+  .status-active   {background:#052e16;color:#4ade80;}
+  .status-pending  {background:#1c1a06;color:#ca8a04;}
+  .status-inactive {background:#1f1f1f;color:#6b7280;}
   .status-cancelled{background:#2b0a0a;color:#f87171;}
 
   /* Modals */
@@ -95,8 +97,9 @@
   .hint-box{background:#1f2937;border-radius:8px;padding:10px 12px;
             font-size:13px;color:#9ca3af;margin-top:4px;}
   .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
-  .info-row{display:flex;gap:6px;font-size:12px;color:#6b7280;margin-top:6px;}
+  .info-row{display:flex;gap:6px;font-size:12px;color:#6b7280;margin-top:6px;flex-wrap:wrap;}
   .info-label{color:#4b5563;}
+  .promo-field{display:none;}
 
   /* Toast */
   .toast{position:fixed;bottom:24px;right:24px;background:#052e16;color:#4ade80;
@@ -135,6 +138,11 @@
     <div><div class="quick-link-title">Backtest History</div><div class="quick-link-sub">3-year performance</div></div>
     <span class="quick-link-arrow">›</span>
   </a>
+  <a href="marketing.html" class="quick-link">
+    <span class="quick-link-icon">🎯</span>
+    <div><div class="quick-link-title">Marketing</div><div class="quick-link-sub">Referral & commission tracking</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
 </div>
 
 <!-- Stats -->
@@ -143,6 +151,7 @@
   <div class="stat s-free"><div class="stat-val" id="stat-free">—</div><div class="stat-lbl">📧 Free</div></div>
   <div class="stat s-starter"><div class="stat-val" id="stat-starter">—</div><div class="stat-lbl">⭐ Starter</div></div>
   <div class="stat s-pro"><div class="stat-val" id="stat-pro">—</div><div class="stat-lbl">🚀 Pro</div></div>
+  <div class="stat s-marketer"><div class="stat-val" id="stat-marketer">—</div><div class="stat-lbl">🎯 Marketers</div></div>
   <div class="stat s-mrr"><div class="stat-val" id="stat-mrr">—</div><div class="stat-lbl">Est. MRR</div></div>
 </div>
 
@@ -154,6 +163,7 @@
     <option value="free">📧 Free</option>
     <option value="basic">⭐ Starter</option>
     <option value="premium">🚀 Pro</option>
+    <option value="marketer">🎯 Marketer</option>
     <option value="none">— None</option>
   </select>
   <select class="filter" id="filter-status" onchange="renderTable()">
@@ -175,7 +185,7 @@
         <th>Email</th>
         <th>Role</th>
         <th>Status</th>
-        <th>Plan</th>
+        <th>Plan / Code</th>
         <th>Started</th>
         <th>Last Login</th>
         <th>Actions</th>
@@ -197,12 +207,20 @@
     <input class="field" id="edit-email" type="email" readonly style="opacity:.6;cursor:default;"/>
 
     <label class="f">Role / Tier</label>
-    <select class="field" id="edit-tier">
+    <select class="field" id="edit-tier" onchange="togglePromoField('edit')">
       <option value="none">— None (no access)</option>
       <option value="free">📧 Free (newsletter only)</option>
       <option value="basic">⭐ Starter ($19/mo) — member pages</option>
       <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
+      <option value="marketer">🎯 Marketer (referral partner)</option>
     </select>
+
+    <div class="promo-field" id="edit-promo-row">
+      <label class="f">Promo Code <span style="color:#6b7280;font-weight:400;">(unique identifier for this marketer)</span></label>
+      <input class="field" id="edit-promoCode" type="text"
+             placeholder="e.g. BLEE-JOHN-01" style="text-transform:uppercase;"
+             oninput="this.value=this.value.toUpperCase()"/>
+    </div>
 
     <label class="f">Subscription Status</label>
     <select class="field" id="edit-status">
@@ -234,20 +252,28 @@
   <div class="modal">
     <h3>Add / Invite User</h3>
     <p style="font-size:12px;color:#6b7280;margin-bottom:16px;line-height:1.6;">
-      This creates a Firestore record so the user's role is pre-set when they register at
+      Creates a Firestore record so the user's role is pre-set when they register at
       <a href="login.html" style="color:#f5a623;">login.html</a>.
-      Their access is granted automatically once they complete registration.
+      For Marketers, the promo code is activated when they complete registration.
     </p>
 
     <label class="f">Email Address</label>
     <input class="field" id="add-email" type="email" placeholder="member@example.com"/>
 
     <label class="f">Role / Tier</label>
-    <select class="field" id="add-tier">
+    <select class="field" id="add-tier" onchange="togglePromoField('add')">
       <option value="free">📧 Free (newsletter only)</option>
       <option value="basic">⭐ Starter ($19/mo) — member pages</option>
       <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
+      <option value="marketer">🎯 Marketer (referral partner)</option>
     </select>
+
+    <div class="promo-field" id="add-promo-row">
+      <label class="f">Promo Code <span style="color:#6b7280;font-weight:400;">(unique — marketer shares this to recruit members)</span></label>
+      <input class="field" id="add-promoCode" type="text"
+             placeholder="e.g. BLEE-JOHN-01" style="text-transform:uppercase;"
+             oninput="this.value=this.value.toUpperCase()"/>
+    </div>
 
     <label class="f">Subscription Status</label>
     <select class="field" id="add-status">
@@ -259,7 +285,7 @@
     <input class="field" id="add-hint" type="text" placeholder="Optional hint for the user"/>
 
     <label class="f">Admin Notes</label>
-    <input class="field" id="add-notes" type="text" placeholder="e.g. 'Beta tester', 'Referred by John'"/>
+    <input class="field" id="add-notes" type="text" placeholder="e.g. 'Beta tester', 'Partner from conference'"/>
 
     <div class="modal-btns">
       <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
@@ -296,11 +322,12 @@ auth.onAuthStateChanged(user => {
 
 // ── Role helpers ─────────────────────────────────────────────────────────
 const ROLE_LABEL = {
-  admin:   { label:"🔑 Admin",   cls:"role-admin" },
-  premium: { label:"🚀 Pro",     cls:"role-pro" },
-  basic:   { label:"⭐ Starter", cls:"role-starter" },
-  free:    { label:"📧 Free",    cls:"role-free" },
-  none:    { label:"— None",     cls:"role-none" },
+  admin:    { label:"🔑 Admin",    cls:"role-admin" },
+  premium:  { label:"🚀 Pro",      cls:"role-pro" },
+  basic:    { label:"⭐ Starter",  cls:"role-starter" },
+  free:     { label:"📧 Free",     cls:"role-free" },
+  marketer: { label:"🎯 Marketer", cls:"role-marketer" },
+  none:     { label:"— None",      cls:"role-none" },
 };
 function roleBadge(tier) {
   const r = ROLE_LABEL[tier] || ROLE_LABEL.none;
@@ -315,8 +342,11 @@ function statusBadge(s) {
   };
   return `<span class="status-badge status-${s||'inactive'}">${map[s]||s||"—"}</span>`;
 }
-function planLabel(tier) {
-  return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Free", none:"—" }[tier] || "—";
+function planLabel(u) {
+  if (u.tier === "marketer") return u.promoCode
+    ? `<span style="color:#a78bfa;font-size:11px;font-weight:700;">${u.promoCode}</span>`
+    : "Marketer";
+  return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Free", none:"—" }[u.tier] || "—";
 }
 function fmtDate(ts) {
   if (!ts) return "—";
@@ -341,16 +371,18 @@ async function loadUsers() {
 
 // ── Stats ────────────────────────────────────────────────────────────────
 function updateStats() {
-  const active   = allUsers.filter(u => u.subscriptionStatus === "active");
-  const free     = active.filter(u => u.tier === "free").length;
-  const starter  = active.filter(u => u.tier === "basic").length;
-  const pro      = active.filter(u => u.tier === "premium").length;
-  const mrr      = starter * 19 + pro * 49;
-  document.getElementById("stat-total").textContent   = allUsers.length;
-  document.getElementById("stat-free").textContent    = free;
-  document.getElementById("stat-starter").textContent = starter;
-  document.getElementById("stat-pro").textContent     = pro;
-  document.getElementById("stat-mrr").textContent     = "$" + mrr.toLocaleString();
+  const active    = allUsers.filter(u => u.subscriptionStatus === "active");
+  const free      = active.filter(u => u.tier === "free").length;
+  const starter   = active.filter(u => u.tier === "basic").length;
+  const pro       = active.filter(u => u.tier === "premium").length;
+  const marketers = allUsers.filter(u => u.tier === "marketer").length;
+  const mrr       = starter * 19 + pro * 49;
+  document.getElementById("stat-total").textContent    = allUsers.length;
+  document.getElementById("stat-free").textContent     = free;
+  document.getElementById("stat-starter").textContent  = starter;
+  document.getElementById("stat-pro").textContent      = pro;
+  document.getElementById("stat-marketer").textContent = marketers;
+  document.getElementById("stat-mrr").textContent      = "$" + mrr.toLocaleString();
 }
 
 // ── Render table ─────────────────────────────────────────────────────────
@@ -381,47 +413,85 @@ function renderTable() {
       </td>
       <td>${roleBadge(u.tier)}</td>
       <td>${statusBadge(u.subscriptionStatus)}</td>
-      <td style="color:#9ca3af;font-size:12px;">${planLabel(u.tier)}</td>
+      <td style="color:#9ca3af;font-size:12px;">${planLabel(u)}</td>
       <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">${fmtDate(u.createdAt)}</td>
       <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">${fmtDate(u.lastLoginAt)}</td>
       <td><div class="actions">
         <button class="btn btn-outline btn-sm" onclick="openEditModal('${u.uid}')">Edit</button>
         <button class="btn btn-outline btn-sm" onclick="sendResetFor('${u.email}')">📧</button>
+        ${u.tier === "marketer"
+          ? `<a href="marketing.html" class="btn btn-outline btn-sm" style="text-decoration:none;">🎯</a>`
+          : ""}
       </div></td>
     </tr>`;
   }).join("");
+}
+
+// ── Promo code field toggle ───────────────────────────────────────────────
+function togglePromoField(prefix) {
+  const tier = document.getElementById(prefix + "-tier").value;
+  const row  = document.getElementById(prefix + "-promo-row");
+  row.style.display = (tier === "marketer") ? "block" : "none";
 }
 
 // ── Edit modal ───────────────────────────────────────────────────────────
 function openEditModal(uid) {
   const u = allUsers.find(x => x.uid === uid);
   if (!u) return;
-  document.getElementById("edit-uid").value    = uid;
-  document.getElementById("edit-email").value  = u.email || "";
-  document.getElementById("edit-tier").value   = u.tier  || "none";
-  document.getElementById("edit-status").value = u.subscriptionStatus || "pending";
-  document.getElementById("edit-hint").textContent  = u.securityHint || "— not set —";
-  document.getElementById("edit-notes").value  = u.notes || "";
-  document.getElementById("edit-info").innerHTML =
-    `<span class="info-label">UID:</span> <span style="color:#6b7280;font-size:11px;">${uid}</span>
-     &nbsp;·&nbsp;
-     <span class="info-label">Source:</span> <span style="color:#6b7280;font-size:11px;">${u.source||"—"}</span>
-     &nbsp;·&nbsp;
-     <span class="info-label">Plan param:</span> <span style="color:#6b7280;font-size:11px;">${u.plan||"—"}</span>`;
+  document.getElementById("edit-uid").value        = uid;
+  document.getElementById("edit-email").value      = u.email || "";
+  document.getElementById("edit-tier").value       = u.tier  || "none";
+  document.getElementById("edit-status").value     = u.subscriptionStatus || "pending";
+  document.getElementById("edit-hint").textContent = u.securityHint || "— not set —";
+  document.getElementById("edit-notes").value      = u.notes || "";
+  document.getElementById("edit-promoCode").value  = u.promoCode || "";
+  togglePromoField("edit");
+
+  // Build info row
+  let infoHtml = `
+    <span class="info-label">UID:</span>
+    <span style="color:#6b7280;font-size:11px;">${uid}</span> &nbsp;·&nbsp;
+    <span class="info-label">Source:</span>
+    <span style="color:#6b7280;font-size:11px;">${u.source||"—"}</span> &nbsp;·&nbsp;
+    <span class="info-label">Plan:</span>
+    <span style="color:#6b7280;font-size:11px;">${u.plan||"—"}</span>`;
+  if (u.referredBy) {
+    infoHtml += ` &nbsp;·&nbsp;<span class="info-label">Referred by:</span>
+      <span style="color:#a78bfa;font-size:11px;">${u.referredBy}</span>`;
+  }
+  document.getElementById("edit-info").innerHTML = infoHtml;
   document.getElementById("modal-title").textContent = "Edit: " + (u.email || uid);
   document.getElementById("edit-modal").classList.add("show");
 }
 function closeEditModal() { document.getElementById("edit-modal").classList.remove("show"); }
 
 async function saveUser() {
-  const uid    = document.getElementById("edit-uid").value;
-  const tier   = document.getElementById("edit-tier").value;
-  const status = document.getElementById("edit-status").value;
-  const notes  = document.getElementById("edit-notes").value.trim();
+  const uid       = document.getElementById("edit-uid").value;
+  const tier      = document.getElementById("edit-tier").value;
+  const status    = document.getElementById("edit-status").value;
+  const notes     = document.getElementById("edit-notes").value.trim();
+  const promoCode = document.getElementById("edit-promoCode").value.trim().toUpperCase();
+
+  const updates = { tier, subscriptionStatus: status, notes };
+  if (tier === "marketer" && promoCode) {
+    updates.promoCode = promoCode;
+  }
+
   try {
-    await db.collection("users").doc(uid).update({ tier, subscriptionStatus: status, notes });
+    await db.collection("users").doc(uid).update(updates);
+
+    // If marketer with promo code, sync promoCodes collection
+    if (tier === "marketer" && promoCode) {
+      const u = allUsers.find(x => x.uid === uid);
+      await db.collection("promoCodes").doc(promoCode).set({
+        uid, email: u ? u.email : "",
+        code: promoCode,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+    }
+
     const idx = allUsers.findIndex(u => u.uid === uid);
-    if (idx >= 0) Object.assign(allUsers[idx], { tier, subscriptionStatus: status, notes });
+    if (idx >= 0) Object.assign(allUsers[idx], updates);
     closeEditModal();
     updateStats();
     renderTable();
@@ -448,34 +518,59 @@ function sendResetFromModal() {
 }
 
 // ── Add user modal ───────────────────────────────────────────────────────
-function openAddModal()  { document.getElementById("add-modal").classList.add("show"); }
+function openAddModal()  {
+  document.getElementById("add-tier").value = "free";
+  togglePromoField("add");
+  document.getElementById("add-modal").classList.add("show");
+}
 function closeAddModal() { document.getElementById("add-modal").classList.remove("show"); }
 
 async function addUser() {
-  const email  = document.getElementById("add-email").value.trim();
-  const tier   = document.getElementById("add-tier").value;
-  const status = document.getElementById("add-status").value;
-  const hint   = document.getElementById("add-hint").value.trim();
-  const notes  = document.getElementById("add-notes").value.trim();
-  if (!email) { alert("Email is required."); return; }
+  const email     = document.getElementById("add-email").value.trim();
+  const tier      = document.getElementById("add-tier").value;
+  const status    = document.getElementById("add-status").value;
+  const hint      = document.getElementById("add-hint").value.trim();
+  const notes     = document.getElementById("add-notes").value.trim();
+  const promoCode = document.getElementById("add-promoCode").value.trim().toUpperCase();
 
-  // Create a pending invitation record (matched on email when user registers)
-  const docId = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+  if (!email) { alert("Email is required."); return; }
+  if (tier === "marketer" && !promoCode) {
+    alert("Please set a promo code for this marketer."); return;
+  }
+
+  const docId  = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+  const docData = {
+    email, tier, subscriptionStatus: status,
+    plan: tier === "premium" ? "pro" : tier === "basic" ? "starter"
+          : tier === "marketer" ? "marketer" : "free",
+    securityHint: hint,
+    notes: notes || "Manually added by admin",
+    createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+    lastLoginAt: null,
+    source:      "admin_invited",
+  };
+  if (tier === "marketer" && promoCode) docData.promoCode = promoCode;
+
   try {
-    await db.collection("users").doc(docId).set({
-      email, tier, subscriptionStatus: status,
-      plan: tier === "premium" ? "pro" : tier === "basic" ? "starter" : "free",
-      securityHint: hint,
-      notes: notes || "Manually added by admin",
-      createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
-      lastLoginAt: null,
-      source:      "admin_invited",
-    });
+    await db.collection("users").doc(docId).set(docData);
+
+    // Also create promoCodes entry so it's immediately usable
+    if (tier === "marketer" && promoCode) {
+      await db.collection("promoCodes").doc(promoCode).set({
+        uid:       null, // will be filled in when marketer registers
+        email,
+        code:      promoCode,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+
     closeAddModal();
-    showToast(`✅ Invitation created for ${email}. Access activates when they register at login.html.`);
+    showToast(`✅ ${tier === "marketer" ? "Marketer" : "Invitation"} created for ${email}.${
+      tier === "marketer" ? " Promo code: " + promoCode : " Access activates when they register."
+    }`);
     loadUsers();
-    // Clear form
-    ["add-email","add-hint","add-notes"].forEach(id => document.getElementById(id).value = "");
+    ["add-email","add-hint","add-notes","add-promoCode"].forEach(id =>
+      document.getElementById(id).value = "");
   } catch (e) { alert("Failed: " + e.message); }
 }
 
@@ -493,7 +588,7 @@ async function sendResetFor(email) {
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.style.display = "block";
-  setTimeout(() => { t.style.display = "none"; }, 3500);
+  setTimeout(() => { t.style.display = "none"; }, 4000);
 }
 function signOut() {
   auth.signOut().then(() => window.location.href = BLEE_PAGES.login + "?next=admin.html");

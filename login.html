@@ -142,10 +142,11 @@ const auth = firebase.auth();
 const db   = firebase.firestore();
 
 // ── URL params ───────────────────────────────────────────────────────────
-const urlParams = new URLSearchParams(window.location.search);
-const planParam = urlParams.get("plan") || "";  // free | starter | pro
-const tabParam  = urlParams.get("tab")  || "";
-const nextParam = urlParams.get("next") || "";
+const urlParams   = new URLSearchParams(window.location.search);
+const planParam   = urlParams.get("plan")      || "";  // free | starter | pro
+const tabParam    = urlParams.get("tab")       || "";
+const nextParam   = urlParams.get("next")      || "";
+const promoParam  = urlParams.get("promoCode") || "";  // referral promo code
 
 // ── Plan definitions ─────────────────────────────────────────────────────
 const PLANS = {
@@ -202,6 +203,20 @@ async function signIn() {
   } catch (e) { showMsg(friendlyError(e), "error"); }
 }
 
+// ── Promo code lookup ─────────────────────────────────────────────────────
+// Returns { referredBy, referredByUid } or {} if not found / invalid
+async function resolvePromoCode(code) {
+  if (!code) return {};
+  try {
+    const snap = await db.collection("promoCodes").doc(code).get();
+    if (snap.exists) {
+      const d = snap.data();
+      return { referredBy: code, referredByUid: d.uid || null };
+    }
+  } catch (e) { /* ignore — promo code lookup failure is non-fatal */ }
+  return {};
+}
+
 // ── Sign Up ──────────────────────────────────────────────────────────────
 async function signUp() {
   clearMsg();
@@ -221,27 +236,47 @@ async function signUp() {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     const uid  = cred.user.uid;
 
-    // Check if admin pre-invited this email — inherit their tier/status
+    // Check if admin pre-invited this email — inherit their tier/status/promoCode
+    let inheritedPromoCode = "";
     const pendingSnap = await db.collection("users").where("email", "==", email).get();
     pendingSnap.forEach(doc => {
       if (doc.id.startsWith("pending_")) {
         tier   = doc.data().tier               || tier;
         status = doc.data().subscriptionStatus || status;
+        if (doc.data().promoCode) inheritedPromoCode = doc.data().promoCode;
         doc.ref.delete().catch(() => {});
       }
     });
 
-    // Write real user record with Firebase UID
-    await db.collection("users").doc(uid).set({
+    // Resolve referral promo code (from URL or marketer registration)
+    const refData = promoParam ? await resolvePromoCode(promoParam) : {};
+
+    // Build user doc
+    const userDoc = {
       email,
       tier,
       subscriptionStatus: status,
-      plan:        planParam || "none",
+      plan:         planParam || "none",
       securityHint: hint,
-      createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
-      lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
-      source:      "self_registered",
-    });
+      createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt:  firebase.firestore.FieldValue.serverTimestamp(),
+      source:       "self_registered",
+    };
+    // If this user is a marketer, store their promo code
+    if (tier === "marketer" && inheritedPromoCode) {
+      userDoc.promoCode = inheritedPromoCode;
+      // Update promoCodes collection with their real UID now that they've registered
+      db.collection("promoCodes").doc(inheritedPromoCode).set(
+        { uid: uid, email, updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      ).catch(() => {});
+    }
+    // If referred by a marketer, store referral info
+    if (refData.referredBy) {
+      userDoc.referredBy    = refData.referredBy;
+      userDoc.referredByUid = refData.referredByUid || null;
+    }
+    await db.collection("users").doc(uid).set(userDoc);
 
     if (planParam === "free") {
       showMsg("✅ Welcome! Redirecting to home…", "success");
@@ -268,22 +303,38 @@ async function signInGoogle() {
       let tier   = planCfg ? planCfg.tier   : "none";
       let status = planCfg ? planCfg.status : "pending";
 
+      let gInheritedPromo = "";
       const pendingSnap = await db.collection("users").where("email", "==", user.email).get();
       pendingSnap.forEach(doc => {
         if (doc.id.startsWith("pending_")) {
           tier   = doc.data().tier               || tier;
           status = doc.data().subscriptionStatus || status;
+          if (doc.data().promoCode) gInheritedPromo = doc.data().promoCode;
           doc.ref.delete().catch(() => {});
         }
       });
 
-      await db.collection("users").doc(user.uid).set({
+      const gRefData = promoParam ? await resolvePromoCode(promoParam) : {};
+      const gDoc = {
         email: user.email, tier, subscriptionStatus: status,
         plan: planParam || "none", securityHint: "",
         createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
         lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
         source: "google",
-      });
+      };
+      if (tier === "marketer" && gInheritedPromo) {
+        gDoc.promoCode = gInheritedPromo;
+        db.collection("promoCodes").doc(gInheritedPromo).set(
+          { uid: user.uid, email: user.email,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+          { merge: true }
+        ).catch(() => {});
+      }
+      if (gRefData.referredBy) {
+        gDoc.referredBy    = gRefData.referredBy;
+        gDoc.referredByUid = gRefData.referredByUid || null;
+      }
+      await db.collection("users").doc(user.uid).set(gDoc);
 
       window.location.href = planParam === "free"
         ? BLEE_PAGES.home
