@@ -126,6 +126,41 @@
   You can manage Free, Starter, Pro, and Marketer users.
 </div>
 
+<!-- My Referral Code (admin/manager can set their own promo code) -->
+<div id="my-promo-section" style="display:none;background:#120820;border:1px solid #4c1d95;
+     border-radius:10px;padding:14px 18px;margin-bottom:20px;
+     display:none;align-items:center;gap:14px;flex-wrap:wrap;">
+  <div>
+    <div style="font-size:10px;color:#a78bfa;font-weight:700;text-transform:uppercase;
+                letter-spacing:.1em;margin-bottom:4px;">My Referral Code</div>
+    <div style="font-size:18px;font-weight:800;color:#fff;letter-spacing:.1em;"
+         id="my-promo-display">— not set —</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <input id="my-promo-input" type="text" placeholder="e.g. BLEE-ADMIN-01"
+           maxlength="30"
+           style="background:#1f2937;border:1px solid #4c1d95;color:#fff;
+                  padding:7px 12px;border-radius:7px;font-size:13px;width:180px;
+                  text-transform:uppercase;font-family:inherit;"
+           oninput="this.value=this.value.toUpperCase()"/>
+    <button onclick="saveMyPromoCode()"
+            style="background:#4c1d95;color:#e9d5ff;border:0;border-radius:7px;
+                   padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">
+      Save Code
+    </button>
+    <button onclick="copyMyPromoLink()" id="copy-my-promo"
+            style="background:transparent;border:1px solid #4c1d95;color:#a78bfa;
+                   border-radius:7px;padding:7px 14px;font-size:12px;
+                   font-weight:700;cursor:pointer;display:none;">
+      📋 Copy Link
+    </button>
+  </div>
+  <div style="font-size:11px;color:#6b7280;flex:1;min-width:200px;">
+    Set a code and share the referral link to track members you recruit personally.
+    Recruits appear in the <a href="marketing.html" style="color:#a78bfa;">Marketing Dashboard</a>.
+  </div>
+</div>
+
 <!-- Quick Links -->
 <div class="quick-links">
   <a href="data_flow_diagram.html" class="quick-link">
@@ -352,8 +387,10 @@ if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-let allUsers    = [];
-let currentRole = "";   // "admin" | "manager"
+let allUsers           = [];
+let currentRole        = "";    // "admin" | "manager"
+let currentFirebaseUser = null; // set in initDashboard
+let myPromoCode        = "";    // admin/manager's own promo code
 
 // ── Auth gate ─────────────────────────────────────────────────────────────
 auth.onAuthStateChanged(async user => {
@@ -390,16 +427,19 @@ auth.onAuthStateChanged(async user => {
 
 function initDashboard(user) {
   document.getElementById("admin-email").textContent = user.email;
+  currentFirebaseUser = user;
 
   if (currentRole === "manager") {
     document.getElementById("header-role-label").textContent = "Manager Dashboard";
     document.getElementById("manager-notice").style.display = "block";
-    // Manager cannot add admin/manager options — those selects already lack them
   } else {
-    // Admin: inject admin/manager options into tier selects + filter dropdown
     injectAdminOptions();
     document.getElementById("stat-manager-card").style.display = "";
   }
+
+  // Show My Referral Code panel for both admin and manager
+  document.getElementById("my-promo-section").style.display = "flex";
+  loadMyPromoCode(user);
 
   loadUsers();
 }
@@ -713,6 +753,78 @@ async function sendResetFor(email) {
     await auth.sendPasswordResetEmail(email);
     showToast("📧 Reset email sent to " + email);
   } catch (e) { alert("Failed: " + e.message); }
+}
+
+// ── My Referral Code (admin / manager) ───────────────────────────────────
+async function loadMyPromoCode(user) {
+  try {
+    // Try to find an existing promo code for this user in promoCodes collection
+    const snap = await db.collection("promoCodes")
+      .where("email", "==", user.email).limit(1).get();
+    if (!snap.empty) {
+      myPromoCode = snap.docs[0].data().code || "";
+    } else {
+      // Also check the user's own Firestore doc (if they have one)
+      const userSnap = await db.collection("users").doc(user.uid).get();
+      if (userSnap.exists && userSnap.data().promoCode) {
+        myPromoCode = userSnap.data().promoCode;
+      }
+    }
+  } catch (e) { /* ignore — not critical */ }
+
+  const display = document.getElementById("my-promo-display");
+  const input   = document.getElementById("my-promo-input");
+  const copyBtn = document.getElementById("copy-my-promo");
+  if (myPromoCode) {
+    display.textContent = myPromoCode;
+    input.value         = myPromoCode;
+    copyBtn.style.display = "";
+  } else {
+    display.textContent = "— not set —";
+    copyBtn.style.display = "none";
+  }
+}
+
+async function saveMyPromoCode() {
+  const user = currentFirebaseUser;
+  if (!user) return;
+  const code = document.getElementById("my-promo-input").value.trim().toUpperCase();
+  if (!code) { alert("Please enter a promo code."); return; }
+
+  try {
+    // Write to promoCodes collection
+    await db.collection("promoCodes").doc(code).set({
+      uid:       user.uid,
+      email:     user.email,
+      code,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    // Also write to or update the admin's own users doc
+    await db.collection("users").doc(user.uid).set({
+      email:              user.email,
+      tier:               currentRole === "manager" ? "manager" : "admin",
+      subscriptionStatus: "active",
+      promoCode:          code,
+      updatedAt:          firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    myPromoCode = code;
+    document.getElementById("my-promo-display").textContent = code;
+    document.getElementById("copy-my-promo").style.display = "";
+    showToast("✅ Promo code "" + code + "" saved. Share the referral link to start recruiting!");
+  } catch (e) { alert("Failed to save: " + e.message); }
+}
+
+function copyMyPromoLink() {
+  const base = window.location.href.replace("admin.html", "");
+  const url  = base + "subscribe.html?promoCode=" + encodeURIComponent(myPromoCode);
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById("copy-my-promo");
+    const orig = btn.textContent;
+    btn.textContent = "✅ Copied!";
+    setTimeout(() => btn.textContent = orig, 2200);
+  }).catch(() => prompt("Copy this referral link:", url));
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
