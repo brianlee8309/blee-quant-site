@@ -387,18 +387,48 @@ if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-let allUsers           = [];
-let currentRole        = "";    // "admin" | "manager"
-let currentFirebaseUser = null; // set in initDashboard
-let myPromoCode        = "";    // admin/manager's own promo code
+let allUsers            = [];
+let currentRole         = "";    // "admin" | "manager"
+let currentFirebaseUser = null;
+let myPromoCode         = "";
+
+// ── Full-screen loading overlay (prevents content flash before auth check) ──
+(function () {
+  const ov = document.createElement("div");
+  ov.id = "admin-overlay";
+  ov.style.cssText = [
+    "position:fixed;inset:0;z-index:99999;background:#0a0f1e",
+    "display:flex;flex-direction:column;align-items:center;justify-content:center",
+    "font-family:-apple-system,system-ui,'Segoe UI',sans-serif;color:#fff",
+  ].join(";");
+  ov.innerHTML = `
+    <div style="font-size:22px;font-weight:800;color:#f5a623;
+                letter-spacing:.05em;margin-bottom:12px;">BLEE Quant</div>
+    <div style="font-size:14px;color:#9ca3af;margin-bottom:28px;">
+      Verifying access…</div>
+    <div style="width:36px;height:36px;border:3px solid #1f2937;
+                border-top-color:#f5a623;border-radius:50%;
+                animation:blee-spin .8s linear infinite;"></div>
+    <style>@keyframes blee-spin{to{transform:rotate(360deg);}}</style>`;
+  document.body.appendChild(ov);
+})();
+
+function removeOverlay() {
+  const el = document.getElementById("admin-overlay");
+  if (el) el.remove();
+}
 
 // ── Auth gate ─────────────────────────────────────────────────────────────
 auth.onAuthStateChanged(async user => {
-  if (!user) { window.location.href = BLEE_PAGES.login; return; }
+  if (!user) {
+    window.location.replace((BLEE_PAGES.login || "login.html") + "?next=admin.html");
+    return;
+  }
 
-  // Super-admin by email
+  // Super-admin by email — always granted
   if (user.email === BLEE_ADMIN_EMAIL) {
     currentRole = "admin";
+    removeOverlay();
     initDashboard(user);
     return;
   }
@@ -410,19 +440,24 @@ auth.onAuthStateChanged(async user => {
       const { tier, subscriptionStatus } = snap.data();
       if (tier === "admin" && subscriptionStatus === "active") {
         currentRole = "admin";
+        removeOverlay();
         initDashboard(user);
         return;
       }
       if (tier === "manager" && subscriptionStatus === "active") {
         currentRole = "manager";
+        removeOverlay();
         initDashboard(user);
         return;
       }
     }
-  } catch (e) { /* fall through */ }
+  } catch (e) {
+    console.error("Auth check error:", e);
+  }
 
-  alert("Admin or Manager access required.");
-  window.location.href = BLEE_PAGES.home;
+  // Not authorised
+  removeOverlay();
+  window.location.replace(BLEE_PAGES.home || "index.html");
 });
 
 function initDashboard(user) {
@@ -834,8 +869,9 @@ function showToast(msg) {
   setTimeout(() => t.style.display = "none", 4000);
 }
 function signOut() {
-  auth.signOut().then(() =>
-    window.location.href = BLEE_PAGES.login + "?next=admin.html");
+  auth.signOut()
+    .then(() => window.location.replace(BLEE_PAGES.login || "login.html"))
+    .catch(() => window.location.replace(BLEE_PAGES.login || "login.html"));
 }
 </script>
 </body>

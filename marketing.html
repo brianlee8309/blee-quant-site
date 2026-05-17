@@ -179,6 +179,31 @@ if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
+// ── Loading overlay ───────────────────────────────────────────────────────
+(function () {
+  const ov = document.createElement("div");
+  ov.id = "mkt-overlay";
+  ov.style.cssText = [
+    "position:fixed;inset:0;z-index:99999;background:#0a0f1e",
+    "display:flex;flex-direction:column;align-items:center;justify-content:center",
+    "font-family:-apple-system,system-ui,'Segoe UI',sans-serif;color:#fff",
+  ].join(";");
+  ov.innerHTML = `
+    <div style="font-size:22px;font-weight:800;color:#f5a623;
+                letter-spacing:.05em;margin-bottom:12px;">BLEE Quant</div>
+    <div style="font-size:14px;color:#9ca3af;margin-bottom:28px;">
+      Verifying access…</div>
+    <div style="width:36px;height:36px;border:3px solid #1f2937;
+                border-top-color:#f5a623;border-radius:50%;
+                animation:mkt-spin .8s linear infinite;"></div>
+    <style>@keyframes mkt-spin{to{transform:rotate(360deg);}}</style>`;
+  document.body.appendChild(ov);
+})();
+function removeOverlay() {
+  const el = document.getElementById("mkt-overlay");
+  if (el) el.remove();
+}
+
 const COMMISSION_RATE = 0.70;
 const PLAN_MRR = { basic: 19, premium: 49 };
 
@@ -190,7 +215,7 @@ let selectedMarketer = null;  // admin: which marketer card is selected
 // ── Auth gate ────────────────────────────────────────────────────────────
 auth.onAuthStateChanged(async user => {
   if (!user) {
-    window.location.href = (BLEE_PAGES.login || "login.html") + "?next=marketing.html";
+    window.location.replace((BLEE_PAGES.login || "login.html") + "?next=marketing.html");
     return;
   }
   document.getElementById("header-email").textContent = user.email;
@@ -210,16 +235,20 @@ auth.onAuthStateChanged(async user => {
     if (isAdmin) {
       document.getElementById("admin-link").style.display = "";
       document.getElementById("page-subtitle").textContent = "Marketing Dashboard (Admin)";
+      removeOverlay();
       await initAdminView();
     } else if (userData && userData.tier === "marketer"
                && userData.subscriptionStatus === "active") {
       currentUserData = userData;
+      removeOverlay();
       await initMarketerView();
     } else {
-      window.location.href = BLEE_PAGES.home || "index.html";
+      removeOverlay();
+      window.location.replace(BLEE_PAGES.home || "index.html");
     }
   } catch (e) {
     console.error(e);
+    removeOverlay();
     showError(e.message);
   }
 });
@@ -417,7 +446,9 @@ function showError(msg) {
   document.getElementById("recruits-card").style.display = "";
 }
 function doSignOut() {
-  auth.signOut().then(() => window.location.href = BLEE_PAGES.login || "login.html");
+  auth.signOut()
+    .then(() => window.location.replace(BLEE_PAGES.login || "login.html"))
+    .catch(() => window.location.replace(BLEE_PAGES.login || "login.html"));
 }
 </script>
 </body>
