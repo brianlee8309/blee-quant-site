@@ -168,7 +168,14 @@ if (planParam && PLANS[planParam]) {
 
 // ── Redirect if already logged in ───────────────────────────────────────
 auth.onAuthStateChanged(user => {
-  if (user) window.location.href = nextParam || BLEE_PAGES.signal;
+  if (user) {
+    // Admin always goes to admin dashboard
+    if (user.email === BLEE_ADMIN_EMAIL) {
+      window.location.href = nextParam || BLEE_PAGES.admin;
+    } else {
+      window.location.href = nextParam || BLEE_PAGES.signal;
+    }
+  }
 });
 
 function showTab(tab) {

@@ -496,7 +496,7 @@ function showToast(msg) {
   setTimeout(() => { t.style.display = "none"; }, 3500);
 }
 function signOut() {
-  auth.signOut().then(() => window.location.href = BLEE_PAGES.login);
+  auth.signOut().then(() => window.location.href = BLEE_PAGES.login + "?next=admin.html");
 }
 </script>
 </body>
