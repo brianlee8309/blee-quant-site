@@ -12,15 +12,19 @@
        justify-content:center;padding:24px;}
   .card{background:#111827;border:1px solid #1f2937;border-radius:14px;
         padding:36px 40px;width:100%;max-width:420px;}
-  .logo{font-size:20px;font-weight:800;color:#f5a623;
-        letter-spacing:0.05em;margin-bottom:6px;}
+  .logo{font-size:20px;font-weight:800;color:#f5a623;letter-spacing:0.05em;margin-bottom:6px;}
   .logo span{color:#fff;}
   .subtitle{font-size:13px;color:#6b7280;margin-bottom:28px;}
-  .tabs{display:flex;gap:0;margin-bottom:24px;
-        border-bottom:1px solid #1f2937;}
-  .tab{flex:1;text-align:center;padding:10px;font-size:14px;
-       font-weight:600;cursor:pointer;color:#6b7280;
-       border-bottom:2px solid transparent;transition:all .2s;}
+  .plan-banner{background:#1a2033;border:1px solid #2d3f60;border-radius:8px;
+               padding:10px 14px;margin-bottom:18px;font-size:13px;
+               display:none;align-items:center;gap:10px;}
+  .plan-banner .plan-icon{font-size:20px;}
+  .plan-banner .plan-text{flex:1;}
+  .plan-banner .plan-name{font-weight:700;color:#fff;}
+  .plan-banner .plan-sub{color:#6b7280;font-size:11px;}
+  .tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid #1f2937;}
+  .tab{flex:1;text-align:center;padding:10px;font-size:14px;font-weight:600;
+       cursor:pointer;color:#6b7280;border-bottom:2px solid transparent;transition:all .2s;}
   .tab.active{color:#f5a623;border-bottom-color:#f5a623;}
   label{display:block;font-size:11px;color:#9ca3af;font-weight:600;
         text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
@@ -35,18 +39,13 @@
   .btn-google{background:#fff;color:#111;display:flex;align-items:center;
               justify-content:center;gap:10px;margin-top:10px;}
   .btn-google:hover{opacity:.9;}
-  .divider{display:flex;align-items:center;gap:10px;margin:16px 0;
-           color:#4b5563;font-size:12px;}
-  .divider::before,.divider::after{content:'';flex:1;
-    border-top:1px solid #1f2937;}
-  .msg{padding:10px 12px;border-radius:8px;font-size:13px;
-       margin-bottom:14px;display:none;}
+  .divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:#4b5563;font-size:12px;}
+  .divider::before,.divider::after{content:'';flex:1;border-top:1px solid #1f2937;}
+  .msg{padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
   .msg.error{background:#3b0a14;color:#f87171;border:1px solid #7f1d1d;}
   .msg.success{background:#052e16;color:#4ade80;border:1px solid #14532d;}
   .forgot{text-align:right;margin-top:-8px;margin-bottom:14px;}
   .forgot a{color:#f5a623;font-size:12px;text-decoration:none;}
-  .hint-row{display:flex;gap:8px;}
-  .hint-row input{flex:1;}
   .terms{font-size:11px;color:#6b7280;margin-top:12px;text-align:center;}
   .terms a{color:#f5a623;text-decoration:none;}
   .back{text-align:center;margin-top:20px;font-size:13px;color:#6b7280;}
@@ -57,7 +56,7 @@
 
 <div class="card">
   <div class="logo">BLEE <span>Quant</span></div>
-  <div class="subtitle">Member portal — sign in to access your signals</div>
+  <div class="subtitle" id="page-subtitle">Member portal — sign in to access your signals</div>
 
   <div class="tabs">
     <div class="tab active" id="tab-login"  onclick="showTab('login')">Sign In</div>
@@ -71,7 +70,7 @@
     <label>Email</label>
     <input id="li-email" type="email" placeholder="you@example.com" autocomplete="email"/>
     <label>Password</label>
-    <input id="li-pass"  type="password" placeholder="••••••••" autocomplete="current-password"/>
+    <input id="li-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
     <div class="forgot"><a href="#" onclick="forgotPassword()">Forgot password?</a></div>
     <button class="btn btn-primary" onclick="signIn()">Sign In</button>
     <div class="divider">or</div>
@@ -88,10 +87,19 @@
 
   <!-- ── SIGN UP ── -->
   <div id="panel-signup" style="display:none;">
+    <!-- Plan banner shown when coming from subscribe page -->
+    <div class="plan-banner" id="plan-banner">
+      <div class="plan-icon" id="plan-icon">📧</div>
+      <div class="plan-text">
+        <div class="plan-name" id="plan-name">Free Newsletter</div>
+        <div class="plan-sub" id="plan-sub">You're registering for this plan</div>
+      </div>
+    </div>
+
     <label>Email</label>
     <input id="su-email" type="email" placeholder="you@example.com" autocomplete="email"/>
-    <label>Password (min 8 characters)</label>
-    <input id="su-pass"  type="password" placeholder="••••••••" autocomplete="new-password"/>
+    <label>Password <span style="color:#4b5563;font-weight:400;">(min 8 characters)</span></label>
+    <input id="su-pass" type="password" placeholder="••••••••" autocomplete="new-password"/>
     <label>Confirm Password</label>
     <input id="su-pass2" type="password" placeholder="••••••••"/>
     <label>Security Hint <span style="color:#4b5563;font-weight:400;">(e.g. "My dog's name")</span></label>
@@ -116,15 +124,14 @@
 
 <div class="back"><a href="index.html">← Back to BLEE Quant home</a></div>
 
-<!-- Local file bypass: skip login entirely and go straight to the site -->
+<!-- Local file bypass: skip login entirely -->
 <script>
   if (window.location.protocol === "file:") {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get("next") || "index.html";
-    window.location.replace(next);
+    const p = new URLSearchParams(window.location.search);
+    window.location.replace(p.get("next") || "index.html");
   }
 </script>
-<!-- Firebase SDKs -->
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -134,34 +141,50 @@ if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-// If already logged in, redirect to intended page or signal
+// ── URL params ───────────────────────────────────────────────────────────
+const urlParams = new URLSearchParams(window.location.search);
+const planParam = urlParams.get("plan") || "";  // free | starter | pro
+const tabParam  = urlParams.get("tab")  || "";
+const nextParam = urlParams.get("next") || "";
+
+// ── Plan definitions ─────────────────────────────────────────────────────
+const PLANS = {
+  free:    { tier:"free",    status:"active",  icon:"📧", name:"Free Newsletter",  sub:"Instant access · No credit card needed" },
+  starter: { tier:"basic",   status:"pending", icon:"⭐", name:"Starter — $19/mo", sub:"Admin will activate your access within 24 hours" },
+  pro:     { tier:"premium", status:"pending", icon:"🚀", name:"Pro — $49/mo",     sub:"Admin will activate your access within 24 hours" },
+};
+
+// ── Auto-switch tab & show plan banner ───────────────────────────────────
+if (tabParam === "signup") showTab("signup");
+
+if (planParam && PLANS[planParam]) {
+  const p = PLANS[planParam];
+  document.getElementById("plan-banner").style.display = "flex";
+  document.getElementById("plan-icon").textContent = p.icon;
+  document.getElementById("plan-name").textContent = p.name;
+  document.getElementById("plan-sub").textContent  = p.sub;
+  document.getElementById("page-subtitle").textContent = "Create your account to get started";
+}
+
+// ── Redirect if already logged in ───────────────────────────────────────
 auth.onAuthStateChanged(user => {
-  if (user) {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get("next") || BLEE_PAGES.signal;
-    window.location.href = next;
-  }
+  if (user) window.location.href = nextParam || BLEE_PAGES.signal;
 });
 
 function showTab(tab) {
-  document.getElementById("panel-login").style.display  = tab==="login"  ? "" : "none";
-  document.getElementById("panel-signup").style.display = tab==="signup" ? "" : "none";
-  document.getElementById("tab-login").classList.toggle("active",  tab==="login");
-  document.getElementById("tab-signup").classList.toggle("active", tab==="signup");
+  document.getElementById("panel-login").style.display  = tab === "login"  ? "" : "none";
+  document.getElementById("panel-signup").style.display = tab === "signup" ? "" : "none";
+  document.getElementById("tab-login").classList.toggle("active",  tab === "login");
+  document.getElementById("tab-signup").classList.toggle("active", tab === "signup");
   clearMsg();
 }
-
 function showMsg(txt, type) {
   const el = document.getElementById("msg");
-  el.textContent = txt;
-  el.className = "msg " + type;
-  el.style.display = "block";
+  el.textContent = txt; el.className = "msg " + type; el.style.display = "block";
 }
-function clearMsg() {
-  const el = document.getElementById("msg");
-  el.style.display = "none";
-}
+function clearMsg() { document.getElementById("msg").style.display = "none"; }
 
+// ── Sign In ──────────────────────────────────────────────────────────────
 async function signIn() {
   clearMsg();
   const email = document.getElementById("li-email").value.trim();
@@ -169,12 +192,10 @@ async function signIn() {
   if (!email || !pass) { showMsg("Please fill in all fields.", "error"); return; }
   try {
     await auth.signInWithEmailAndPassword(email, pass);
-    // onAuthStateChanged will redirect
-  } catch (e) {
-    showMsg(friendlyError(e), "error");
-  }
+  } catch (e) { showMsg(friendlyError(e), "error"); }
 }
 
+// ── Sign Up ──────────────────────────────────────────────────────────────
 async function signUp() {
   clearMsg();
   const email = document.getElementById("su-email").value.trim();
@@ -184,47 +205,86 @@ async function signUp() {
   if (!email || !pass || !pass2) { showMsg("Please fill in all fields.", "error"); return; }
   if (pass !== pass2)  { showMsg("Passwords do not match.", "error"); return; }
   if (pass.length < 8) { showMsg("Password must be at least 8 characters.", "error"); return; }
+
+  const planCfg = PLANS[planParam] || null;
+  let tier   = planCfg ? planCfg.tier   : "none";
+  let status = planCfg ? planCfg.status : "pending";
+
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    // Create Firestore user record
-    await db.collection("users").doc(cred.user.uid).set({
-      email:                email,
-      tier:                 "none",       // admin sets to basic/premium after payment
-      subscriptionStatus:   "pending",
-      securityHint:         hint,
-      createdAt:            firebase.firestore.FieldValue.serverTimestamp(),
-      lastLoginAt:          firebase.firestore.FieldValue.serverTimestamp(),
+    const uid  = cred.user.uid;
+
+    // Check if admin pre-invited this email — inherit their tier/status
+    const pendingSnap = await db.collection("users").where("email", "==", email).get();
+    pendingSnap.forEach(doc => {
+      if (doc.id.startsWith("pending_")) {
+        tier   = doc.data().tier               || tier;
+        status = doc.data().subscriptionStatus || status;
+        doc.ref.delete().catch(() => {});
+      }
     });
-    showMsg("Account created! Please subscribe to access member content.", "success");
-    setTimeout(() => window.location.href = BLEE_PAGES.subscribe, 1800);
-  } catch (e) {
-    showMsg(friendlyError(e), "error");
-  }
+
+    // Write real user record with Firebase UID
+    await db.collection("users").doc(uid).set({
+      email,
+      tier,
+      subscriptionStatus: status,
+      plan:        planParam || "none",
+      securityHint: hint,
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
+      source:      "self_registered",
+    });
+
+    if (planParam === "free") {
+      showMsg("✅ Welcome! Redirecting to home…", "success");
+      setTimeout(() => window.location.href = BLEE_PAGES.home, 1600);
+    } else {
+      showMsg("✅ Account created! Redirecting…", "success");
+      setTimeout(() => {
+        window.location.href = BLEE_PAGES.subscribe + "?registered=1&plan=" + (planParam || "starter");
+      }, 1400);
+    }
+  } catch (e) { showMsg(friendlyError(e), "error"); }
 }
 
+// ── Google Sign-In ───────────────────────────────────────────────────────
 async function signInGoogle() {
   clearMsg();
-  const provider = new firebase.auth.GoogleAuthProvider();
   try {
-    const result = await auth.signInWithPopup(provider);
+    const result = await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
     const user   = result.user;
-    // Create Firestore record if first sign-in
-    const snap = await db.collection("users").doc(user.uid).get();
+    const snap   = await db.collection("users").doc(user.uid).get();
+
     if (!snap.exists) {
-      await db.collection("users").doc(user.uid).set({
-        email:              user.email,
-        tier:               "none",
-        subscriptionStatus: "pending",
-        securityHint:       "",
-        createdAt:          firebase.firestore.FieldValue.serverTimestamp(),
-        lastLoginAt:        firebase.firestore.FieldValue.serverTimestamp(),
+      const planCfg = PLANS[planParam] || null;
+      let tier   = planCfg ? planCfg.tier   : "none";
+      let status = planCfg ? planCfg.status : "pending";
+
+      const pendingSnap = await db.collection("users").where("email", "==", user.email).get();
+      pendingSnap.forEach(doc => {
+        if (doc.id.startsWith("pending_")) {
+          tier   = doc.data().tier               || tier;
+          status = doc.data().subscriptionStatus || status;
+          doc.ref.delete().catch(() => {});
+        }
       });
-      window.location.href = BLEE_PAGES.subscribe;
+
+      await db.collection("users").doc(user.uid).set({
+        email: user.email, tier, subscriptionStatus: status,
+        plan: planParam || "none", securityHint: "",
+        createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
+        source: "google",
+      });
+
+      window.location.href = planParam === "free"
+        ? BLEE_PAGES.home
+        : BLEE_PAGES.subscribe + "?registered=1&plan=" + (planParam || "starter");
+      return;
     }
-    // onAuthStateChanged will redirect existing users
-  } catch (e) {
-    showMsg(friendlyError(e), "error");
-  }
+    // Existing user — onAuthStateChanged redirects
+  } catch (e) { showMsg(friendlyError(e), "error"); }
 }
 
 async function forgotPassword() {
@@ -233,16 +293,14 @@ async function forgotPassword() {
   try {
     await auth.sendPasswordResetEmail(email);
     showMsg("Password reset email sent — check your inbox.", "success");
-  } catch (e) {
-    showMsg(friendlyError(e), "error");
-  }
+  } catch (e) { showMsg(friendlyError(e), "error"); }
 }
 
 function friendlyError(e) {
   const map = {
     "auth/user-not-found":       "No account found with that email.",
     "auth/wrong-password":       "Incorrect password.",
-    "auth/email-already-in-use": "An account with this email already exists.",
+    "auth/email-already-in-use": "An account with this email already exists. Sign in instead.",
     "auth/invalid-email":        "Invalid email address.",
     "auth/weak-password":        "Password is too weak (min 8 characters).",
     "auth/too-many-requests":    "Too many attempts. Try again later.",

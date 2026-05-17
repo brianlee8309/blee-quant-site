@@ -15,35 +15,37 @@
   .sub{color:#9ca3af;font-size:16px;}
   .notice{display:none;background:#1a2a1a;border:1px solid #2d4a2d;
           border-radius:8px;padding:12px 16px;color:#4ade80;font-size:13px;
-          max-width:600px;margin:0 auto 24px;text-align:center;}
+          max-width:1000px;margin:0 auto 24px;text-align:center;}
   .plans{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;
-         max-width:900px;margin:0 auto;}
+         max-width:1100px;margin:0 auto;}
   .plan{background:#111827;border:1px solid #1f2937;border-radius:14px;
-        padding:32px 28px;width:100%;max-width:380px;position:relative;}
+        padding:32px 24px;width:100%;max-width:250px;position:relative;
+        display:flex;flex-direction:column;}
   .plan.featured{border-color:#f5a623;box-shadow:0 0 0 1px #f5a62344;}
   .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);
          background:#f5a623;color:#000;font-size:11px;font-weight:800;
          padding:3px 12px;border-radius:20px;letter-spacing:.08em;}
   .plan-name{font-size:14px;font-weight:700;color:#9ca3af;
              text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-  .price{font-size:44px;font-weight:800;line-height:1;}
-  .price sup{font-size:22px;vertical-align:top;margin-top:8px;}
-  .price sub{font-size:15px;color:#6b7280;font-weight:400;}
-  .plan-desc{color:#9ca3af;font-size:13px;margin:10px 0 24px;}
-  .features{list-style:none;margin-bottom:28px;}
-  .features li{padding:7px 0;font-size:14px;color:#d1d5db;
-               border-bottom:1px solid #1f2937;display:flex;gap:10px;}
+  .price{font-size:42px;font-weight:800;line-height:1;}
+  .price sup{font-size:20px;vertical-align:top;margin-top:8px;}
+  .price sub{font-size:14px;color:#6b7280;font-weight:400;}
+  .plan-desc{color:#9ca3af;font-size:13px;margin:10px 0 20px;}
+  .features{list-style:none;margin-bottom:24px;flex:1;}
+  .features li{padding:7px 0;font-size:13px;color:#d1d5db;
+               border-bottom:1px solid #1f2937;display:flex;gap:8px;}
   .features li:last-child{border:0;}
   .features li .icon{flex-shrink:0;margin-top:1px;}
   .features li.off{color:#6b7280;}
   .features li.off .icon{color:#374151;}
-  .btn{display:block;width:100%;padding:14px;border:0;border-radius:8px;
-       font-size:15px;font-weight:700;cursor:pointer;text-align:center;
+  .btn{display:block;width:100%;padding:13px;border:0;border-radius:8px;
+       font-size:14px;font-weight:700;cursor:pointer;text-align:center;
        text-decoration:none;transition:opacity .2s;}
   .btn-gold{background:#f5a623;color:#000;}
-  .btn-outline{background:transparent;color:#f5a623;
-               border:1.5px solid #f5a623;}
+  .btn-outline{background:transparent;color:#f5a623;border:1.5px solid #f5a623;}
+  .btn-gray{background:transparent;color:#9ca3af;border:1.5px solid #374151;}
   .btn:hover{opacity:.85;}
+  .plan-note{font-size:10px;color:#4b5563;text-align:center;margin-top:8px;line-height:1.5;}
   .guarantee{text-align:center;color:#6b7280;font-size:12px;margin-top:32px;}
   .faq{max-width:700px;margin:48px auto 0;}
   .faq h2{font-size:20px;font-weight:700;margin-bottom:20px;text-align:center;}
@@ -52,27 +54,24 @@
   .faq-a{font-size:13px;color:#9ca3af;line-height:1.6;}
   .back{text-align:center;margin-top:32px;font-size:13px;color:#6b7280;}
   .back a{color:#f5a623;text-decoration:none;}
+  .lang-btn.active{background:#f59e0b!important;color:#000!important;border-color:#f59e0b!important;}
+  .lang-btn:hover{background:rgba(255,255,255,0.10)!important;color:#fff!important;}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <a href="index.html" style="text-decoration:none;">
-    <div class="logo">BLEE <span>Quant</span></div>
-  </a>
-  <div class="nav-translate" style="display:inline-flex;align-items:center;gap:3px;margin-top:10px;">
-    <button class="lang-btn active" data-lang="en" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇺🇸 EN</button>
-    <button class="lang-btn"        data-lang="ja" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇯🇵 JP</button>
-    <button class="lang-btn"        data-lang="vi" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇻🇳 VI</button>
-    <button class="lang-btn"        data-lang="ko" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇰🇷 KR</button>
+  <a href="index.html" style="text-decoration:none;"><div class="logo">BLEE <span>Quant</span></div></a>
+  <div style="display:inline-flex;gap:3px;margin-top:10px;">
+    <button class="lang-btn active" data-lang="en" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇰🇷 KR</button>
   </div>
   <h1>Choose your plan</h1>
   <p class="sub">Start trading smarter with daily ETF rotation signals</p>
 </div>
-<style>
-  .lang-btn.active{background:#f59e0b!important;color:#000!important;border-color:#f59e0b!important;}
-  .lang-btn:hover{background:rgba(255,255,255,0.10)!important;color:#fff!important;}
-</style>
+
 <script src="i18n.js" defer></script>
 <script src="analytics.js" defer></script>
 
@@ -80,9 +79,27 @@
 
 <div class="plans">
 
-  <!-- BASIC -->
+  <!-- FREE -->
   <div class="plan">
-    <div class="plan-name">Starter</div>
+    <div class="plan-name">📧 Free</div>
+    <div class="price" style="font-size:34px;color:#9ca3af;">$0</div>
+    <div class="plan-desc">Newsletter & public research access</div>
+    <ul class="features">
+      <li><span class="icon">✅</span> Weekly market newsletter</li>
+      <li><span class="icon">✅</span> Public backtest data</li>
+      <li><span class="icon">✅</span> BLEE research updates</li>
+      <li><span class="icon off">—</span><span class="off">Daily signal page</span></li>
+      <li><span class="icon off">—</span><span class="off">Market Forecast page</span></li>
+      <li><span class="icon off">—</span><span class="off">Email &amp; SMS alerts</span></li>
+      <li><span class="icon off">—</span><span class="off">Auto-trade tools</span></li>
+    </ul>
+    <a href="login.html?plan=free&tab=signup" class="btn btn-gray">Join Free</a>
+    <div class="plan-note">Instant access · No credit card</div>
+  </div>
+
+  <!-- STARTER -->
+  <div class="plan">
+    <div class="plan-name">⭐ Starter</div>
     <div class="price"><sup>$</sup>19<sub>/mo</sub></div>
     <div class="plan-desc">Daily signals to guide your manual trades</div>
     <ul class="features">
@@ -90,20 +107,18 @@
       <li><span class="icon">✅</span> Market Forecast &amp; weather model</li>
       <li><span class="icon">✅</span> Portfolio performance tracker</li>
       <li><span class="icon">✅</span> Historical backtest data (6 yr)</li>
-      <li><span class="icon off">—</span> <span class="off">Email &amp; SMS alerts</span></li>
-      <li><span class="icon off">—</span> <span class="off">BLEETrader desktop app</span></li>
-      <li><span class="icon off">—</span> <span class="off">Schwab auto-trade</span></li>
-      <li><span class="icon off">—</span> <span class="off">IBKR auto-trade</span></li>
+      <li><span class="icon off">—</span><span class="off">Email &amp; SMS alerts</span></li>
+      <li><span class="icon off">—</span><span class="off">BLEETrader desktop app</span></li>
+      <li><span class="icon off">—</span><span class="off">Auto-trade (Schwab/IBKR)</span></li>
     </ul>
-    <a id="btn-basic" href="#" class="btn btn-outline" onclick="goStripe('basic')">
-      Get Started — $19/mo
-    </a>
+    <a href="login.html?plan=starter&tab=signup" class="btn btn-outline">Get Started — $19/mo</a>
+    <div class="plan-note">Register now · Admin activates within 24h<br>Stripe billing coming soon</div>
   </div>
 
-  <!-- PREMIUM -->
+  <!-- PRO -->
   <div class="plan featured">
     <div class="badge">MOST POPULAR</div>
-    <div class="plan-name">Pro</div>
+    <div class="plan-name">🚀 Pro</div>
     <div class="price"><sup>$</sup>49<sub>/mo</sub></div>
     <div class="plan-desc">Fully automated — signal to trade, hands-free</div>
     <ul class="features">
@@ -115,17 +130,20 @@
       <li><span class="icon">✅</span> IBKR/TWS auto-rebalance</li>
       <li><span class="icon">✅</span> Priority email support</li>
     </ul>
-    <a id="btn-premium" href="#" class="btn btn-gold" onclick="goStripe('premium')">
-      Go Pro — $49/mo
-    </a>
+    <a href="login.html?plan=pro&tab=signup" class="btn btn-gold">Go Pro — $49/mo</a>
+    <div class="plan-note">Register now · Admin activates within 24h<br>Stripe billing coming soon</div>
   </div>
 
 </div>
 
-<p class="guarantee">🔒 Cancel anytime · Powered by Stripe · No contracts</p>
+<p class="guarantee">🔒 Cancel anytime · No contracts · Stripe billing coming soon</p>
 
 <div class="faq">
   <h2>Frequently asked questions</h2>
+  <div class="faq-item">
+    <div class="faq-q">How does access work right now?</div>
+    <div class="faq-a">Register with your chosen plan — your account is created instantly in our system. For Starter and Pro, the admin will manually activate your access within 24 hours while Stripe automated billing is being set up.</div>
+  </div>
   <div class="faq-item">
     <div class="faq-q">How does the auto-trade work?</div>
     <div class="faq-a">Pro subscribers download BLEETrader, connect their own Schwab or IBKR API keys, and every day at 3:52 PM ET the app automatically reads the BLEE signal and places rebalance orders in their own brokerage account. You stay in full control.</div>
@@ -135,18 +153,12 @@
     <div class="faq-a">Yes. Your API keys are stored only on your own computer. BLEE never has access to your brokerage account or funds. You can revoke access at any time from your Schwab or IBKR developer settings.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q">When do I get access after subscribing?</div>
-    <div class="faq-a">Access is granted within 24 hours of payment. You'll receive a confirmation email with login instructions. Automated access coming soon.</div>
-  </div>
-  <div class="faq-item">
     <div class="faq-q">Can I upgrade from Starter to Pro later?</div>
-    <div class="faq-a">Yes — you can upgrade, downgrade, or cancel at any time from your member portal. Upgrades are prorated automatically by Stripe.</div>
+    <div class="faq-a">Yes — contact admin or use the member portal to upgrade. Upgrades are reflected immediately in your account once confirmed.</div>
   </div>
 </div>
 
-<div class="back">
-  <a href="login.html">← Already a member? Sign in</a>
-</div>
+<div class="back"><a href="login.html">← Already a member? Sign in</a></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -154,32 +166,27 @@
 <script>
 if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 
-// Show reason banner if redirected here
-const params = new URLSearchParams(window.location.search);
-const reason = params.get("reason");
-const notice = document.getElementById("notice");
-if (reason === "upgrade") {
-  notice.textContent = "⭐ Upgrade to Pro to access this feature.";
+const params  = new URLSearchParams(window.location.search);
+const reason  = params.get("reason");
+const regPlan = params.get("plan");
+const notice  = document.getElementById("notice");
+
+if (params.get("registered") && regPlan) {
+  const label = regPlan === "pro" ? "🚀 Pro" : regPlan === "starter" ? "⭐ Starter" : "📧 Free";
+  notice.textContent = regPlan === "free"
+    ? `✅ Welcome! You're signed up for Free access. Check your email for updates.`
+    : `✅ Account created for ${label}! Admin will activate your access within 24 hours.`;
+  notice.style.display = "block";
+} else if (reason === "upgrade") {
+  notice.textContent = "🚀 Upgrade to Pro to access this feature.";
   notice.style.display = "block";
 } else if (reason === "inactive") {
-  notice.textContent = "Your subscription is inactive. Please renew to continue.";
-  notice.style.background = "#2a1a1a";
-  notice.style.borderColor = "#7f1d1d";
-  notice.style.color = "#f87171";
+  notice.textContent = "Your subscription is inactive. Please contact admin or re-register.";
+  notice.style.background = "#2a1a1a"; notice.style.borderColor = "#7f1d1d"; notice.style.color = "#f87171";
   notice.style.display = "block";
 } else if (reason === "no_subscription") {
   notice.textContent = "Choose a plan below to unlock member access.";
   notice.style.display = "block";
-}
-
-function goStripe(tier) {
-  const user = firebase.auth().currentUser;
-  const link = tier === "premium" ? STRIPE.premiumLink : STRIPE.basicLink;
-  // Append prefill email if user is logged in
-  const url = user
-    ? link + "?prefilled_email=" + encodeURIComponent(user.email)
-    : link;
-  window.open(url, "_blank");
 }
 </script>
 </body>
