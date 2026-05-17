@@ -116,7 +116,7 @@
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <span id="admin-email" style="font-size:12px;color:#6b7280;"></span>
-    <button class="btn btn-outline btn-sm" onclick="signOut()">Sign out</button>
+    <button class="btn btn-outline btn-sm" onclick="doSignOut()">Sign out</button>
   </div>
 </header>
 
@@ -163,6 +163,12 @@
 
 <!-- Quick Links -->
 <div class="quick-links">
+  <a href="index.html" class="quick-link">
+    <span class="quick-link-icon">🏠</span>
+    <div><div class="quick-link-title">Home</div>
+         <div class="quick-link-sub">BLEE Quant homepage</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
   <a href="data_flow_diagram.html" class="quick-link">
     <span class="quick-link-icon">📊</span>
     <div><div class="quick-link-title">System Data Flow</div>
@@ -868,10 +874,14 @@ function showToast(msg) {
   t.textContent = msg; t.style.display = "block";
   setTimeout(() => t.style.display = "none", 4000);
 }
-function signOut() {
-  auth.signOut()
-    .then(() => window.location.replace(BLEE_PAGES.login || "login.html"))
-    .catch(() => window.location.replace(BLEE_PAGES.login || "login.html"));
+function doSignOut() {
+  try {
+    firebase.auth().signOut().finally(function () {
+      window.location.replace("login.html");
+    });
+  } catch (e) {
+    window.location.replace("login.html");
+  }
 }
 </script>
 </body>
