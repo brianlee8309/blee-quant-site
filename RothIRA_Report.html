@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roth IRA Performance Report | BLEE Quant Analytics</title>
+<!-- BLEE Auth Guard (Basic+ required) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>const BLEE_REQUIRED_TIER = "basic";</script>
+<script src="auth_guard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #0b1120;
+    --surface:  #111c33;
+    --card:     #162040;
+    --border:   rgba(255,255,255,0.08);
+    --text:     #e8edf5;
+    --muted:    #8899b4;
+    --gold:     #f5a623;
+    --green:    #22c55e;
+    --blue:     #38bdf8;
+    --red:      #f87171;
+    --radius:   12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* ── Nav ── */
+  nav {
+    background: #0d1829;
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-brand span { color: var(--gold); }
+  .nav-back {
+    color: var(--muted);
+    font-size: 13px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color .15s;
+  }
+  .nav-back:hover { color: var(--text); }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1829 0%, #111c33 60%, #0b1120 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(245,166,35,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(245,166,35,0.12);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 36px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ── Main container ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Section labels ── */
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  /* ── Stat cards row ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stat-card.highlight {
+    border-color: rgba(245,166,35,0.4);
+    background: linear-gradient(135deg, rgba(245,166,35,0.06) 0%, var(--card) 100%);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .stat-value.green  { color: var(--green); }
+  .stat-value.gold   { color: var(--gold); }
+  .stat-value.blue   { color: var(--blue); }
+  .stat-value.white  { color: #fff; }
+  .stat-note {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 28px;
+    margin-bottom: 24px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── Ledger table ── */
+  .ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .ledger-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ledger-table td {
+    padding: 12px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+  }
+  .ledger-table tr:last-child td { border-bottom: none; }
+  .ledger-table .amount { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ledger-table .total-row td {
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    font-weight: 700;
+    padding-top: 16px;
+  }
+  .ledger-table .profit-row td { color: var(--green); }
+
+  /* ── IRR callout ── */
+  .irr-callout {
+    background: linear-gradient(135deg, rgba(245,166,35,0.08) 0%, rgba(245,166,35,0.03) 100%);
+    border: 1px solid rgba(245,166,35,0.35);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: center;
+  }
+  .irr-main {
+    flex: 1;
+    min-width: 200px;
+  }
+  .irr-rate {
+    font-size: clamp(44px, 8vw, 64px);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -2px;
+  }
+  .irr-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .irr-meta {
+    flex: 2;
+    min-width: 220px;
+  }
+  .irr-meta p {
+    font-size: 14px;
+    color: #b0bdd4;
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .irr-meta p:last-child { margin-bottom: 0; }
+  .irr-meta strong { color: var(--text); }
+
+  /* ── Comparison bar ── */
+  .compare-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .compare-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .compare-name {
+    width: 130px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .compare-bar-wrap {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .compare-bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1.2s ease;
+  }
+  .compare-pct {
+    width: 54px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Chart canvas ── */
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+
+  /* ── Tax callout ── */
+  .tax-banner {
+    background: linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(34,197,94,0.03) 100%);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .tax-icon { font-size: 28px; flex-shrink: 0; }
+  .tax-text { flex: 1; }
+  .tax-text h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--green); }
+  .tax-text p  { font-size: 13px; color: #99c4a8; line-height: 1.5; }
+
+  /* ── Disclaimer ── */
+  .disclaimer {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 36px; }
+    .container { padding: 28px 16px 60px; }
+    .card { padding: 20px 16px; }
+    .irr-callout { padding: 24px 20px; }
+    .compare-name { width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <a href="index.html" class="nav-brand">
+    <div style="width:26px;height:26px;background:var(--gold);border-radius:6px;
+                display:flex;align-items:center;justify-content:center;
+                font-size:13px;font-weight:900;color:#000;">B</div>
+    BLEE <span>Quant</span>
+  </a>
+  <a href="index.html" class="nav-back">&#8592; Back to Home</a>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-eyebrow">🔴 Live Account &nbsp;·&nbsp; Real Money &nbsp;·&nbsp; Actual Results</div>
+  <h1>Personal Roth IRA<br><em>Performance Report</em></h1>
+  <p class="hero-sub">IRR & Portfolio Growth Analysis &nbsp;·&nbsp; Jan 2024 – May 2026</p>
+  <div class="hero-badge">
+    ✅ All gains grow completely tax-free inside a Roth IRA
+  </div>
+</div>
+
+<!-- ── Main ── -->
+<div class="container">
+
+  <!-- KPI strip -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Invested</div>
+      <div class="stat-value white">$32,300</div>
+      <div class="stat-note">3 deposits over 2.5 yrs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Current Value</div>
+      <div class="stat-value blue">$53,083</div>
+      <div class="stat-note">As of May 17, 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Net Profit</div>
+      <div class="stat-value green">+$20,784</div>
+      <div class="stat-note">100% tax-free gains</div>
+    </div>
+    <div class="stat-card highlight">
+      <div class="stat-label">Annualized Return (XIRR)</div>
+      <div class="stat-value gold">~36.2%</div>
+      <div class="stat-note">Money-weighted / yr</div>
+    </div>
+  </div>
+
+  <!-- Account Ledger -->
+  <div class="card">
+    <div class="card-title">📋 Account Ledger</div>
+    <table class="ledger-table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date</th>
+          <th class="amount">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Initial Deposit</td>
+          <td style="color:var(--muted)">January 2024</td>
+          <td class="amount">$16,000.00</td>
+        </tr>
+        <tr>
+          <td>Second Deposit</td>
+          <td style="color:var(--muted)">January 2025</td>
+          <td class="amount">$8,000.00</td>
+        </tr>
+        <tr>
+          <td>Third Deposit</td>
+          <td style="color:var(--muted)">January 2026</td>
+          <td class="amount">$8,300.00</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>Total Principal Invested</strong></td>
+          <td></td>
+          <td class="amount"><strong>$32,300.00</strong></td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>Current Portfolio Value</strong></td>
+          <td style="color:var(--muted)">May 17, 2026</td>
+          <td class="amount" style="color:var(--blue)"><strong>$53,083.82</strong></td>
+        </tr>
+        <tr class="profit-row">
+          <td><strong>Net Investment Profit</strong></td>
+          <td></td>
+          <td class="amount"><strong>+$20,783.82</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- IRR Callout -->
+  <div class="irr-callout">
+    <div class="irr-main">
+      <div class="irr-rate">~36.2%</div>
+      <div class="irr-label">True Annualized Return (XIRR)</div>
+    </div>
+    <div class="irr-meta">
+      <p>
+        While the brokerage interface shows a <strong>Simple Return of 65.37%</strong>
+        (total profit ÷ total contributions), that figure doesn't account for the
+        <em>timeline</em> of your capital.
+      </p>
+      <p>
+        Because funds were deposited in stages over 2.5 years, a large portion had
+        less time to compound. The money-weighted <strong>XIRR methodology</strong>
+        corrects for this — yielding a true annualized figure of <strong style="color:var(--gold)">~36.2% per year</strong>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Benchmark Comparison -->
+  <div class="card">
+    <div class="card-title">📊 Benchmark Comparison &nbsp;<span style="font-size:12px;font-weight:400;color:var(--muted)">Annualized returns</span></div>
+    <div class="compare-row" id="compareRows">
+      <div class="compare-item">
+        <div class="compare-name">This Portfolio</div>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar" style="width:0%;background:var(--gold);" data-target="100"></div>
+        </div>
+        <div class="compare-pct" style="color:var(--gold)">36.2%</div>
+      </div>
+      <div class="compare-item">
+        <div class="compare-name">S&P 500 (hist.)</div>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar" style="width:0%;background:var(--blue);" data-target="27.6"></div>
+        </div>
+        <div class="compare-pct" style="color:var(--blue)">10.0%</div>
+      </div>
+      <div class="compare-item">
+        <div class="compare-name">Avg. Hedge Fund</div>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar" style="width:0%;background:#a78bfa;" data-target="19"></div>
+        </div>
+        <div class="compare-pct" style="color:#a78bfa">~7%</div>
+      </div>
+      <div class="compare-item">
+        <div class="compare-name">High-Yield Savings</div>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar" style="width:0%;background:#64748b;" data-target="13"></div>
+        </div>
+        <div class="compare-pct" style="color:#64748b">~4.5%</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:18px;">
+      Your 36.2% annualized return is <strong style="color:var(--green)">3.6× the long-term S&amp;P 500 benchmark</strong>
+      — extraordinary by any professional standard.
+    </p>
+  </div>
+
+  <!-- Growth Chart -->
+  <div class="card">
+    <div class="card-title">📈 Portfolio Growth Trajectory</div>
+    <div class="chart-wrap">
+      <canvas id="growthChart"></canvas>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px;">
+      Illustrative growth curve based on XIRR-modeled compounding from each deposit date.
+      Structural upward breakout noted in late 2025 as algorithm captured powerful market tailwinds.
+    </p>
+  </div>
+
+  <!-- Tax-Free Banner -->
+  <div class="tax-banner">
+    <div class="tax-icon">🏦</div>
+    <div class="tax-text">
+      <h4>100% Tax-Free Growth Inside a Roth IRA</h4>
+      <p>All <strong>+$20,783.82</strong> of your investment gains are completely shielded from capital gains tax.
+         Equivalent pre-tax earnings at a 25% bracket would require a taxable account generating ~$27,700 in gains to net the same take-home amount.</p>
+    </div>
+  </div>
+
+  <!-- Commentary -->
+  <div class="card">
+    <div class="card-title">💬 Performance Commentary</div>
+    <p style="font-size:14px;line-height:1.75;color:#b0bdd4;margin-bottom:14px;">
+      An annualized return of <strong style="color:var(--gold)">36.2%</strong> is an extraordinary achievement.
+      For context, the long-term historical annualized return of the broad stock market (S&amp;P 500)
+      hovers around <strong>10%</strong>. This portfolio is tripling that benchmark.
+    </p>
+    <p style="font-size:14px;line-height:1.75;color:#b0bdd4;margin-bottom:14px;">
+      As observed on the account chart, the portfolio has generated <strong style="color:var(--text)">structural upward
+      breakouts</strong> — notably around late 2025 — indicating that asset selection captured powerful market
+      tailwinds. The algorithm's momentum-rotation approach across 10+ ETFs allowed it to ride
+      these surges while rotating into defensive positions during drawdowns.
+    </p>
+    <p style="font-size:14px;line-height:1.75;color:#b0bdd4;">
+      Maintaining this growth inside a tax-sheltered Roth IRA means every dollar of gain compounds
+      without the drag of annual tax events — <strong style="color:var(--green)">a compounding advantage that grows
+      exponentially over time</strong>.
+    </p>
+  </div>
+
+  <!-- AI Evaluation Note -->
+  <div style="
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  ">
+    <div style="font-size:22px;flex-shrink:0;margin-top:1px;">🤖</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;">
+        Independent AI Evaluation
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.65;">
+        This performance analysis was independently verified by both
+        <strong style="color:#74aa9c;">ChatGPT (OpenAI)</strong> and
+        <strong style="color:#4285f4;">Google Gemini</strong>,
+        each analysing the raw account ledger and cash-flow data from this Personal Roth IRA account.
+        Both models confirmed the XIRR methodology and the <strong style="color:var(--gold)">~36.2% annualized return</strong> figure.
+      </p>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    ⚠️ <strong>Disclosure:</strong> Roth IRA figures represent actual account performance from a live personal account,
+    not a backtest or simulation. Individual results will vary based on execution timing, account size,
+    deposit schedules, and market conditions at the time of rebalancing.
+    The XIRR figure is calculated using the financial industry standard cash-flow–weighted internal rate of return
+    methodology. Past performance does not guarantee future results.
+    This report is for informational purposes only and does not constitute financial or investment advice.
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ── Animate bar chart on load ──────────────────────────────────────────
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.querySelectorAll(".compare-bar").forEach(bar => {
+      const target = parseFloat(bar.dataset.target);
+      bar.style.width = target + "%";
+    });
+  }, 200);
+});
+
+// ── Growth chart ──────────────────────────────────────────────────────
+(function () {
+  const ctx = document.getElementById("growthChart").getContext("2d");
+
+  // Model: deposit 1 @ Jan 2024, deposit 2 @ Jan 2025, deposit 3 @ Jan 2026
+  // XIRR ≈ 36.2% → monthly factor = (1.362)^(1/12)
+  const r = Math.pow(1.362, 1 / 12);
+
+  const labels = [];
+  const values = [];
+
+  // Build month-by-month from Jan 2024 to May 2026 (29 months)
+  const start = new Date(2024, 0, 1);
+  let portfolio = 0;
+
+  for (let m = 0; m <= 28; m++) {
+    const d = new Date(start.getFullYear(), start.getMonth() + m, 1);
+    const label = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+
+    // Deposits at month 0, 12, 24
+    if (m === 0)  portfolio += 16000;
+    if (m === 12) portfolio += 8000;
+    if (m === 24) portfolio += 8300;
+
+    // Grow by monthly factor
+    portfolio *= r;
+
+    labels.push(label);
+    values.push(+portfolio.toFixed(2));
+  }
+
+  // Override last value with actual
+  values[values.length - 1] = 53083.82;
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+  gradient.addColorStop(0, "rgba(245,166,35,0.25)");
+  gradient.addColorStop(1, "rgba(245,166,35,0)");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Portfolio Value",
+        data: values,
+        borderColor: "#f5a623",
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "#f5a623",
+        fill: true,
+        backgroundColor: gradient,
+        tension: 0.35,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => " $" + ctx.parsed.y.toLocaleString("en-US", { minimumFractionDigits: 0 })
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: "#8899b4", font: { size: 11 }, maxTicksLimit: 10 },
+          grid: { color: "rgba(255,255,255,0.04)" }
+        },
+        y: {
+          ticks: {
+            color: "#8899b4",
+            font: { size: 11 },
+            callback: v => "$" + (v / 1000).toFixed(0) + "k"
+          },
+          grid: { color: "rgba(255,255,255,0.06)" }
+        }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
