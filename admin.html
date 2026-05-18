@@ -621,7 +621,9 @@ function renderTable() {
         <button class="btn btn-outline btn-sm"
                 onclick="openEditModal('${u.uid}')">Edit</button>
         <button class="btn btn-outline btn-sm"
-                onclick="sendResetFor('${u.email}')">📧</button>
+                onclick="sendResetFor('${u.email}','${u.uid}')"
+                title="${isPending ? 'Send signup invite link' : 'Send password reset email'}">
+          ${isPending ? '🔗' : '📧'}</button>
         ${u.tier === "marketer"
           ? `<a href="marketing.html" class="btn btn-outline btn-sm"
                style="text-decoration:none;">🎯</a>`
@@ -726,7 +728,9 @@ async function deleteUser() {
 }
 
 function sendResetFromModal() {
-  sendResetFor(document.getElementById("edit-email").value);
+  const uid   = document.getElementById("edit-uid").value;
+  const email = document.getElementById("edit-email").value;
+  sendResetFor(email, uid);
 }
 
 // ── Add user modal ────────────────────────────────────────────────────────
@@ -786,14 +790,43 @@ async function addUser() {
   } catch (e) { alert("Failed: " + e.message); }
 }
 
-// ── Password reset ────────────────────────────────────────────────────────
-async function sendResetFor(email) {
+// ── Password reset / invite ──────────────────────────────────────────────
+async function sendResetFor(email, uid) {
   if (!email) return;
+
+  // Pending invite = no Firebase Auth account yet → send signup link instead
+  const isPending = uid
+    ? uid.startsWith("pending_")
+    : !!(allUsers.find(u => u.email === email)?.uid || "").startsWith("pending_");
+
+  if (isPending) {
+    const base = window.location.href.replace("admin.html", "");
+    const link = base + "login.html?tab=signup&email=" + encodeURIComponent(email);
+    if (!confirm(
+      `"${email}" has not signed up yet — they have no password to reset.\n\n` +
+      `Send them this signup invitation link instead?\n\n${link}`
+    )) return;
+    try {
+      await navigator.clipboard.writeText(link);
+      showToast("🔗 Signup link copied to clipboard! Share it with " + email);
+    } catch (e) {
+      prompt("Copy this signup link and share it with " + email + ":", link);
+    }
+    return;
+  }
+
+  // Real Firebase Auth account → send password reset email
   if (!confirm(`Send password reset email to ${email}?`)) return;
   try {
     await auth.sendPasswordResetEmail(email);
     showToast("📧 Reset email sent to " + email);
-  } catch (e) { alert("Failed: " + e.message); }
+  } catch (e) {
+    if (e.code === "auth/user-not-found") {
+      alert(`No Firebase Auth account found for ${email}.\n\nThis user may have been added manually. They need to sign up first.`);
+    } else {
+      alert("Failed: " + e.message);
+    }
+  }
 }
 
 // ── My Referral Code (admin / manager) ───────────────────────────────────
