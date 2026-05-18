@@ -6,103 +6,103 @@
   "positions": [
     {
       "ticker": "SDOW",
-      "weight_pct": 4.1643,
+      "weight_pct": 4.0757,
       "shares": 56.67646,
-      "market_value": 1645.8843984
+      "market_value": 1619.2464622
     },
     {
       "ticker": "GLDM",
-      "weight_pct": 8.1412,
+      "weight_pct": 8.1328,
       "shares": 35.80952,
-      "market_value": 3217.6644196
+      "market_value": 3231.0929896
     },
     {
       "ticker": "TMF",
-      "weight_pct": 2.4584,
+      "weight_pct": 2.463,
       "shares": 30.0305,
-      "market_value": 971.6368275
+      "market_value": 978.5438425
     },
     {
       "ticker": "UUP",
-      "weight_pct": 0.2927,
+      "weight_pct": 0.2907,
       "shares": 4.17292,
-      "market_value": 115.694207
+      "market_value": 115.506842892
     },
     {
       "ticker": "TECL",
-      "weight_pct": 11.3125,
+      "weight_pct": 11.6905,
       "shares": 24.74849,
-      "market_value": 4471.0622034
+      "market_value": 4644.5491183
     },
     {
       "ticker": "SPXS",
-      "weight_pct": 0.3001,
+      "weight_pct": 0.2932,
       "shares": 4.19066,
-      "market_value": 118.594420802
+      "market_value": 116.500767066
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 3.9346,
+      "weight_pct": 4.015,
       "shares": 21.53568,
-      "market_value": 1555.0914528
+      "market_value": 1595.145664032
     },
     {
       "ticker": "VTI",
-      "weight_pct": 2.0898,
+      "weight_pct": 2.0911,
       "shares": 2.29343,
-      "market_value": 825.9558802
+      "market_value": 830.7950175
     },
     {
       "ticker": "SHV",
-      "weight_pct": 1.2392,
+      "weight_pct": 1.2329,
       "shares": 4.44277,
-      "market_value": 489.771409077
+      "market_value": 489.812282561
     },
     {
       "ticker": "SH",
-      "weight_pct": 1.248,
+      "weight_pct": 1.2353,
       "shares": 14.59809,
-      "market_value": 493.257782628
+      "market_value": 490.7877858
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 40.8766,
+      "weight_pct": 40.6648,
       "shares": 160.65907,
-      "market_value": 16155.779683758
+      "market_value": 16155.8760792
     },
     {
       "ticker": "GLD",
-      "weight_pct": 10.5435,
+      "weight_pct": 10.5341,
       "shares": 9.99652,
-      "market_value": 4167.1493272
+      "market_value": 4185.1430632
     },
     {
       "ticker": "USMV",
-      "weight_pct": 5.3426,
+      "weight_pct": 5.3327,
       "shares": 22.08992,
-      "market_value": 2111.5754528
+      "market_value": 2118.6442272
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.3713,
+      "weight_pct": 0.3694,
       "shares": 9.23589,
-      "market_value": 146.7582921
+      "market_value": 146.754597744
     },
     {
       "ticker": "SQQQ",
-      "weight_pct": 0.4084,
+      "weight_pct": 0.3965,
       "shares": 3.60588,
-      "market_value": 161.3991888
+      "market_value": 157.5408972
     },
     {
       "ticker": "PSQ",
-      "weight_pct": 7.1754,
+      "weight_pct": 7.0815,
       "shares": 106.37542,
-      "market_value": 2835.958059658
+      "market_value": 2813.427745702
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1013,
+      "weight_pct": 0.1008,
       "shares": 40.03,
       "market_value": 40.03
     }
@@ -112,21 +112,21 @@
     "community_review_status": null,
     "tags": [],
     "last_rebalance_on": "2026-05-15",
-    "annualized_rate_of_return": 34.4523,
+    "annualized_rate_of_return": 35.5003,
     "last_semantic_update_at": "2026-05-17T23:20:50.411382Z",
     "color": "#829DFF",
     "rebalance_frequency": "threshold",
     "last_rebalance_attempted_on": "2026-05-15",
     "name": "BLEE - 185 2026 ALL in One 37% ave-5.5 Max-Down SGOV Bond (Rate high yeild year only over 4%) ",
-    "value": 39523.26,
-    "sharpe_ratio": 2.9521,
-    "time_weighted_return": 0.88949,
+    "value": 39729.4,
+    "sharpe_ratio": 2.9726,
+    "time_weighted_return": 0.89935,
     "asset_class": "EQUITIES",
     "may_rebalance_today": true,
     "invested_since": "2026-03-16",
     "cash": 40.03,
-    "deposit_adjusted_value": 37789.89,
-    "last_dollar_change": -362.6515053,
+    "deposit_adjusted_value": 37986.99,
+    "last_dollar_change": -156.5115053,
     "rebalance_corridor_width": 0.05,
     "skip_rebalance_today": false,
     "tickers": [
@@ -406,135 +406,135 @@
     "holdings": [
       {
         "ticker": "SDOW",
-        "allocation": 0.041643437,
-        "price": 29.04,
+        "allocation": 0.040756882,
+        "price": 28.57,
         "amount": 56.67646,
-        "value": 1645.8843984,
-        "last_percent_change": 0.008683571
+        "value": 1619.2464622,
+        "last_percent_change": -0.007641542
       },
       {
         "ticker": "GLDM",
-        "allocation": 0.081411918,
-        "price": 89.855,
+        "allocation": 0.081327505,
+        "price": 90.23,
         "amount": 35.80952,
-        "value": 3217.6644196,
-        "last_percent_change": -0.001389198
+        "value": 3231.0929896,
+        "last_percent_change": 0.002778395
       },
       {
         "ticker": "TMF",
-        "allocation": 0.024583924,
-        "price": 32.355,
+        "allocation": 0.024630219,
+        "price": 32.585,
         "amount": 30.0305,
-        "value": 971.6368275,
-        "last_percent_change": -0.00994492
+        "value": 978.5438425,
+        "last_percent_change": -0.002906977
       },
       {
         "ticker": "UUP",
-        "allocation": 0.002927244,
-        "price": 27.725,
+        "allocation": 0.002907339,
+        "price": 27.6801,
         "amount": 4.17292,
-        "value": 115.694207,
-        "last_percent_change": -0.001620454
+        "value": 115.506842892,
+        "last_percent_change": -0.003237306
       },
       {
         "ticker": "TECL",
-        "allocation": 0.113124833,
-        "price": 180.66,
+        "allocation": 0.116904587,
+        "price": 187.67,
         "amount": 24.74849,
-        "value": 4471.0622034,
-        "last_percent_change": -0.073775955
+        "value": 4644.5491183,
+        "last_percent_change": -0.037836452
       },
       {
         "ticker": "SPXS",
-        "allocation": 0.003000623,
-        "price": 28.2997,
+        "allocation": 0.002932357,
+        "price": 27.8001,
         "amount": 4.19066,
-        "value": 118.594420802,
-        "last_percent_change": 0.022018779
+        "value": 116.500767066,
+        "last_percent_change": 0.003976165
       },
       {
         "ticker": "TQQQ",
-        "allocation": 0.039346234,
-        "price": 72.21,
+        "allocation": 0.040150258,
+        "price": 74.0699,
         "amount": 21.53568,
-        "value": 1555.0914528,
-        "last_percent_change": -0.041544996
+        "value": 1595.145664032,
+        "last_percent_change": -0.016858243
       },
       {
         "ticker": "VTI",
-        "allocation": 0.020897969,
-        "price": 360.14,
+        "allocation": 0.020911341,
+        "price": 362.25,
         "amount": 2.29343,
-        "value": 825.9558802,
-        "last_percent_change": -0.007167668
+        "value": 830.7950175,
+        "last_percent_change": -0.00135083
       },
       {
         "ticker": "SHV",
-        "allocation": 0.012391979,
-        "price": 110.2401,
+        "allocation": 0.012328711,
+        "price": 110.2493,
         "amount": 4.44277,
-        "value": 489.771409077,
-        "last_percent_change": 9.07e-07
+        "value": 489.812282561,
+        "last_percent_change": 8.4361e-05
       },
       {
         "ticker": "SH",
-        "allocation": 0.01248019,
-        "price": 33.7892,
+        "allocation": 0.012353264,
+        "price": 33.62,
         "amount": 14.59809,
-        "value": 493.257782628,
-        "last_percent_change": 0.006829559
+        "value": 490.7877858,
+        "last_percent_change": 0.001787843
       },
       {
         "ticker": "SGOV",
-        "allocation": 0.408766374,
-        "price": 100.5594,
+        "allocation": 0.406647875,
+        "price": 100.56,
         "amount": 160.65907,
-        "value": 16155.779683758,
-        "last_percent_change": 9.3486e-05
+        "value": 16155.8760792,
+        "last_percent_change": 9.9453e-05
       },
       {
         "ticker": "GLD",
-        "allocation": 0.105435365,
-        "price": 416.86,
+        "allocation": 0.10534121,
+        "price": 418.66,
         "amount": 9.99652,
-        "value": 4167.1493272,
-        "last_percent_change": -0.001030458
+        "value": 4185.1430632,
+        "last_percent_change": 0.003283088
       },
       {
         "ticker": "USMV",
-        "allocation": 0.053426146,
-        "price": 95.59,
+        "allocation": 0.053326862,
+        "price": 95.91,
         "amount": 22.08992,
-        "value": 2111.5754528,
-        "last_percent_change": 0.009398099
+        "value": 2118.6442272,
+        "last_percent_change": 0.012777191
       },
       {
         "ticker": "VIXM",
-        "allocation": 0.003713213,
-        "price": 15.89,
+        "allocation": 0.003693854,
+        "price": 15.8896,
         "amount": 9.23589,
-        "value": 146.7582921,
-        "last_percent_change": -0.002510986
+        "value": 146.754597744,
+        "last_percent_change": -0.002536095
       },
       {
         "ticker": "SQQQ",
-        "allocation": 0.004083651,
-        "price": 44.76,
+        "allocation": 0.003965348,
+        "price": 43.69,
         "amount": 3.60588,
-        "value": 161.3991888,
-        "last_percent_change": 0.041414611
+        "value": 157.5408972,
+        "last_percent_change": 0.016519311
       },
       {
         "ticker": "PSQ",
-        "allocation": 0.071754153,
-        "price": 26.6599,
+        "allocation": 0.070814755,
+        "price": 26.4481,
         "amount": 106.37542,
-        "value": 2835.958059658,
-        "last_percent_change": 0.013684411
+        "value": 2813.427745702,
+        "last_percent_change": 0.005631179
       }
     ],
-    "last_percent_change": -0.0091,
-    "simple_return": 0.06814,
+    "last_percent_change": -0.0039,
+    "simple_return": 0.07371,
     "is_shared": true,
     "as_of": "2026-05-18",
     "asset_classes": [
