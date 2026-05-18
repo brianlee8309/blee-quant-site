@@ -468,9 +468,29 @@ auth.onAuthStateChanged(async user => {
         return;
       }
     }
-    // Firestore doc exists but tier is not admin/manager — not authorised
+    // Firestore doc exists but tier is not admin/manager — show denial, don't silently redirect
     removeOverlay();
-    window.location.replace(BLEE_PAGES.home || "index.html");
+    const actualTier = snap.exists ? (snap.data().tier || "none") : "none";
+    document.body.insertAdjacentHTML("afterbegin",
+      '<div style="position:fixed;inset:0;z-index:99999;background:#0a0f1e;' +
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+      'font-family:system-ui,sans-serif;color:#fff;padding:24px;text-align:center;">' +
+      '<div style="font-size:40px;margin-bottom:16px;">🚫</div>' +
+      '<div style="font-size:22px;font-weight:800;color:#f87171;margin-bottom:8px;">Access Denied</div>' +
+      '<div style="font-size:14px;color:#9ca3af;max-width:400px;margin-bottom:24px;">' +
+        'Your account (<strong style="color:#e5e7eb">' + (user.email || "") + '</strong>) ' +
+        'has tier <strong style="color:#fbbf24">"' + actualTier + '"</strong>. ' +
+        'Admin access requires <strong style="color:#38bdf8">manager</strong> or <strong style="color:#f5a623">admin</strong> tier. ' +
+        'Please ask an admin to update your role in the Admin panel.' +
+      '</div>' +
+      '<div style="display:flex;gap:12px;">' +
+        '<a href="' + (BLEE_PAGES.home || "index.html") + '" style="background:#374151;color:#d1d5db;' +
+          'border:1px solid #4b5563;border-radius:8px;padding:10px 20px;text-decoration:none;font-weight:600;">← Home</a>' +
+        '<button onclick="firebase.auth().signOut().finally(()=>location.href=\'login.html\')" ' +
+          'style="background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b;border-radius:8px;' +
+          'padding:10px 20px;font-weight:600;cursor:pointer;font-family:inherit;">Sign Out & Switch Account</button>' +
+      '</div>' +
+      '</div>');
   } catch (e) {
     // Firestore error (permissions, network) — fail open, don't boot the user
     console.error("Admin auth check error:", e);

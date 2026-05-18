@@ -171,28 +171,46 @@ if (planParam && PLANS[planParam]) {
 auth.onAuthStateChanged(async user => {
   if (!user) return;
   // Super-admin by email → admin dashboard
-  if (user.email === BLEE_ADMIN_EMAIL) {
+  if ((user.email || "").trim().toLowerCase() ===
+      (BLEE_ADMIN_EMAIL || "").trim().toLowerCase()) {
     window.location.href = nextParam || BLEE_PAGES.admin;
     return;
   }
   // Check Firestore tier for role-based redirect
   try {
     const snap = await db.collection("users").doc(user.uid).get();
-    if (snap.exists) {
-      const tier = snap.data().tier;
-      if (tier === "admin" || tier === "manager") {
-        window.location.href = nextParam || BLEE_PAGES.admin;
-        return;
+    let tier = snap.exists ? (snap.data().tier || "none") : "none";
+
+    // For existing accounts with a non-staff tier, also check if admin
+    // pre-invited this email with a privileged role (pending doc lookup).
+    // This covers the case where the user had an account BEFORE the admin
+    // set up their invite, so the UID doc has the wrong tier.
+    if (tier !== "admin" && tier !== "manager" && tier !== "marketer") {
+      const pendingId  = "pending_" + user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      const pendingDoc = await db.collection("users").doc(pendingId).get().catch(() => null);
+      if (pendingDoc && pendingDoc.exists) {
+        const pd          = pendingDoc.data();
+        const pendingTier = pd.tier || "";
+        if (pendingTier === "admin" || pendingTier === "manager" || pendingTier === "marketer") {
+          // Upgrade the real UID doc with the pending role, then delete pending doc
+          const upgrades = { tier: pendingTier };
+          if (pd.subscriptionStatus) upgrades.subscriptionStatus = pd.subscriptionStatus;
+          await db.collection("users").doc(user.uid).set(upgrades, { merge: true });
+          pendingDoc.ref.delete().catch(() => {});
+          tier = pendingTier;
+        }
       }
-      if (tier === "marketer") {
-        window.location.href = nextParam || (BLEE_PAGES.marketing || "marketing.html");
-        return;
-      }
-      // Paid/free member → signal page
-      window.location.href = nextParam || BLEE_PAGES.signal;
+    }
+
+    if (tier === "admin" || tier === "manager") {
+      window.location.href = nextParam || BLEE_PAGES.admin;
       return;
     }
-    // No Firestore doc yet — still redirect to signal (basic fallback)
+    if (tier === "marketer") {
+      window.location.href = nextParam || (BLEE_PAGES.marketing || "marketing.html");
+      return;
+    }
+    // Paid/free member → signal page
     window.location.href = nextParam || BLEE_PAGES.signal;
   } catch (e) {
     console.error("Login redirect error:", e);
