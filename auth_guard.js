@@ -122,7 +122,9 @@
       const userTier = data.tier || "none";
       const status   = data.subscriptionStatus || "inactive";
 
-      if (status !== "active" && user.email !== BLEE_ADMIN_EMAIL) {
+      // Staff roles (manager, admin) don't need subscriptionStatus === "active"
+      const isStaffTier = userTier === "admin" || userTier === "manager";
+      if (!isStaffTier && status !== "active" && user.email !== BLEE_ADMIN_EMAIL) {
         redirect(BLEE_PAGES.subscribe + "?reason=inactive",
                  "Subscription inactive.");
         return;
