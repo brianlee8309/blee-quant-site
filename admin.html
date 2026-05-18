@@ -425,14 +425,24 @@ function removeOverlay() {
 }
 
 // ── Auth gate ─────────────────────────────────────────────────────────────
+let _authResolved = false;
+
 auth.onAuthStateChanged(async user => {
+  // First call with null can be a race with session restoration — wait briefly
   if (!user) {
+    if (!_authResolved) {
+      // Give Firebase up to 2 s to restore the session before giving up
+      await new Promise(r => setTimeout(r, 2000));
+      if (auth.currentUser) return; // session restored — next callback will handle it
+    }
     window.location.replace((BLEE_PAGES.login || "login.html") + "?next=admin.html");
     return;
   }
+  _authResolved = true;
 
-  // Super-admin by email — always granted
-  if (user.email === BLEE_ADMIN_EMAIL) {
+  // Super-admin by email — always granted (case-insensitive, trim whitespace)
+  if ((user.email || "").trim().toLowerCase() ===
+      (BLEE_ADMIN_EMAIL || "").trim().toLowerCase()) {
     currentRole = "admin";
     removeOverlay();
     initDashboard(user);
@@ -440,7 +450,7 @@ auth.onAuthStateChanged(async user => {
   }
 
   // Check Firestore for admin or manager tier
-  // Note: admin/manager are staff roles — subscriptionStatus is intentionally NOT checked
+  // admin/manager are staff roles — subscriptionStatus is intentionally NOT checked
   try {
     const snap = await db.collection("users").doc(user.uid).get();
     if (snap.exists) {
@@ -458,13 +468,23 @@ auth.onAuthStateChanged(async user => {
         return;
       }
     }
+    // Firestore doc exists but tier is not admin/manager — not authorised
+    removeOverlay();
+    window.location.replace(BLEE_PAGES.home || "index.html");
   } catch (e) {
-    console.error("Auth check error:", e);
+    // Firestore error (permissions, network) — fail open, don't boot the user
+    console.error("Admin auth check error:", e);
+    removeOverlay();
+    // Show a visible error rather than silently redirecting
+    document.body.insertAdjacentHTML("afterbegin",
+      '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;' +
+      'background:#7f1d1d;color:#fca5a5;padding:12px 20px;font-size:13px;' +
+      'font-family:system-ui,sans-serif;text-align:center;">' +
+      '⚠️ Could not verify your role from Firestore (' + e.message + '). ' +
+      'Check Firestore security rules. ' +
+      '<a href="admin.html" style="color:#fff;font-weight:700;">Retry</a>' +
+      '</div>');
   }
-
-  // Not authorised
-  removeOverlay();
-  window.location.replace(BLEE_PAGES.home || "index.html");
 });
 
 function initDashboard(user) {
