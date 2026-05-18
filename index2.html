@@ -5,13 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BLEE Market Analysis — Daily Update</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- BLEE Auth Guard (Basic+ required) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script>const BLEE_REQUIRED_TIER = "basic";</script>
-<script src="auth_guard.js"></script>
 <style>
   :root {
     --bg: #f6f7f9;
@@ -220,7 +213,7 @@
   <section class="card" id="alloc-status-section">
     <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;">📋 Reallocation Status</h2>
     <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">
-      Compares today's signal to the previous trading day — tells existing members if they need to rebalance for the next market open, and guides new members on building their position. On weekends, Friday's signal stays locked in until Monday's auto-update.
+      Compares today's allocation to yesterday's — tells existing members if they need to rebalance, and guides new members on building their position.
     </p>
     <div id="alloc-status-content">
       <p style="color:var(--muted);font-size:13px;">Loading...</p>
@@ -286,7 +279,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-16", "run_datetime": "05/16/2026 10:42 PM", "total_value": 1007.28, "day_change_pct": 0.0159, "total_return_pct": 0.728, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.7675, "shares": 8.2914, "market_value": 833.70027}, {"ticker": "GLDM", "weight_pct": 9.1911, "shares": 1.0289, "market_value": 92.580422}, {"ticker": "TECL", "weight_pct": 7.9402, "shares": 0.41005, "market_value": 79.9802525}, {"ticker": "$USD", "weight_pct": 0.1013, "shares": 1.02, "market_value": 1.02}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16"], "baseline_date": null};
+const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-17", "run_datetime": "05/17/2026 08:42 PM", "total_value": 1007.28, "day_change_pct": 0.0, "total_return_pct": 0.728, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.7675, "shares": 8.2914, "market_value": 833.70027}, {"ticker": "GLDM", "weight_pct": 9.1911, "shares": 1.0289, "market_value": 92.580422}, {"ticker": "TECL", "weight_pct": 7.9402, "shares": 0.41005, "market_value": 79.9802525}, {"ticker": "$USD", "weight_pct": 0.1013, "shares": 1.02, "market_value": 1.02}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -524,29 +517,6 @@ new Chart(document.getElementById("weights-stack"), {
     if (wh[t] && wh[t][yestIdx] !== undefined) yestW[t] = wh[t][yestIdx];
   });
 
-  // ── Weekend detection ────────────────────────────────────────────────
-  const nowDay = new Date().getDay(); // 0=Sun, 6=Sat
-  const isWeekend = (nowDay === 0 || nowDay === 6);
-  const nextMon = (() => {
-    const d = new Date();
-    const daysUntilMon = (8 - d.getDay()) % 7 || 7;
-    d.setDate(d.getDate() + daysUntilMon);
-    return d.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
-  })();
-
-  // ── Find when signal last changed materially (vs current allocation) ─
-  let lastChangedOn = null;
-  for (let i = dates.length - 2; i >= 0; i--) {
-    let significant = false;
-    const allK = new Set([...Object.keys(todayW), ...Object.keys(wh)]);
-    allK.forEach(t => {
-      const tw = todayW[t] ?? 0;
-      const pw = (wh[t] && wh[t][i] !== undefined) ? wh[t][i] : 0;
-      if (Math.abs(tw - pw) >= 1.0) significant = true;
-    });
-    if (significant) { lastChangedOn = dates[i + 1] || null; break; }
-  }
-
   const allTickers = new Set([...Object.keys(todayW), ...Object.keys(yestW)]);
   const changes = [];
   allTickers.forEach(t => {
@@ -559,33 +529,23 @@ new Chart(document.getElementById("weights-stack"), {
   const maxAbsDiff = changes.length ? Math.max(...changes.map(c => Math.abs(c.diff))) : 0;
   const needsRealloc = maxAbsDiff >= 1.0;
 
-  // ── Weekend lock-in banner ───────────────────────────────────────────
-  const weekendBanner = isWeekend ? `
-    <div style="background:#0f1e3d;border:2px solid #3b82f6;border-radius:12px;padding:14px 20px;margin-bottom:14px;display:flex;gap:14px;align-items:center;">
-      <div style="font-size:28px;line-height:1;">🗓️</div>
-      <div>
-        <div style="font-size:15px;font-weight:800;color:#93c5fd;margin-bottom:3px;">Weekend — Signal Locked Until Monday</div>
-        <div style="font-size:13px;color:#bfdbfe;line-height:1.5;">Markets are closed Sat &amp; Sun. <strong style="color:#ffffff;">Friday's signal is your strategy for ${nextMon}'s open.</strong> No new allocation until Monday evening's auto-update.${lastChangedOn ? ` <span style="color:#94a3b8;">(Last signal change: ${lastChangedOn})</span>` : ''}</div>
-      </div>
-    </div>` : '';
-
   if (!needsRealloc) {
-    el.innerHTML = weekendBanner + `
+    el.innerHTML = `
       <div style="background:#052e16;border:2px solid #16a34a;border-radius:12px;padding:18px 22px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;">
         <div style="font-size:30px;line-height:1;">✅</div>
         <div>
           <div style="font-size:18px;font-weight:900;color:#4ade80;margin-bottom:4px;">Allocation Unchanged — No Reallocation Needed</div>
-          <div style="font-size:13px;color:#bbf7d0;line-height:1.6;">Signal stable since ${lastChangedOn || yestDate}. Your portfolio is aligned with ${isWeekend ? `Monday's opening strategy` : `today's strategy`}.</div>
+          <div style="font-size:13px;color:#bbf7d0;line-height:1.6;">All positions are within <strong>1%</strong> of yesterday's allocation (${yestDate}). Your portfolio is already aligned with today's strategy.</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
           <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
-          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Your current holdings are within tolerance of the signal targets.<br><strong style="color:#4ade80;">${isWeekend ? `No trades needed for ${nextMon}` : `Skip reallocation today`}</strong> — no trades required.</div>
+          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Your current holdings are within tolerance of today's targets.<br><strong style="color:#4ade80;">Skip reallocation today</strong> — no trades required.</div>
         </div>
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
           <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
-          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Use the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position${isWeekend ? ` — good time to prepare before ${nextMon}` : ``}.</div>
+          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Follow today's allocation using the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.</div>
         </div>
       </div>`;
     return;
@@ -608,12 +568,12 @@ new Chart(document.getElementById("weights-stack"), {
     </tr>`;
   }).join("");
 
-  el.innerHTML = weekendBanner + `
+  el.innerHTML = `
     <div style="background:#1c0a00;border:2px solid #f59e0b;border-radius:12px;padding:18px 22px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start;">
       <div style="font-size:30px;line-height:1;">⚡</div>
       <div>
-        <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-bottom:4px;">Allocation Changed — Reallocation ${isWeekend ? `Needed for ${nextMon}` : `Recommended`}</div>
-        <div style="font-size:13px;color:#fde68a;line-height:1.6;">Positions shifted by more than 1% from ${yestDate}. ${isWeekend ? `Execute these trades at <strong>${nextMon}'s market open</strong>` : `Existing members should make targeted adjustments — <strong>no need to liquidate and rebuild</strong>`}.</div>
+        <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-bottom:4px;">Allocation Changed — Reallocation Recommended</div>
+        <div style="font-size:13px;color:#fde68a;line-height:1.6;">Some positions shifted by more than 1% since yesterday (${yestDate}). Existing members should make targeted adjustments — <strong>no need to liquidate and rebuild</strong>.</div>
       </div>
     </div>
     <div style="overflow-x:auto;margin-bottom:18px;">
