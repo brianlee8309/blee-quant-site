@@ -337,25 +337,25 @@
   </div>
 
   <div class="scenario" style="grid-template-columns:1fr;">
-    <!-- Photo: FIRE achievers planning inside a private jet / luxury setting -->
+    <!-- Photo: FIRE achiever giving back — volunteering, donating, helping those in need -->
     <div class="scenario-photo-wrap" style="height:380px;">
       <img
-        src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=1200&q=88&fit=crop&crop=center"
-        alt="Financially independent FIRE achiever reviewing wealth portfolio inside a private jet"
+        src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=1200&q=88&fit=crop&crop=top"
+        alt="Financially independent person giving back — visiting orphans and donating gifts to people in need"
         onerror="
-          this.src='https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=1200&q=88&fit=crop&crop=center';
-          this.onerror=function(){this.parentElement.style.background='linear-gradient(135deg,#1a1035,#0b1120)';this.style.display=\'none\';};
+          this.src='https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&q=88&fit=crop&crop=top';
+          this.onerror=function(){this.parentElement.style.background='linear-gradient(135deg,#0d2b1a,#0b1120)';this.style.display=\'none\';};
         "
       >
-      <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.15) 0%,rgba(11,17,32,0.55) 100%);"></div>
-      <div class="photo-caption" style="bottom:20px;left:24px;font-size:13px;font-style:normal;font-weight:600;color:rgba(255,255,255,0.92);letter-spacing:.03em;">
-        ✈️ &nbsp;Financially free — planning the future from anywhere in the world
+      <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.10) 0%,rgba(11,17,32,0.65) 100%);"></div>
+      <div class="photo-caption" style="bottom:20px;left:24px;font-size:13px;font-style:normal;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.03em;">
+        ❤️ &nbsp;True wealth means the freedom to give back — visit, volunteer, and uplift others
       </div>
     </div>
     <div>
       <div class="scenario-icon">🔥</div>
-      <h3>FIRE Strategy — 20% Annual Growth, 10% of Growth for Living</h3>
-      <p class="scenario-desc" style="margin-bottom:24px;">Annual return: 20% &nbsp;|&nbsp; Living cost: 10% of growth drawn annually &nbsp;|&nbsp; Net compounding: 18%/yr</p>
+      <h3>FIRE Strategy — 20% Annual Growth, 25% of Growth for Living</h3>
+      <p class="scenario-desc" style="margin-bottom:24px;">Annual return: 20% &nbsp;|&nbsp; Living cost: 25% of growth drawn annually &nbsp;|&nbsp; Net compounding: 15%/yr</p>
     </div>
     <div style="overflow-x:auto;">
       <table class="fire-table">
@@ -363,7 +363,7 @@
           <tr>
             <th>Starting Capital</th>
             <th>Annual Growth (20%)</th>
-            <th>Living Expenses Taken (10% of Growth)</th>
+            <th>Living Expenses Taken (25% of Growth)</th>
             <th>Net Growth Reinvested</th>
             <th>Balance After 5 Years</th>
             <th>Balance After 10 Years</th>
@@ -373,26 +373,26 @@
           <tr>
             <td><strong>$1,000,000</strong></td>
             <td>$200,000</td>
-            <td class="gold">$20,000/yr</td>
-            <td>18%/yr net</td>
-            <td class="hi">$2,287,000</td>
-            <td class="hi">$5,234,000</td>
+            <td class="gold">$50,000/yr</td>
+            <td>15%/yr net</td>
+            <td class="hi">$2,011,000</td>
+            <td class="hi">$4,046,000</td>
           </tr>
           <tr>
             <td><strong>$2,000,000</strong></td>
             <td>$400,000</td>
-            <td class="gold">$40,000/yr</td>
-            <td>18%/yr net</td>
-            <td class="hi">$4,574,000</td>
-            <td class="hi">$10,468,000</td>
+            <td class="gold">$100,000/yr</td>
+            <td>15%/yr net</td>
+            <td class="hi">$4,023,000</td>
+            <td class="hi">$8,091,000</td>
           </tr>
           <tr>
             <td><strong>$5,000,000</strong></td>
             <td>$1,000,000</td>
-            <td class="gold">$100,000/yr</td>
-            <td>18%/yr net</td>
-            <td class="hi">$11,435,000</td>
-            <td class="hi">$26,170,000</td>
+            <td class="gold">$250,000/yr</td>
+            <td>15%/yr net</td>
+            <td class="hi">$10,057,000</td>
+            <td class="hi">$20,228,000</td>
           </tr>
         </tbody>
       </table>
@@ -401,8 +401,8 @@
       <canvas id="chart3"></canvas>
     </div>
     <p style="font-size:13px;color:var(--muted);margin-top:16px;line-height:1.7;">
-      Even after taking $100,000/year in living expenses from a $5M portfolio, your wealth continues to compound. After 10 years your $5M becomes <strong style="color:#10b981">$26 million</strong> — while you've enjoyed $1,000,000 in total income along the way.
-      This is the power of letting an algorithm work for you consistently, every trading day.
+      Even after taking $250,000/year in living expenses from a $5M portfolio — enough to live generously, give back, and support causes you care about — your wealth continues to compound at 15% net. After 10 years your $5M becomes <strong style="color:#10b981">$20.2 million</strong> while you've enjoyed $2,500,000 in total income along the way.
+      True financial freedom means growing wealth <em>and</em> living fully — at the same time.
     </p>
   </div>
 </div>
@@ -565,7 +565,7 @@ function fmtM(v) {
   const labels = Array.from({length:11},(_,i)=>"Year "+i);
   function series(start){
     const arr=[start];
-    for(let y=0;y<10;y++) arr.push(Math.round(arr[arr.length-1]*1.18));
+    for(let y=0;y<10;y++) arr.push(Math.round(arr[arr.length-1]*1.15));
     return arr;
   }
   new Chart(document.getElementById("chart3"), {
