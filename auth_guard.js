@@ -200,6 +200,44 @@
     document.body.style.paddingTop =
       (parseInt(document.body.style.paddingTop || "0") + 36) + "px";
     document.body.prepend(bar);
+
+    // ── Inject Admin link into the page's main nav (admin & manager only) ──
+    if (tier === "admin" || tier === "manager") {
+      document.addEventListener("DOMContentLoaded", () => _bleeInjectAdminNavLink());
+      // Also try immediately in case DOM is already ready
+      if (document.readyState !== "loading") _bleeInjectAdminNavLink();
+    }
+  }
+
+  function _bleeInjectAdminNavLink() {
+    // Already injected?
+    if (document.getElementById("blee-admin-nav-link")) return;
+
+    // Look for the page's nav links container (.nav-links is used across all pages)
+    const navLinks = document.querySelector(".nav-links");
+    if (!navLinks) return;
+
+    const a = document.createElement("a");
+    a.id   = "blee-admin-nav-link";
+    a.href = BLEE_PAGES.admin;
+    a.textContent = "⚙ Admin";
+    a.style.cssText = [
+      "color:#f5a623",
+      "font-weight:700",
+      "font-size:13px",
+      "text-decoration:none",
+      "border:1px solid rgba(245,166,35,0.4)",
+      "border-radius:5px",
+      "padding:4px 10px",
+      "background:rgba(245,166,35,0.08)",
+      "transition:background .15s",
+    ].join(";");
+    a.onmouseover = () => a.style.background = "rgba(245,166,35,0.18)";
+    a.onmouseout  = () => a.style.background = "rgba(245,166,35,0.08)";
+
+    // Insert before the last item (usually a CTA button) or just append
+    const lastChild = navLinks.lastElementChild;
+    navLinks.insertBefore(a, lastChild);
   }
 
 })();
