@@ -166,65 +166,52 @@
     <div class="faq-a">Pro subscribers download BLEETrader, connect their own Schwab or IBKR API keys, and every day at 3:52 PM ET the app automatically reads the BLEE signal and places rebalance orders in their own brokerage account. You stay in full control.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q">Is my brokerage account safe?</div>
-    <div class="faq-a">Yes. Your API keys are stored only on your own computer. BLEE never has access to your brokerage account or funds. You can revoke access at any time from your Schwab or IBKR developer settings.</div>
+    <div class="faq-q">Is my brokerage account safe with BLEE?</div>
+    <div class="faq-a">Yes. You connect your own brokerage API keys directly to BLEETrader on your local machine. BLEE never holds your credentials, funds, or trades on your behalf.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q">Can I upgrade from Starter to Pro later?</div>
-    <div class="faq-a">Yes — contact admin or use the member portal to upgrade. Upgrades are reflected immediately in your account once confirmed.</div>
+    <div class="faq-q">When will Stripe billing go live?</div>
+    <div class="faq-a">Stripe automated billing is being finalized. Early subscribers are manually activated by the admin and will be migrated to automated billing when it launches — no action needed on your part.</div>
   </div>
 </div>
 
-<div class="back"><a href="login.html">← Already a member? Sign in</a></div>
+<div class="back"><a href="index.html">← Back to home</a></div>
 
-<script>
-function goPlan(plan) {
-  const code = (document.getElementById("promo-input").value || "").trim().toUpperCase();
-  let url = "login.html?plan=" + plan + "&tab=signup";
-  if (code) url += "&promoCode=" + encodeURIComponent(code);
-  window.location.href = url;
-}
-// Pre-fill promo code from URL (e.g. marketer shared a referral link)
-(function() {
-  const p = new URLSearchParams(window.location.search);
-  const c = p.get("promoCode");
-  if (c) {
-    const el = document.getElementById("promo-input");
-    if (el) { el.value = c.toUpperCase(); document.getElementById("promo-msg").textContent = "✅ Code applied"; }
-  }
-})();
-</script>
-
+<!-- Firebase + user bar -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="user_bar.js" defer></script>
+<script src="user_bar.js"></script>
+
 <script>
-if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+// ── URL params ────────────────────────────────────────────────────────────
+var urlParams = new URLSearchParams(window.location.search);
+var promoParam = urlParams.get("promoCode") || "";
 
-const params  = new URLSearchParams(window.location.search);
-const reason  = params.get("reason");
-const regPlan = params.get("plan");
-const notice  = document.getElementById("notice");
+// Auto-fill promo code from URL
+if (promoParam) {
+  var pi = document.getElementById("promo-input");
+  if (pi) pi.value = promoParam.toUpperCase();
+}
 
-if (params.get("registered") && regPlan) {
-  const label = regPlan === "pro" ? "🚀 Pro" : regPlan === "starter" ? "⭐ Starter" : "📧 Free";
-  notice.textContent = regPlan === "free"
-    ? `✅ Welcome! You're signed up for Free access. Check your email for updates.`
-    : `✅ Account created for ${label}! Admin will activate your access within 24 hours.`;
-  notice.style.display = "block";
-} else if (reason === "upgrade") {
-  notice.textContent = "🚀 Upgrade to Pro to access this feature.";
-  notice.style.display = "block";
-} else if (reason === "inactive") {
-  notice.textContent = "Your subscription is inactive. Please contact admin or re-register.";
-  notice.style.background = "#2a1a1a"; notice.style.borderColor = "#7f1d1d"; notice.style.color = "#f87171";
-  notice.style.display = "block";
-} else if (reason === "no_subscription") {
-  notice.textContent = "Choose a plan below to unlock member access.";
-  notice.style.display = "block";
+// Show registered notice
+if (urlParams.get("registered")) {
+  var notice = document.getElementById("notice");
+  if (notice) {
+    notice.style.display = "block";
+    notice.textContent = "✅ Account created! The admin will activate your access within 24 hours.";
+  }
+}
+
+// ── Navigate to login/signup with chosen plan ─────────────────────────────
+function goPlan(plan) {
+  var code = (document.getElementById("promo-input").value || "").trim().toUpperCase();
+  var url  = "login.html?plan=" + plan + "&tab=signup";
+  if (code) url += "&promoCode=" + encodeURIComponent(code);
+  window.location.href = url;
 }
 </script>
+
 </body>
 </html>
