@@ -144,6 +144,42 @@
     text-decoration:none;transition:opacity .2s;}
   .equal-banner .btn:hover{opacity:.85;}
 
+  /* ── SCENARIO IMAGES ── */
+  .scenario-photo{
+    grid-column:1/-1;
+    width:100%;
+    height:300px;
+    border-radius:12px;
+    object-fit:cover;
+    object-position:center 35%;
+    box-shadow:0 8px 36px rgba(0,0,0,0.5);
+    display:block;
+    background:linear-gradient(135deg,#1e3a5f,#0f2744);
+  }
+  .scenario-photo-wrap{
+    grid-column:1/-1;
+    position:relative;
+    border-radius:12px;
+    overflow:hidden;
+    height:300px;
+  }
+  .scenario-photo-wrap img{
+    width:100%;height:100%;
+    object-fit:cover;
+    object-position:center 35%;
+    display:block;
+  }
+  .scenario-photo-wrap .photo-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(to right,rgba(11,17,32,0.35) 0%,rgba(11,17,32,0) 60%);
+    pointer-events:none;
+  }
+  .scenario-photo-wrap .photo-caption{
+    position:absolute;bottom:16px;left:20px;
+    color:rgba(255,255,255,0.85);font-size:12px;font-style:italic;
+    text-shadow:0 1px 4px rgba(0,0,0,0.7);
+  }
+
   /* ── FOOTNOTE ── */
   .footnote{text-align:center;color:var(--muted);font-size:12px;
     padding:32px 24px;line-height:1.7;}
@@ -185,6 +221,16 @@
   </div>
 
   <div class="scenario">
+    <!-- Photo: young family aiming for financial freedom -->
+    <div class="scenario-photo-wrap">
+      <img
+        src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&q=82&fit=crop"
+        alt="Young couple with children planning their financial future"
+        onerror="this.parentElement.style.background='linear-gradient(135deg,#1a3a5c,#0b1a35)';this.style.display='none';"
+      >
+      <div class="photo-overlay"></div>
+      <div class="photo-caption">Building tomorrow's security — starting today</div>
+    </div>
     <div class="scenario-header">
       <div class="scenario-icon">🌱</div>
       <h3>Young Saver — Roth IRA Growth Plan</h3>
@@ -226,6 +272,16 @@
   </div>
 
   <div class="scenario">
+    <!-- Photo: retired couple sitting at a table reviewing finances -->
+    <div class="scenario-photo-wrap">
+      <img
+        src="https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=1000&q=82&fit=crop&crop=top"
+        alt="Retired couple sitting at a table calmly reviewing their investment and retirement plan"
+        onerror="this.parentElement.style.background='linear-gradient(135deg,#0d2b1a,#0b1a35)';this.style.display='none';"
+      >
+      <div class="photo-overlay"></div>
+      <div class="photo-caption">Confident retirement — income flowing, savings growing</div>
+    </div>
     <div class="scenario-header">
       <div class="scenario-icon">🎯</div>
       <h3>Near-Retirement Growth With Monthly Income</h3>
@@ -263,6 +319,16 @@
   </div>
 
   <div class="scenario" style="grid-template-columns:1fr;">
+    <!-- Photo: FIRE achievers — financially free, using smart tools to eliminate risk -->
+    <div class="scenario-photo-wrap" style="height:340px;">
+      <img
+        src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1000&q=82&fit=crop&crop=center"
+        alt="Financially independent couple living freely, using the Calm Growth algorithm to plan their future"
+        onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1035,#0b1a35)';this.style.display='none';"
+      >
+      <div class="photo-overlay" style="background:linear-gradient(to right,rgba(11,17,32,0.50) 0%,rgba(11,17,32,0.10) 60%);"></div>
+      <div class="photo-caption">Financial independence — growing wealth while living fully</div>
+    </div>
     <div>
       <div class="scenario-icon">🔥</div>
       <h3>FIRE Strategy — 20% Annual Growth, 10% of Growth for Living</h3>
