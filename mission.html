@@ -52,6 +52,17 @@
   .nav-links .btn-nav:hover{background:#fbbf24;}
   @media(max-width:780px){.nav-links a:not(.btn-nav){display:none;}}
 
+  /* ── LANGUAGE SWITCHER ── */
+  .nav-translate{display:flex;align-items:center;gap:3px;margin-left:14px;
+    border-left:1px solid rgba(255,255,255,0.12);padding-left:14px;}
+  .lang-btn{background:transparent;border:1px solid rgba(255,255,255,0.18);
+    color:rgba(255,255,255,0.60);font-size:11.5px;font-weight:700;
+    padding:4px 8px;border-radius:5px;cursor:pointer;transition:all .15s;
+    white-space:nowrap;font-family:inherit;letter-spacing:0.03em;}
+  .lang-btn:hover{background:rgba(255,255,255,0.10);color:#fff;border-color:rgba(255,255,255,0.35);}
+  .lang-btn.active{background:var(--gold);color:#000;border-color:var(--gold);}
+  @media(max-width:780px){.nav-translate{display:none;}}
+
   /* ── HERO ── */
   .hero{text-align:center;padding:80px 24px 60px;
         background:linear-gradient(180deg,#0b1a35 0%,var(--navy) 100%);}
@@ -202,6 +213,12 @@
     <a href="Algorithm185History.html">Backtest</a>
     <a href="performance1.html">Performance</a>
     <a href="subscribe.html" class="btn-nav">Subscribe</a>
+  </div>
+  <div class="nav-translate">
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
 </nav>
 
@@ -567,6 +584,7 @@ function fmtM(v) {
   });
 })();
 </script>
+<script src="i18n.js" defer></script>
 
 </body>
 </html>
