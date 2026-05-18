@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Mission — BLEE Quant Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- User bar (shows signed-in status; page is public) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="user_bar.js"></script>
+<style>
+  :root {
+    --navy:    #0b1120;
+    --navy2:   #111827;
+    --navy3:   #1e2d45;
+    --card:    #131f35;
+    --border:  rgba(255,255,255,0.09);
+    --text:    #e5e7eb;
+    --muted:   #9ca3af;
+    --gold:    #f59e0b;
+    --emerald: #10b981;
+    --blue:    #3b82f6;
+    --purple:  #8b5cf6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       background:var(--navy);color:var(--text);line-height:1.65;
+       -webkit-font-smoothing:antialiased;}
+
+  /* ── NAV ── */
+  nav{position:sticky;top:0;z-index:100;background:var(--navy);
+      border-bottom:1px solid rgba(255,255,255,0.07);
+      padding:0 32px;display:flex;align-items:center;
+      justify-content:space-between;height:62px;}
+  .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+  .nav-logo .icon{width:34px;height:34px;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    border-radius:8px;display:flex;align-items:center;
+    justify-content:center;font-size:16px;font-weight:800;color:#fff;}
+  .nav-logo .brand{color:#fff;font-size:17px;font-weight:700;}
+  .nav-logo .brand span{color:var(--gold);}
+  .nav-links{display:flex;align-items:center;gap:4px;}
+  .nav-links a{color:rgba(255,255,255,.70);text-decoration:none;
+    font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;
+    transition:all .18s;}
+  .nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08);}
+  .nav-links .btn-nav{background:var(--gold);color:#000!important;
+    padding:7px 18px;border-radius:7px;font-weight:700;margin-left:8px;}
+  .nav-links .btn-nav:hover{background:#fbbf24;}
+  @media(max-width:780px){.nav-links a:not(.btn-nav){display:none;}}
+
+  /* ── HERO ── */
+  .hero{text-align:center;padding:80px 24px 60px;
+        background:linear-gradient(180deg,#0b1a35 0%,var(--navy) 100%);}
+  .hero-badge{display:inline-block;background:rgba(245,158,11,.12);
+    border:1px solid rgba(245,158,11,.35);color:var(--gold);
+    font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:5px 16px;border-radius:20px;margin-bottom:20px;}
+  .hero h1{font-size:clamp(28px,5vw,52px);font-weight:800;line-height:1.15;
+    color:#fff;max-width:820px;margin:0 auto 20px;}
+  .hero h1 span{color:var(--gold);}
+  .hero p{font-size:18px;color:var(--muted);max-width:680px;margin:0 auto 40px;}
+
+  /* ── SECTION WRAPPER ── */
+  .section{max-width:1080px;margin:0 auto;padding:64px 24px;}
+  .section-label{font-size:12px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+  .section-title{font-size:clamp(22px,3.5vw,36px);font-weight:800;
+    color:#fff;margin-bottom:16px;line-height:1.25;}
+  .section-sub{font-size:16px;color:var(--muted);max-width:680px;
+    line-height:1.7;margin-bottom:40px;}
+  .divider{border:0;border-top:1px solid var(--border);margin:0;}
+
+  /* ── SCENARIO CARDS ── */
+  .scenario-grid{display:grid;gap:32px;margin-top:40px;}
+  .scenario{background:var(--card);border:1px solid var(--border);
+    border-radius:16px;padding:32px;display:grid;
+    grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+  @media(max-width:700px){.scenario{grid-template-columns:1fr;}}
+  .scenario-header{grid-column:1/-1;}
+  .scenario-icon{font-size:36px;margin-bottom:12px;}
+  .scenario h3{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;}
+  .scenario-desc{font-size:14px;color:var(--muted);line-height:1.7;}
+
+  /* ── STAT BOX ── */
+  .stats-row{display:flex;gap:16px;flex-wrap:wrap;grid-column:1/-1;
+    margin-bottom:4px;}
+  .stat-box{background:rgba(255,255,255,.05);border:1px solid var(--border);
+    border-radius:10px;padding:14px 18px;flex:1;min-width:130px;}
+  .stat-box .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.08em;margin-bottom:4px;}
+  .stat-box .val{font-size:22px;font-weight:800;color:#fff;}
+  .stat-box .val.gold{color:var(--gold);}
+  .stat-box .val.green{color:var(--emerald);}
+  .stat-box .val.blue{color:var(--blue);}
+
+  /* ── CHART BOX ── */
+  .chart-wrap{background:rgba(255,255,255,.03);border:1px solid var(--border);
+    border-radius:12px;padding:20px;position:relative;height:260px;}
+
+  /* ── TABLE ── */
+  .fire-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;}
+  .fire-table th{background:rgba(255,255,255,.06);padding:10px 14px;
+    text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.06em;}
+  .fire-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:#e5e7eb;}
+  .fire-table tr:last-child td{border:0;}
+  .fire-table .hi{color:var(--emerald);font-weight:700;}
+  .fire-table .gold{color:var(--gold);font-weight:700;}
+
+  /* ── TRUST SECTION ── */
+  .trust-banner{background:linear-gradient(135deg,#0c1a0c,#0a1120);
+    border:1px solid rgba(16,185,129,.25);border-radius:16px;padding:40px;
+    margin-top:64px;}
+  .trust-banner h2{font-size:24px;font-weight:800;color:#fff;margin-bottom:8px;}
+  .trust-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;margin-top:28px;}
+  .trust-card{background:rgba(255,255,255,.04);border:1px solid var(--border);
+    border-radius:12px;padding:20px;}
+  .trust-card .icon{font-size:24px;margin-bottom:10px;}
+  .trust-card h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}
+  .trust-card p{font-size:13px;color:var(--muted);line-height:1.65;}
+
+  /* ── SCAM ALERT ── */
+  .scam-alert{background:#1a0a0a;border:1px solid rgba(239,68,68,.35);
+    border-radius:12px;padding:24px 28px;margin-top:24px;
+    display:flex;gap:16px;align-items:flex-start;}
+  .scam-alert .alert-icon{font-size:28px;flex-shrink:0;line-height:1;}
+  .scam-alert h4{font-size:15px;font-weight:700;color:#f87171;margin-bottom:6px;}
+  .scam-alert p{font-size:13px;color:#fca5a5;line-height:1.7;}
+
+  /* ── EQUAL OPP BANNER ── */
+  .equal-banner{background:linear-gradient(135deg,#0c1a35,#1a0c35);
+    border:1px solid rgba(139,92,246,.25);border-radius:16px;
+    padding:48px;text-align:center;margin-top:64px;}
+  .equal-banner h2{font-size:28px;font-weight:800;color:#fff;margin-bottom:14px;}
+  .equal-banner p{font-size:16px;color:var(--muted);max-width:640px;
+    margin:0 auto 28px;line-height:1.75;}
+  .equal-banner .btn{display:inline-block;background:var(--gold);color:#000;
+    font-weight:700;font-size:15px;padding:13px 32px;border-radius:10px;
+    text-decoration:none;transition:opacity .2s;}
+  .equal-banner .btn:hover{opacity:.85;}
+
+  /* ── FOOTNOTE ── */
+  .footnote{text-align:center;color:var(--muted);font-size:12px;
+    padding:32px 24px;line-height:1.7;}
+  .footnote a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="icon">B</div>
+    <div class="brand">BLEE <span>Quant Analytics</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="mission.html" class="active">Our Mission</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="performance1.html">Performance</a>
+    <a href="subscribe.html" class="btn-nav">Subscribe</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-badge">Our Mission</div>
+  <h1>Financial Freedom Is a Right,<br><span>Not a Privilege</span></h1>
+  <p>We built BLEE Quant to give every person — young savers, near-retirees, and the financially independent — equal access to the same disciplined algorithmic strategies once reserved for institutions and the wealthy.</p>
+</div>
+
+<!-- ══ SECTION 1 — Young Saver ══ -->
+<div class="section">
+  <div class="section-label">Scenario 1 — Starting Young</div>
+  <div class="section-title">Turn $3,000 and $300/Month Into $3 Million</div>
+  <div class="section-sub">
+    Imagine you're 30 years old with $3,000 to invest. You commit to adding just $300 a month to your Roth IRA. Using the Calm Growth Model's target return of 20% annually, by age 55½ — the earliest you can withdraw from a Roth IRA tax-free — your account could be worth over <strong style="color:#f5a623">$3 million dollars</strong>. Tax-free. No worries. No guessing.
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-header">
+      <div class="scenario-icon">🌱</div>
+      <h3>Young Saver — Roth IRA Growth Plan</h3>
+      <p class="scenario-desc">Age 30 → 55½ &nbsp;|&nbsp; 25-year horizon &nbsp;|&nbsp; Roth IRA (tax-free withdrawal)</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="lbl">Starting Balance</div><div class="val">$3,000</div></div>
+      <div class="stat-box"><div class="lbl">Monthly Contribution</div><div class="val">$300</div></div>
+      <div class="stat-box"><div class="lbl">Annual Return</div><div class="val gold">20%</div></div>
+      <div class="stat-box"><div class="lbl">Duration</div><div class="val">25 Years</div></div>
+      <div class="stat-box"><div class="lbl">Projected Balance at 55½</div><div class="val green">~$3.0M</div></div>
+    </div>
+    <!-- Chart -->
+    <div class="chart-wrap">
+      <canvas id="chart1"></canvas>
+    </div>
+    <div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        The Roth IRA is one of the most powerful retirement vehicles in the US. Contributions are made with after-tax dollars — meaning every dollar of growth and every withdrawal at retirement is <strong style="color:#10b981">completely tax-free</strong>.
+      </p>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        With BLEE's Calm Growth Model managing your allocation daily, you don't need to watch the market or make complex decisions. The algorithm handles rebalancing automatically at 3:52 PM ET every trading day.
+      </p>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+        <strong style="color:#fff">At 55½</strong>, you can begin taking qualified distributions from your Roth IRA — every dollar grown, earned, and withdrawn, 100% tax-free. $3,000 seed money and the discipline of $300 a month becomes your retirement security.
+      </p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 2 — Near Retired ══ -->
+<div class="section">
+  <div class="section-label">Scenario 2 — Near Retirement</div>
+  <div class="section-title">$300,000 Saved — Make It Work Harder</div>
+  <div class="section-sub">
+    You've saved $300,000. You're close to retirement and want steady income without burning through principal. With Calm Growth Model generating ~20% annually, you can withdraw $2,000/month and still watch your account <strong style="color:#f59e0b">grow significantly</strong> over the next 5 years.
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-header">
+      <div class="scenario-icon">🎯</div>
+      <h3>Near-Retirement Growth With Monthly Income</h3>
+      <p class="scenario-desc">$300,000 invested &nbsp;|&nbsp; $2,000/month withdrawal &nbsp;|&nbsp; 20% annual return</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="lbl">Starting Balance</div><div class="val">$300,000</div></div>
+      <div class="stat-box"><div class="lbl">Monthly Withdrawal</div><div class="val">$2,000</div></div>
+      <div class="stat-box"><div class="lbl">Annual Return</div><div class="val gold">20%</div></div>
+      <div class="stat-box"><div class="lbl">5-Year Balance</div><div class="val green">~$605K</div></div>
+      <div class="stat-box"><div class="lbl">Total Income Taken</div><div class="val blue">$120,000</div></div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chart2"></canvas>
+    </div>
+    <div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        After 5 years of taking $2,000 every month — a total of <strong style="color:#3b82f6">$120,000 in income</strong> — your account doesn't shrink. It nearly <strong style="color:#10b981">doubles to ~$605,000</strong>. The growth rate exceeds your withdrawal rate, so the account continues to expand.
+      </p>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+        This means you can supplement Social Security, cover living expenses, or fund travel — all while your core nest egg grows. Whether in a Roth IRA or a traditional investment account, Calm Growth Model works for your retirement on your terms.
+      </p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 3 — FIRE ══ -->
+<div class="section">
+  <div class="section-label">Scenario 3 — Financially Independent / FIRE</div>
+  <div class="section-title">Already Wealthy? Make Every Dollar Work Exponentially</div>
+  <div class="section-sub">
+    For those who have already reached financial independence — $1M, $2M, or $5M saved — the Calm Growth Model provides a disciplined framework to grow your wealth while taking 10% of each year's growth as living expenses. Your principal never stops compounding.
+  </div>
+
+  <div class="scenario" style="grid-template-columns:1fr;">
+    <div>
+      <div class="scenario-icon">🔥</div>
+      <h3>FIRE Strategy — 20% Annual Growth, 10% of Growth for Living</h3>
+      <p class="scenario-desc" style="margin-bottom:24px;">Annual return: 20% &nbsp;|&nbsp; Living cost: 10% of growth drawn annually &nbsp;|&nbsp; Net compounding: 18%/yr</p>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="fire-table">
+        <thead>
+          <tr>
+            <th>Starting Capital</th>
+            <th>Annual Growth (20%)</th>
+            <th>Living Expenses Taken (10% of Growth)</th>
+            <th>Net Growth Reinvested</th>
+            <th>Balance After 5 Years</th>
+            <th>Balance After 10 Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>$1,000,000</strong></td>
+            <td>$200,000</td>
+            <td class="gold">$20,000/yr</td>
+            <td>18%/yr net</td>
+            <td class="hi">$2,287,000</td>
+            <td class="hi">$5,234,000</td>
+          </tr>
+          <tr>
+            <td><strong>$2,000,000</strong></td>
+            <td>$400,000</td>
+            <td class="gold">$40,000/yr</td>
+            <td>18%/yr net</td>
+            <td class="hi">$4,574,000</td>
+            <td class="hi">$10,468,000</td>
+          </tr>
+          <tr>
+            <td><strong>$5,000,000</strong></td>
+            <td>$1,000,000</td>
+            <td class="gold">$100,000/yr</td>
+            <td>18%/yr net</td>
+            <td class="hi">$11,435,000</td>
+            <td class="hi">$26,170,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-wrap" style="height:300px;margin-top:20px;">
+      <canvas id="chart3"></canvas>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:16px;line-height:1.7;">
+      Even after taking $100,000/year in living expenses from a $5M portfolio, your wealth continues to compound. After 10 years your $5M becomes <strong style="color:#10b981">$26 million</strong> — while you've enjoyed $1,000,000 in total income along the way.
+      This is the power of letting an algorithm work for you consistently, every trading day.
+    </p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ EQUAL OPPORTUNITY ══ -->
+<div class="section" style="padding-bottom:0;">
+  <div class="equal-banner">
+    <div style="font-size:48px;margin-bottom:16px;">⚖️</div>
+    <h2>Equal Opportunity. Every Person. Every Dollar.</h2>
+    <p>
+      Whether you're a 22-year-old with $300 to spare, a 55-year-old planning retirement, or a FIRE achiever with millions — BLEE Quant gives you the same institutional-grade signal. We don't manage your money. We give you the tool.
+      <br><br>
+      <strong style="color:#fff">You keep full control of your brokerage account.</strong> We never touch your funds, never hold credentials, never act as a fund manager. BLEE provides the daily signal — you decide what to do with it.
+    </p>
+    <a href="subscribe.html" class="btn">Start Your Journey →</a>
+  </div>
+</div>
+
+<!-- ══ TRUST & COMPLIANCE ══ -->
+<div class="section">
+  <div class="section-label">Trust &amp; Transparency</div>
+  <div class="section-title">We Are Not a Fund. We Are a Tool.</div>
+  <div class="section-sub">
+    BLEE Quant Analytics operates with full transparency. We are a signal and analytics service — not an investment adviser, not a fund manager, not a custodian of your assets.
+  </div>
+
+  <div class="trust-banner">
+    <h2 style="font-size:20px;color:#4ade80;margin-bottom:8px;">🛡️ Our Commitments to You</h2>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="icon">🔒</div>
+        <h4>Secure Payments via Stripe</h4>
+        <p>All membership fees are collected exclusively through Stripe — the same payment infrastructure trusted by Amazon, Google, and millions of businesses. We never ask for wire transfers, crypto, or direct bank deposits.</p>
+      </div>
+      <div class="trust-card">
+        <div class="icon">🏦</div>
+        <h4>Your Money Stays in Your Account</h4>
+        <p>We never hold, manage, or have access to your investment funds. You connect your own brokerage (Schwab, IBKR) via your own API keys on your own computer. BLEE never sees your account balance or trades.</p>
+      </div>
+      <div class="trust-card">
+        <div class="icon">📋</div>
+        <h4>HTTPS Encrypted &amp; Compliant</h4>
+        <p>This site operates over HTTPS with SSL/TLS encryption. Our Firebase infrastructure is SOC 2 compliant. Member data is stored securely and never sold to third parties.</p>
+      </div>
+      <div class="trust-card">
+        <div class="icon">📧</div>
+        <h4>We Do Not Solicit Investments</h4>
+        <p>BLEE will never send you an unsolicited email asking you to deposit money "for investment." Our only outgoing emails are membership confirmations, daily signal alerts (Pro subscribers), and service notifications.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCAM ALERT -->
+  <div class="scam-alert">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <h4>IMPORTANT — Protect Yourself from Scams</h4>
+      <p>
+        Romance scams and impersonation fraud are rising sharply. Be aware: scammers may create fake websites, fake social profiles, or send emails pretending to be affiliated with BLEE Quant Analytics.
+        <br><br>
+        <strong>If you receive any unexpected email or message</strong> from an unknown sender claiming to be BLEE, asking you to visit a link or deposit funds — do not click the link and do not send money. Verify directly at <strong>bleeanalytics.com</strong>.
+        <br><br>
+        BLEE Quant will <strong>never</strong> contact you requesting a direct deposit for investment purposes. We <strong>only</strong> collect membership subscription fees through our secure Stripe checkout on this website.
+        <br><br>
+        If you suspect fraud using the BLEE name, please report it to the <a href="https://reportfraud.ftc.gov" target="_blank" rel="noopener" style="color:#f87171;">FTC (reportfraud.ftc.gov)</a> and contact us at <strong>bleeanalytics.com</strong>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER NOTE ══ -->
+<p class="footnote">
+  ⚠️ <strong>Disclaimer:</strong> All projected returns shown are based on the Calm Growth Model's historical backtest performance and are for illustrative purposes only. Past performance does not guarantee future results. Individual results will vary based on market conditions, execution timing, and account size. This content is educational and does not constitute investment advice. Please consult a licensed financial advisor before making investment decisions.
+  <br><br>
+  <a href="index.html">← Back to Home</a> &nbsp;|&nbsp; <a href="subscribe.html">View Plans</a> &nbsp;|&nbsp; <a href="RothIRA_Report.html">See Live Account Performance</a>
+</p>
+
+<!-- ══ CHARTS ══ -->
+<script>
+// ── Shared chart defaults ───────────────────────────────────────────
+Chart.defaults.color = "#9ca3af";
+Chart.defaults.borderColor = "rgba(255,255,255,0.07)";
+
+// ── Utility ─────────────────────────────────────────────────────────
+function fmtM(v) {
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(2) + "M";
+  if (v >= 1e3) return "$" + Math.round(v/1e3) + "K";
+  return "$" + Math.round(v);
+}
+
+// ── Chart 1: Young Saver (25 years, monthly compounding) ─────────────
+(function(){
+  const r = 0.20/12, pv = 3000, pmt = 300;
+  const labels = [], data = [];
+  for (let m = 0; m <= 300; m += 12) {
+    const fv = pv * Math.pow(1+r, m) + pmt * (Math.pow(1+r, m)-1)/r;
+    labels.push("Yr " + (m/12));
+    data.push(Math.round(fv));
+  }
+  new Chart(document.getElementById("chart1"), {
+    type:"line",
+    data:{
+      labels,
+      datasets:[{
+        label:"Portfolio Value",
+        data,
+        borderColor:"#f59e0b",
+        backgroundColor:"rgba(245,158,11,0.10)",
+        fill:true,
+        tension:0.4,
+        pointRadius:3,
+        pointBackgroundColor:"#f59e0b",
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmtM(ctx.parsed.y)}}},
+      scales:{y:{ticks:{callback:v=>fmtM(v)},grid:{color:"rgba(255,255,255,0.05)"}},
+              x:{grid:{color:"rgba(255,255,255,0.05)"}}}
+    }
+  });
+})();
+
+// ── Chart 2: Near-retired (60 months, monthly withdrawal) ────────────
+(function(){
+  const r = 0.20/12, pv = 300000, pmt = 2000;
+  const labels = [], data = [], contrib = [];
+  let bal = pv;
+  for (let m = 0; m <= 60; m++) {
+    labels.push("Mo " + m);
+    data.push(Math.round(bal));
+    contrib.push(pv - pmt * m);           // what balance would be with no growth
+    if (m < 60) bal = bal * (1+r) - pmt;
+  }
+  new Chart(document.getElementById("chart2"), {
+    type:"line",
+    data:{
+      labels,
+      datasets:[
+        {label:"Account Balance (20% Return)",data,borderColor:"#10b981",
+         backgroundColor:"rgba(16,185,129,0.10)",fill:true,tension:0.4,pointRadius:0},
+        {label:"No-Growth Baseline",data:contrib.map(v=>Math.max(v,0)),
+         borderColor:"rgba(239,68,68,0.5)",backgroundColor:"transparent",
+         borderDash:[4,4],tension:0,pointRadius:0}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:"top"},tooltip:{callbacks:{label:ctx=>fmtM(ctx.parsed.y)}}},
+      scales:{y:{ticks:{callback:v=>fmtM(v)},grid:{color:"rgba(255,255,255,0.05)"}},
+              x:{ticks:{maxTicksLimit:13},grid:{color:"rgba(255,255,255,0.05)"}}}
+    }
+  });
+})();
+
+// ── Chart 3: FIRE — three portfolio sizes (annual, 10 yrs) ───────────
+(function(){
+  const labels = Array.from({length:11},(_,i)=>"Year "+i);
+  function series(start){
+    const arr=[start];
+    for(let y=0;y<10;y++) arr.push(Math.round(arr[arr.length-1]*1.18));
+    return arr;
+  }
+  new Chart(document.getElementById("chart3"), {
+    type:"line",
+    data:{
+      labels,
+      datasets:[
+        {label:"$1M Start",data:series(1e6),borderColor:"#3b82f6",
+         backgroundColor:"rgba(59,130,246,0.08)",fill:true,tension:0.4,pointRadius:3},
+        {label:"$2M Start",data:series(2e6),borderColor:"#8b5cf6",
+         backgroundColor:"rgba(139,92,246,0.08)",fill:true,tension:0.4,pointRadius:3},
+        {label:"$5M Start",data:series(5e6),borderColor:"#f59e0b",
+         backgroundColor:"rgba(245,158,11,0.08)",fill:true,tension:0.4,pointRadius:3},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:"top"},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+": "+fmtM(ctx.parsed.y)}}},
+      scales:{y:{ticks:{callback:v=>fmtM(v)},grid:{color:"rgba(255,255,255,0.05)"}},
+              x:{grid:{color:"rgba(255,255,255,0.05)"}}}
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
