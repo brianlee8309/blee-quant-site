@@ -185,6 +185,33 @@
 <script src="user_bar.js"></script>
 
 <script>
+// ── Staff redirect: admin/manager don't need to subscribe ─────────────────
+(function() {
+  function checkStaffRedirect() {
+    if (typeof firebase === "undefined" || typeof FIREBASE_CONFIG === "undefined") {
+      return setTimeout(checkStaffRedirect, 200);
+    }
+    try { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); } catch(e){}
+    var auth = firebase.auth();
+    var db   = firebase.firestore();
+    auth.onAuthStateChanged(function(user) {
+      if (!user) return;
+      // Super-admin by email
+      if ((user.email||"").toLowerCase() === (BLEE_ADMIN_EMAIL||"").toLowerCase()) {
+        window.location.replace(BLEE_PAGES.admin || "admin.html"); return;
+      }
+      db.collection("users").doc(user.uid).get().then(function(snap) {
+        if (!snap.exists) return;
+        var tier = snap.data().tier || "";
+        if (tier === "admin" || tier === "manager") {
+          window.location.replace(BLEE_PAGES.admin || "admin.html");
+        }
+      }).catch(function(){});
+    });
+  }
+  checkStaffRedirect();
+})();
+
 // ── URL params ────────────────────────────────────────────────────────────
 var urlParams = new URLSearchParams(window.location.search);
 var promoParam = urlParams.get("promoCode") || "";

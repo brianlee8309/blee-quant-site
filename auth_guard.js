@@ -79,10 +79,13 @@
   }
 
   // ── Tier hierarchy ──────────────────────────────────────────────────────
+  // free: 0.5 — any registered user (just logged in)
   // manager: 10 — above premium, can access all member pages
-  const TIER_RANK = { basic: 1, premium: 2, manager: 10, admin: 99 };
+  const TIER_RANK = { free: 0.5, basic: 1, premium: 2, manager: 10, admin: 99 };
 
   function tierSufficient(userTier, required) {
+    // Any authenticated user satisfies a "free" requirement
+    if (required === "free") return true;
     return (TIER_RANK[userTier] || 0) >= (TIER_RANK[required] || 1);
   }
 
@@ -122,9 +125,10 @@
       const userTier = data.tier || "none";
       const status   = data.subscriptionStatus || "inactive";
 
-      // Staff roles (manager, admin) don't need subscriptionStatus === "active"
-      const isStaffTier = userTier === "admin" || userTier === "manager";
-      if (!isStaffTier && status !== "active" && user.email !== BLEE_ADMIN_EMAIL) {
+      // Staff roles and free-access pages skip the subscriptionStatus check
+      const isStaffTier  = userTier === "admin" || userTier === "manager";
+      const isFreeAccess = (typeof BLEE_REQUIRED_TIER !== "undefined") && BLEE_REQUIRED_TIER === "free";
+      if (!isStaffTier && !isFreeAccess && status !== "active" && user.email !== BLEE_ADMIN_EMAIL) {
         redirect(BLEE_PAGES.subscribe + "?reason=inactive",
                  "Subscription inactive.");
         return;
