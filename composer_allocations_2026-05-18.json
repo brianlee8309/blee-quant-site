@@ -1,0 +1,545 @@
+{
+  "date": "2026-05-18",
+  "symphony_id": "sRxc0F27TQYj10bWwIlO",
+  "symphony_name": "BLEE - 186 2026 ALL in One",
+  "source": "symphony-stats-meta",
+  "positions": [
+    {
+      "ticker": "SDOW",
+      "weight_pct": 4.1643,
+      "shares": 56.67646,
+      "market_value": 1645.8843984
+    },
+    {
+      "ticker": "GLDM",
+      "weight_pct": 8.1412,
+      "shares": 35.80952,
+      "market_value": 3217.6644196
+    },
+    {
+      "ticker": "TMF",
+      "weight_pct": 2.4584,
+      "shares": 30.0305,
+      "market_value": 971.6368275
+    },
+    {
+      "ticker": "UUP",
+      "weight_pct": 0.2927,
+      "shares": 4.17292,
+      "market_value": 115.694207
+    },
+    {
+      "ticker": "TECL",
+      "weight_pct": 11.3125,
+      "shares": 24.74849,
+      "market_value": 4471.0622034
+    },
+    {
+      "ticker": "SPXS",
+      "weight_pct": 0.3001,
+      "shares": 4.19066,
+      "market_value": 118.594420802
+    },
+    {
+      "ticker": "TQQQ",
+      "weight_pct": 3.9346,
+      "shares": 21.53568,
+      "market_value": 1555.0914528
+    },
+    {
+      "ticker": "VTI",
+      "weight_pct": 2.0898,
+      "shares": 2.29343,
+      "market_value": 825.9558802
+    },
+    {
+      "ticker": "SHV",
+      "weight_pct": 1.2392,
+      "shares": 4.44277,
+      "market_value": 489.771409077
+    },
+    {
+      "ticker": "SH",
+      "weight_pct": 1.248,
+      "shares": 14.59809,
+      "market_value": 493.257782628
+    },
+    {
+      "ticker": "SGOV",
+      "weight_pct": 40.8766,
+      "shares": 160.65907,
+      "market_value": 16155.779683758
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 10.5435,
+      "shares": 9.99652,
+      "market_value": 4167.1493272
+    },
+    {
+      "ticker": "USMV",
+      "weight_pct": 5.3426,
+      "shares": 22.08992,
+      "market_value": 2111.5754528
+    },
+    {
+      "ticker": "VIXM",
+      "weight_pct": 0.3713,
+      "shares": 9.23589,
+      "market_value": 146.7582921
+    },
+    {
+      "ticker": "SQQQ",
+      "weight_pct": 0.4084,
+      "shares": 3.60588,
+      "market_value": 161.3991888
+    },
+    {
+      "ticker": "PSQ",
+      "weight_pct": 7.1754,
+      "shares": 106.37542,
+      "market_value": 2835.958059658
+    },
+    {
+      "ticker": "$USD",
+      "weight_pct": 0.1013,
+      "shares": 40.03,
+      "market_value": 40.03
+    }
+  ],
+  "raw_api_entry": {
+    "description": "",
+    "community_review_status": null,
+    "tags": [],
+    "last_rebalance_on": "2026-05-15",
+    "annualized_rate_of_return": 34.4523,
+    "last_semantic_update_at": "2026-05-17T23:20:50.411382Z",
+    "color": "#829DFF",
+    "rebalance_frequency": "threshold",
+    "last_rebalance_attempted_on": "2026-05-15",
+    "name": "BLEE - 185 2026 ALL in One 37% ave-5.5 Max-Down SGOV Bond (Rate high yeild year only over 4%) ",
+    "value": 39523.26,
+    "sharpe_ratio": 2.9521,
+    "time_weighted_return": 0.88949,
+    "asset_class": "EQUITIES",
+    "may_rebalance_today": true,
+    "invested_since": "2026-03-16",
+    "cash": 40.03,
+    "deposit_adjusted_value": 37789.89,
+    "last_dollar_change": -362.6515053,
+    "rebalance_corridor_width": 0.05,
+    "skip_rebalance_today": false,
+    "tickers": [
+      {
+        "symbol": "EQUITIES::UPRO//USD",
+        "name": "ProShares Trust - ProShares UltraPro S&P 500 ETF 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::WANT//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Consumer Discretionary Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::SDOW//USD",
+        "name": "ProShares Trust - ProShares UltraPro Short Dow30 -3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::EUM//USD",
+        "name": "ProShares Trust - ProShares Short MSCI Emerging Markets -1x Shares"
+      },
+      {
+        "symbol": "EQUITIES::TQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro QQQ 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::XLV//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Health Care Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::TECS//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Technology Bear 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::BSV//USD",
+        "name": "Vanguard Bond Index Funds - Vanguard Short-Term Bond ETF"
+      },
+      {
+        "symbol": "EQUITIES::GLDM//USD",
+        "name": "World Gold Trust - SPDR Gold MiniShares Trust"
+      },
+      {
+        "symbol": "EQUITIES::TMF//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily 20+ Year Treasury Bull 3X Shares"
+      },
+      {
+        "symbol": "EQUITIES::UYM//USD",
+        "name": "ProShares Trust - ProShares Ultra Materials"
+      },
+      {
+        "symbol": "EQUITIES::VOX//USD",
+        "name": "Vanguard World Fund - Vanguard Communication Services ETF"
+      },
+      {
+        "symbol": "EQUITIES::SOXX//USD",
+        "name": "iShares Trust - iShares Semiconductor ETF"
+      },
+      {
+        "symbol": "EQUITIES::QQQ//USD",
+        "name": "Invesco QQQ Trust Series 1 - Invesco QQQ Trust Series 1"
+      },
+      {
+        "symbol": "EQUITIES::CURE//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Healthcare Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::DRN//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Real Estate Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::SVXY//USD",
+        "name": "ProShares Trust II - ProShares Short VIX Short-Term Futures ETF -0.5x Shares"
+      },
+      {
+        "symbol": "EQUITIES::XLF//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Financial Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::UUP//USD",
+        "name": "Invesco DB US Dollar Index Bullish Fund - Invesco DB US Dollar Index Bullish Fund"
+      },
+      {
+        "symbol": "EQUITIES::NVDA//USD",
+        "name": "NVIDIA Corp"
+      },
+      {
+        "symbol": "EQUITIES::XTL//USD",
+        "name": "SPDR Series Trust - State Street SPDR S&P Telecom ETF"
+      },
+      {
+        "symbol": "EQUITIES::SPXL//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily S&P 500 Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::XLB//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Materials Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::UGE//USD",
+        "name": "ProShares Trust - ProShares Ultra Consumer Staples"
+      },
+      {
+        "symbol": "EQUITIES::SPY//USD",
+        "name": "SPDR S&P 500 ETF TRUST - SPDR S&P 500 ETF Trust"
+      },
+      {
+        "symbol": "EQUITIES::ERX//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Energy Bull 2X ETF"
+      },
+      {
+        "symbol": "EQUITIES::TECL//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Technology Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::BTAL//USD",
+        "name": "AGF Investments Trust - AGF U.S. Market Neutral Anti-Beta Fund"
+      },
+      {
+        "symbol": "EQUITIES::SPXS//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily S&P 500 Bear 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::TQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro QQQ 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::VTI//USD",
+        "name": "Vanguard Index Funds - Vanguard Total Stock Market ETF"
+      },
+      {
+        "symbol": "EQUITIES::DUSL//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Industrials Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::SHV//USD",
+        "name": "iShares Trust - iShares 0-1 Year Treasury Bond ETF"
+      },
+      {
+        "symbol": "EQUITIES::SCHX//USD",
+        "name": "Schwab Strategic Trust - Schwab U.S. Large-Cap ETF"
+      },
+      {
+        "symbol": "EQUITIES::XLE//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Energy Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::SH//USD",
+        "name": "ProShares Trust - ProShares Short S&P500 -1x Shares"
+      },
+      {
+        "symbol": "EQUITIES::IOO//USD",
+        "name": "iShares Trust - iShares Global 100 ETF"
+      },
+      {
+        "symbol": "EQUITIES::FAS//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Financial Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::VIXY//USD",
+        "name": "ProShares Trust II - ProShares VIX Short-Term Futures ETF"
+      },
+      {
+        "symbol": "EQUITIES::XLRE//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Real Estate Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::SPY//USD",
+        "name": "SPDR S&P 500 ETF TRUST - SPDR S&P 500 ETF Trust"
+      },
+      {
+        "symbol": "EQUITIES::XLU//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Utilities Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::SGOV//USD",
+        "name": "iShares Trust - iShares 0-3 Month Treasury Bond ETF"
+      },
+      {
+        "symbol": "EQUITIES::GLD//USD",
+        "name": "SPDR Gold Trust - SPDR Gold Shares"
+      },
+      {
+        "symbol": "EQUITIES::SDS//USD",
+        "name": "ProShares Trust - ProShares UltraShort S&P500 -2x Shares"
+      },
+      {
+        "symbol": "EQUITIES::TLT//USD",
+        "name": "iShares Trust - iShares 20+ Year Treasury Bond ETF"
+      },
+      {
+        "symbol": "EQUITIES::UVXY//USD",
+        "name": "ProShares Trust II - ProShares Ultra VIX Short-Term Futures ETF 1.5x Shares"
+      },
+      {
+        "symbol": "EQUITIES::LTL//USD",
+        "name": "ProShares Trust - ProShares Ultra Communication Services"
+      },
+      {
+        "symbol": "EQUITIES::VGT//USD",
+        "name": "Vanguard World Fund - Vanguard Information Technology ETF"
+      },
+      {
+        "symbol": "EQUITIES::SQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::XLK//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Technology Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::UDOW//USD",
+        "name": "ProShares Trust - ProShares UltraPro Dow30 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::TMV//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily 20+ Year Treasury Bear -3X Shares"
+      },
+      {
+        "symbol": "EQUITIES::USMV//USD",
+        "name": "iShares Trust - iShares MSCI USA Min Vol Factor ETF"
+      },
+      {
+        "symbol": "EQUITIES::VIXM//USD",
+        "name": "ProShares Trust II - ProShares VIX Mid-Term Futures ETF"
+      },
+      {
+        "symbol": "EQUITIES::MGC//USD",
+        "name": "Vanguard World Fund - Vanguard Mega Cap 300 Index ETF"
+      },
+      {
+        "symbol": "EQUITIES::XLI//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Industrial Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::XLY//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Consumer Discretionary Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::BIL//USD",
+        "name": "SPDR Series Trust - State Street SPDR Bloomberg 1-3 Month T-Bill ETF"
+      },
+      {
+        "symbol": "EQUITIES::SQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::GLD//USD",
+        "name": "SPDR Gold Trust - SPDR Gold Shares"
+      },
+      {
+        "symbol": "EQUITIES::AGG//USD",
+        "name": "iShares Trust - iShares Core U.S. Aggregate Bond ETF"
+      },
+      {
+        "symbol": "EQUITIES::XLP//USD",
+        "name": "Select Sector SPDR Trust (The) - State Street Consumer Staples Select Sector SPDR ETF"
+      },
+      {
+        "symbol": "EQUITIES::BND//USD",
+        "name": "Vanguard Bond Index Funds - Vanguard Total Bond Market ETF"
+      },
+      {
+        "symbol": "EQUITIES::VTV//USD",
+        "name": "Vanguard Index Funds - Vanguard Value ETF"
+      },
+      {
+        "symbol": "EQUITIES::UTSL//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Utilities Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::PSQ//USD",
+        "name": "ProShares Trust - ProShares Short QQQ -1x Shares"
+      }
+    ],
+    "max_drawdown": 0.0117,
+    "id": "sRxc0F27TQYj10bWwIlO",
+    "net_deposits": 37002.0,
+    "position_id": "90c4b63d-6025-4641-84e2-6a53e860d282",
+    "holdings": [
+      {
+        "ticker": "SDOW",
+        "allocation": 0.041643437,
+        "price": 29.04,
+        "amount": 56.67646,
+        "value": 1645.8843984,
+        "last_percent_change": 0.008683571
+      },
+      {
+        "ticker": "GLDM",
+        "allocation": 0.081411918,
+        "price": 89.855,
+        "amount": 35.80952,
+        "value": 3217.6644196,
+        "last_percent_change": -0.001389198
+      },
+      {
+        "ticker": "TMF",
+        "allocation": 0.024583924,
+        "price": 32.355,
+        "amount": 30.0305,
+        "value": 971.6368275,
+        "last_percent_change": -0.00994492
+      },
+      {
+        "ticker": "UUP",
+        "allocation": 0.002927244,
+        "price": 27.725,
+        "amount": 4.17292,
+        "value": 115.694207,
+        "last_percent_change": -0.001620454
+      },
+      {
+        "ticker": "TECL",
+        "allocation": 0.113124833,
+        "price": 180.66,
+        "amount": 24.74849,
+        "value": 4471.0622034,
+        "last_percent_change": -0.073775955
+      },
+      {
+        "ticker": "SPXS",
+        "allocation": 0.003000623,
+        "price": 28.2997,
+        "amount": 4.19066,
+        "value": 118.594420802,
+        "last_percent_change": 0.022018779
+      },
+      {
+        "ticker": "TQQQ",
+        "allocation": 0.039346234,
+        "price": 72.21,
+        "amount": 21.53568,
+        "value": 1555.0914528,
+        "last_percent_change": -0.041544996
+      },
+      {
+        "ticker": "VTI",
+        "allocation": 0.020897969,
+        "price": 360.14,
+        "amount": 2.29343,
+        "value": 825.9558802,
+        "last_percent_change": -0.007167668
+      },
+      {
+        "ticker": "SHV",
+        "allocation": 0.012391979,
+        "price": 110.2401,
+        "amount": 4.44277,
+        "value": 489.771409077,
+        "last_percent_change": 9.07e-07
+      },
+      {
+        "ticker": "SH",
+        "allocation": 0.01248019,
+        "price": 33.7892,
+        "amount": 14.59809,
+        "value": 493.257782628,
+        "last_percent_change": 0.006829559
+      },
+      {
+        "ticker": "SGOV",
+        "allocation": 0.408766374,
+        "price": 100.5594,
+        "amount": 160.65907,
+        "value": 16155.779683758,
+        "last_percent_change": 9.3486e-05
+      },
+      {
+        "ticker": "GLD",
+        "allocation": 0.105435365,
+        "price": 416.86,
+        "amount": 9.99652,
+        "value": 4167.1493272,
+        "last_percent_change": -0.001030458
+      },
+      {
+        "ticker": "USMV",
+        "allocation": 0.053426146,
+        "price": 95.59,
+        "amount": 22.08992,
+        "value": 2111.5754528,
+        "last_percent_change": 0.009398099
+      },
+      {
+        "ticker": "VIXM",
+        "allocation": 0.003713213,
+        "price": 15.89,
+        "amount": 9.23589,
+        "value": 146.7582921,
+        "last_percent_change": -0.002510986
+      },
+      {
+        "ticker": "SQQQ",
+        "allocation": 0.004083651,
+        "price": 44.76,
+        "amount": 3.60588,
+        "value": 161.3991888,
+        "last_percent_change": 0.041414611
+      },
+      {
+        "ticker": "PSQ",
+        "allocation": 0.071754153,
+        "price": 26.6599,
+        "amount": 106.37542,
+        "value": 2835.958059658,
+        "last_percent_change": 0.013684411
+      }
+    ],
+    "last_percent_change": -0.0091,
+    "simple_return": 0.06814,
+    "is_shared": true,
+    "as_of": "2026-05-18",
+    "asset_classes": [
+      "EQUITIES"
+    ],
+    "next_rebalance_on": "2026-05-16"
+  }
+}

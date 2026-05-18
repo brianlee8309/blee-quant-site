@@ -1,0 +1,12 @@
+[2026-05-18T10:21:23] ============================================================
+[2026-05-18T10:21:23] Morning Preview — starting
+[2026-05-18T10:21:23] Discovering account UUID...
+[2026-05-18T10:21:24]   Found account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-18T10:21:24] Fetching current symphony allocation from Composer API...
+[2026-05-18T10:21:26]   Got 3 positions from API
+[2026-05-18T10:21:26]     SGOV        0.83%
+[2026-05-18T10:21:26]     GLDM        0.09%
+[2026-05-18T10:21:26]     TECL        0.08%
+[2026-05-18T10:21:26] Loading previous allocation for comparison...
+[2026-05-18T10:21:26]   Previous date: 2026-05-17
+[2026-05-18T10:21:26]   Changes:

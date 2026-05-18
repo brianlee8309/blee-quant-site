@@ -1577,3 +1577,56 @@
 [2026-05-17T20:42:56] Stamped last-updated (05/17/2026 08:42 PM ET) into Algorithm185History.html
 [2026-05-17T20:42:56] --- Pushing updates to GitHub ---
 [2026-05-17T20:42:56]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-17T20:42:58]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-17"
+[2026-05-17T20:42:59]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-17T20:43:08] GitHub push successful.
+[2026-05-17T20:43:11] market_report:   RSI signal: Severely Overbought — strong bear lean (10d avg=76.03, adj=-20, new score=+12.14)
+[2026-05-17T20:43:11] market_report:   RSI override condition met but DISABLED: Today RSI 76.2 > 76.0 AND 1 of last 2 days also exceeded 76.0 — override ACTIVE
+[2026-05-17T20:43:11] market_report:   (no score adj, no banner — symphony handles rotation natively)
+[2026-05-17T20:43:11] market_report: Composite score: +12.14 -> Partly Clear Sky Likely
+[2026-05-17T20:43:12] market_report:   RSS WSJ: 20 items fetched
+[2026-05-17T20:43:12] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-05-17T20:43:14] market_report:   RSS Yahoo Finance: 50 items fetched
+[2026-05-17T20:43:14] market_report:   Selected [Yahoo Finance] topic=OTHER: Why Most Retirees Should File for Social Security Three Months Before 
+[2026-05-17T20:43:15] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-05-17T20:43:15] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-17T20:43:15] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-17T20:43:15] market_report: Fetched 3 news items
+[2026-05-17T20:43:15] market_report: Updated marketDailySummary.html with score=+12.14 (Partly Clear Sky Likely)
+[2026-05-17T20:43:15] market_report: Stamped last-updated (05/17/2026 08:43 PM ET) into index.html
+[2026-05-17T20:43:15] market_report: Stamped last-updated (05/17/2026 08:43 PM ET) into performance1.html
+[2026-05-17T20:43:16] market_report: Stamped last-updated (05/17/2026 08:43 PM ET) into Algorithm185History.html
+[2026-05-17T20:43:16] market_report: === Market report generation complete ===
+[2026-05-18T14:50:01] archive: === Archive started ===
+[2026-05-18T14:50:02] === Composer daily allocation pull ===
+[2026-05-18T14:50:02] Configured symphonies: ['sRxc0F27TQYj10bWwIlO', 'qjmHJ3IR19kmaAlbgkNj', 'uP4EOQmkexROiO18SaiN']
+[2026-05-18T14:50:02] No account_uuid in config; discovering via /accounts/list...
+[2026-05-18T14:50:06] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-18T14:50:06] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-18T14:50:06] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-18T14:50:06] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-18T14:50:14] Saved symphony-stats response to composer_symphony_stats_2026-05-18.json
+[2026-05-18T14:50:14] --- BLEE - 186 2026 ALL in One (sRxc0F27TQYj10bWwIlO) ---
+[2026-05-18T14:50:14]   Got 17 positions from symphony-stats-meta
+[2026-05-18T14:50:14]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-18T14:50:14]   Saved today's slice to composer_allocations_2026-05-18.json
+[2026-05-18T14:50:14]   Wrote 17 rows for 2026-05-18 to composer_allocations.csv (kept 125 prior rows, source=symphony-stats-meta)
+[2026-05-18T14:50:14] Generated dashboard -> index_50.html (value=$39,523.26, days=9)
+[2026-05-18T14:50:14] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-18T14:50:14]   Got 4 positions from symphony-stats-meta
+[2026-05-18T14:50:14]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-18T14:50:14]   Saved today's slice to composer_allocations_185_2026-05-18.json
+[2026-05-18T14:50:14]   Wrote 4 rows for 2026-05-18 to composer_allocations_185.csv (kept 27 prior rows, source=symphony-stats-meta)
+[2026-05-18T14:50:14] Generated dashboard -> index2.html (value=$1,001.33, days=9)
+[2026-05-18T14:50:14]   Prepended 2026-05-18 row to composer_allocations_185_3yr2.csv
+[2026-05-18T14:50:14]   Prepended 2026-05-18 row to Algorithm185History.html ALLOC_DATA
+[2026-05-18T14:50:14] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-18T14:50:14]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-18 JSON to verify the id matches one in the response)
+[2026-05-18T14:50:14]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-18T14:50:14] Published signal_latest.json (3 positions, date=2026-05-18)
+[2026-05-18T14:50:14] === Done ===
+[2026-05-18T14:50:23] Stamped last-updated (05/18/2026 02:50 PM ET) into index.html
+[2026-05-18T14:50:23] Stamped last-updated (05/18/2026 02:50 PM ET) into performance1.html
+[2026-05-18T14:50:23] Stamped last-updated (05/18/2026 02:50 PM ET) into Algorithm185History.html
+[2026-05-18T14:50:23] --- Pushing updates to GitHub ---
+[2026-05-18T14:50:23]   $ git -C "C:\Kei\ComposerInvest" add .
