@@ -337,21 +337,68 @@
   </div>
 
   <div class="scenario" style="grid-template-columns:1fr;">
-    <!-- Photo: FIRE achiever giving back — volunteering, donating, helping those in need -->
-    <div class="scenario-photo-wrap" style="height:380px;">
-      <img
-        src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=1200&q=88&fit=crop&crop=top"
-        alt="Financially independent person giving back — visiting orphans and donating gifts to people in need"
-        onerror="
-          this.src='https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&q=88&fit=crop&crop=top';
-          this.onerror=function(){this.parentElement.style.background='linear-gradient(135deg,#0d2b1a,#0b1120)';this.style.display=\'none\';};
-        "
-      >
-      <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.10) 0%,rgba(11,17,32,0.65) 100%);"></div>
-      <div class="photo-caption" style="bottom:20px;left:24px;font-size:13px;font-style:normal;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.03em;">
-        ❤️ &nbsp;True wealth means the freedom to give back — visit, volunteer, and uplift others
+    <!-- Photo gallery: three facets of FIRE life -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:4px;">
+
+      <!-- Image 1: Giving back / charity -->
+      <div class="scenario-photo-wrap" style="height:260px;border-radius:14px;overflow:hidden;">
+        <img
+          src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800&q=85&fit=crop&crop=top"
+          alt="Giving back — volunteer and charity work"
+          onerror="
+            this.src='https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=85&fit=crop&crop=top';
+            this.onerror=function(){this.parentElement.style.background='#0d2b1a';this.style.display=\'none\';};
+          "
+          style="width:100%;height:100%;object-fit:cover;"
+        >
+        <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.05) 0%,rgba(11,17,32,0.70) 100%);"></div>
+        <div class="photo-caption" style="bottom:14px;left:14px;right:14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.02em;line-height:1.4;">
+          ❤️ Give back &amp; make an impact
+        </div>
       </div>
+
+      <!-- Image 2: Mountain climbing / adventure -->
+      <div class="scenario-photo-wrap" style="height:260px;border-radius:14px;overflow:hidden;">
+        <img
+          src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=85&fit=crop&crop=top"
+          alt="Climbing a mountain — freedom and adventure"
+          onerror="
+            this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85&fit=crop&crop=top';
+            this.onerror=function(){this.parentElement.style.background='#0b1a2b';this.style.display=\'none\';};
+          "
+          style="width:100%;height:100%;object-fit:cover;"
+        >
+        <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.05) 0%,rgba(11,17,32,0.70) 100%);"></div>
+        <div class="photo-caption" style="bottom:14px;left:14px;right:14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.02em;line-height:1.4;">
+          ⛰️ Freedom to explore &amp; conquer
+        </div>
+      </div>
+
+      <!-- Image 3: Private jet / luxury travel -->
+      <div class="scenario-photo-wrap" style="height:260px;border-radius:14px;overflow:hidden;">
+        <img
+          src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&q=85&fit=crop&crop=top"
+          alt="Private jet — luxury travel and financial freedom"
+          onerror="
+            this.src='https://images.unsplash.com/photo-1583242704071-3e403fd5eb17?w=800&q=85&fit=crop&crop=top';
+            this.onerror=function(){this.parentElement.style.background='#1a0b2b';this.style.display=\'none\';};
+          "
+          style="width:100%;height:100%;object-fit:cover;"
+        >
+        <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.05) 0%,rgba(11,17,32,0.70) 100%);"></div>
+        <div class="photo-caption" style="bottom:14px;left:14px;right:14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.02em;line-height:1.4;">
+          ✈️ Travel the world in style
+        </div>
+      </div>
+
     </div>
+    <!-- Mobile: stack captions below on small screens -->
+    <style>
+      @media(max-width:680px){
+        .fire-gallery-grid{grid-template-columns:1fr!important;}
+        .fire-gallery-grid .scenario-photo-wrap{height:220px!important;}
+      }
+    </style>
     <div>
       <div class="scenario-icon">🔥</div>
       <h3>FIRE Strategy — 20% Annual Growth, 25% of Growth for Living</h3>

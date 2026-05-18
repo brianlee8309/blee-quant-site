@@ -605,11 +605,11 @@
 
   /* ── PRICING ── */
   .pricing-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
+    display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 24px; margin-top: 48px; align-items: start;
-    max-width: 720px; margin-left: auto; margin-right: auto;
+    max-width: 1050px; margin-left: auto; margin-right: auto;
   }
-  @media (max-width: 620px) {
+  @media (max-width: 860px) {
     .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
   }
   .plan {
@@ -1525,68 +1525,78 @@
     </p>
 
     <div class="pricing-grid">
-      <!-- Starter -->
+      <!-- FREE -->
       <div class="plan">
-        <span class="plan-badge">Starter</span>
-        <h3>Market Intelligence</h3>
+        <span class="plan-badge">📧 Free</span>
+        <h3>Newsletter Access</h3>
+        <div class="plan-price">
+          <span class="dollar">$</span>
+          <span class="amount" style="color:var(--muted);">0</span>
+          <span class="per">/month</span>
+        </div>
+        <p class="plan-desc">Newsletter &amp; public research access</p>
+        <ul>
+          <li>Weekly market newsletter</li>
+          <li>Public backtest data</li>
+          <li>BLEE research updates</li>
+          <li class="muted">Daily signal page</li>
+          <li class="muted">Market Forecast page</li>
+          <li class="muted">Email &amp; SMS alerts</li>
+          <li class="muted">Auto-trade tools</li>
+        </ul>
+        <a href="subscribe.html?plan=free" class="btn-plan outline">Join Free</a>
+        <p class="plan-fine">Instant access · No credit card</p>
+      </div>
+
+      <!-- STARTER — featured / most popular -->
+      <div class="plan featured" style="position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:var(--gold);color:#000;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;">
+          MOST POPULAR
+        </div>
+        <span class="plan-badge">⭐ Starter</span>
+        <h3>Daily Signals</h3>
         <div class="plan-price">
           <span class="dollar">$</span>
           <span class="amount">19</span>
           <span class="per">/month</span>
         </div>
-        <div class="annual-saving">
-          <div class="as-num">$159/year</div>
-          <div class="as-lbl">Annual membership · about $13.25/mo</div>
-        </div>
-        <p class="plan-desc">
-          For investors who want market weather, daily allocation visibility, and historical context before placing their own trades.
-        </p>
+        <p class="plan-desc">Daily signals to guide your manual trades</p>
         <ul>
-          <li>Market Weather Forecast</li>
-          <li>Daily Curated Financial Headlines</li>
-          <li>Daily Signal page access</li>
-          <li>Daily ETF allocation list</li>
-          <li>Current ETF allocations &amp; weights</li>
-          <li>3-year backtest and allocation history</li>
-          <li>Basic self-directed rebalancing guidance</li>
-          <li>Email support</li>
-          <li class="muted">Daily Email/SMS alerts not included</li>
-          <li class="muted">IBKR/API automation builder guidance not included</li>
+          <li>Daily ETF allocation signal</li>
+          <li>Market Forecast &amp; weather model</li>
+          <li>Portfolio performance tracker</li>
+          <li>Historical backtest data (6 yr)</li>
+          <li class="muted">Email &amp; SMS alerts</li>
+          <li class="muted">BLEETrader desktop app</li>
+          <li class="muted">Auto-trade (Schwab/IBKR)</li>
         </ul>
-        <button class="btn-plan outline">Start Starter</button>
-        <p class="plan-fine">Educational research only. Subscribers make their own trading decisions.</p>
+        <a href="subscribe.html?plan=starter" class="btn-plan gold-btn">Get Started — $19/mo</a>
+        <p class="plan-fine">Register now · Admin activates within 24h<br>Stripe billing coming soon</p>
       </div>
 
-      <!-- Pro -->
-      <div class="plan featured">
-        <span class="plan-badge">Pro · Best Value</span>
-        <h3>Daily Rebalance Signals</h3>
+      <!-- PRO -->
+      <div class="plan">
+        <span class="plan-badge">🚀 Pro</span>
+        <h3>Fully Automated</h3>
         <div class="plan-price">
           <span class="dollar">$</span>
-          <span class="amount">39</span>
+          <span class="amount">49</span>
           <span class="per">/month</span>
         </div>
-        <div class="annual-saving">
-          <div class="as-num">$299/year</div>
-          <div class="as-lbl">Annual membership · about $24.92/mo</div>
-        </div>
-        <p class="plan-desc">
-          For serious DIY investors who want daily alerts and implementation guidance while keeping full control of their own brokerage account.
-        </p>
+        <p class="plan-desc">Signal to trade, hands-free</p>
         <ul>
           <li>Everything in Starter</li>
-          <li><strong>Daily Rebalance Signals</strong></li>
-          <li>Daily email alerts</li>
-          <li>Daily SMS alerts</li>
-          <li>Portfolio rebalance instruction format</li>
-          <li>Priority allocation-change notifications</li>
-          <li>IBKR/API automation builder guidance</li>
-          <li>Example workflow for self-directed execution</li>
+          <li>Email alert at 3:51 PM ET daily</li>
+          <li>SMS alert at 3:51 PM ET daily</li>
+          <li>BLEETrader desktop app (Win/Mac)</li>
+          <li>Schwab API auto-rebalance</li>
+          <li>IBKR/TWS auto-rebalance</li>
+          <li>Priority email support</li>
         </ul>
-        <button class="btn-plan gold-btn">Upgrade to Pro</button>
-        <p class="plan-fine">
-          BLEE does not custody assets, place trades for subscribers, or manage client money.
-        </p>
+        <a href="subscribe.html?plan=pro" class="btn-plan outline">Go Pro — $49/mo</a>
+        <p class="plan-fine">Register now · Admin activates within 24h<br>Stripe billing coming soon</p>
       </div>
     </div>
   </div>
