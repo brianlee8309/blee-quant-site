@@ -293,12 +293,12 @@
     <!-- Photo: retired couple sitting at a table reviewing finances -->
     <div class="scenario-photo-wrap">
       <img
-        src="https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=1000&q=82&fit=crop&crop=top"
-        alt="Retired couple sitting at a table calmly reviewing their investment and retirement plan"
-        onerror="this.parentElement.style.background='linear-gradient(135deg,#0d2b1a,#0b1a35)';this.style.display='none';"
+        src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1000&q=82&fit=crop&crop=center"
+        alt="Retired couple celebrating over a fine dining dinner with wine"
+        onerror="this.src='https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1000&q=82&fit=crop&crop=center';this.onerror=function(){this.parentElement.style.background='linear-gradient(135deg,#0d2b1a,#0b1a35)';this.style.display='none\';}';"
       >
       <div class="photo-overlay"></div>
-      <div class="photo-caption">Confident retirement — income flowing, savings growing</div>
+      <div class="photo-caption">🥂 Celebrating retirement — fine dining, great wine, zero worries</div>
     </div>
     <div class="scenario-header">
       <div class="scenario-icon">🎯</div>
@@ -333,7 +333,7 @@
   <div class="section-label">Scenario 3 — Financially Independent / FIRE</div>
   <div class="section-title">Already Wealthy? Make Every Dollar Work Exponentially</div>
   <div class="section-sub">
-    For those who have already reached financial independence — $1M, $2M, or $5M saved — the Calm Growth Model provides a disciplined framework to grow your wealth while directing 25% of each year's growth toward living expenses, charitable giving, meaningful donations, or any purpose you choose. The remaining 75% stays invested and keeps compounding. Your wealth grows. Your impact grows with it.
+    For those who have already reached financial independence — $1M, $2M, or $5M saved — the Calm Growth Model provides a disciplined framework to grow your wealth while directing 40% of each year's growth toward living expenses, charitable giving, meaningful donations, or any purpose you choose. The remaining 60% stays invested and keeps compounding. Your wealth grows. Your impact grows with it.
   </div>
 
   <div class="scenario" style="grid-template-columns:1fr;">
@@ -408,8 +408,8 @@
     </div>
     <div>
       <div class="scenario-icon">🔥</div>
-      <h3>FIRE Strategy — 20% Annual Growth, 25% of Growth for Living</h3>
-      <p class="scenario-desc" style="margin-bottom:24px;">Annual return: 20% &nbsp;|&nbsp; Living cost: 25% of growth drawn annually &nbsp;|&nbsp; Net compounding: 15%/yr</p>
+      <h3>FIRE Strategy — 20% Annual Growth, 40% of Growth for Living</h3>
+      <p class="scenario-desc" style="margin-bottom:24px;">Annual return: 20% &nbsp;|&nbsp; Living cost: 40% of growth drawn annually &nbsp;|&nbsp; Net compounding: 12%/yr</p>
     </div>
     <div style="overflow-x:auto;">
       <table class="fire-table">
@@ -417,7 +417,7 @@
           <tr>
             <th>Starting Capital</th>
             <th>Annual Growth (20%)</th>
-            <th>Living Expenses Taken (25% of Growth)</th>
+            <th>Living Expenses Taken (40% of Growth)</th>
             <th>Net Growth Reinvested</th>
             <th>Balance After 5 Years</th>
             <th>Balance After 10 Years</th>
@@ -427,26 +427,26 @@
           <tr>
             <td><strong>$1,000,000</strong></td>
             <td>$200,000</td>
-            <td class="gold">$50,000/yr</td>
-            <td>15%/yr net</td>
-            <td class="hi">$2,011,000</td>
-            <td class="hi">$4,046,000</td>
+            <td class="gold">$80,000/yr</td>
+            <td>12%/yr net</td>
+            <td class="hi">$1,762,000</td>
+            <td class="hi">$3,106,000</td>
           </tr>
           <tr>
             <td><strong>$2,000,000</strong></td>
             <td>$400,000</td>
-            <td class="gold">$100,000/yr</td>
-            <td>15%/yr net</td>
-            <td class="hi">$4,023,000</td>
-            <td class="hi">$8,091,000</td>
+            <td class="gold">$160,000/yr</td>
+            <td>12%/yr net</td>
+            <td class="hi">$3,525,000</td>
+            <td class="hi">$6,212,000</td>
           </tr>
           <tr>
             <td><strong>$5,000,000</strong></td>
             <td>$1,000,000</td>
-            <td class="gold">$250,000/yr</td>
-            <td>15%/yr net</td>
-            <td class="hi">$10,057,000</td>
-            <td class="hi">$20,228,000</td>
+            <td class="gold">$400,000/yr</td>
+            <td>12%/yr net</td>
+            <td class="hi">$8,812,000</td>
+            <td class="hi">$15,529,000</td>
           </tr>
         </tbody>
       </table>
@@ -455,7 +455,7 @@
       <canvas id="chart3"></canvas>
     </div>
     <p style="font-size:13px;color:var(--muted);margin-top:16px;line-height:1.7;">
-      Even after taking $250,000/year in living expenses from a $5M portfolio — enough to live generously, give back, and support causes you care about — your wealth continues to compound at 15% net. After 10 years your $5M becomes <strong style="color:#10b981">$20.2 million</strong> while you've enjoyed $2,500,000 in total income along the way.
+      Even after taking $400,000/year in living expenses from a $5M portfolio — enough to dine at the finest restaurants, travel first class, give back generously, and support causes you care about — your wealth continues to compound at 12% net. After 10 years your $5M becomes <strong style="color:#10b981">$15.5 million</strong> while you've enjoyed over $4,000,000 in total income along the way.
       True financial freedom means growing wealth <em>and</em> living fully — at the same time.
     </p>
   </div>
@@ -619,7 +619,7 @@ function fmtM(v) {
   const labels = Array.from({length:11},(_,i)=>"Year "+i);
   function series(start){
     const arr=[start];
-    for(let y=0;y<10;y++) arr.push(Math.round(arr[arr.length-1]*1.15));
+    for(let y=0;y<10;y++) arr.push(Math.round(arr[arr.length-1]*1.12));
     return arr;
   }
   new Chart(document.getElementById("chart3"), {
