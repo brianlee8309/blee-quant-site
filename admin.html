@@ -440,17 +440,18 @@ auth.onAuthStateChanged(async user => {
   }
 
   // Check Firestore for admin or manager tier
+  // Note: admin/manager are staff roles — subscriptionStatus is intentionally NOT checked
   try {
     const snap = await db.collection("users").doc(user.uid).get();
     if (snap.exists) {
-      const { tier, subscriptionStatus } = snap.data();
-      if (tier === "admin" && subscriptionStatus === "active") {
+      const { tier } = snap.data();
+      if (tier === "admin") {
         currentRole = "admin";
         removeOverlay();
         initDashboard(user);
         return;
       }
-      if (tier === "manager" && subscriptionStatus === "active") {
+      if (tier === "manager") {
         currentRole = "manager";
         removeOverlay();
         initDashboard(user);

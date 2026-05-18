@@ -175,7 +175,7 @@ auth.onAuthStateChanged(async user => {
     window.location.href = nextParam || BLEE_PAGES.admin;
     return;
   }
-  // Check Firestore tier for admin/manager redirect
+  // Check Firestore tier for role-based redirect
   try {
     const snap = await db.collection("users").doc(user.uid).get();
     if (snap.exists) {
@@ -188,9 +188,17 @@ auth.onAuthStateChanged(async user => {
         window.location.href = nextParam || (BLEE_PAGES.marketing || "marketing.html");
         return;
       }
+      // Paid/free member → signal page
+      window.location.href = nextParam || BLEE_PAGES.signal;
+      return;
     }
-  } catch (e) { /* ignore — fall through to default */ }
-  window.location.href = nextParam || BLEE_PAGES.signal;
+    // No Firestore doc yet — still redirect to signal (basic fallback)
+    window.location.href = nextParam || BLEE_PAGES.signal;
+  } catch (e) {
+    console.error("Login redirect error:", e);
+    // Firestore read failed — send to signal as safe fallback
+    window.location.href = nextParam || BLEE_PAGES.signal;
+  }
 });
 
 function showTab(tab) {
