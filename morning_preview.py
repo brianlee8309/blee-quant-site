@@ -2,14 +2,15 @@
 """
 morning_preview.py — BLEE Quant Analytics
 ==========================================
-Runs at 9:45 AM ET daily. Calls the Composer API to get the current
-symphony allocation (live market data), compares against yesterday's
-saved allocation, and publishes a Morning Signal Preview page to GitHub.
+Runs at 10:00 AM ET daily (Windows Task Scheduler). Calls the Composer API
+to get the current symphony allocation (live market data), compares against
+yesterday's saved allocation, and publishes results to GitHub.
 
 Reads:  composer_config.json  (same API credentials as composer_pull_allocation.py)
-Writes: morning_preview.html  (published to GitHub Pages)
+Writes: morning_preview.html  (standalone preview page)
+        index2.html           (injects Morning Preview section between marker comments)
 
-Schedule: Windows Task Scheduler — daily 9:45 AM ET
+Schedule: Windows Task Scheduler — Mon–Fri 10:00 AM ET
 """
 
 from __future__ import annotations
@@ -28,6 +29,7 @@ SCRIPT_DIR   = Path(__file__).resolve().parent
 CONFIG_PATH  = SCRIPT_DIR / "composer_config.json"
 LOG_PATH     = SCRIPT_DIR / "morning_preview.log"
 OUTPUT_HTML  = SCRIPT_DIR / "morning_preview.html"
+INDEX2_HTML  = SCRIPT_DIR / "index2.html"
 
 API_BASE = "https://api.composer.trade"
 
@@ -212,7 +214,7 @@ def build_html(positions: list[dict], changes: list[dict], symphony_name: str,
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Morning Signal Preview — BLEE Quant Analytics</title>
+<title>Tomorrow's Signal Preview — BLEE Quant Analytics</title>
 <style>
   *{{box-sizing:border-box;margin:0;padding:0}}
   body{{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
@@ -293,27 +295,32 @@ def build_html(positions: list[dict], changes: list[dict], symphony_name: str,
 </nav>
 
 <div class="hero">
-  <div class="hero-label">🌅 BLEE Signal — Morning Preview</div>
-  <h1>Today's Allocation Signal</h1>
+  <div class="hero-label">📡 BLEE — Tomorrow's Reallocation Signal</div>
+  <h1>Tomorrow's Predicted Portfolio Allocation</h1>
   <p class="sub">{symphony_name}</p>
   <div class="as-of">
-    📡 Signal captured: {as_of} &nbsp;·&nbsp; Compared to: {prev_date}
-    &nbsp;·&nbsp; <span class="badge badge-preview">Preview — not final</span>
+    🕙 Captured: {as_of} ET &nbsp;·&nbsp; Based on today's live market data
+    &nbsp;·&nbsp; <span class="badge badge-preview">Intraday Preview</span>
   </div>
 </div>
 
 <div class="content">
 
   <div class="card">
-    <div class="card-title">📊 Current Signal — Target Allocations</div>
+    <div class="card-title">📊 Predicted Reallocation — Tomorrow's Opening Position</div>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:16px;line-height:1.6;">
+      Based on live market data at {as_of} ET, the algorithm signals the following
+      reallocation. Trades execute at today's market close (~3:55 PM ET),
+      resulting in this portfolio for <strong style="color:#fff;">tomorrow's market opening</strong>.
+    </p>
     <table>
       <thead>
         <tr>
           <th>Ticker</th>
-          <th>Previous</th>
-          <th>Today's Target</th>
+          <th>Current ({prev_date})</th>
+          <th>Tomorrow's Target</th>
           <th>Change</th>
-          <th>Action</th>
+          <th>Signal</th>
         </tr>
       </thead>
       <tbody>
@@ -330,11 +337,11 @@ def build_html(positions: list[dict], changes: list[dict], symphony_name: str,
   </div>
 
   <div class="disclaimer">
-    ⚠️ <strong>Morning Preview — Not Final.</strong>
-    This signal is computed from live market data as of {as_of} ET.
-    The official daily signal is published at approximately 3:55 PM ET after market close.
-    Allocations may shift before the final signal. This is a preview for informational
-    purposes only — not investment advice. Subscribers make their own trading decisions.
+    ⚠️ <strong>Intraday Preview — Subject to Change.</strong>
+    This prediction is based on live market data as of {as_of} ET. Because market
+    prices continue moving until close, the final reallocation signal (published ~3:55 PM ET)
+    may differ. Use this as an early indication only — not as a trade instruction.
+    This is not investment advice. Subscribers make their own trading decisions.
   </div>
 
   <div class="footer">
@@ -358,11 +365,94 @@ def build_html(positions: list[dict], changes: list[dict], symphony_name: str,
 """
 
 
+# ── Inject preview section into index2.html ───────────────────────────────────
+def build_index2_section(changes: list[dict], symphony_name: str,
+                          prev_date: str, as_of: str) -> str:
+    rows = ""
+    for c in changes:
+        icon, color, label = ACTION_STYLE.get(c["action"], ("⚪", "#9ca3af", c["action"]))
+        delta_str   = f"+{c['delta']}%" if c["delta"] > 0 else f"{c['delta']}%"
+        delta_color = "#10b981" if c["delta"] > 0 else ("#ef4444" if c["delta"] < 0 else "#9ca3af")
+        rows += (
+            f'<tr>'
+            f'<td><strong>{c["ticker"]}</strong></td>'
+            f'<td style="color:#9ca3af">{c["prev_pct"]}%</td>'
+            f'<td style="font-weight:700">{c["curr_pct"]}%</td>'
+            f'<td style="color:{delta_color};font-weight:700">{delta_str}</td>'
+            f'<td style="color:{color};font-weight:700">{icon} {label}</td>'
+            f'</tr>'
+        )
+
+    return f"""  <!-- MORNING_PREVIEW_START -->
+  <section class="card" id="morning-preview-section" style="margin-bottom:16px;background:linear-gradient(135deg,#0b1a35,#0d2240);border:1px solid rgba(245,166,35,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+      <h2 style="margin:0;">📡 Tomorrow's Predicted Reallocation</h2>
+      <span style="font-size:11px;color:#f5a623;font-weight:700;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);padding:4px 12px;border-radius:20px;">
+        🕙 Captured {as_of} ET &nbsp;·&nbsp; Intraday Preview
+      </span>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.6;">
+      Based on live market data at {as_of} ET. Trades execute at today's close (~3:55 PM ET),
+      setting up this allocation for <strong style="color:#d1d5db;">tomorrow's market opening</strong>.
+      Final signal may shift before close.
+    </p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="border-bottom:1px solid #1f2937;">
+            <th style="padding:8px 10px;text-align:left;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Ticker</th>
+            <th style="padding:8px 10px;text-align:left;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Current ({prev_date})</th>
+            <th style="padding:8px 10px;text-align:left;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Tomorrow's Target</th>
+            <th style="padding:8px 10px;text-align:left;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Change</th>
+            <th style="padding:8px 10px;text-align:left;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Signal</th>
+          </tr>
+        </thead>
+        <tbody style="color:#d1d5db;">
+          {rows}
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:#4b5563;margin-top:12px;line-height:1.6;">
+      ⚠️ Intraday preview — subject to change before market close.
+      &nbsp;<a href="morning_preview.html" style="color:#f5a623;text-decoration:none;">View full preview page →</a>
+    </p>
+  </section>
+  <!-- MORNING_PREVIEW_END -->"""
+
+
+def inject_into_index2(section_html: str) -> bool:
+    """Replace content between MORNING_PREVIEW_START and MORNING_PREVIEW_END in index2.html."""
+    if not INDEX2_HTML.exists():
+        log(f"  index2.html not found at {INDEX2_HTML}")
+        return False
+
+    content = INDEX2_HTML.read_text(encoding="utf-8")
+    start_marker = "<!-- MORNING_PREVIEW_START -->"
+    end_marker   = "<!-- MORNING_PREVIEW_END -->"
+
+    start_idx = content.find(start_marker)
+    end_idx   = content.find(end_marker)
+
+    if start_idx == -1 or end_idx == -1:
+        log("  WARNING: MORNING_PREVIEW markers not found in index2.html — skipping inject")
+        return False
+
+    new_content = content[:start_idx] + section_html + "\n" + content[end_idx + len(end_marker):]
+    INDEX2_HTML.write_text(new_content, encoding="utf-8")
+    log(f"✅ Injected morning preview into index2.html")
+    return True
+
+
 # ── Git push ───────────────────────────────────────────────────────────────────
 def git_push(as_of: str) -> None:
     try:
+        # Remove stale lock file if present
+        lock = SCRIPT_DIR / ".git" / "index.lock"
+        if lock.exists():
+            lock.unlink(missing_ok=True)
+
         subprocess.run(
-            ["git", "add", "morning_preview.html"],
+            ["git", "add", "morning_preview.html", "index2.html"],
             cwd=SCRIPT_DIR, check=True, capture_output=True
         )
         subprocess.run(
@@ -373,7 +463,7 @@ def git_push(as_of: str) -> None:
             ["git", "push", "origin", "main"],
             cwd=SCRIPT_DIR, check=True, capture_output=True
         )
-        log("✅ Pushed morning_preview.html to GitHub Pages")
+        log("✅ Pushed morning_preview.html + index2.html to GitHub Pages")
     except subprocess.CalledProcessError as e:
         log(f"⚠️  Git push failed: {e.stderr.decode()[:300] if e.stderr else e}")
 
@@ -432,13 +522,17 @@ def main() -> None:
     for c in changes:
         log(f"    {c['ticker']:8s}  {c['prev_pct']:5.1f}% → {c['curr_pct']:5.1f}%  ({c['action']})")
 
-    # Build & write HTML
+    # Build & write standalone morning_preview.html
     now_str  = dt.datetime.now().strftime("%Y-%m-%d %I:%M %p")
     html     = build_html(current_positions, changes, symphony_name, prev_date, now_str)
     OUTPUT_HTML.write_text(html, encoding="utf-8")
     log(f"✅ Written: {OUTPUT_HTML}")
 
-    # Push to GitHub
+    # Inject preview section into index2.html
+    section = build_index2_section(changes, symphony_name, prev_date, now_str)
+    inject_into_index2(section)
+
+    # Push both files to GitHub
     git_push(now_str)
     log("Morning Preview complete.")
     log("=" * 60)
