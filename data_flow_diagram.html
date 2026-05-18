@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>System Data Flow — BLEE Quant Admin</title>
 
-<!-- ── Admin-only auth gate ─────────────────────────────────────────── -->
-<script>const BLEE_REQUIRED_TIER = "admin";</script>
+<!-- ── Manager+ auth gate (admin & manager can access) ───────────────── -->
+<script>const BLEE_REQUIRED_TIER = "manager";</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
