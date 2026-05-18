@@ -337,68 +337,75 @@
   </div>
 
   <div class="scenario" style="grid-template-columns:1fr;">
-    <!-- Photo gallery: three facets of FIRE life -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:4px;">
+    <!-- Photo gallery: three facets of FIRE life — one row, three columns -->
+    <style>
+      .fire-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 4px;
+      }
+      .fire-gallery-item {
+        position: relative;
+        height: 260px;
+        border-radius: 14px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .fire-gallery-item img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      .fire-gallery-item .fg-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(11,17,32,0.05) 0%, rgba(11,17,32,0.68) 100%);
+      }
+      .fire-gallery-item .fg-caption {
+        position: absolute; bottom: 14px; left: 14px; right: 14px;
+        font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.95);
+        letter-spacing: .02em; line-height: 1.4;
+      }
+      @media (max-width: 680px) {
+        .fire-gallery { grid-template-columns: 1fr; }
+        .fire-gallery-item { height: 210px; }
+      }
+    </style>
 
-      <!-- Image 1: Giving back / charity -->
-      <div class="scenario-photo-wrap" style="height:260px;border-radius:14px;overflow:hidden;">
+    <div class="fire-gallery">
+
+      <!-- Left: Donation / giving back -->
+      <div class="fire-gallery-item">
         <img
-          src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800&q=85&fit=crop&crop=top"
-          alt="Giving back — volunteer and charity work"
-          onerror="
-            this.src='https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=85&fit=crop&crop=top';
-            this.onerror=function(){this.parentElement.style.background='#0d2b1a';this.style.display=\'none\';};
-          "
-          style="width:100%;height:100%;object-fit:cover;"
+          src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=85&fit=crop&crop=center"
+          alt="Giving back — charity and donations"
+          onerror="this.src='https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=700&q=85&fit=crop&crop=center';this.onerror=null;"
         >
-        <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.05) 0%,rgba(11,17,32,0.70) 100%);"></div>
-        <div class="photo-caption" style="bottom:14px;left:14px;right:14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.02em;line-height:1.4;">
-          ❤️ Give back &amp; make an impact
-        </div>
+        <div class="fg-overlay"></div>
+        <div class="fg-caption">❤️ Give back &amp; make an impact</div>
       </div>
 
-      <!-- Image 2: Mountain climbing / adventure -->
-      <div class="scenario-photo-wrap" style="height:260px;border-radius:14px;overflow:hidden;">
+      <!-- Middle: Senior couple hiking / mountain adventure -->
+      <div class="fire-gallery-item">
         <img
-          src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=85&fit=crop&crop=top"
-          alt="Climbing a mountain — freedom and adventure"
-          onerror="
-            this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85&fit=crop&crop=top';
-            this.onerror=function(){this.parentElement.style.background='#0b1a2b';this.style.display=\'none\';};
-          "
-          style="width:100%;height:100%;object-fit:cover;"
+          src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=700&q=85&fit=crop&crop=center"
+          alt="Senior couple hiking in the mountains"
+          onerror="this.src='https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=700&q=85&fit=crop&crop=center';this.onerror=null;"
         >
-        <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.05) 0%,rgba(11,17,32,0.70) 100%);"></div>
-        <div class="photo-caption" style="bottom:14px;left:14px;right:14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.02em;line-height:1.4;">
-          ⛰️ Freedom to explore &amp; conquer
-        </div>
+        <div class="fg-overlay"></div>
+        <div class="fg-caption">⛰️ Adventure together — explore the world</div>
       </div>
 
-      <!-- Image 3: Private jet / luxury travel -->
-      <div class="scenario-photo-wrap" style="height:260px;border-radius:14px;overflow:hidden;">
+      <!-- Right: Private jet / first class luxury travel -->
+      <div class="fire-gallery-item">
         <img
-          src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&q=85&fit=crop&crop=top"
-          alt="Private jet — luxury travel and financial freedom"
-          onerror="
-            this.src='https://images.unsplash.com/photo-1583242704071-3e403fd5eb17?w=800&q=85&fit=crop&crop=top';
-            this.onerror=function(){this.parentElement.style.background='#1a0b2b';this.style.display=\'none\';};
-          "
-          style="width:100%;height:100%;object-fit:cover;"
+          src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=700&q=85&fit=crop&crop=center"
+          alt="Private jet — first class travel in retirement"
+          onerror="this.src='https://images.unsplash.com/photo-1583242704071-3e403fd5eb17?w=700&q=85&fit=crop&crop=center';this.onerror=null;"
         >
-        <div class="photo-overlay" style="background:linear-gradient(to bottom,rgba(11,17,32,0.05) 0%,rgba(11,17,32,0.70) 100%);"></div>
-        <div class="photo-caption" style="bottom:14px;left:14px;right:14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);letter-spacing:.02em;line-height:1.4;">
-          ✈️ Travel the world in style
-        </div>
+        <div class="fg-overlay"></div>
+        <div class="fg-caption">✈️ Travel first class — life on your terms</div>
       </div>
 
     </div>
-    <!-- Mobile: stack captions below on small screens -->
-    <style>
-      @media(max-width:680px){
-        .fire-gallery-grid{grid-template-columns:1fr!important;}
-        .fire-gallery-grid .scenario-photo-wrap{height:220px!important;}
-      }
-    </style>
     <div>
       <div class="scenario-icon">🔥</div>
       <h3>FIRE Strategy — 20% Annual Growth, 25% of Growth for Living</h3>
