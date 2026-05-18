@@ -259,16 +259,17 @@ async function signUp() {
     const uid  = cred.user.uid;
 
     // Check if admin pre-invited this email — inherit their tier/status/promoCode
+    // Use direct doc ID lookup (avoids Firestore WHERE permission issues)
     let inheritedPromoCode = "";
-    const pendingSnap = await db.collection("users").where("email", "==", email).get();
-    pendingSnap.forEach(doc => {
-      if (doc.id.startsWith("pending_")) {
-        tier   = doc.data().tier               || tier;
-        status = doc.data().subscriptionStatus || status;
-        if (doc.data().promoCode) inheritedPromoCode = doc.data().promoCode;
-        doc.ref.delete().catch(() => {});
-      }
-    });
+    const pendingId  = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+    const pendingDoc = await db.collection("users").doc(pendingId).get().catch(() => null);
+    if (pendingDoc && pendingDoc.exists) {
+      const pd = pendingDoc.data();
+      tier   = pd.tier               || tier;
+      status = pd.subscriptionStatus || status;
+      if (pd.promoCode) inheritedPromoCode = pd.promoCode;
+      pendingDoc.ref.delete().catch(() => {});
+    }
 
     // Resolve referral promo code (from URL or marketer registration)
     const refData = promoParam ? await resolvePromoCode(promoParam) : {};
@@ -330,15 +331,15 @@ async function signInGoogle() {
       let status = planCfg ? planCfg.status : "pending";
 
       let gInheritedPromo = "";
-      const pendingSnap = await db.collection("users").where("email", "==", user.email).get();
-      pendingSnap.forEach(doc => {
-        if (doc.id.startsWith("pending_")) {
-          tier   = doc.data().tier               || tier;
-          status = doc.data().subscriptionStatus || status;
-          if (doc.data().promoCode) gInheritedPromo = doc.data().promoCode;
-          doc.ref.delete().catch(() => {});
-        }
-      });
+      const gPendingId  = "pending_" + user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      const gPendingDoc = await db.collection("users").doc(gPendingId).get().catch(() => null);
+      if (gPendingDoc && gPendingDoc.exists) {
+        const gpd = gPendingDoc.data();
+        tier   = gpd.tier               || tier;
+        status = gpd.subscriptionStatus || status;
+        if (gpd.promoCode) gInheritedPromo = gpd.promoCode;
+        gPendingDoc.ref.delete().catch(() => {});
+      }
 
       const gRefData = promoParam ? await resolvePromoCode(promoParam) : {};
       const gDoc = {
