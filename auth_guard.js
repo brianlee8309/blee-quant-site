@@ -153,6 +153,8 @@
   });
 
   // ── Member top-bar injected into every protected page ───────────────────
+  // user_bar.js handles the visible bar on all pages; this function only
+  // injects the admin nav link (user_bar.js deduplicates the bar itself).
   function _bleeInjectMemberBar(user, tier) {
     const bar = document.createElement("div");
     bar.id = "blee-member-bar";
