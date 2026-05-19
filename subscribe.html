@@ -77,17 +77,22 @@
 
 <div id="notice" class="notice"></div>
 
-<!-- Payment coming soon banner -->
-<div style="max-width:700px;margin:0 auto 28px;background:linear-gradient(135deg,#1c1a10,#1a1500);
-            border:1px solid #f5a62355;border-radius:12px;padding:16px 24px;
-            display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-  <span style="font-size:24px;">🚧</span>
-  <div>
-    <div style="font-size:14px;font-weight:800;color:#f5a623;margin-bottom:3px;">
-      Online payment coming soon!
+<!-- Availability banner -->
+<div style="max-width:780px;margin:0 auto 28px;display:flex;flex-direction:column;gap:10px;">
+  <div style="background:linear-gradient(135deg,#0d2b1a,#0b1f14);border:1px solid #10b98133;
+              border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:20px;">✅</span>
+    <div>
+      <div style="font-size:13px;font-weight:800;color:#10b981;margin-bottom:2px;">Free &amp; Starter plans are available now!</div>
+      <div style="font-size:12px;color:#9ca3af;line-height:1.6;">Register below and our admin will activate your access within 24 hours. Online payment coming soon — enrollment is manual for now.</div>
     </div>
-    <div style="font-size:12px;color:#9ca3af;line-height:1.6;">
-      We're not yet accepting credit card payments online. To subscribe, register your plan below and our admin will reach out to complete your enrollment within 24 hours.
+  </div>
+  <div style="background:linear-gradient(135deg,#1a1120,#150e1a);border:1px solid #6b728033;
+              border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:20px;">🔜</span>
+    <div>
+      <div style="font-size:13px;font-weight:800;color:#9ca3af;margin-bottom:2px;">Pro plan is coming soon</div>
+      <div style="font-size:12px;color:#6b7280;line-height:1.6;">We're finalizing the brokerage integration tools and SMS alert system. <a href="contact.html" style="color:#f5a623;text-decoration:none;">Contact us</a> to get notified when Pro launches.</div>
     </div>
   </div>
 </div>
@@ -131,11 +136,17 @@
     <div class="plan-note">Register now — admin activates within 24h<br>💳 Online payment coming soon!</div>
   </div>
 
-  <!-- PRO -->
-  <div class="plan">
+  <!-- PRO — Coming Soon -->
+  <div class="plan" style="opacity:0.55;pointer-events:none;position:relative;">
+    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+                background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
+                padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
+                pointer-events:none;">
+      🔜 COMING SOON
+    </div>
     <div class="plan-name">🚀 Pro</div>
     <div class="price"><sup>$</sup>49<sub>/mo</sub></div>
-    <div class="plan-desc">Daily email &amp; SMS signals delivered to you — plus possible integration of our tools with your investment firm</div>
+    <div class="plan-desc">Daily email &amp; SMS signals — plus possible integration of our tools with your investment firm</div>
     <ul class="features">
       <li><span class="icon">✅</span> Everything in Starter</li>
       <li><span class="icon">✅</span> Daily email signal alert</li>
@@ -145,8 +156,8 @@
       <li><span class="icon">✅</span> You stay in full control — approve every action yourself</li>
       <li><span class="icon">✅</span> Priority email support</li>
     </ul>
-    <a href="javascript:void(0)" onclick="goPlan('pro')" class="btn btn-outline">Go Pro — $49/mo</a>
-    <div class="plan-note">Register now — admin activates within 24h<br>💳 Online payment coming soon!</div>
+    <button class="btn btn-gray" disabled style="cursor:not-allowed;opacity:0.5;">Coming Soon</button>
+    <div class="plan-note">We'll notify you when Pro is available</div>
   </div>
 
 </div>

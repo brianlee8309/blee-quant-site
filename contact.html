@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Contact Us — BLEE Quant Analytics</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
+       background:#0b1120;color:#fff;min-height:100vh;}
+
+  /* ── Nav ── */
+  .nav{background:#0b1120;border-bottom:1px solid #1f2937;padding:0 24px;
+       display:flex;align-items:center;justify-content:space-between;
+       height:60px;position:sticky;top:0;z-index:100;}
+  .logo{font-size:18px;font-weight:800;color:#f5a623;text-decoration:none;}
+  .logo span{color:#fff;}
+  .nav-links a{color:#9ca3af;text-decoration:none;font-size:13px;font-weight:600;margin-left:18px;}
+  .nav-links a:hover{color:#fff;}
+  .nav-links a.active{color:#fff;}
+  @media(max-width:640px){.nav-links{display:none;}}
+
+  /* ── Hero ── */
+  .hero{background:linear-gradient(135deg,#0b1a35 0%,#0d2240 100%);
+        padding:52px 24px 40px;text-align:center;border-bottom:1px solid #1f2937;}
+  .hero-label{font-size:11px;font-weight:700;color:#f5a623;letter-spacing:.12em;
+              text-transform:uppercase;margin-bottom:12px;}
+  .hero h1{font-size:32px;font-weight:800;margin-bottom:10px;}
+  .hero p{color:#9ca3af;font-size:15px;max-width:520px;margin:0 auto;line-height:1.7;}
+
+  /* ── Content ── */
+  .content{max-width:900px;margin:48px auto;padding:0 20px;
+           display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  @media(max-width:700px){.content{grid-template-columns:1fr;}}
+
+  /* ── Cards ── */
+  .card{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:32px;}
+
+  /* ── Form ── */
+  label{display:block;font-size:12px;font-weight:700;color:#9ca3af;
+        letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;margin-top:18px;}
+  label:first-of-type{margin-top:0;}
+  input,textarea,select{width:100%;background:#0b1120;border:1px solid #374151;
+    color:#fff;border-radius:8px;padding:10px 14px;font-size:14px;
+    font-family:inherit;outline:none;transition:border-color .2s;}
+  input:focus,textarea:focus,select:focus{border-color:#f5a623;}
+  textarea{resize:vertical;min-height:120px;}
+  select option{background:#111827;}
+
+  .btn-submit{margin-top:20px;width:100%;padding:13px;background:#f5a623;
+              color:#000;border:none;border-radius:8px;font-size:15px;
+              font-weight:800;cursor:pointer;transition:opacity .2s;letter-spacing:.02em;}
+  .btn-submit:hover{opacity:.88;}
+
+  .form-note{font-size:11px;color:#4b5563;margin-top:10px;line-height:1.6;text-align:center;}
+
+  /* ── Success message ── */
+  #success-msg{display:none;background:#0d2b1a;border:1px solid #10b981;
+               border-radius:10px;padding:20px;text-align:center;margin-top:16px;}
+  #success-msg h3{color:#10b981;font-size:18px;margin-bottom:6px;}
+  #success-msg p{color:#9ca3af;font-size:13px;line-height:1.6;}
+
+  /* ── Info panel ── */
+  .info-section{display:flex;flex-direction:column;gap:20px;}
+
+  .info-card{background:#0b1a35;border:1px solid #1f2937;border-radius:12px;padding:20px;}
+  .info-card h3{font-size:14px;font-weight:700;color:#f5a623;margin-bottom:8px;}
+  .info-card p{font-size:13px;color:#9ca3af;line-height:1.7;}
+  .info-card a{color:#f5a623;text-decoration:none;}
+  .info-card a:hover{text-decoration:underline;}
+
+  /* ── Plans available ── */
+  .plan-row{display:flex;align-items:center;gap:10px;padding:10px 0;
+            border-bottom:1px solid #1f2937;font-size:13px;}
+  .plan-row:last-child{border:0;padding-bottom:0;}
+  .plan-row .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;
+                   letter-spacing:.06em;flex-shrink:0;}
+  .badge-available{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid #10b98144;}
+  .badge-soon{background:rgba(107,114,128,0.15);color:#6b7280;border:1px solid #6b728044;}
+  .plan-row .plan-info{flex:1;}
+  .plan-row .plan-name{font-weight:700;color:#fff;}
+  .plan-row .plan-sub{color:#6b7280;font-size:12px;margin-top:1px;}
+
+  /* ── Footer ── */
+  .footer{text-align:center;color:#4b5563;font-size:12px;padding:32px 20px;}
+  .footer a{color:#f5a623;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="index.html">BLEE <span>Quant</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="mission.html">Our Mission</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="performance1.html">Performance</a>
+    <a href="subscribe.html" style="color:#f5a623;">Subscribe</a>
+    <a href="contact.html" class="active" style="color:#fff;">Contact</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">💬 Get in Touch</div>
+  <h1>Contact Us</h1>
+  <p>Questions about our plans, signals, or how BLEE works? We typically respond within one business day.</p>
+</div>
+
+<div class="content">
+
+  <!-- Contact Form -->
+  <div class="card">
+    <h2 style="font-size:18px;font-weight:800;margin-bottom:4px;">Send us a message</h2>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">
+      We read every message and reply from <strong style="color:#9ca3af;">contact@bleeanalytics.com</strong>
+    </p>
+
+    <!--
+      SETUP: Replace YOUR_FORM_ID below with your Formspree form ID.
+      1. Go to formspree.io → New Form
+      2. Set notification email to: no-reply@bleeanalytics.com
+      3. Copy the form ID from the action URL
+    -->
+    <form id="contact-form"
+          action="https://formspree.io/f/YOUR_FORM_ID"
+          method="POST">
+
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="e.g. John Smith" required>
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com" required>
+
+      <label for="subject">Subject</label>
+      <select id="subject" name="subject">
+        <option value="General Question">General Question</option>
+        <option value="Subscription - Free Plan">Subscription — Free Plan</option>
+        <option value="Subscription - Starter Plan">Subscription — Starter Plan</option>
+        <option value="Pro Plan - Notify Me">Pro Plan — Notify me when available</option>
+        <option value="Technical Issue">Technical Issue</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message"
+                placeholder="Tell us how we can help..." required></textarea>
+
+      <!-- Hidden field so Formspree knows where to forward -->
+      <input type="hidden" name="_replyto" value="no-reply@bleeanalytics.com">
+      <input type="hidden" name="_subject" id="email-subject" value="BLEE Contact Form">
+
+      <button type="submit" class="btn-submit">Send Message →</button>
+      <p class="form-note">We'll reply within 1 business day · Your info is never shared</p>
+    </form>
+
+    <div id="success-msg">
+      <h3>✅ Message sent!</h3>
+      <p>Thank you for reaching out. We'll get back to you at your email address within one business day.</p>
+    </div>
+  </div>
+
+  <!-- Info Panel -->
+  <div class="info-section">
+
+    <!-- Available plans -->
+    <div class="info-card">
+      <h3>📋 Plan Availability</h3>
+      <div class="plan-row">
+        <span class="badge badge-available">AVAILABLE</span>
+        <div class="plan-info">
+          <div class="plan-name">📧 Free</div>
+          <div class="plan-sub">Newsletter &amp; public research — $0/mo</div>
+        </div>
+      </div>
+      <div class="plan-row">
+        <span class="badge badge-available">AVAILABLE</span>
+        <div class="plan-info">
+          <div class="plan-name">⭐ Starter</div>
+          <div class="plan-sub">Daily signal page access — $19/mo</div>
+        </div>
+      </div>
+      <div class="plan-row">
+        <span class="badge badge-soon">COMING SOON</span>
+        <div class="plan-info">
+          <div class="plan-name">🚀 Pro</div>
+          <div class="plan-sub">Email &amp; SMS alerts + brokerage integration — $49/mo</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;margin-top:14px;line-height:1.6;">
+        To be notified when Pro launches, select "Pro Plan — Notify me" in the form.
+      </p>
+    </div>
+
+    <!-- Contact info -->
+    <div class="info-card">
+      <h3>📬 Direct Contact</h3>
+      <p>
+        General inquiries:<br>
+        <a href="mailto:contact@bleeanalytics.com">contact@bleeanalytics.com</a>
+      </p>
+      <p style="margin-top:12px;">
+        Subscription support:<br>
+        Use the form on this page — include your registered email address.
+      </p>
+    </div>
+
+    <!-- Response time -->
+    <div class="info-card">
+      <h3>⏱️ Response Times</h3>
+      <p style="line-height:1.8;">
+        General questions: <strong style="color:#fff;">1 business day</strong><br>
+        Subscription activation: <strong style="color:#fff;">within 24 hours</strong><br>
+        Technical issues: <strong style="color:#fff;">1–2 business days</strong>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <a href="index.html">← Back to Home</a> &nbsp;·&nbsp;
+  <a href="subscribe.html">View Plans</a>
+  <br><br>
+  © <span id="yr"></span> BLEE Quant Analytics · Educational research only
+</div>
+
+<!-- Firebase + user bar -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="user_bar.js"></script>
+<script src="i18n.js" defer></script>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Handle Formspree AJAX submission
+const form = document.getElementById('contact-form');
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = form.querySelector('.btn-submit');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (resp.ok) {
+      form.style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    } else {
+      btn.textContent = 'Send Message →';
+      btn.disabled = false;
+      alert('Something went wrong — please email us directly at contact@bleeanalytics.com');
+    }
+  } catch(err) {
+    btn.textContent = 'Send Message →';
+    btn.disabled = false;
+    alert('Network error — please email us directly at contact@bleeanalytics.com');
+  }
+});
+</script>
+
+</body>
+</html>

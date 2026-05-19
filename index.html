@@ -955,6 +955,7 @@
     <a href="Algorithm185History.html" data-i18n="nav.backtest">Backtest</a>
     <a href="performance1.html" data-i18n="nav.performance">Performance</a>
     <a href="#pricing" class="btn-nav" data-i18n="nav.subscribe">Subscribe</a>
+    <a href="contact.html" style="color:rgba(255,255,255,0.7);font-size:13px;text-decoration:none;padding:6px 10px;">Contact</a>
   </div>
   <div class="nav-translate">
     <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
@@ -1166,15 +1167,15 @@
         <tbody>
           <tr>
             <td class="metric" data-i18n="row1">Cumulative Return (3yr)</td>
-            <td class="strategy-val win" data-perf="blee_cum_3yr">+120.18%</td>
-            <td class="spy-val" data-perf="spy_cum_3yr">+84.59%</td>
-            <td><span class="badge" data-perf="edge_cum_3yr">+35.6pp ahead</span></td>
+            <td class="strategy-val win" data-perf="blee_cum_3yr">+120.95%</td>
+            <td class="spy-val" data-perf="spy_cum_3yr">+85.71%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+35.2pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row2">Annualized Return</td>
-            <td class="strategy-val win" data-perf="blee_ann_3yr">+30.14%</td>
-            <td class="spy-val" data-perf="spy_ann_3yr">+22.74%</td>
-            <td><span class="badge" data-perf="edge_ann_3yr">+7.4pp</span></td>
+            <td class="strategy-val win" data-perf="blee_ann_3yr">+30.29%</td>
+            <td class="spy-val" data-perf="spy_ann_3yr">+22.98%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+7.3pp</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row3">Max Drawdown</td>
@@ -1576,8 +1577,13 @@
         <p class="plan-fine">Register now — admin activates within 24h<br>💳 Online payment coming soon!</p>
       </div>
 
-      <!-- PRO -->
-      <div class="plan">
+      <!-- PRO — Coming Soon -->
+      <div class="plan" style="opacity:0.55;pointer-events:none;position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;">
+          🔜 COMING SOON
+        </div>
         <span class="plan-badge">🚀 Pro</span>
         <h3>Brokerage Integration</h3>
         <div class="plan-price">
@@ -1595,8 +1601,8 @@
           <li>You stay in full control — approve every action yourself</li>
           <li>Priority email support</li>
         </ul>
-        <a href="subscribe.html?plan=pro" class="btn-plan outline">Go Pro — $49/mo</a>
-        <p class="plan-fine">Register now — admin activates within 24h<br>💳 Online payment coming soon!</p>
+        <button class="btn-plan outline" disabled style="cursor:not-allowed;opacity:0.6;">Coming Soon</button>
+        <p class="plan-fine">We'll notify you when Pro launches</p>
       </div>
     </div>
   </div>
@@ -1644,7 +1650,7 @@
   <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
   <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
   <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
-    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/18/2026 03:51 PM ET</span>
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/18/2026 03:53 PM ET</span>
   </p>
 </footer>
 

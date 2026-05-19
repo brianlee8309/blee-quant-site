@@ -359,6 +359,7 @@
     <a href="Algorithm185History.html">Backtest</a>
     <a href="performance1.html" class="active">Performance</a>
     <a href="subscribe.html" class="btn-nav">Subscribe</a>
+    <a href="contact.html" style="color:rgba(255,255,255,0.6);font-size:13px;text-decoration:none;padding:6px 10px;">Contact</a>
   </div>
   <div class="nav-translate">
     <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
@@ -469,15 +470,15 @@
     <!-- Result strip -->
     <div class="result-strip">
       <div class="rs">
-        <div class="rv g" data-perf="blee_cum_3yr">+120.18%</div>
+        <div class="rv g" data-perf="blee_cum_3yr">+120.95%</div>
         <div class="rl">BLEE Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+84.59%</div>
+        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+85.71%</div>
         <div class="rl">SPY Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv g" data-perf="blee_final_3yr">$22,018</div>
+        <div class="rv g" data-perf="blee_final_3yr">$22,095</div>
         <div class="rl">BLEE Final Value</div>
       </div>
       <div class="rs">
@@ -511,21 +512,21 @@
         <tbody>
           <tr>
             <td class="metric">Cumulative Return</td>
-            <td class="blee blee-win" data-perf="blee_cum_3yr">+120.18%</td>
-            <td class="spy" data-perf="spy_cum_3yr">+84.59%</td>
-            <td><span class="badge" data-perf="edge_cum_3yr">+35.6pp ahead</span></td>
+            <td class="blee blee-win" data-perf="blee_cum_3yr">+120.95%</td>
+            <td class="spy" data-perf="spy_cum_3yr">+85.71%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+35.2pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric">Annualized Return</td>
-            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.14%</td>
-            <td class="spy" data-perf="spy_ann_3yr">+22.74%</td>
-            <td><span class="badge" data-perf="edge_ann_3yr">+7.4pp</span></td>
+            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.29%</td>
+            <td class="spy" data-perf="spy_ann_3yr">+22.98%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+7.3pp</span></td>
           </tr>
           <tr>
             <td class="metric">Final Value ($10K start)</td>
-            <td class="blee blee-win" data-perf="blee_final_3yr">$22,018</td>
-            <td class="spy" data-perf="spy_final_3yr">$18,459</td>
-            <td><span class="badge" data-perf="edge_final_3yr">+$3,559</span></td>
+            <td class="blee blee-win" data-perf="blee_final_3yr">$22,095</td>
+            <td class="spy" data-perf="spy_final_3yr">$18,571</td>
+            <td><span class="badge" data-perf="edge_final_3yr">+$3,525</span></td>
           </tr>
           <tr>
             <td class="metric">Max Drawdown</td>
@@ -931,7 +932,7 @@
     <a href="index.html#pricing">Subscribe</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/18/2026 03:51 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/18/2026 04:18 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
@@ -1078,12 +1079,4 @@ function googleTranslateElementInit() {
 }
 (function () {
   function setLang(lang) {
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-    localStorage.setItem('blee-lang', lang);
-    if (lang === 'en') {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
-      location.reload(); return;
-    }
-    var sel = document.querySelector('.goog-te-combo');
-    if (sel) { sel.value = lang; se
+    document.querySelectorAll('.lang-
