@@ -1687,3 +1687,48 @@
 [2026-05-18T15:51:05] Stamped last-updated (05/18/2026 03:51 PM ET) into Algorithm185History.html
 [2026-05-18T15:51:05] --- Pushing updates to GitHub ---
 [2026-05-18T15:51:05]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-18T15:51:05]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-18"
+[2026-05-18T15:51:05]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-18T15:51:10] GitHub push successful.
+[2026-05-18T15:53:01] market_report: === Market report generation started ===
+[2026-05-18T15:53:01] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-18T15:53:01] market_report: Loaded 17 ETF allocations from index_50.html
+[2026-05-18T15:53:07] market_report:   RSI signal: Severely Overbought — strong bear lean (10d avg=76.03, adj=-20, new score=+10.90)
+[2026-05-18T15:53:07] market_report:   RSI override condition met but DISABLED: Today RSI 76.2 > 76.0 AND 1 of last 2 days also exceeded 76.0 — override ACTIVE
+[2026-05-18T15:53:07] market_report:   (no score adj, no banner — symphony handles rotation natively)
+[2026-05-18T15:53:07] market_report: Composite score: +10.90 -> Partly Clear Sky Likely
+[2026-05-18T15:53:08] market_report:   RSS WSJ: 20 items fetched
+[2026-05-18T15:53:08] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-05-18T15:53:09] market_report:   RSS Yahoo Finance: 48 items fetched
+[2026-05-18T15:53:09] market_report:   Selected [Yahoo Finance] topic=OTHER: 170-year-old luxury fashion retailer quietly closes 21 stores
+[2026-05-18T15:53:11] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-05-18T15:53:11] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-18T15:53:11] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-18T15:53:11] market_report: Fetched 3 news items
+[2026-05-18T15:53:11] market_report: Updated marketDailySummary.html with score=+10.90 (Partly Clear Sky Likely)
+[2026-05-18T15:53:11] market_report: Stamped last-updated (05/18/2026 03:53 PM ET) into index.html
+[2026-05-18T15:53:12] market_report: Stamped last-updated (05/18/2026 03:53 PM ET) into performance1.html
+[2026-05-18T15:53:12] market_report: Stamped last-updated (05/18/2026 03:53 PM ET) into Algorithm185History.html
+[2026-05-18T15:53:12] market_report: === Market report generation complete ===
+[2026-05-18T20:18:54] market_report: === Market report generation started ===
+[2026-05-18T20:18:54] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-18T20:18:54] market_report: Loaded 17 ETF allocations from index_50.html
+[2026-05-18T20:18:54] market_report:   RSI signal: Severely Overbought — strong bear lean (10d avg=76.03, adj=-20, new score=+10.90)
+[2026-05-18T20:18:54] market_report:   RSI override condition met but DISABLED: Today RSI 76.2 > 76.0 AND 1 of last 2 days also exceeded 76.0 — override ACTIVE
+[2026-05-18T20:18:54] market_report:   (no score adj, no banner — symphony handles rotation natively)
+[2026-05-18T20:18:54] market_report: Composite score: +10.90 -> Partly Clear Sky Likely
+[2026-05-18T20:18:55] market_report:   RSS fetch failed (WSJ): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-18T20:18:55] market_report:   WSJ: RSS unavailable, using hardcoded fallback
+[2026-05-18T20:18:55] market_report:   Selected [WSJ] topic=FED: Fed Signals Patience as Rate Path Stays Data-Dependent
+[2026-05-18T20:18:55] market_report:   RSS fetch failed (Yahoo Finance): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-18T20:18:55] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-05-18T20:18:55] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-05-18T20:18:55] market_report:   RSS fetch failed (Barron's): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-18T20:18:55] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-18T20:18:55] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-18T20:18:55] market_report: Fetched 3 news items
+[2026-05-18T20:18:55] market_report: Updated marketDailySummary.html with score=+10.90 (Partly Clear Sky Likely)
+[2026-05-18T20:18:55] market_report:   (stamp failed for index.html: 'utf-8' codec can't decode byte 0xeb in position 95692: unexpected end of data)
+[2026-05-18T20:18:55] market_report: Stamped last-updated (05/18/2026 04:18 PM ET) into performance1.html
+[2026-05-18T20:18:55] market_report: Stamped last-updated (05/18/2026 04:18 PM ET) into Algorithm185History.html
+[2026-05-18T20:18:55] market_report: === Market report generation complete ===

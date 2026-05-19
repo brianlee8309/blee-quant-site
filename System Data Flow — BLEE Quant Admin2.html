@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)https://bleeanalytics.com/data_flow_diagram.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style><script src="chrome-extension://fgddmllnllkalaagkghckoinaemmogpe/src/scripts/content/location-spoofing.js"></script><script type="text/javascript" src="./System Data Flow — BLEE Quant Admin2_files/OZyZRA4JY_1F4uSin3Z-R5Nj4BGWRcf13lzmT_mJ_KFgG4cr4BNVb61GsaKL4divPtwyX1AwZdmBqa1kaExF_bP9_mEhdxTGAdbINOuhi7yrp0Nv8qPSIhUB2lcaxJm_kNs3cueydbje5OrImd3sgROeCyAkSIEtTNfPL8vhT5_lsi5YQeiN3zYDpxsREKXnlU"></script><link type="text/css" rel="stylesheet" href="./System Data Flow — BLEE Quant Admin2_files/u001_SXHqswWsPWS9BsVwB00mDGCNpileGNBiYR03kExE6kphAEy0XCfQ7sJLnHhVri4ND2kbgizAVBT92H3nWe26zJlhsFvGzK8wgqUJRoW0YmVt8y3blxWMu5_FA5hO8pJRLMA9wcfq_0HGIl9wP7KRemkhHt0U7NwVnRp7hLM2LBN0bLYOBmXKj-Nq7iRwQ">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Data Flow — BLEE Quant Admin</title>
+
+<!-- ── Manager+ auth gate (admin & manager can access) ───────────────── -->
+<script>const BLEE_REQUIRED_TIER = "manager";</script>
+<script src="./System Data Flow — BLEE Quant Admin2_files/firebase-app-compat.js.download"></script>
+<script src="./System Data Flow — BLEE Quant Admin2_files/firebase-auth-compat.js.download"></script>
+<script src="./System Data Flow — BLEE Quant Admin2_files/firebase-firestore-compat.js.download"></script>
+<script src="./System Data Flow — BLEE Quant Admin2_files/firebase-config.js.download"></script>
+<script src="./System Data Flow — BLEE Quant Admin2_files/auth_guard.js.download"></script>
+<!-- ───────────────────────────────────────────────────────────────────── -->
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 24px 24px 40px;
+    min-height: 100vh;
+  }
+
+  /* Admin top bar back-link */
+  .admin-bar {
+    max-width: 1080px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .admin-bar a {
+    font-size: 12px;
+    color: #f5a623;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .admin-bar a:hover { text-decoration: underline; }
+  .admin-bar .sep { color: #30363d; font-size: 12px; }
+  .admin-bar .crumb { font-size: 12px; color: #6e7681; }
+
+  .page-header { text-align: center; margin-bottom: 22px; }
+  .page-header h1 { font-size: 20px; font-weight: 700; color: #e6edf3; margin-bottom: 4px; }
+  .page-header p { font-size: 12px; color: #8b949e; margin-bottom: 2px; }
+  .version { font-size: 10px; color: #6e7681; }
+
+  /* Legend */
+  .legend { display: flex; gap: 18px; justify-content: center; margin-bottom: 22px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #8b949e; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── DIAGRAM ── */
+  #diagram {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  /* SVG arrow overlay */
+  #arrows {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 10;
+  }
+
+  /* Rows */
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .row-label {
+    width: 84px;
+    min-width: 84px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #e6edf3;
+    text-align: right;
+    padding-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .row-content {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  /* Group boxes */
+  .group-box {
+    border: 1px dashed #30363d;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+    flex: 1;
+  }
+  .group-label {
+    position: absolute;
+    top: -9px; left: 10px;
+    background: #0d1117;
+    font-size: 9px;
+    color: #6e7681;
+    padding: 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .group-inner { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Nodes */
+  .node {
+    border-radius: 8px;
+    padding: 9px 13px;
+    min-width: 108px;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .node:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,0.45); }
+  .node-title { font-size: 12px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; }
+  .node-sub   { font-size: 10px; opacity: 0.72; line-height: 1.4; }
+  .node-badge {
+    display: inline-block; font-size: 9px; padding: 1px 6px;
+    border-radius: 10px; margin-top: 4px; font-weight: 600;
+  }
+
+  /* Color schemes */
+  .c-blue   { background:#0d2440; border:1.5px solid #1f6feb; }
+  .c-blue   .node-title { color:#79c0ff; }
+  .c-blue   .node-badge { background:#1f6feb; color:#fff; }
+
+  .c-teal   { background:#0d2424; border:1.5px solid #1b7a6f; }
+  .c-teal   .node-title { color:#39d5c3; }
+  .c-teal   .node-badge { background:#1b7a6f; color:#fff; }
+
+  .c-orange { background:#2b1800; border:1.5px solid #d1740a; }
+  .c-orange .node-title { color:#ffa657; }
+  .c-orange .node-badge { background:#d1740a; color:#fff; }
+
+  .c-green  { background:#0d2b1a; border:1.5px solid #2ea043; }
+  .c-green  .node-title { color:#56d364; }
+  .c-green  .node-badge { background:#2ea043; color:#fff; }
+
+  .c-purple { background:#1a0d2e; border:1.5px solid #8957e5; }
+  .c-purple .node-title { color:#d2a8ff; }
+  .c-purple .node-badge { background:#8957e5; color:#fff; }
+
+  .c-red    { background:#2b0d0d; border:1.5px solid #da3633; }
+  .c-red    .node-title { color:#ff7b72; }
+  .c-red    .node-badge { background:#da3633; color:#fff; }
+
+  .c-gray   { background:#161b22; border:1.5px solid #30363d; }
+  .c-gray   .node-title { color:#c9d1d9; }
+  .c-gray   .node-badge { background:#30363d; color:#c9d1d9; }
+
+  /* Section dividers */
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 4px 0 22px 0;
+  }
+  .divider-line { flex:1; height:1px; background:#21262d; }
+  .divider-label {
+    font-size: 10px; font-weight: 700; color: #e6edf3;
+    text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap;
+  }
+
+  .wide  { min-width: 150px; }
+  .xwide { min-width: 190px; }
+
+  /* Changelog */
+  .changelog {
+    max-width: 1080px; margin: 30px auto 0;
+    background:#161b22; border:1px solid #21262d; border-radius:10px; padding:18px 22px;
+  }
+  .changelog h2 {
+    font-size:11px; color:#6e7681; text-transform:uppercase;
+    letter-spacing:.08em; margin-bottom:10px;
+  }
+  .changelog table { width:100%; border-collapse:collapse; font-size:11px; }
+  .changelog th {
+    text-align:left; color:#6e7681; font-weight:600;
+    padding:4px 10px 8px 0; border-bottom:1px solid #21262d;
+  }
+  .changelog td {
+    padding:6px 10px 6px 0; vertical-align:top;
+    color:#8b949e; border-bottom:1px solid #21262d;
+  }
+  .changelog td:first-child { color:#6e7681; white-space:nowrap; width:86px; }
+  .badge {
+    display:inline-block; font-size:9px; padding:2px 7px;
+    border-radius:10px; font-weight:600; background:#2ea043; color:#fff;
+  }
+  .badge.orange { background:#d1740a; }
+  .badge.gray   { background:#30363d; color:#8b949e; }
+</style>
+</head>
+<body style="padding-top: 36px;"><div id="blee-member-bar" style="position: fixed; top: 0px; left: 0px; right: 0px; z-index: 9999; background: rgb(10, 15, 30); border-bottom: 1px solid rgb(34, 34, 34); display: flex; align-items: center; justify-content: flex-end; padding: 6px 20px; gap: 12px; font-size: 12px; font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;">
+      <span style="color:#888;">brianlee1004@msn.com</span>
+      <span style="color:#38bdf8;font-weight:600;">🛡️ Manager</span>
+      
+      
+      <a href="https://bleeanalytics.com/admin.html" style="color:#f5a623;text-decoration:none;">Admin</a>
+      <button onclick="firebase.auth().signOut().then(()=&gt;location.href=&#39;index.html&#39;)" style="background:#b00020;color:#fff;border:0;border-radius:4px;
+               padding:3px 10px;cursor:pointer;font-size:11px;">
+        Sign out
+      </button></div>
+
+<!-- Admin breadcrumb bar -->
+<div class="admin-bar">
+  <a href="https://bleeanalytics.com/admin.html">⬅ Admin Dashboard</a>
+  <span class="sep">›</span>
+  <span class="crumb">System Data Flow Diagram</span>
+  <span class="sep" style="margin-left:auto;font-size:10px;color:#f5a623;">🔑 Admin Only</span>
+</div>
+
+<div class="page-header">
+  <h1>📊 BLEE Analytics — Full System Data Flow</h1>
+  <p>Composer signal → PC Automation → GitHub Pages → Auth/Payments → Trading → Users</p>
+  <div class="version">v1.3 · Last updated 2026-05-17 · Admin only · bleeanalytics.com/data_flow_diagram.html</div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#1f6feb"></div> Signal / Data</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1b7a6f"></div> Market Data</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d1740a"></div> PC Automation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2ea043"></div> Web / GitHub</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8957e5"></div> Auth / Payments</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#da3633"></div> Brokerage / Trade</div>
+</div>
+
+<div id="diagram">
+<svg id="arrows" width="1080" height="1033"><defs><marker id="arrowhead-blue" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 6 3.5, 0 7" fill="#1f6feb"></polygon></marker><marker id="arrowhead-teal" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 6 3.5, 0 7" fill="#1b7a6f"></polygon></marker><marker id="arrowhead-green" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 6 3.5, 0 7" fill="#2ea043"></polygon></marker><marker id="arrowhead-red" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 6 3.5, 0 7" fill="#da3633"></polygon></marker><marker id="arrowhead-purple" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 6 3.5, 0 7" fill="#8957e5"></polygon></marker><marker id="arrowhead-gray" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 6 3.5, 0 7" fill="#484f58"></polygon></marker></defs><path d="M 176.63194274902344 87.70833587646484 C 176.63194274902344 111.29722709655762, 178.72222137451172 107.00833778381347, 178.72222137451172 130.59722900390625" stroke="#1f6feb" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-blue)"></path><rect x="94.92708206176758" y="101.15278244018555" width="165.5" height="12" rx="3" fill="#0d1117"></rect><text x="177.67708206176758" y="111.15278244018555" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">alloc weights + value history</text><path d="M 206.63194274902344 87.70833587646484 C 206.63194274902344 111.29722709655762, 668.5971984863281 107.00833778381347, 668.5971984863281 130.59722900390625" stroke="#1f6feb" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-blue)"></path><rect x="401.6145706176758" y="101.15278244018555" width="72" height="12" rx="3" fill="#0d1117"></rect><text x="437.6145706176758" y="111.15278244018555" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">daily signal</text><path d="M 323.2638854980469 87.70833587646484 C 323.2638854980469 111.29722709655762, 339.0972366333008 107.00833778381347, 339.0972366333008 130.59722900390625" stroke="#1b7a6f" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-teal)"></path><rect x="300.6805610656738" y="101.15278244018555" width="61" height="12" rx="3" fill="#0d1117"></rect><text x="331.1805610656738" y="111.15278244018555" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">price data</text><path d="M 333.2638854980469 87.70833587646484 C 333.2638854980469 111.29722709655762, 506.80554962158203 107.00833778381347, 506.80554962158203 130.59722900390625" stroke="#1b7a6f" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-teal)"></path><path d="M 178.72222137451172 247.9027862548828 C 178.72222137451172 277.4805519104004, 290.43054962158203 272.10277633666993, 290.43054962158203 301.6805419921875" stroke="#2ea043" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-green)"></path><rect x="209.57638549804688" y="266.79166412353516" width="50" height="12" rx="3" fill="#0d1117"></rect><text x="234.57638549804688" y="276.79166412353516" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">git push</text><path d="M 339.0972366333008 247.9027862548828 C 339.0972366333008 277.4805519104004, 430.5902557373047 272.10277633666993, 430.5902557373047 301.6805419921875" stroke="#2ea043" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-green)"></path><rect x="359.84374618530273" y="266.79166412353516" width="50" height="12" rx="3" fill="#0d1117"></rect><text x="384.84374618530273" y="276.79166412353516" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">git push</text><path d="M 496.80554962158203 247.9027862548828 C 496.80554962158203 277.4805519104004, 440.5902557373047 272.10277633666993, 440.5902557373047 301.6805419921875" stroke="#2ea043" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-green)"></path><path d="M 668.5971984863281 247.9027862548828 C 668.5971984863281 307.9027862548828, 170.1111068725586 553.8055419921875, 170.1111068725586 613.8055419921875" stroke="#da3633" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-red)"></path><rect x="380.60415267944336" y="422.85416412353516" width="77.5" height="12" rx="3" fill="#0d1117"></rect><text x="419.35415267944336" y="432.85416412353516" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">TWS port 7496</text><path d="M 290.43054962158203 404.98609924316406 C 290.43054962158203 428.57499465942385, 169 424.2861045837402, 169 447.875" stroke="#8957e5" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-purple)"></path><rect x="199.21527481079102" y="418.43054962158203" width="61" height="12" rx="3" fill="#0d1117"></rect><text x="229.71527481079102" y="428.43054962158203" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">auth check</text><path d="M 810.2847328186035 404.98609924316406 C 810.2847328186035 428.57499465942385, 209 424.2861045837402, 209 447.875" stroke="#8957e5" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-purple)"></path><rect x="487.39236640930176" y="418.43054962158203" width="44.5" height="12" rx="3" fill="#0d1117"></rect><text x="509.64236640930176" y="428.43054962158203" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">sign-in</text><path d="M 830.2847328186035 404.98609924316406 C 830.2847328186035 428.57499465942385, 379.8541946411133 424.2861045837402, 379.8541946411133 447.875" stroke="#8957e5" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-purple)"></path><rect x="577.3194637298584" y="418.43054962158203" width="55.5" height="12" rx="3" fill="#0d1117"></rect><text x="605.0694637298584" y="428.43054962158203" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">subscribe</text><path d="M 662.2083320617676 731.1110992431641 C 662.2083320617676 791.1110992431641, 789.4514122009277 553.8055419921875, 789.4514122009277 613.8055419921875" stroke="#da3633" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-red)"></path><path d="M 357.9722137451172 353.3333206176758 C 357.9722137451172 413.3333206176758, 857.3749694824219 612.4583206176758, 857.3749694824219 672.4583206176758" stroke="#da3633" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-red)" stroke-dasharray="5 3"></path><rect x="544.1735916137695" y="504.8958206176758" width="127" height="12" rx="3" fill="#0d1117"></rect><text x="607.6735916137695" y="514.8958206176758" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">reads signal (planned)</text><path d="M 170.1111068725586 715.5138778686523 C 170.1111068725586 747.6812450408936, 170.96527862548828 741.8326328277587, 170.96527862548828 774" stroke="#da3633" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-red)"></path><rect x="137.28819274902344" y="736.7569389343262" width="66.5" height="12" rx="3" fill="#0d1117"></rect><text x="170.53819274902344" y="746.7569389343262" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">live orders</text><path d="M 789.4514122009277 731.1110992431641 C 789.4514122009277 754.6999946594239, 1004.9999694824219 750.4111045837402, 1004.9999694824219 774" stroke="#da3633" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-red)"></path><rect x="863.9756908416748" y="744.555549621582" width="66.5" height="12" rx="3" fill="#0d1117"></rect><text x="897.2256908416748" y="754.555549621582" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">live orders</text><path d="M 290.43054962158203 404.98609924316406 C 290.43054962158203 464.98609924316406, 312.49305725097656 833.7083129882812, 312.49305725097656 893.7083129882812" stroke="#484f58" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-gray)"></path><rect x="259.9618034362793" y="641.3472061157227" width="83" height="12" rx="3" fill="#0d1117"></rect><text x="301.4618034362793" y="651.3472061157227" fill="#6e7681" font-size="9" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif">browser access</text><path d="M 830.2847328186035 404.98609924316406 C 830.2847328186035 464.98609924316406, 614.6805801391602 833.7083129882812, 614.6805801391602 893.7083129882812" stroke="#484f58" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-gray)"></path><path d="M 94 491.7291679382324 L 66 491.7291679382324 L 66 408.98609924316406 L 222.88888549804688 408.98609924316406" stroke="#8957e5" stroke-width="1.5" fill="none" marker-end="url(#arrowhead-purple)"></path><rect x="36.25" y="440.35763359069824" width="55.5" height="12" rx="3" fill="#0d1117"></rect><text x="64" y="450.35763359069824" fill="#8957e5" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">tier gate</text></svg>
+
+<!-- ── ROW 1: External Sources ──────────────────── -->
+<div class="row">
+  <div class="row-label">External<br>Sources</div>
+  <div class="row-content">
+    <div class="node c-blue wide" id="n-composer">
+      <div class="node-title">🎼 Composer.trade</div>
+      <div class="node-sub">Symphony API<br>BLEE-187 · BLEE-186 · BLEE-185</div>
+      <span class="node-badge">3:50 PM ET daily</span>
+    </div>
+    <div class="node c-teal" id="n-yfinance">
+      <div class="node-title">📈 yfinance</div>
+      <div class="node-sub">QQQ / SPY / DIA<br>daily OHLCV</div>
+      <span class="node-badge">free API</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 2: PC Automation ──────────────────────── -->
+<div class="row">
+  <div class="row-label">My PC<br>Automation</div>
+  <div class="row-content">
+    <div class="group-box">
+      <div class="group-label">⏰ Windows Task Scheduler</div>
+      <div class="group-inner">
+        <div class="node c-orange" id="n-pull">
+          <div class="node-title">composer_pull<br>_allocation.py</div>
+          <div class="node-sub">Pulls Composer API<br>Writes DATA → index2.html<br>composer_config.json</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-orange" id="n-acc">
+          <div class="node-title">update_accuracy.py</div>
+          <div class="node-sub">Injects PRICE_DATA<br>→ Algorithm185History.html</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-orange" id="n-upd">
+          <div class="node-title">update_performance.py</div>
+          <div class="node-sub">Injects PERFORMANCE_DATA<br>→ Algorithm185History.html</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-red" id="n-ibkrpy">
+          <div class="node-title">ibkr_trader.py</div>
+          <div class="node-sub">Reads index2.html<br>Auto-trades via IBKR TWS</div>
+          <span class="node-badge">3:55 PM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 3: GitHub Pages ───────────────────────── -->
+<div class="row">
+  <div class="row-label">GitHub<br>Pages</div>
+  <div class="row-content">
+    <div class="group-box">
+      <div class="group-label">🌐 bleeanalytics.com (GitHub Pages)</div>
+      <div class="group-inner">
+        <div class="node c-green" id="n-idx">
+          <div class="node-title">index.html</div>
+          <div class="node-sub">Home / Landing<br>Public</div>
+        </div>
+        <div class="node c-green" id="n-idx2">
+          <div class="node-title">⭐ index2.html</div>
+          <div class="node-sub">Daily Signal Page<br>BLEE-187 · Member only</div>
+          <span class="node-badge">Premium</span>
+        </div>
+        <div class="node c-green" id="n-algo">
+          <div class="node-title">Algorithm185<br>History.html</div>
+          <div class="node-sub">3-yr Backtest<br>Accuracy Stats · Public</div>
+          <span class="node-badge">Public</span>
+        </div>
+        <div class="node c-green" id="n-mds">
+          <div class="node-title">marketDaily<br>Summary.html</div>
+          <div class="node-sub">Market Overview<br>Daily Digest</div>
+        </div>
+        <div class="node c-green" id="n-perf1">
+          <div class="node-title">performance1.html</div>
+          <div class="node-sub">Portfolio Returns<br>Chart View</div>
+        </div>
+        <div class="node c-green" id="n-authpages">
+          <div class="node-title">login.html<br>subscribe.html<br>admin.html</div>
+          <div class="node-sub">Auth · Stripe · Admin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 4: Auth & Payments ────────────────────── -->
+<div class="row">
+  <div class="row-label">Auth &amp;<br>Payments</div>
+  <div class="row-content">
+    <div class="node c-purple xwide" id="n-firebase">
+      <div class="node-title">🔥 Firebase Auth</div>
+      <div class="node-sub">Email/Password + Google OAuth<br>Firestore: user tier tracking</div>
+      <span class="node-badge">none / basic / premium / admin</span>
+    </div>
+    <div class="node c-purple wide" id="n-stripe">
+      <div class="node-title">💳 Stripe</div>
+      <div class="node-sub">Basic $19/mo · Premium $49/mo<br>billing portal</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-label">Local Trading Apps — PC / Mac</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ── ROW 5: Local Trading ──────────────────────── -->
+<div class="row">
+  <div class="row-label">Local<br>Trading</div>
+  <div class="row-content">
+    <div class="group-box">
+      <div class="group-label">🖥️ IBKR Auto-Trade (Windows)</div>
+      <div class="group-inner">
+        <div class="node c-red" id="n-tws">
+          <div class="node-title">TWS Desktop App</div>
+          <div class="node-sub">Port 7496<br>Account U25734106<br>run_ibkr.bat</div>
+          <span class="node-badge">3:55 PM ET</span>
+        </div>
+      </div>
+    </div>
+    <div class="group-box">
+      <div class="group-label">💻 Schwab Trader Web App (PC/Mac)</div>
+      <div class="group-inner">
+        <div class="node c-red" id="n-trader">
+          <div class="node-title">trader_ui.py</div>
+          <div class="node-sub">Flask app<br>http://127.0.0.1:5050<br>trader_ui.bat</div>
+        </div>
+        <div class="node c-red" id="n-schwab-api">
+          <div class="node-title">Schwab API</div>
+          <div class="node-sub">OAuth<br>Account + Holdings<br>Buy/Sell orders</div>
+        </div>
+        <div class="node c-red" id="n-import" style="border-style:dashed;opacity:0.8">
+          <div class="node-title">Import from<br>Composer</div>
+          <div class="node-sub">Reads index2.html<br>Computes target shares<br>Pre-fills trades</div>
+          <span class="node-badge" style="background:#30363d;color:#8b949e">⚠️ planned</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 6: Brokerages ─────────────────────────── -->
+<div class="row">
+  <div class="row-label">Brokerages</div>
+  <div class="row-content">
+    <div class="node c-red wide" id="n-ibkr-broker">
+      <div class="node-title">🏦 Interactive Brokers</div>
+      <div class="node-sub">Account U25734106<br>Auto-executed at 3:55 PM</div>
+      <span class="node-badge">auto</span>
+    </div>
+    <div style="flex:1"></div>
+    <div class="node c-red wide" id="n-sch-broker">
+      <div class="node-title">🏦 Charles Schwab</div>
+      <div class="node-sub">Manual + Semi-Auto<br>via Import from Composer</div>
+      <span class="node-badge">manual</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 7: Users ──────────────────────────────── -->
+<div class="row">
+  <div class="row-label">Users</div>
+  <div class="row-content" id="n-users-row">
+    <div class="node c-gray" id="n-free">
+      <div class="node-title">👤 Free Visitors</div>
+      <div class="node-sub">Public pages<br>History · Market Summary</div>
+    </div>
+    <div class="node c-gray" id="n-basic">
+      <div class="node-title">⭐ Basic Members</div>
+      <div class="node-sub">$19/mo<br>Signal pages</div>
+      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Basic</span>
+    </div>
+    <div class="node c-gray" id="n-premium">
+      <div class="node-title">🚀 Premium Members</div>
+      <div class="node-sub">$49/mo<br>Full access + alerts</div>
+      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Premium</span>
+    </div>
+    <div class="node c-gray" id="n-admin">
+      <div class="node-title">🔑 Admin — Kei</div>
+      <div class="node-sub">admin.html<br>Manage users &amp; tiers</div>
+      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Admin</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:10px;color:#6e7681;margin-top:4px;padding-bottom:6px">
+  Auto-updates 3:51 PM ET daily · bleeanalytics.com · All times Eastern
+</div>
+
+</div><!-- #diagram -->
+
+<!-- Changelog -->
+<div class="changelog">
+  <h2>📋 Changelog — Update as features are added</h2>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Ver</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge">v1.0</span></td>
+        <td>Initial diagram. Composer API → PC automation (4 scripts) → GitHub Pages (6 pages) → Firebase/Stripe → IBKR auto-trade → Schwab Trader → brokerages → users.</td>
+      </tr>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge orange">v1.1</span></td>
+        <td>Rebuilt with Mermaid.js for arrow alignment (result was too cramped).</td>
+      </tr>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge">v1.2</span></td>
+        <td>Restored v1 row layout. Replaced manual arrow divs with JS-computed SVG arrows that draw precisely from box edge to box edge.</td>
+      </tr>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge">v1.3</span></td>
+        <td>Added to website (bleeanalytics.com/data_flow_diagram.html). Protected with Firebase admin-only auth guard. Linked from admin.html. Added to daily git push via run_signal.bat.</td>
+      </tr>
+      <!-- Add new entries:
+      <tr>
+        <td>YYYY-MM-DD</td>
+        <td><span class="badge orange">vX.X</span></td>
+        <td>What changed.</td>
+      </tr>
+      -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+// ── Arrow drawing ────────────────────────────────────────────────────────────
+const COLORS = {
+  blue:   '#1f6feb',
+  teal:   '#1b7a6f',
+  green:  '#2ea043',
+  purple: '#8957e5',
+  red:    '#da3633',
+  gray:   '#484f58'
+};
+
+function rel(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const er = el.getBoundingClientRect();
+  const dr = document.getElementById('diagram').getBoundingClientRect();
+  return {
+    top:    er.top    - dr.top,
+    bottom: er.bottom - dr.top,
+    left:   er.left   - dr.left,
+    right:  er.right  - dr.left,
+    cx:     er.left   - dr.left + er.width  / 2,
+    cy:     er.top    - dr.top  + er.height / 2,
+    w:      er.width,
+    h:      er.height
+  };
+}
+
+function ensureMarker(svg, defs, colorKey) {
+  const id = 'arrowhead-' + colorKey;
+  if (defs.querySelector('#' + id)) return id;
+  const m = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+  m.setAttribute('id', id);
+  m.setAttribute('markerWidth',  '7');
+  m.setAttribute('markerHeight', '7');
+  m.setAttribute('refX', '5');
+  m.setAttribute('refY', '3.5');
+  m.setAttribute('orient', 'auto');
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  p.setAttribute('points', '0 0, 6 3.5, 0 7');
+  p.setAttribute('fill', COLORS[colorKey]);
+  m.appendChild(p);
+  defs.appendChild(m);
+  return id;
+}
+
+function drawArrow(svg, defs, x1, y1, x2, y2, colorKey, label, dashed) {
+  const mkId = ensureMarker(svg, defs, colorKey);
+  const color = COLORS[colorKey];
+  const dy = Math.abs(y2 - y1);
+  const bend = Math.min(dy * 0.55, 60);
+  const d = `M ${x1} ${y1} C ${x1} ${y1 + bend}, ${x2} ${y2 - bend}, ${x2} ${y2}`;
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width', '1.5');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('marker-end', `url(#${mkId})`);
+  if (dashed) path.setAttribute('stroke-dasharray', '5 3');
+  svg.appendChild(path);
+  if (label) {
+    const lx = (x1 + x2) / 2;
+    const ly = (y1 + y2) / 2;
+    const tw = label.length * 5.5 + 6;
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x', lx - tw / 2); bg.setAttribute('y', ly - 8);
+    bg.setAttribute('width', tw); bg.setAttribute('height', 12);
+    bg.setAttribute('rx', '3'); bg.setAttribute('fill', '#0d1117');
+    svg.appendChild(bg);
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', lx); t.setAttribute('y', ly + 2);
+    t.setAttribute('fill', '#6e7681'); t.setAttribute('font-size', '9');
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, sans-serif');
+    t.textContent = label;
+    svg.appendChild(t);
+  }
+}
+
+function connect(svg, defs, fromId, toId, colorKey, label, dashed, fromOffsetX, toOffsetX) {
+  const f = rel(fromId), t = rel(toId);
+  if (!f || !t) return;
+  drawArrow(svg, defs, f.cx + (fromOffsetX||0), f.bottom, t.cx + (toOffsetX||0), t.top, colorKey, label, dashed||false);
+}
+
+function connectH(svg, defs, fromId, toId, colorKey, label, dashed) {
+  const f = rel(fromId), t = rel(toId);
+  if (!f || !t) return;
+  drawArrow(svg, defs, f.right, f.cy, t.left, t.cy, colorKey, label, dashed||false);
+}
+
+function renderArrows() {
+  const svg  = document.getElementById('arrows');
+  const diag = document.getElementById('diagram');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.setAttribute('width',  diag.offsetWidth);
+  svg.setAttribute('height', diag.offsetHeight);
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  svg.appendChild(defs);
+
+  connect(svg, defs, 'n-composer', 'n-pull',        'blue',  'alloc weights + value history');
+  connect(svg, defs, 'n-composer', 'n-ibkrpy',      'blue',  'daily signal', false, +30, 0);
+  connect(svg, defs, 'n-yfinance', 'n-acc',         'teal',  'price data');
+  connect(svg, defs, 'n-yfinance', 'n-upd',         'teal',  '', false, +10, 0);
+  connect(svg, defs, 'n-pull',     'n-idx2',        'green', 'git push');
+  connect(svg, defs, 'n-acc',      'n-algo',        'green', 'git push');
+  connect(svg, defs, 'n-upd',      'n-algo',        'green', '', false, -10, +10);
+  connect(svg, defs, 'n-ibkrpy',   'n-tws',         'red',   'TWS port 7496');
+  connect(svg, defs, 'n-idx2',     'n-firebase',    'purple','auth check', false, 0, -20);
+  connect(svg, defs, 'n-authpages','n-firebase',    'purple','sign-in', false, -20, +20);
+  connect(svg, defs, 'n-authpages','n-stripe',      'purple','subscribe');
+  connect(svg, defs, 'n-trader',   'n-schwab-api',  'red',   '');
+  connectH(svg, defs, 'n-idx2',    'n-import',      'red',   'reads signal (planned)', true);
+  connect(svg, defs, 'n-tws',      'n-ibkr-broker', 'red',   'live orders');
+  connect(svg, defs, 'n-schwab-api','n-sch-broker', 'red',   'live orders');
+  connect(svg, defs, 'n-idx2',     'n-basic',       'gray',  'browser access', false, 0, 0);
+  connect(svg, defs, 'n-authpages','n-admin',       'gray',  '', false, 0, 0);
+
+  // Firebase tier gate — left-side loop back up to GitHub Pages
+  const fb = rel('n-firebase'), i2 = rel('n-idx2');
+  if (fb && i2) {
+    const lx = Math.min(fb.left, i2.left) - 28;
+    const d = `M ${fb.left} ${fb.cy} L ${lx} ${fb.cy} L ${lx} ${i2.bottom + 4} L ${i2.left} ${i2.bottom + 4}`;
+    const mkId = ensureMarker(svg, defs, 'purple');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('stroke', COLORS.purple);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('marker-end', `url(#${mkId})`);
+    svg.appendChild(path);
+    const lbx = lx - 2, lby = (fb.cy + i2.bottom) / 2;
+    const lbl = 'tier gate';
+    const tw = lbl.length * 5.5 + 6;
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x', lbx - tw/2); bg.setAttribute('y', lby - 8);
+    bg.setAttribute('width', tw); bg.setAttribute('height', 12);
+    bg.setAttribute('rx', '3'); bg.setAttribute('fill', '#0d1117');
+    svg.appendChild(bg);
+    const tx = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    tx.setAttribute('x', lbx); tx.setAttribute('y', lby + 2);
+    tx.setAttribute('fill', '#8957e5'); tx.setAttribute('font-size', '9');
+    tx.setAttribute('text-anchor', 'middle');
+    tx.setAttribute('font-family', '-apple-system,sans-serif');
+    tx.textContent = lbl;
+    svg.appendChild(tx);
+  }
+}
+
+window.addEventListener('load',   renderArrows);
+window.addEventListener('resize', renderArrows);
+</script>
+
+
+<had-gvyfqpdlijeh><template shadowrootmode="closed"><link rel="stylesheet" href="https://bleeanalytics.com/I6uvqlhpmHC-CxnEkbylUzJokNjk_KoDh2FwmDE4c_D2jH_DawlcCc972dc_pLrmWrjOm1JEav1XMxI8FjctD5JGupmTVgnmKOdqkPVvG5mCKGqyoiEaESLO2OUrPJNCTobuwS78PJR3Z3wyTuXJLd1paG2d3YjH0fdDf1UoQMtIhiJwjjoLcncd12v-ECX4zL4Nebp8WLcaWwDYGogmu1RGaeNW19K8HJP_M96Ldpxa04JxPBFZariJ3BkFIVH81BXlFaZX0dEKYRhD66-EZ-JjMYyGFMYPlSUSteaZ6Yxt8kuDW6dMhzHt5WFzQpaC8eVQ_bIbyaHvB0n5JNZy_Q5qIjHAGa6KFKvU9eXtFZuNEF5VpD7UnUt1URVhtwtnTCFd0IKecp4PcGsDSA"></template></had-gvyfqpdlijeh><veepn-lock-screen><template shadowrootmode="open"><style>html{box-sizing:border-box;text-size-adjust:100%;word-break:normal;tab-size:4}*,:before,:after{background-repeat:no-repeat;box-sizing:border-box}:before,:after{text-decoration:inherit;vertical-align:inherit}*{padding:0;margin:0}hr{overflow:visible;height:0;color:inherit;border:0;border-top:1px solid}details,main{display:block}summary{display:list-item}small{font-size:80%}[hidden]{display:none!important}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}a{background-color:transparent}a:active,a:hover{outline-width:0}code,kbd,pre,samp{font-family:monospace}pre{font-size:1em}b,strong{font-weight:bolder}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-color:inherit;text-indent:0}iframe{border-style:none}input{border-radius:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{appearance:none}textarea{overflow:auto;resize:vertical}button,input,optgroup,select,textarea{font:inherit;color:inherit}optgroup{font-weight:700}button{overflow:visible}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit],[role=button]{cursor:pointer}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button,html [type=button],[type=reset],[type=submit]{appearance:auto}button,input,select,textarea{background-color:transparent;border-style:none}button:-moz-focusring,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{outline:1px dotted ButtonText}select{appearance:none}a:focus,button:focus,input:focus,select:focus,textarea:focus{outline-width:0}select::-ms-expand{display:none}select::-ms-value{color:currentcolor}legend{border:0;color:inherit;display:table;white-space:normal;max-width:100%}::-webkit-file-upload-button{appearance:auto;color:inherit;font:inherit}[disabled]{cursor:default}img{border-style:none}progress{vertical-align:baseline}[aria-busy=true]{cursor:progress}[aria-controls]{cursor:pointer}[aria-disabled=true]{cursor:default}ul,ol{list-style-type:none}figure{margin:0}@keyframes slide-in{0%{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}.gradient-blue{background:radial-gradient(106.41% 128.47% at 50.15% 128.47%,#23abff,#3066ff)}.gradient-green{background:radial-gradient(92.26% 118.88% at 50.15% .13%,#00c3c3,#00aab3)}.gradient-purple{background:radial-gradient(165.12% 115.56% at 50.15% .13%,#a15aff,#00a0eb)}.bg-blue{background-color:#f2f5ff}.bg-purple{background-color:#f7f0ff}.bg-green{background-color:#ebffed}.lock-screen{font-family:FigtreeVF,sans-serif;letter-spacing:normal;position:fixed;z-index:2147483638;right:24px;bottom:24px;width:327px;border-radius:24px;overflow:hidden;box-shadow:0 24px 32px #00000014;animation:slide-in .3s ease-in-out forwards}.lock-screen__content{position:relative;padding:24px 24px 64px}.lock-screen__close{position:absolute;top:16px;right:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;opacity:.5}.lock-screen__label{height:26px;width:fit-content;border-radius:50px;background-color:#fff3;padding-inline:16px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;font-size:12px;line-height:18px;margin:-8px auto 16px}.lock-screen__title{color:#fff;text-align:center;font-size:20px;line-height:28px;font-weight:600;margin-bottom:8px}.lock-screen__description{color:#f5f6f7;text-align:center;font-size:14px;line-height:20px}.lock-screen__description b{font-weight:600}.lock-screen__card{position:relative;z-index:1;margin-top:-44px;background-color:#fff;border-radius:24px;padding:32px 20px 20px}.lock-screen__inner{margin-bottom:24px}.lock-screen__submit{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px;height:40px;width:100%;border-radius:12px;padding-inline:16px;background-color:#f70;color:#fff;margin-bottom:16px}.lock-screen__skip{display:flex;align-items:center;justify-content:center;font-size:14px;line-height:20px;color:#82829c;margin-inline:auto}.price-card{border:1px solid #f2f2fc;background:linear-gradient(254.14deg,#fafbff .04%,#f5f8ff 100.04%);border-radius:24px;padding:24px 28px}.price-card__label{color:#4a5764;text-align:center;font-size:14px;line-height:20px;text-transform:uppercase;margin-bottom:16px}.price-card__price{display:flex;justify-content:center;align-items:flex-start;column-gap:2px;margin-bottom:12px}.price-card__currency{color:#515478;font-size:18px;line-height:28px}.price-card__number{color:#14142a;text-align:center;font-size:64px;line-height:54px}.price-card__wrap{display:flex;flex-direction:column}.price-card__decimal{color:#515478;font-size:18px;line-height:28px;font-weight:600}.price-card__period{color:#515478;font-size:14px;line-height:20px;margin-top:-6px}.price-card__discount{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:12px}.price-card__discount-divider{position:absolute;z-index:0;top:50%;left:0;width:100%;height:1px;background-color:#dbe2f9;transform:translateY(-50%)}.price-card__discount-icon{position:absolute;z-index:1;top:50%;left:50%;transform:translate(-50%,-50%)}.price-card__discount-text{position:relative;z-index:2;color:#fff;font-size:12px;font-weight:600;line-height:18px}.price-card__features{display:flex;align-items:center;justify-content:center;column-gap:16px}.price-card__feature{color:#222e3a;font-size:14px;line-height:20px;display:flex;align-items:center;gap:6px}.price-card__feature:before{content:"";display:block;width:4px;height:4px;background-color:#20df9e;border-radius:50%;flex-shrink:0}.features-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.features-list__item{display:flex;flex-direction:column;align-items:center;gap:6px}.features-list__icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center}.features-list__text{color:#293a53;text-align:center;font-size:16px;line-height:24px;letter-spacing:-.1px}</style></template><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-lock-screen><style></style></body></html>
