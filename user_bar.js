@@ -71,7 +71,7 @@
     premium:  { label: "🚀 Pro",      color: "#facc15" },
     marketer: { label: "🎯 Marketer", color: "#a78bfa" },
     basic:    { label: "⭐ Starter",  color: "#4ade80" },
-    free:     { label: "📧 Free",     color: "#94a3b8" },
+    free:     { label: "📧 Newsletter", color: "#94a3b8" },
   };
 
   function drawBar(email, tier) {

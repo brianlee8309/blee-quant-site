@@ -176,6 +176,7 @@
                     : tier === "manager"  ? "🛡️ Manager"
                     : tier === "premium"  ? "🚀 Pro"
                     : tier === "marketer" ? "🎯 Marketer"
+                    : tier === "free"     ? "📧 Newsletter"
                     : "⭐ Starter";
     const tierColor = tier === "admin"    ? "#f5a623"
                     : tier === "manager"  ? "#38bdf8"

@@ -123,7 +123,7 @@
 <!-- Manager notice -->
 <div class="manager-notice" id="manager-notice">
   🛡️ You are logged in as <strong>Manager</strong>. Admin accounts are not shown.
-  You can manage Free, Starter, Pro, and Marketer users.
+  You can manage Newsletter, Starter, Pro, and Marketer users.
 </div>
 
 <!-- My Referral Code (admin/manager can set their own promo code) -->
@@ -203,7 +203,7 @@
   </div>
   <div class="stat s-free">
     <div class="stat-val" id="stat-free">—</div>
-    <div class="stat-lbl">📧 Free</div>
+    <div class="stat-lbl">📧 Newsletter</div>
   </div>
   <div class="stat s-starter">
     <div class="stat-val" id="stat-starter">—</div>
@@ -234,7 +234,7 @@
          placeholder="Search email…" oninput="renderTable()"/>
   <select class="filter" id="filter-role" onchange="renderTable()">
     <option value="">All roles</option>
-    <option value="free">📧 Free</option>
+    <option value="free">📧 Newsletter</option>
     <option value="basic">⭐ Starter</option>
     <option value="premium">🚀 Pro</option>
     <option value="marketer">🎯 Marketer</option>
@@ -284,7 +284,7 @@
     <label class="f">Role / Tier</label>
     <select class="field" id="edit-tier" onchange="togglePromoField('edit')">
       <option value="none">— None (no access)</option>
-      <option value="free">📧 Free (newsletter only)</option>
+      <option value="free">📧 Newsletter (backtest + market forecast)</option>
       <option value="basic">⭐ Starter ($19/mo)</option>
       <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
       <option value="marketer">🎯 Marketer (referral partner)</option>
@@ -342,7 +342,7 @@
 
     <label class="f">Role / Tier</label>
     <select class="field" id="add-tier" onchange="togglePromoField('add')">
-      <option value="free">📧 Free (newsletter only)</option>
+      <option value="free">📧 Newsletter (backtest + market forecast)</option>
       <option value="basic">⭐ Starter ($19/mo)</option>
       <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
       <option value="marketer">🎯 Marketer (referral partner)</option>
@@ -548,7 +548,7 @@ const ROLE_LABEL = {
   manager:  { label:"🛡️ Manager",  cls:"role-manager" },
   premium:  { label:"🚀 Pro",      cls:"role-pro" },
   basic:    { label:"⭐ Starter",  cls:"role-starter" },
-  free:     { label:"📧 Free",     cls:"role-free" },
+  free:     { label:"📧 Newsletter", cls:"role-free" },
   marketer: { label:"🎯 Marketer", cls:"role-marketer" },
   none:     { label:"— None",      cls:"role-none" },
 };
@@ -567,7 +567,7 @@ function planLabel(u) {
     : "Marketer";
   if (u.tier === "manager") return "Manager";
   if (u.tier === "admin")   return "Admin";
-  return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Free", none:"—" }[u.tier] || "—";
+  return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Newsletter (Free)", none:"—" }[u.tier] || "—";
 }
 function fmtDate(ts) {
   if (!ts) return "—";
