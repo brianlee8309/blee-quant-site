@@ -36,32 +36,23 @@
     min-height: 100vh;
   }
 
-  /* ── NAV ── */
-  nav {
-    background: #0d1829;
-    border-bottom: 1px solid var(--border);
-    padding: 0 28px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-  .nav-brand {
-    font-size: 17px; font-weight: 800;
-    color: #fff;
-    text-decoration: none;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .nav-brand span { color: var(--gold); }
-  .nav-links { display: flex; align-items: center; gap: 20px; }
-  .nav-links a {
-    color: var(--muted); font-size: 13.5px; text-decoration: none;
-    transition: color .15s;
-  }
-  .nav-links a:hover { color: #fff; }
+  /* ── UNIFIED NAV ── */
+  .blee-nav{background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 28px;height:60px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10000;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  .blee-nav .nav-logo{font-size:17px;font-weight:800;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+  .blee-nav .nav-logo span{color:#f59e0b;}
+  .blee-nav .nav-links{display:flex;align-items:center;gap:20px;flex:1;justify-content:center;}
+  .blee-nav .nav-links a{color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:500;text-decoration:none;white-space:nowrap;transition:color .15s;}
+  .blee-nav .nav-links a:hover{color:#fff;}
+  .blee-nav .nav-links a.active{color:#fff;font-weight:600;}
+  .blee-nav .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .blee-nav .nav-subscribe{background:#f59e0b;color:#000;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+  .blee-nav .nav-subscribe:hover{background:#fbbf24;}
+  .blee-nav .lang-btn{background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;}
+  .blee-nav .lang-btn.active{background:#f59e0b;color:#000;border-color:#f59e0b;}
+  .blee-nav .lang-btn:hover{background:rgba(255,255,255,0.10);color:#fff;}
+  @media(max-width:960px){.blee-nav .nav-links{display:none;}}
 
   /* ── LAYOUT ── */
   .container { max-width: 980px; margin: 0 auto; padding: 36px 20px 72px; }
@@ -264,28 +255,25 @@
 
 <!-- Auth handled by auth_guard.js in <head> (BLEE_REQUIRED_TIER = "basic") -->
 
-<nav>
-  <a class="nav-brand" href="index.html">BLEE <span>Quant</span></a>
+<nav class="blee-nav">
+  <a href="index.html" class="nav-logo">BLEE <span>Quant</span></a>
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="mission.html">Our Mission</a>
-    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="marketDailySummary.html" class="active">Market Forecast</a>
     <a href="index2.html">Daily Signal</a>
     <a href="Algorithm185History.html">Backtest</a>
     <a href="performance1.html">Performance</a>
-    <a href="subscribe.html" style="background:var(--gold);color:#000;padding:5px 14px;border-radius:6px;font-weight:700;">Subscribe</a>
-    <div class="nav-translate" style="display:flex;align-items:center;gap:3px;margin-left:14px;border-left:1px solid rgba(255,255,255,0.12);padding-left:14px;">
-      <button class="lang-btn active" data-lang="en" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;">🇺🇸 EN</button>
-      <button class="lang-btn"        data-lang="ja" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;">🇯🇵 JP</button>
-      <button class="lang-btn"        data-lang="vi" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;">🇻🇳 VI</button>
-      <button class="lang-btn"        data-lang="ko" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;">🇰🇷 KR</button>
-    </div>
+    <a href="contact.html">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="subscribe.html" class="nav-subscribe">Subscribe</a>
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
 </nav>
-<style>
-  .lang-btn.active{background:#f59e0b!important;color:#000!important;border-color:#f59e0b!important;}
-  .lang-btn:hover{background:rgba(255,255,255,0.10)!important;color:#fff!important;}
-</style>
 
 <div class="container">
 
@@ -418,7 +406,7 @@
 
 <script>
 // ─── DATA (injected by market_report.py) ───────────────────────────────────
-const REPORT = /* __REPORT_JSON__ */ {"generated": "05/18/2026 03:53 PM", "report_date": "May 18, 2026", "for_date": "May 19, 2026", "score": 10.9003, "temperature": "Partly Clear Sky Likely", "temp_color": "#86efac", "temp_arrow": "^", "weather_label": "🌤️ Partly Clear Sky", "positive_weight": 17.02, "negative_weight": 8.71, "neutral_weight": 74.27, "total_value": 39729.4, "breakdown": [{"ticker": "SGOV", "weight": 40.6648, "point": 0.0, "contribution": 0.0, "value": 16155.88}, {"ticker": "TECL", "weight": 11.6905, "point": 3.0, "contribution": 35.0715, "value": 4644.55}, {"ticker": "GLD", "weight": 10.5341, "point": 0.0, "contribution": 0.0, "value": 4185.14}, {"ticker": "GLDM", "weight": 8.1328, "point": 0.0, "contribution": 0.0, "value": 3231.09}, {"ticker": "PSQ", "weight": 7.0815, "point": -1.0, "contribution": -7.0815, "value": 2813.43}, {"ticker": "USMV", "weight": 5.3327, "point": 1.0, "contribution": 5.3327, "value": 2118.64}, {"ticker": "SDOW", "weight": 4.0757, "point": 0.0, "contribution": 0.0, "value": 1619.25}, {"ticker": "TQQQ", "weight": 4.015, "point": 0.0, "contribution": 0.0, "value": 1595.15}, {"ticker": "TMF", "weight": 2.463, "point": 0.0, "contribution": 0.0, "value": 978.54}, {"ticker": "VTI", "weight": 2.0911, "point": 0.0, "contribution": 0.0, "value": 830.8}, {"ticker": "SH", "weight": 1.2353, "point": 0.0, "contribution": 0.0, "value": 490.79}, {"ticker": "SHV", "weight": 1.2329, "point": -1.0, "contribution": -1.2329, "value": 489.81}, {"ticker": "SQQQ", "weight": 0.3965, "point": -3.0, "contribution": -1.1895, "value": 157.54}, {"ticker": "VIXM", "weight": 0.3694, "point": 0.0, "contribution": 0.0, "value": 146.75}, {"ticker": "SPXS", "weight": 0.2932, "point": 0.0, "contribution": 0.0, "value": 116.5}, {"ticker": "UUP", "weight": 0.2907, "point": 0.0, "contribution": 0.0, "value": 115.51}, {"ticker": "$USD", "weight": 0.1008, "point": 0.0, "contribution": 0.0, "value": 40.03}], "news": [{"tag": "EQUITY", "tag_class": "tag-equity", "title": "Stocks Sink in Broad AI Rout Sparked by China's DeepSeek", "body": "U.S. stocks were mostly lower, with the Nasdaq leading declines as makers of AI infrastructure suffered steep falls, many in the double digits. Nvidia was down 16%.", "source": "WSJ", "url": "https://www.wsj.com/articles/nikkei-may-rise-as-weak-yen-raises-earnings-hopes-776a8056?mod=rss_markets_main"}, {"tag": "MARKET NEWS", "tag_class": "tag-equity", "title": "170-year-old luxury fashion retailer quietly closes 21 stores", "body": "170-year-old luxury fashion retailer quietly closes 21 stores", "source": "Yahoo Finance", "url": "https://finance.yahoo.com/markets/stocks/articles/170-old-luxury-fashion-retailer-013700371.html"}, {"tag": "MACRO", "tag_class": "tag-macro", "title": "Trade Winds: Tariff Developments Continue to Reshape Global Supply Chains", "body": "Ongoing tariff negotiations between the U.S. and major trading partners continue to reshape global supply chains. Analysts note selective sector impacts — industrials and consumer staples face the most direct cost pressures.", "source": "Barron's", "url": "https://www.barrons.com"}], "rsi14_today": 76.18, "rsi14_avg10d": 76.03, "rsi14_signal": "Severely Overbought — strong bear lean", "rsi14_score_adj": -20, "rsi14_history": [{"date": "2026-05-09", "ticker": "SPY", "rsi14": "76.53", "close": "0"}, {"date": "2026-05-12", "ticker": "SPY", "rsi14": "75.38", "close": "0"}, {"date": "2026-05-13", "ticker": "SPY", "rsi14": "76.18", "close": "0"}], "rsi14_override": false, "rsi14_override_why": "override disabled (symphony handles rotation)"};
+const REPORT = /* __REPORT_JSON__ */ {"generated": "05/18/2026 08:18 PM", "report_date": "May 18, 2026", "for_date": "May 19, 2026", "score": 10.9003, "temperature": "Partly Clear Sky Likely", "temp_color": "#86efac", "temp_arrow": "^", "weather_label": "🌤️ Partly Clear Sky", "positive_weight": 17.02, "negative_weight": 8.71, "neutral_weight": 74.27, "total_value": 39729.4, "breakdown": [{"ticker": "SGOV", "weight": 40.6648, "point": 0.0, "contribution": 0.0, "value": 16155.88}, {"ticker": "TECL", "weight": 11.6905, "point": 3.0, "contribution": 35.0715, "value": 4644.55}, {"ticker": "GLD", "weight": 10.5341, "point": 0.0, "contribution": 0.0, "value": 4185.14}, {"ticker": "GLDM", "weight": 8.1328, "point": 0.0, "contribution": 0.0, "value": 3231.09}, {"ticker": "PSQ", "weight": 7.0815, "point": -1.0, "contribution": -7.0815, "value": 2813.43}, {"ticker": "USMV", "weight": 5.3327, "point": 1.0, "contribution": 5.3327, "value": 2118.64}, {"ticker": "SDOW", "weight": 4.0757, "point": 0.0, "contribution": 0.0, "value": 1619.25}, {"ticker": "TQQQ", "weight": 4.015, "point": 0.0, "contribution": 0.0, "value": 1595.15}, {"ticker": "TMF", "weight": 2.463, "point": 0.0, "contribution": 0.0, "value": 978.54}, {"ticker": "VTI", "weight": 2.0911, "point": 0.0, "contribution": 0.0, "value": 830.8}, {"ticker": "SH", "weight": 1.2353, "point": 0.0, "contribution": 0.0, "value": 490.79}, {"ticker": "SHV", "weight": 1.2329, "point": -1.0, "contribution": -1.2329, "value": 489.81}, {"ticker": "SQQQ", "weight": 0.3965, "point": -3.0, "contribution": -1.1895, "value": 157.54}, {"ticker": "VIXM", "weight": 0.3694, "point": 0.0, "contribution": 0.0, "value": 146.75}, {"ticker": "SPXS", "weight": 0.2932, "point": 0.0, "contribution": 0.0, "value": 116.5}, {"ticker": "UUP", "weight": 0.2907, "point": 0.0, "contribution": 0.0, "value": 115.51}, {"ticker": "$USD", "weight": 0.1008, "point": 0.0, "contribution": 0.0, "value": 40.03}], "news": [{"tag": "FED POLICY", "tag_class": "tag-fed", "title": "Fed Signals Patience as Rate Path Stays Data-Dependent", "body": "Federal Reserve officials reiterated a data-dependent approach to interest rate decisions, leaving markets uncertain about the timing of any future easing. Officials noted that while inflation progress has been made, they are not yet confident enough to ease policy.", "source": "WSJ", "url": "https://www.wsj.com"}, {"tag": "EQUITY", "tag_class": "tag-equity", "title": "S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents", "body": "U.S. stocks traded in a narrow range as investors balanced resilient corporate earnings against uncertainty around interest rates and global trade. Defensive sectors outperformed while high-growth technology names dipped modestly.", "source": "Yahoo Finance", "url": "https://finance.yahoo.com/"}, {"tag": "MACRO", "tag_class": "tag-macro", "title": "Trade Winds: Tariff Developments Continue to Reshape Global Supply Chains", "body": "Ongoing tariff negotiations between the U.S. and major trading partners continue to reshape global supply chains. Analysts note selective sector impacts — industrials and consumer staples face the most direct cost pressures.", "source": "Barron's", "url": "https://www.barrons.com"}], "rsi14_today": 76.18, "rsi14_avg10d": 76.03, "rsi14_signal": "Severely Overbought — strong bear lean", "rsi14_score_adj": -20, "rsi14_history": [{"date": "2026-05-09", "ticker": "SPY", "rsi14": "76.53", "close": "0"}, {"date": "2026-05-12", "ticker": "SPY", "rsi14": "75.38", "close": "0"}, {"date": "2026-05-13", "ticker": "SPY", "rsi14": "76.18", "close": "0"}], "rsi14_override": false, "rsi14_override_why": "override disabled (symphony handles rotation)"};
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 const fmt$ = n => "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -585,3 +573,4 @@ if (rec) {
 <script src="i18n.js"></script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
