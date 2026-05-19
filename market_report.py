@@ -132,7 +132,7 @@ def market_temperature(score: float) -> tuple[str, str, str]:
     """
     if score > 50:   return ("Nice Blue Sky Ahead",        "#16a34a", "^")
     if score > 30:   return ("Almost Clear Sky All Day",   "#22c55e", "^")
-    if score > 0:    return ("Partly Clear Sky Likely",    "#86efac", "^")
+    if score > 0:    return ("Cloudy",                     "#f59e0b", "-")
     if score == 0:   return ("Neutral — Hold Gold/SGOV",   "#f59e0b", "-")
     if score > -50:  return ("Rain in the Forecast",       "#ef4444", "v")
     return                  ("Thunderstorm Warning",       "#dc2626", "v")
@@ -457,7 +457,7 @@ def main() -> int:
             "Thunderstorm Warning":      "⛈️ Thunderstorm Warning",
             "Rain in the Forecast":      "🌧️ Rain in the Forecast",
             "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
-            "Partly Clear Sky Likely":   "🌤️ Partly Clear Sky",
+            "Cloudy":                    "☁️ Cloudy",
             "Almost Clear Sky All Day":  "☀️ Almost Clear Sky All Day",
             "Nice Blue Sky Ahead":       "🌈 Nice Blue Sky Ahead",
         }.get(label, label),
