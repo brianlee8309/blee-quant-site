@@ -33,96 +33,23 @@
     -webkit-font-smoothing: antialiased; line-height: 1.6;
   }
 
-  /* NAV */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.07);
-    padding: 0 32px; display: flex; align-items: center;
-    justify-content: space-between; height: 62px;
-  }
-  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .nav-logo .icon {
-    width: 34px; height: 34px;
-    background: linear-gradient(135deg,#2563eb,#7c3aed);
-    border-radius: 8px; display: flex; align-items: center;
-    justify-content: center; font-size: 16px; font-weight: 800; color: #fff;
-  }
-  .nav-logo .brand { color: #fff; font-size: 17px; font-weight: 700; }
-  .nav-logo .brand span { color: var(--gold); }
-  .nav-links { display: flex; align-items: center; gap: 4px; }
-  .nav-links a {
-    color: rgba(255,255,255,0.70); text-decoration: none; font-size: 14px;
-    font-weight: 500; padding: 6px 14px; border-radius: 6px; transition: all .18s;
-  }
-  .nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(255,255,255,0.08); }
-  .nav-links .btn-nav {
-    background: var(--gold); color: #000 !important; padding: 7px 18px;
-    border-radius: 7px; font-weight: 700; margin-left: 8px;
-  }
-  .nav-links .btn-nav:hover { background: #fbbf24; }
-  @media (max-width: 780px) {
-    .nav-links a:not(.btn-nav) { display: none; }
-    .nav-links .btn-nav { display: none; }
-  }
-
-  /* ── HAMBURGER ── */
-  .nav-hamburger {
-    display: none; flex-direction: column; justify-content: center;
-    gap: 5px; cursor: pointer; padding: 8px; margin-left: 8px;
-    background: none; border: none;
-  }
-  .nav-hamburger span {
-    display: block; width: 22px; height: 2px;
-    background: rgba(255,255,255,0.80); border-radius: 2px;
-    transition: all .25s;
-  }
-  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-  @media (max-width: 780px) { .nav-hamburger { display: flex; } }
-
-  /* ── MOBILE MENU ── */
-  .mobile-menu {
-    display: none; flex-direction: column;
-    position: absolute; top: 62px; left: 0; right: 0;
-    background: var(--navy);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding: 12px 20px 18px; z-index: 99;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu a {
-    color: rgba(255,255,255,0.80); text-decoration: none;
-    font-size: 16px; font-weight: 600;
-    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.07);
-    transition: color .15s;
-  }
-  .mobile-menu a:hover { color: #fff; }
-  .mobile-menu a.btn-nav-mob {
-    margin-top: 10px; background: var(--gold); color: #000;
-    padding: 12px 20px; border-radius: 8px; text-align: center;
-    font-weight: 700; border: none;
-  }
-  .mobile-menu .mob-lang { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-
-  /* ── LANGUAGE SWITCHER ── */
-  .nav-translate {
-    display: flex; align-items: center; gap: 3px;
-    margin-left: 14px;
-    border-left: 1px solid rgba(255,255,255,0.12); padding-left: 14px;
-  }
-  .lang-btn {
-    background: transparent; border: 1px solid rgba(255,255,255,0.18);
-    color: rgba(255,255,255,0.60); font-size: 11.5px; font-weight: 700;
-    padding: 4px 8px; border-radius: 5px; cursor: pointer;
-    transition: all .15s; white-space: nowrap; font-family: inherit; letter-spacing: 0.03em;
-  }
-  .lang-btn:hover { background: rgba(255,255,255,0.10); color: #fff; border-color: rgba(255,255,255,0.35); }
-  .lang-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
-  @media (max-width: 780px) { .nav-translate { display: none; } }
-  .goog-te-banner-frame { display: none !important; }
-  body { top: 0 !important; }
+  /* ── UNIFIED NAV ── */
+  .blee-nav { background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 28px;height:60px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10000;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .blee-nav .nav-logo { font-size:17px;font-weight:800;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0; }
+  .blee-nav .nav-logo span { color:#f59e0b; }
+  .blee-nav .nav-links { display:flex;align-items:center;gap:20px;flex:1;justify-content:center; }
+  .blee-nav .nav-links a { color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:500;text-decoration:none;white-space:nowrap;transition:color .15s; }
+  .blee-nav .nav-links a:hover { color:#fff; }
+  .blee-nav .nav-links a.active { color:#fff;font-weight:600; }
+  .blee-nav .nav-right { display:flex;align-items:center;gap:8px;flex-shrink:0; }
+  .blee-nav .nav-subscribe { background:#f59e0b;color:#000;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap; }
+  .blee-nav .nav-subscribe:hover { background:#fbbf24; }
+  .blee-nav .lang-btn { background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit; }
+  .blee-nav .lang-btn.active { background:#f59e0b;color:#000;border-color:#f59e0b; }
+  .blee-nav .lang-btn:hover { background:rgba(255,255,255,0.10);color:#fff; }
+  @media (max-width:960px) { .blee-nav .nav-links { display:none; } }
 
   /* LEGAL BAR */
   .legal-bar {
@@ -347,11 +274,8 @@
 <body>
 
 <!-- NAV -->
-<nav>
-  <a href="index.html" class="nav-logo">
-    <div class="icon">B</div>
-    <div class="brand">BLEE <span>Quant Analytics</span></div>
-  </a>
+<nav class="blee-nav">
+  <a href="index.html" class="nav-logo">BLEE <span>Quant</span></a>
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="mission.html">Our Mission</a>
@@ -359,18 +283,15 @@
     <a href="index2.html">Daily Signal</a>
     <a href="Algorithm185History.html">Backtest</a>
     <a href="performance1.html" class="active">Performance</a>
-    <a href="subscribe.html" class="btn-nav">Subscribe</a>
-    <a href="contact.html" style="color:rgba(255,255,255,0.6);font-size:13px;text-decoration:none;padding:6px 10px;">Contact</a>
+    <a href="contact.html">Contact</a>
   </div>
-  <div class="nav-translate">
+  <div class="nav-right">
+    <a href="subscribe.html" class="nav-subscribe">Subscribe</a>
     <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
     <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
     <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
     <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
 </nav>
 
 <!-- Mobile Menu -->

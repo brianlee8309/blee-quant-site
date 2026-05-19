@@ -17,16 +17,23 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #0b1120; color: #e8edf5; -webkit-font-smoothing: antialiased; min-height: 100vh; }
-  nav { background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 28px;height:58px;
-    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10000; }
-  .nav-brand { font-size:16px;font-weight:800;color:#fff;text-decoration:none;display:flex;align-items:center;gap:6px; }
-  .nav-brand span { color:#f59e0b; }
-  .nav-links { display:flex;align-items:center;gap:18px; }
-  .nav-links a { color:rgba(255,255,255,0.55);font-size:13px;text-decoration:none;transition:color .15s; }
-  .nav-links a:hover { color:#fff; }
-  .nav-links a.active { color:#f59e0b;font-weight:600; }
-  .nav-links a.nav-cta { background:#f59e0b;color:#000;padding:5px 13px;border-radius:6px;font-weight:700; }
-  @media(max-width:680px){.nav-links{gap:10px;}.nav-links a{font-size:11px;}}
+  /* ── UNIFIED SITE NAV ── */
+  .blee-nav { background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 28px;height:60px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10000;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .blee-nav .nav-logo { font-size:17px;font-weight:800;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0; }
+  .blee-nav .nav-logo span { color:#f59e0b; }
+  .blee-nav .nav-links { display:flex;align-items:center;gap:20px;flex:1;justify-content:center; }
+  .blee-nav .nav-links a { color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:500;text-decoration:none;white-space:nowrap;transition:color .15s; }
+  .blee-nav .nav-links a:hover { color:#fff; }
+  .blee-nav .nav-links a.active { color:#fff;font-weight:600; }
+  .blee-nav .nav-right { display:flex;align-items:center;gap:8px;flex-shrink:0; }
+  .blee-nav .nav-subscribe { background:#f59e0b;color:#000;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap; }
+  .blee-nav .nav-subscribe:hover { background:#fbbf24; }
+  .blee-nav .lang-btn { background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit; }
+  .blee-nav .lang-btn.active { background:#f59e0b;color:#000;border-color:#f59e0b; }
+  .blee-nav .lang-btn:hover { background:rgba(255,255,255,0.10);color:#fff; }
+  @media(max-width:960px){ .blee-nav .nav-links { display:none; } }
   .container { max-width:1100px;margin:0 auto;padding:36px 20px 80px; }
   .page-header { margin-bottom:28px; }
   .page-header h1 { font-size:26px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px; }
@@ -87,8 +94,8 @@
 </style>
 </head>
 <body>
-<nav>
-  <a class="nav-brand" href="index.html">BLEE <span>Quant</span></a>
+<nav class="blee-nav">
+  <a href="index.html" class="nav-logo">BLEE <span>Quant</span></a>
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="mission.html">Our Mission</a>
@@ -96,20 +103,16 @@
     <a href="index2.html">Daily Signal</a>
     <a href="Algorithm185History.html" class="active">Backtest</a>
     <a href="performance1.html">Performance</a>
-    <a href="subscribe.html" class="nav-cta">Subscribe</a>
-    <a href="contact.html" style="color:rgba(255,255,255,0.55);font-size:13px;text-decoration:none;">Contact</a>
-    <div class="nav-translate" style="display:flex;align-items:center;gap:3px;margin-left:14px;border-left:1px solid rgba(255,255,255,0.12);padding-left:14px;">
-      <button class="lang-btn active" data-lang="en" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇺🇸 EN</button>
-      <button class="lang-btn"        data-lang="ja" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇯🇵 JP</button>
-      <button class="lang-btn"        data-lang="vi" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇻🇳 VI</button>
-      <button class="lang-btn"        data-lang="ko" style="background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit;">🇰🇷 KR</button>
-    </div>
+    <a href="contact.html">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="subscribe.html" class="nav-subscribe">Subscribe</a>
+    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
+    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
+    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
   </div>
 </nav>
-<style>
-  .lang-btn.active{background:#f59e0b!important;color:#000!important;border-color:#f59e0b!important;}
-  .lang-btn:hover{background:rgba(255,255,255,0.10)!important;color:#fff!important;}
-</style>
 <script src="i18n.js" defer></script>
 <script src="analytics.js" defer></script>
 
