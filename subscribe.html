@@ -94,6 +94,14 @@
 
 <script src="i18n.js" defer></script>
 <script src="analytics.js" defer></script>
+<script>
+function goPlan(plan) {
+  const promo = (document.getElementById('promo-input')?.value || '').trim();
+  let url = 'login.html?tab=signup&plan=' + encodeURIComponent(plan);
+  if (promo) url += '&promo=' + encodeURIComponent(promo);
+  window.location.href = url;
+}
+</script>
 
 <div id="notice" class="notice"></div>
 
@@ -199,10 +207,4 @@
   </div>
 </div>
 
-<p class="guarantee" style="margin-top:16px;">🔒 Cancel anytime · No contracts · 💳 Online payment coming soon — register now and we'll be in touch!</p>
-
-<div class="faq">
-  <h2>Frequently asked questions</h2>
-  <div class="faq-item">
-    <div class="faq-q">How does access work right now?</div>
-    <div class="faq-a">Register with your chosen plan — your account is c
+<p class="guarantee" style="margin-top:16px;">🔒 Cancel anytime · No contracts · 💳 Online 
