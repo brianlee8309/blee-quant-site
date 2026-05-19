@@ -48,7 +48,10 @@
 
       // Read tier from Firestore then draw the bar
       var tier = "basic";
-      if (user.email === (typeof BLEE_ADMIN_EMAIL !== "undefined" ? BLEE_ADMIN_EMAIL : "")) {
+      var _adminEmail   = (typeof BLEE_ADMIN_EMAIL !== "undefined" ? BLEE_ADMIN_EMAIL : "");
+      var _userEmailLc  = (user.email || "").trim().toLowerCase();
+      var _adminEmailLc = (_adminEmail || "").trim().toLowerCase();
+      if (_adminEmailLc && _userEmailLc === _adminEmailLc) {
         tier = "admin";
         drawBar(user.email, tier);
       } else if (db) {
