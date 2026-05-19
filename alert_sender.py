@@ -4,17 +4,16 @@ alert_sender.py
 ---------------
 Sends daily allocation alerts to BLEE subscribers at 3:51 PM ET.
 
-  Email  → SendGrid   (free up to 100/day)
+  Email  → Gmail SMTP (Google Workspace, via App Password)
   SMS    → Twilio     (~$0.008 per message)
 
 Setup (one-time):
-  pip install sendgrid twilio firebase-admin --break-system-packages
+  pip install twilio firebase-admin --break-system-packages
 
-  1. SendGrid:
-       https://app.sendgrid.com → Settings → API Keys → Create key (Full Access)
-       Sender Authentication → verify your sender email
+  1. Gmail App Password already configured in GMAIL_CONFIG below.
+     To regenerate: myaccount.google.com/apppasswords
 
-  2. Twilio:
+  2. Twilio (optional, for SMS):
        https://console.twilio.com → get Account SID + Auth Token
        Buy a phone number (~$1/mo) for sending SMS
 
@@ -22,8 +21,6 @@ Setup (one-time):
        console.firebase.google.com → Project Settings → Service accounts
        → Generate new private key → save as firebase-service-account.json
        in C:\\Kei\\ComposerInvest\\
-
-  4. Fill in ALERT_CONFIG below (or use environment variables).
 
 Runs automatically via run_alerts.bat → Windows Task Scheduler at 3:51 PM.
 """
@@ -33,8 +30,11 @@ from __future__ import annotations
 import json
 import logging
 import os
+import smtplib
 import sys
 from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from pathlib import Path
 
 # ── Paths ──────────────────────────────────────────────────────────────────
@@ -43,20 +43,27 @@ SIGNAL_FILE  = SCRIPT_DIR / "signal_latest.json"
 SERVICE_ACCT = SCRIPT_DIR / "firebase-service-account.json"
 LOG_FILE     = SCRIPT_DIR / "alert_sender.log"
 
-# ── Configuration (override with env vars) ─────────────────────────────────
-ALERT_CONFIG = {
-    # SendGrid
-    "SENDGRID_API_KEY":    os.environ.get("SENDGRID_API_KEY",    "PASTE_YOUR_SENDGRID_KEY"),
-    "FROM_EMAIL":          os.environ.get("BLEE_FROM_EMAIL",     "alerts@yourdomain.com"),
-    "FROM_NAME":           os.environ.get("BLEE_FROM_NAME",      "BLEE Quant Analytics"),
+# ── Gmail SMTP Configuration ───────────────────────────────────────────────
+GMAIL_CONFIG = {
+    "SMTP_HOST":  "smtp.gmail.com",
+    "SMTP_PORT":  587,
+    "SMTP_USER":  "brianlee1004@bleeanalytics.com",
+    "SMTP_PASS":  os.environ.get("BLEE_SMTP_PASS", "tijo thnd heao vwbc"),
+}
 
-    # Twilio
+# ── Alert Configuration ────────────────────────────────────────────────────
+ALERT_CONFIG = {
+    # From address (must be an alias on the Workspace account)
+    "FROM_EMAIL":  "dailysignal@bleeanalytics.com",
+    "FROM_NAME":   "BLEE Quant Analytics",
+
+    # Twilio (optional — for SMS alerts to Pro subscribers)
     "TWILIO_ACCOUNT_SID":  os.environ.get("TWILIO_ACCOUNT_SID",  "PASTE_YOUR_TWILIO_SID"),
     "TWILIO_AUTH_TOKEN":   os.environ.get("TWILIO_AUTH_TOKEN",   "PASTE_YOUR_TWILIO_TOKEN"),
     "TWILIO_FROM_NUMBER":  os.environ.get("TWILIO_FROM_NUMBER",  "+1XXXXXXXXXX"),
 
     # Who gets alerts: "premium" = only Pro, "basic" = all paid members
-    "ALERT_TIER":          os.environ.get("BLEE_ALERT_TIER",     "premium"),
+    "ALERT_TIER":  os.environ.get("BLEE_ALERT_TIER", "premium"),
 }
 
 # ── Logging ────────────────────────────────────────────────────────────────
@@ -181,31 +188,29 @@ def get_subscribers(required_tier: str) -> list[dict]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Email sender (SendGrid)
+# Email sender (Gmail SMTP via Google Workspace App Password)
 # ═══════════════════════════════════════════════════════════════════════════
 
-def send_email(to_email: str, subject: str, body: str) -> bool:
+def send_email(to_email: str, subject: str, body: str,
+               from_alias: str | None = None) -> bool:
+    """Send email via Gmail SMTP using a Workspace alias as the From address."""
+    from_addr = from_alias or ALERT_CONFIG["FROM_EMAIL"]
     try:
-        import sendgrid
-        from sendgrid.helpers.mail import Mail
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"]    = f"{ALERT_CONFIG['FROM_NAME']} <{from_addr}>"
+        msg["To"]      = to_email
+        msg.attach(MIMEText(body, "plain", "utf-8"))
 
-        sg  = sendgrid.SendGridAPIClient(api_key=ALERT_CONFIG["SENDGRID_API_KEY"])
-        msg = Mail(
-            from_email   =(ALERT_CONFIG["FROM_EMAIL"], ALERT_CONFIG["FROM_NAME"]),
-            to_emails    = to_email,
-            subject      = subject,
-            plain_text_content = body,
-        )
-        resp = sg.send(msg)
-        if resp.status_code in (200, 201, 202):
-            log.info("  ✓ Email → %s", to_email)
-            return True
-        else:
-            log.warning("  ✗ Email → %s  status=%d", to_email, resp.status_code)
-            return False
-    except ImportError:
-        log.error("sendgrid not installed. Run: pip install sendgrid --break-system-packages")
-        return False
+        with smtplib.SMTP(GMAIL_CONFIG["SMTP_HOST"], GMAIL_CONFIG["SMTP_PORT"]) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(GMAIL_CONFIG["SMTP_USER"], GMAIL_CONFIG["SMTP_PASS"])
+            server.sendmail(from_addr, to_email, msg.as_string())
+
+        log.info("  ✓ Email → %s", to_email)
+        return True
     except Exception as e:
         log.error("  ✗ Email → %s  error=%s", to_email, e)
         return False

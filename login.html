@@ -203,4 +203,237 @@ auth.onAuthStateChanged(async user => {
           if (pd.subscriptionStatus) upgrades.subscriptionStatus = pd.subscriptionStatus;
           await db.collection("users").doc(user.uid).set(upgrades, { merge: true });
           pendingDoc.ref.delete().catch(() => {});
-          tier = pend
+          tier = pendingTier;
+        }
+      }
+    }
+
+    if (tier === "admin" || tier === "manager") {
+      window.location.href = nextParam || BLEE_PAGES.admin;
+      return;
+    }
+    if (tier === "marketer") {
+      window.location.href = nextParam || (BLEE_PAGES.marketing || "marketing.html");
+      return;
+    }
+    // Free-tier (newsletter) → home; paid members → signal page
+    if (tier === "free") {
+      window.location.href = nextParam || BLEE_PAGES.home;
+    } else {
+      window.location.href = nextParam || BLEE_PAGES.signal;
+    }
+  } catch (e) {
+    console.error("Login redirect error:", e);
+    // Firestore read failed — send to signal as safe fallback
+    window.location.href = nextParam || BLEE_PAGES.signal;
+  }
+});
+
+function showTab(tab) {
+  document.getElementById("panel-login").style.display  = tab === "login"  ? "" : "none";
+  document.getElementById("panel-signup").style.display = tab === "signup" ? "" : "none";
+  document.getElementById("tab-login").classList.toggle("active",  tab === "login");
+  document.getElementById("tab-signup").classList.toggle("active", tab === "signup");
+  clearMsg();
+}
+function showMsg(txt, type) {
+  const el = document.getElementById("msg");
+  el.textContent = txt; el.className = "msg " + type; el.style.display = "block";
+}
+function clearMsg() { document.getElementById("msg").style.display = "none"; }
+
+// ── Sign In ──────────────────────────────────────────────────────────────
+async function signIn() {
+  clearMsg();
+  const email = document.getElementById("li-email").value.trim();
+  const pass  = document.getElementById("li-pass").value;
+  if (!email || !pass) { showMsg("Please fill in all fields.", "error"); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch (e) { showMsg(friendlyError(e), "error"); }
+}
+
+// ── Promo code lookup ─────────────────────────────────────────────────────
+// Returns { referredBy, referredByUid } or {} if not found / invalid
+async function resolvePromoCode(code) {
+  if (!code) return {};
+  try {
+    const snap = await db.collection("promoCodes").doc(code).get();
+    if (snap.exists) {
+      const d = snap.data();
+      return { referredBy: code, referredByUid: d.uid || null };
+    }
+  } catch (e) { /* ignore — promo code lookup failure is non-fatal */ }
+  return {};
+}
+
+// ── Sign Up ──────────────────────────────────────────────────────────────
+async function signUp() {
+  clearMsg();
+  const email = document.getElementById("su-email").value.trim();
+  const pass  = document.getElementById("su-pass").value;
+  const pass2 = document.getElementById("su-pass2").value;
+  const hint  = document.getElementById("su-hint").value.trim();
+  if (!email || !pass || !pass2) { showMsg("Please fill in all fields.", "error"); return; }
+  if (pass !== pass2)  { showMsg("Passwords do not match.", "error"); return; }
+  if (pass.length < 8) { showMsg("Password must be at least 8 characters.", "error"); return; }
+
+  const planCfg = PLANS[planParam] || null;
+  let tier   = planCfg ? planCfg.tier   : "none";
+  let status = planCfg ? planCfg.status : "pending";
+
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    const uid  = cred.user.uid;
+
+    // Check if admin pre-invited this email — inherit their tier/status/promoCode
+    // Use direct doc ID lookup (avoids Firestore WHERE permission issues)
+    let inheritedPromoCode = "";
+    const pendingId  = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+    const pendingDoc = await db.collection("users").doc(pendingId).get().catch(() => null);
+    if (pendingDoc && pendingDoc.exists) {
+      const pd = pendingDoc.data();
+      tier   = pd.tier               || tier;
+      status = pd.subscriptionStatus || status;
+      if (pd.promoCode) inheritedPromoCode = pd.promoCode;
+      pendingDoc.ref.delete().catch(() => {});
+    }
+
+    // Resolve referral promo code (from URL or marketer registration)
+    const refData = promoParam ? await resolvePromoCode(promoParam) : {};
+
+    // Build user doc
+    const userDoc = {
+      email,
+      tier,
+      subscriptionStatus: status,
+      plan:         planParam || "none",
+      securityHint: hint,
+      createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt:  firebase.firestore.FieldValue.serverTimestamp(),
+      source:       "self_registered",
+    };
+    // If this user is a marketer, store their promo code
+    if (tier === "marketer" && inheritedPromoCode) {
+      userDoc.promoCode = inheritedPromoCode;
+      // Update promoCodes collection with their real UID now that they've registered
+      db.collection("promoCodes").doc(inheritedPromoCode).set(
+        { uid: uid, email, updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      ).catch(() => {});
+    }
+    // If referred by a marketer, store referral info
+    if (refData.referredBy) {
+      userDoc.referredBy    = refData.referredBy;
+      userDoc.referredByUid = refData.referredByUid || null;
+    }
+    await db.collection("users").doc(uid).set(userDoc);
+
+    // Redirect based on actual tier (admin-invited users get their role immediately)
+    showMsg("✅ Account created! Redirecting…", "success");
+    setTimeout(() => {
+      if (tier === "admin" || tier === "manager") {
+        window.location.href = nextParam || BLEE_PAGES.admin;
+      } else if (tier === "marketer") {
+        window.location.href = nextParam || BLEE_PAGES.marketing || "marketing.html";
+      } else if (planParam === "free" || tier === "free") {
+        window.location.href = BLEE_PAGES.home;
+      } else {
+        window.location.href = BLEE_PAGES.subscribe + "?registered=1&plan=" + (planParam || "starter");
+      }
+    }, 1400);
+  } catch (e) { showMsg(friendlyError(e), "error"); }
+}
+
+// ── Google Sign-In ───────────────────────────────────────────────────────
+async function signInGoogle() {
+  clearMsg();
+  _googleSignInInProgress = true;
+  try {
+    const result = await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    const user   = result.user;
+    const snap   = await db.collection("users").doc(user.uid).get();
+
+    // Case A: brand-new user, no Firestore doc yet
+    // Case B: existing user whose tier is "none" (registered before without a plan)
+    const existingTier = snap.exists ? (snap.data().tier || "none") : "none";
+    const needsWrite   = !snap.exists || existingTier === "none";
+
+    if (needsWrite) {
+      const planCfg = PLANS[planParam] || null;
+      let tier   = planCfg ? planCfg.tier   : "none";
+      let status = planCfg ? planCfg.status : "pending";
+
+      let gInheritedPromo = "";
+      const gPendingId  = "pending_" + user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      const gPendingDoc = await db.collection("users").doc(gPendingId).get().catch(() => null);
+      if (gPendingDoc && gPendingDoc.exists) {
+        const gpd = gPendingDoc.data();
+        tier   = gpd.tier               || tier;
+        status = gpd.subscriptionStatus || status;
+        if (gpd.promoCode) gInheritedPromo = gpd.promoCode;
+        gPendingDoc.ref.delete().catch(() => {});
+      }
+
+      const gRefData = promoParam ? await resolvePromoCode(promoParam) : {};
+      const gDoc = {
+        email: user.email, tier, subscriptionStatus: status,
+        plan: planParam || "none", securityHint: "",
+        createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
+        source: "google",
+      };
+      if (tier === "marketer" && gInheritedPromo) {
+        gDoc.promoCode = gInheritedPromo;
+        db.collection("promoCodes").doc(gInheritedPromo).set(
+          { uid: user.uid, email: user.email,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+          { merge: true }
+        ).catch(() => {});
+      }
+      if (gRefData.referredBy) {
+        gDoc.referredBy    = gRefData.referredBy;
+        gDoc.referredByUid = gRefData.referredByUid || null;
+      }
+      await db.collection("users").doc(user.uid).set(gDoc, { merge: true });
+
+      window.location.href = planParam === "free"
+        ? BLEE_PAGES.home
+        : BLEE_PAGES.subscribe + "?registered=1&plan=" + (planParam || "starter");
+      return;
+    }
+    // Existing user with a real tier — let onAuthStateChanged handle the redirect
+    _googleSignInInProgress = false;
+  } catch (e) {
+    _googleSignInInProgress = false;
+    showMsg(friendlyError(e), "error");
+  } finally {
+    // Safety reset (covers the redirect path too, after navigation starts)
+    setTimeout(() => { _googleSignInInProgress = false; }, 3000);
+  }
+}
+
+async function forgotPassword() {
+  const email = document.getElementById("li-email").value.trim();
+  if (!email) { showMsg("Enter your email address first.", "error"); return; }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showMsg("Password reset email sent — check your inbox.", "success");
+  } catch (e) { showMsg(friendlyError(e), "error"); }
+}
+
+function friendlyError(e) {
+  const map = {
+    "auth/user-not-found":       "No account found with that email.",
+    "auth/wrong-password":       "Incorrect password.",
+    "auth/email-already-in-use": "An account with this email already exists. Sign in instead.",
+    "auth/invalid-email":        "Invalid email address.",
+    "auth/weak-password":        "Password is too weak (min 8 characters).",
+    "auth/too-many-requests":    "Too many attempts. Try again later.",
+    "auth/popup-closed-by-user": "Google sign-in was cancelled.",
+  };
+  return map[e.code] || e.message;
+}
+</script>
+</body>
+</html>

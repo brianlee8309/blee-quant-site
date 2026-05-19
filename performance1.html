@@ -391,7 +391,7 @@
 <!-- ═══════════ 3-YEAR SECTION ═══════════ -->
 <section class="light" id="three-year">
   <div class="inner">
-    <div class="sec-label" data-perf-label="period_3yr">📅 Performance on 3 year period from 05/15/2023 to 05/18/2026</div>
+    <div class="sec-label" data-perf-label="period_3yr">📅 Performance on 3 year period from 05/15/2023 to 05/19/2026</div>
     <h2 class="sec-title">3-Year Performance: Outperforms S&amp;P 500 by Over 47 Points</h2>
     <p class="sec-sub">$10,000 starting investment. Fees included ($30.06 regulatory fees, $185.25 slippage). Calm Growth Model returned +106% vs SPY's +86.4% — outperforming by over 19 percentage points with significantly lower drawdown.</p>
 
@@ -412,15 +412,15 @@
     <!-- Result strip -->
     <div class="result-strip">
       <div class="rs">
-        <div class="rv g" data-perf="blee_cum_3yr">+120.98%</div>
+        <div class="rv g" data-perf="blee_cum_3yr">+120.43%</div>
         <div class="rl">BLEE Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+85.85%</div>
+        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+84.92%</div>
         <div class="rl">SPY Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv g" data-perf="blee_final_3yr">$22,098</div>
+        <div class="rv g" data-perf="blee_final_3yr">$22,043</div>
         <div class="rl">BLEE Final Value</div>
       </div>
       <div class="rs">
@@ -454,21 +454,21 @@
         <tbody>
           <tr>
             <td class="metric">Cumulative Return</td>
-            <td class="blee blee-win" data-perf="blee_cum_3yr">+120.98%</td>
-            <td class="spy" data-perf="spy_cum_3yr">+85.85%</td>
-            <td><span class="badge" data-perf="edge_cum_3yr">+35.1pp ahead</span></td>
+            <td class="blee blee-win" data-perf="blee_cum_3yr">+120.43%</td>
+            <td class="spy" data-perf="spy_cum_3yr">+84.92%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+35.5pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric">Annualized Return</td>
-            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.30%</td>
-            <td class="spy" data-perf="spy_ann_3yr">+23.02%</td>
-            <td><span class="badge" data-perf="edge_ann_3yr">+7.3pp</span></td>
+            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.19%</td>
+            <td class="spy" data-perf="spy_ann_3yr">+22.78%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+7.4pp</span></td>
           </tr>
           <tr>
             <td class="metric">Final Value ($10K start)</td>
-            <td class="blee blee-win" data-perf="blee_final_3yr">$22,098</td>
-            <td class="spy" data-perf="spy_final_3yr">$18,585</td>
-            <td><span class="badge" data-perf="edge_final_3yr">+$3,513</span></td>
+            <td class="blee blee-win" data-perf="blee_final_3yr">$22,043</td>
+            <td class="spy" data-perf="spy_final_3yr">$18,492</td>
+            <td><span class="badge" data-perf="edge_final_3yr">+$3,551</span></td>
           </tr>
           <tr>
             <td class="metric">Max Drawdown</td>
@@ -661,7 +661,7 @@
 <!-- ═══════════ 6-YEAR SECTION ═══════════ -->
 <section class="white" id="six-year">
   <div class="inner">
-    <div class="sec-label" data-perf-label="period_6yr">📅 Performance on full 3-year period from 05/15/2023 to 05/18/2026 (Full Backtest)</div>
+    <div class="sec-label" data-perf-label="period_6yr">📅 Performance on full 3-year period from 05/15/2023 to 05/19/2026 (Full Backtest)</div>
     <h2 class="sec-title">Full Period: Outperforms S&amp;P 500 in Both Return and Risk</h2>
     <p class="sec-sub">Complete available history including the 2021 bull run, the 2022 bear market, and the 2023–2026 recovery. Calm Growth Model outperformed SPY in cumulative return while maintaining significantly lower drawdown throughout.</p>
 
@@ -902,7 +902,7 @@
     <a href="contact.html">Contact</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/18/2026 04:18 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/19/2026 03:51 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
@@ -1000,4 +1000,53 @@
     type: 'line',
     data: {
       labels: labels6,
-      datasets: 
+      datasets: [
+        { label: 'BLEE Calm Growth Model', data: blee6, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#10b981' },
+        { label: 'S&P 500 (SPY)',    data: spy6,  borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.06)', borderWidth: 2,   fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#f472b6' }
+      ]
+    },
+    options: chartOpts('BLEE +172% ($27,197)  vs  SPY ~+155%  ·  BLEE outperforms on risk-adjusted basis')
+  });
+
+  function chartOpts(footerNote) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: 'rgba(255,255,255,0.70)',
+          bodyColor: '#fff',
+          borderColor: 'rgba(255,255,255,0.10)',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: ctx => {
+              const val = ctx.raw;
+              const pct = ((val - 10000) / 10000 * 100).toFixed(1);
+              return ` ${ctx.dataset.label}: $${val.toLocaleString()}  (${pct > 0 ? '+' : ''}${pct}%)`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: 'rgba(255,255,255,0.35)', font: { size: 11 }, maxTicksLimit: 8 } },
+        y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: 'rgba(255,255,255,0.35)', font: { size: 11 }, callback: v => '$' + v.toLocaleString() } }
+      }
+    };
+  }
+})();
+</script>
+
+
+<!-- ══════════════════════════════════════ GOOGLE TRANSLATE ══ -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({ pageLanguage:'en', includedLanguages:'en,ja,vi,ko', autoDisplay:false }, 'google_translate_element');
+}
+(function () {
+  function setLang(lang) {
+    document.querySelectorAll('.lang-

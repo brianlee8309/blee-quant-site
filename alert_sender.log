@@ -1,0 +1,6 @@
+2026-05-19 06:49:07,751 [INFO] ============================================================
+2026-05-19 06:49:07,752 [INFO] BLEE Alert Sender — 2026-05-19 06:49:07
+2026-05-19 06:49:07,776 [INFO] Signal: date=2026-05-18  positions=3
+2026-05-19 06:49:07,778 [WARNING] firebase-service-account.json not found — using empty subscriber list.
+2026-05-19 06:49:07,778 [WARNING] Download from Firebase Console → Project Settings → Service accounts.
+2026-05-19 06:49:07,779 [WARNING] No subscribers found — nothing to send.

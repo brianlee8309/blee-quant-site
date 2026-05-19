@@ -7,15 +7,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg:     #0b1120;
-    --card:   #111827;
-    --text:   #e8edf5;
-    --muted:  rgba(255,255,255,0.45);
-    --border: rgba(255,255,255,0.07);
-    --accent: #f59e0b;
-    --pos:    #22c55e;
-    --neg:    #ef4444;
-    --shadow: 0 1px 4px rgba(0,0,0,0.4);
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --pos: #16a34a;
+    --neg: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   }
   * { box-sizing: border-box; }
   body {
@@ -92,77 +92,54 @@
   }
   .download-row a:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* ── UNIFIED SITE NAV ── */
-  .blee-nav {
+  /* ── SITE NAV ── */
+  .site-nav {
     background: #0d1829;
     border-bottom: 1px solid rgba(255,255,255,0.07);
-    padding: 0 28px; height: 60px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 10000;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 0 28px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
   }
-  .blee-nav .nav-logo {
-    font-size: 17px; font-weight: 800; color: #fff;
-    text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  .site-nav-brand {
+    font-size: 16px; font-weight: 800;
+    color: #fff; text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
   }
-  .blee-nav .nav-logo span { color: #f59e0b; }
-  .blee-nav .nav-links {
-    display: flex; align-items: center; gap: 20px;
-    flex: 1; justify-content: center;
+  .site-nav-brand span { color: #f59e0b; }
+  .site-nav-links { display: flex; align-items: center; gap: 18px; }
+  .site-nav-links a {
+    color: rgba(255,255,255,0.55); font-size: 13px; text-decoration: none;
+    transition: color .15s;
   }
-  .blee-nav .nav-links a {
-    color: rgba(255,255,255,0.55); font-size: 13.5px; font-weight: 500;
-    text-decoration: none; white-space: nowrap; transition: color .15s;
+  .site-nav-links a:hover { color: #fff; }
+  .site-nav-links a.nav-cta {
+    background: #f59e0b; color: #000; padding: 5px 13px;
+    border-radius: 6px; font-weight: 700;
   }
-  .blee-nav .nav-links a:hover { color: #fff; }
-  .blee-nav .nav-links a.active { color: #fff; font-weight: 600; }
-  .blee-nav .nav-right {
-    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  .site-nav-links a.nav-cta:hover { background: #fbbf24; color: #000; }
+  @media (max-width: 600px) {
+    .site-nav { padding: 0 14px; }
+    .site-nav-links { gap: 10px; }
+    .site-nav-links a { font-size: 12px; }
   }
-  .blee-nav .nav-subscribe {
-    background: #f59e0b; color: #000; padding: 6px 14px;
-    border-radius: 6px; font-size: 13px; font-weight: 700;
-    text-decoration: none; white-space: nowrap;
-  }
-  .blee-nav .nav-subscribe:hover { background: #fbbf24; }
-  .blee-nav .lang-btn {
-    background: transparent; border: 1px solid rgba(255,255,255,0.18);
-    color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 700;
-    padding: 4px 8px; border-radius: 5px; cursor: pointer; font-family: inherit;
-  }
-  .blee-nav .lang-btn.active { background: #f59e0b; color: #000; border-color: #f59e0b; }
-  .blee-nav .lang-btn:hover  { background: rgba(255,255,255,0.10); color: #fff; }
-  @media (max-width: 960px) { .blee-nav .nav-links { display: none; } }
 </style>
-
-<!-- ── Auth guard: requires Starter or Pro tier ─────────────────────────── -->
-<script>const BLEE_REQUIRED_TIER = "basic";</script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="auth_guard.js"></script>
-<script src="user_bar.js"></script>
 </head>
 <body>
 
-<nav class="blee-nav">
-  <a href="index.html" class="nav-logo">BLEE <span>Quant</span></a>
-  <div class="nav-links">
+<nav class="site-nav">
+  <a class="site-nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <div class="site-nav-links">
     <a href="index.html">Home</a>
-    <a href="mission.html">Our Mission</a>
     <a href="marketDailySummary.html">Market Forecast</a>
-    <a href="index2.html" class="active">Daily Signal</a>
+    <a href="index2.html">Daily Signal</a>
     <a href="Algorithm185History.html">Backtest</a>
     <a href="performance1.html">Performance</a>
-    <a href="contact.html">Contact</a>
-  </div>
-  <div class="nav-right">
-    <a href="subscribe.html" class="nav-subscribe">Subscribe</a>
-    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
-    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
-    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
-    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
+    <a href="index.html#pricing" class="nav-cta">Subscribe</a>
   </div>
 </nav>
 
@@ -207,10 +184,10 @@
   </div>
 
   <!-- RSI Signal Strip -->
-  <div id="rsi-strip" style="display:none;background:#131f35;border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
-    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
+  <div id="rsi-strip" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
     <div style="font-size:22px;font-weight:800;" id="rsi-val-display">—</div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.45);" id="rsi-signal-display">—</div>
+    <div style="font-size:12px;color:#64748b;" id="rsi-signal-display">—</div>
   </div>
 
   <div class="row">
@@ -279,7 +256,7 @@
         <span id="calc-total-amt" style="font-size:26px;font-weight:900;color:#34d399;letter-spacing:-0.01em;"></span>
       </div>
 
-      <p style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">
+      <p style="margin-top:12px;font-size:12px;color:#64748b;line-height:1.5;">
         ⚠️ Prices are estimated from the latest portfolio snapshot and may differ from live market prices.
         Always verify before placing orders. Fractional shares availability depends on your broker.
       </p>
@@ -302,11 +279,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-18", "run_datetime": "05/18/2026 03:51 PM", "total_value": 1004.59, "day_change_pct": -0.2671, "total_return_pct": 0.459, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.9974, "shares": 8.2914, "market_value": 833.783184}, {"ticker": "GLDM", "weight_pct": 9.2413, "shares": 1.0289, "market_value": 92.837647}, {"ticker": "TECL", "weight_pct": 7.6602, "shares": 0.41005, "market_value": 76.9540835}, {"ticker": "$USD", "weight_pct": 0.1015, "shares": 1.02, "market_value": 1.02}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18"], "baseline_date": null};
-
-// ── Dark theme defaults for all Chart.js instances ──────────────────────────
-Chart.defaults.color = "rgba(255,255,255,0.45)";
-Chart.defaults.borderColor = "rgba(255,255,255,0.07)";
+const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-19", "run_datetime": "05/19/2026 03:51 PM", "total_value": 1001.76, "day_change_pct": -0.2817, "total_return_pct": 0.176, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 81.182, "shares": 8.08644, "market_value": 813.24922758}, {"ticker": "TQQQ", "weight_pct": 9.6009, "shares": 1.31768, "market_value": 96.177594968}, {"ticker": "GLDM", "weight_pct": 9.1175, "shares": 1.0289, "market_value": 91.335453}, {"ticker": "$USD", "weight_pct": 0.0998, "shares": 1.0, "market_value": 1.0}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}, {"date": "2026-05-19", "total": 1001.76}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015, 0.0998], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413, 9.1175], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974, 81.182], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602, 0.0], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0, 9.6009], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -318,10 +291,10 @@ const fmtPct = (n, signed = false) => {
   return s;
 };
 const colorPalette = [
-  "#3b82f6","#f87171","#4ade80","#fb923c","#a78bfa",
-  "#22d3ee","#fbbf24","#f472b6","#818cf8","#86efac",
-  "#2dd4bf","#f43f5e","#c084fc","#38bdf8","#facc15",
-  "#34d399","#e879f9","#60a5fa","#fb7185","#67e8f9"
+  "#2563eb","#dc2626","#16a34a","#ea580c","#9333ea",
+  "#0891b2","#ca8a04","#db2777","#4f46e5","#65a30d",
+  "#0d9488","#b91c1c","#7c3aed","#0284c7","#a16207",
+  "#15803d","#be185d","#1d4ed8","#be123c","#0e7490"
 ];
 const colorFor = (i) => colorPalette[i % colorPalette.length];
 
@@ -436,14 +409,7 @@ new Chart(document.getElementById("value-line"), {
       tooltip: { callbacks: { label: (ctx) => fmt$(ctx.parsed.y) } }
     },
     scales: {
-      y: {
-        ticks: { callback: (v) => "$" + Number(v).toLocaleString(), color: "rgba(255,255,255,0.45)" },
-        grid:  { color: "rgba(255,255,255,0.06)" }
-      },
-      x: {
-        ticks: { color: "rgba(255,255,255,0.35)", maxRotation: 30 },
-        grid:  { color: "rgba(255,255,255,0.04)" }
-      }
+      y: { ticks: { callback: (v) => "$" + Number(v).toLocaleString() } }
     }
   }
 });
@@ -495,12 +461,12 @@ new Chart(document.getElementById("weights-stack"), {
     responsive: true, maintainAspectRatio: false,
     interaction: { mode: "index", intersect: false },
     plugins: {
-      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 }, color: "rgba(255,255,255,0.6)" } },
+      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 } } },
       tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
     },
     scales: {
-      y: { stacked: true, max: 100, ticks: { callback: (v) => v + "%", color: "rgba(255,255,255,0.45)" }, grid: { color: "rgba(255,255,255,0.06)" } },
-      x: { stacked: true, ticks: { color: "rgba(255,255,255,0.35)", maxRotation: 30 }, grid: { color: "rgba(255,255,255,0.04)" } }
+      y: { stacked: true, max: 100, ticks: { callback: (v) => v + "%" } },
+      x: { stacked: true }
     }
   }
 });
@@ -533,11 +499,11 @@ new Chart(document.getElementById("weights-stack"), {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 18px;">
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">✋ Existing Members</div>
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">✋ Existing Members</div>
           <div style="font-size:13px;color:#e2e8f0;line-height:1.5;">No prior-day data yet. Use the Adjustment Guide when history builds after tomorrow.</div>
         </div>
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 18px;">
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">👋 New Members</div>
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">👋 New Members</div>
           <div style="font-size:13px;color:#e2e8f0;line-height:1.5;">Use the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.</div>
         </div>
       </div>`;
@@ -574,11 +540,11 @@ new Chart(document.getElementById("weights-stack"), {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
           <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Your current holdings are within tolerance of today's targets.<br><strong style="color:#4ade80;">Skip reallocation today</strong> — no trades required.</div>
         </div>
         <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
           <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Follow today's allocation using the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.</div>
         </div>
       </div>`;
@@ -592,7 +558,7 @@ new Chart(document.getElementById("weights-stack"), {
       ? `<span style="display:inline-block;background:#14532d;color:#4ade80;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:800;">BUY ▲</span>`
       : c.diff <= -1.0
       ? `<span style="display:inline-block;background:#450a0a;color:#f87171;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:800;">SELL ▼</span>`
-      : `<span style="color:rgba(255,255,255,0.45);font-size:12px;">no change</span>`;
+      : `<span style="color:#64748b;font-size:12px;">no change</span>`;
     return `<tr style="border-bottom:1px solid #1e3a5f;">
       <td style="padding:11px 14px;font-weight:800;font-size:15px;color:#f1f5f9;">${c.ticker}</td>
       <td style="padding:11px 14px;text-align:right;color:#94a3b8;font-size:14px;">${c.yest.toFixed(1)}%</td>
@@ -629,7 +595,7 @@ new Chart(document.getElementById("weights-stack"), {
       <div style="font-size:13px;color:#94a3b8;margin-bottom:14px;">Enter your <em>current total portfolio value</em> to calculate exactly how much to sell and buy.</div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
         <div style="position:relative;min-width:180px;max-width:280px;flex:1;">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:rgba(255,255,255,0.45);font-size:16px;">$</span>
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#64748b;font-size:16px;">$</span>
           <input id="adj-input" type="number" min="1" step="1" placeholder="e.g. 10000"
             style="width:100%;padding:12px 12px 12px 26px;border:2px solid #334155;border-radius:8px;
                    font-size:16px;font-weight:700;background:#0f172a;color:#f1f5f9;outline:none;box-sizing:border-box;">
@@ -643,11 +609,11 @@ new Chart(document.getElementById("weights-stack"), {
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
-        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
         <div style="font-size:13px;color:#e2e8f0;line-height:1.6;">Only adjust the positions above. Use the Adjustment Guide for exact amounts — no need to start over.</div>
       </div>
       <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
-        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
         <div style="font-size:13px;color:#e2e8f0;line-height:1.6;">Skip the adjustment guide — use the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your full initial position.</div>
       </div>
     </div>`;
@@ -713,7 +679,7 @@ function runAdjCalc() {
       </div>
       <div style="text-align:right;">
         <div style="font-size:26px;font-weight:900;color:${color};letter-spacing:-0.01em;">$${Math.abs(r.dollarChange).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;">${sharesText}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px;">${sharesText}</div>
       </div>
     </div>`;
   }).join("");
@@ -767,4 +733,67 @@ function runCalc() {
         <div style="display:inline-block;background:${c.badge};color:#fff;font-size:13px;font-weight:800;
              padding:3px 10px;border-radius:6px;letter-spacing:0.04em;margin-bottom:8px;">${a.ticker}</div>
         <div style="font-size:28px;font-weight:900;color:#f1f5f9;line-height:1;">${a.weight_pct.toFixed(1)}%</div>
-        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">of portfoli
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">of portfolio</div>
+      </div>
+      <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.1);border-right:1px solid rgba(255,255,255,0.1);padding:0 12px;">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Invest</div>
+        <div style="font-size:30px;font-weight:900;color:#34d399;letter-spacing:-0.01em;line-height:1;">
+          $${dollarAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">${priceText}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Buy approx.</div>
+        <div style="line-height:1.2;">${sharesText}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById("calc-total-amt").textContent =
+    "$" + totalDollars.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById("calc-results").style.display = "block";
+}
+
+function clearCalc() {
+  document.getElementById("calc-input").value = "";
+  document.getElementById("calc-results").style.display = "none";
+  document.getElementById("calc-cards").innerHTML = "";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const inp = document.getElementById("calc-input");
+  if (inp) inp.addEventListener("keydown", function(e) { if (e.key === "Enter") runCalc(); });
+});
+
+// ── RSI Override banner ──────────────────────────────────────────────────────
+(function() {
+  const rsiToday = DATA.rsi14_today;
+  const rsiSignal = DATA.rsi14_signal || "";
+  const rsiOverride = DATA.rsi14_override || false;
+
+  if (rsiToday != null) {
+    const strip = document.getElementById("rsi-strip");
+    if (strip) {
+      strip.style.display = "flex";
+      const rsiColor = rsiToday >= 70 ? "#ef4444" : rsiToday <= 30 ? "#22c55e" : rsiToday >= 55 ? "#f97316" : "#64748b";
+      document.getElementById("rsi-val-display").textContent = rsiToday.toFixed(1);
+      document.getElementById("rsi-val-display").style.color = rsiColor;
+      document.getElementById("rsi-signal-display").textContent = rsiSignal;
+    }
+  }
+
+  if (rsiOverride) {
+    const banner = document.getElementById("rsi-override-banner");
+    if (banner) {
+      banner.style.display = "flex";
+      const detailEl = document.getElementById("rsi-override-detail");
+      if (detailEl && DATA.rsi14_override_why) {
+        detailEl.textContent = " — " + DATA.rsi14_override_why;
+      }
+    }
+  }
+})();
+</script>
+</body>
+</html>
