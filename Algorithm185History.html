@@ -318,7 +318,8 @@
       <table class="alloc-table" id="allocTable">
         <thead>
           <tr>
-            <th>Date</th>
+            <th>Signal Date</th>
+            <th title="The next trading day — this is the market day the signal was evaluated against">Market Date</th>
             <th>UPRO</th><th>GLDM</th><th>$USD</th><th>TECL</th><th>TQQQ</th>
             <th>SGOV</th><th>GLD</th><th>UDOW</th><th>SQQQ</th><th>PSQ</th>
             <th>Strategy Signal</th>
@@ -1165,6 +1166,14 @@ function fmtDate(iso) {
   return d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"});
 }
 
+// Returns the next trading day (Mon–Fri) after a given ISO date string
+function nextTradingDay(iso) {
+  var d = new Date(iso + "T12:00:00");
+  d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0 || d.getDay() === 6) { d.setDate(d.getDate() + 1); }
+  return d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"});
+}
+
 // ── Per-row accuracy / spike helpers ─────────────────────────────────────
 function accuracyFor(r, sig) {
   if (sig.alwaysAccurate) {
@@ -1307,8 +1316,10 @@ function render() {
                   : "#94a3b8";
     var acc = accuracyFor(r, sig);
     var spk = spikeFor(r, sig, acc);
+    var mktDate = nextTradingDay(date);
     return '<tr' + (isSpecial ? ' class="special"' : '') + '>'
       + '<td style="white-space:nowrap;color:#cbd5e1;">' + fmtDate(date) + '</td>'
+      + '<td style="white-space:nowrap;color:#6b7280;font-size:12px;" title="Market day this signal was evaluated against">' + mktDate + '</td>'
       + '<td>' + pillFor("upro", upro) + '</td>'
       + '<td>' + pillFor("gldm", gldm) + '</td>'
       + '<td>' + pillFor("usd",  usd) + '</td>'
