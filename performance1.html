@@ -273,10 +273,11 @@
   /* PRICING */
   .pricing-section { background: var(--light); padding: 60px 32px; }
   .pricing-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 24px; max-width: 860px; margin: 40px auto 0;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 1050px; margin: 40px auto 0;
   }
-  @media (max-width: 680px) { .pricing-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .pricing-grid { grid-template-columns: 1fr; } }
   .plan {
     background: #fff; border: 1px solid var(--border);
     border-radius: 18px; padding: 36px 32px;
@@ -379,7 +380,7 @@
   <a href="index2.html">📊 Daily Signal</a>
   <a href="Algorithm185History.html">📈 Backtest</a>
   <a href="performance1.html" class="active">📊 Performance</a>
-  <a href="index.html#pricing" class="btn-nav-mob">Subscribe</a>
+  <a href="subscribe.html" class="btn-nav-mob">Subscribe</a>
   <div class="mob-lang">
     <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
     <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
@@ -854,9 +855,35 @@
   </div>
 
   <div class="pricing-grid">
-    <!-- Starter -->
+    <!-- Free -->
     <div class="plan">
-      <span class="plan-badge">Starter</span>
+      <span class="plan-badge">Free</span>
+      <h3>Newsletter</h3>
+      <div class="plan-price">
+        <span class="dollar">$</span>
+        <span class="amount">0</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="annual-saving">
+        <div class="as-num">Always free</div>
+        <div class="as-lbl">No credit card required</div>
+      </div>
+      <p class="plan-desc">Public research, market commentary, and occasional newsletters for self-directed investors.</p>
+      <ul>
+        <li>Weekly market commentary</li>
+        <li>Public research access</li>
+        <li>Occasional newsletters</li>
+        <li class="muted">Daily Signal page not included</li>
+        <li class="muted">Market Weather Forecast not included</li>
+        <li class="muted">Email/SMS alerts not included</li>
+      </ul>
+      <a href="subscribe.html?plan=free" class="btn-plan outline">Join Free</a>
+      <p class="plan-fine">Instant access · No credit card</p>
+    </div>
+
+    <!-- Starter (Featured) -->
+    <div class="plan featured">
+      <span class="plan-badge" style="background:rgba(245,158,11,0.25);color:var(--gold);">⭐ Most Popular</span>
       <h3>Market Intelligence</h3>
       <div class="plan-price">
         <span class="dollar">$</span>
@@ -864,7 +891,7 @@
         <span class="per">/month</span>
       </div>
       <div class="annual-saving">
-        <div class="as-num">$159/year</div>
+        <div class="as-num" style="color:#10b981;">$159/year</div>
         <div class="as-lbl">Annual membership · about $13.25/mo</div>
       </div>
       <p class="plan-desc">For investors who want market weather, daily allocation visibility, and historical context before placing their own trades.</p>
@@ -877,39 +904,34 @@
         <li>3-year backtest and allocation history</li>
         <li>Basic self-directed rebalancing guidance</li>
         <li>Email support</li>
-        <li class="muted">Daily Email/SMS alerts not included</li>
-        <li class="muted">IBKR/API automation builder guidance not included</li>
       </ul>
-      <button class="btn-plan outline">Start Starter</button>
-      <p class="plan-fine">Educational research only. Subscribers make their own trading decisions.</p>
+      <a href="subscribe.html?plan=starter" class="btn-plan gold-btn">Get Started — $19/mo</a>
+      <p class="plan-fine">Register now · admin activates within 24h<br>💳 Online payment coming soon!</p>
     </div>
 
-    <!-- Pro -->
-    <div class="plan featured">
-      <span class="plan-badge">Pro · Best Value</span>
-      <h3>Daily Rebalance Signals</h3>
+    <!-- Pro (Coming Soon) -->
+    <div class="plan" style="opacity:0.55;pointer-events:none;">
+      <span class="plan-badge" style="background:rgba(107,114,128,0.2);color:#9ca3af;">🔜 Coming Soon</span>
+      <h3>Brokerage Integration</h3>
       <div class="plan-price">
         <span class="dollar">$</span>
-        <span class="amount">39</span>
+        <span class="amount">49</span>
         <span class="per">/month</span>
       </div>
       <div class="annual-saving">
-        <div class="as-num">$299/year</div>
-        <div class="as-lbl">Annual membership · about $24.92/mo</div>
+        <div class="as-num">$399/year</div>
+        <div class="as-lbl">Annual membership · about $33.25/mo</div>
       </div>
-      <p class="plan-desc">For serious DIY investors who want daily alerts and implementation guidance while keeping full control of their own brokerage account.</p>
+      <p class="plan-desc">Daily email &amp; SMS signals — plus possible integration of our tools with your investment firm.</p>
       <ul>
         <li>Everything in Starter</li>
-        <li><strong>Daily Rebalance Signals</strong></li>
-        <li>Daily email alerts</li>
-        <li>Daily SMS alerts</li>
-        <li>Portfolio rebalance instruction format</li>
-        <li>Priority allocation-change notifications</li>
-        <li>IBKR/API automation builder guidance</li>
-        <li>Example workflow for self-directed execution</li>
+        <li>Daily email signal alert</li>
+        <li>Daily SMS signal alert</li>
+        <li>Possible integration with Schwab, IBKR, Robinhood, Alpaca</li>
+        <li>You stay in full control — approve every action yourself</li>
       </ul>
-      <button class="btn-plan gold-btn">Upgrade to Pro</button>
-      <p class="plan-fine">BLEE does not custody assets, place trades for subscribers, or manage client money.</p>
+      <button class="btn-plan" style="background:#374151;color:#6b7280;cursor:not-allowed;" disabled>Coming Soon</button>
+      <p class="plan-fine">Want to be notified? <a href="contact.html" style="color:var(--gold);pointer-events:auto;">Contact us →</a></p>
     </div>
   </div>
 </section>
@@ -929,7 +951,8 @@
     <a href="index2.html">Daily Signal</a>
     <a href="Algorithm185History.html">Backtest</a>
     <a href="performance1.html">Performance</a>
-    <a href="index.html#pricing">Subscribe</a>
+    <a href="subscribe.html">Subscribe</a>
+    <a href="contact.html">Contact</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
   <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/18/2026 04:18 PM ET</span></p>
