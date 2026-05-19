@@ -622,12 +622,30 @@
     box-shadow: 0 12px 48px rgba(37,99,235,0.28);
     transform: scale(1.03);
   }
+  .plan.green-featured {
+    background: linear-gradient(160deg,#052e16 0%,#064e23 60%,#0a5c2a 100%);
+    border: 1.5px solid #16a34a;
+    box-shadow: 0 12px 48px rgba(22,163,74,0.35), 0 0 0 1px rgba(74,222,128,0.15);
+    transform: scale(1.03);
+    position: relative;
+  }
+  .plan.green-featured h3 { color: #fff; font-size: 22px; font-weight: 900; }
+  .plan.green-featured .plan-price .amount,
+  .plan.green-featured .plan-price .dollar { color: #4ade80; }
+  .plan.green-featured .plan-price .per { color: rgba(255,255,255,0.5); }
+  .plan.green-featured .plan-desc { color: rgba(255,255,255,0.60); }
+  .plan.green-featured ul li { color: rgba(255,255,255,0.88); font-weight:500; }
+  .plan.green-featured ul li::before { color: #4ade80; }
+  .plan.green-featured ul li.muted::before { content:"—"; color: rgba(255,255,255,0.18); }
+  .plan.green-featured ul li.muted { color: rgba(255,255,255,0.30); }
+  .plan.green-featured .plan-fine { color: rgba(255,255,255,0.35); }
   .plan-badge {
     display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
     text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
     background: rgba(245,158,11,0.15); color: var(--gold);
     margin-bottom: 20px;
   }
+  .plan.green-featured .plan-badge { background: rgba(74,222,128,0.15); color: #4ade80; }
   .plan h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
   .plan.featured h3 { color: #fff; }
   .plan-price {
@@ -1527,25 +1545,31 @@
 
     <div class="pricing-grid">
       <!-- FREE / NEWSLETTER -->
-      <div class="plan">
+      <div class="plan green-featured">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:#16a34a;color:#fff;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
+                    box-shadow:0 2px 8px rgba(22,163,74,0.5);">
+          ✅ START HERE — FREE
+        </div>
         <span class="plan-badge">📧 Free</span>
         <h3>Newsletter &amp; Market Forecast</h3>
         <div class="plan-price">
           <span class="dollar">$</span>
-          <span class="amount" style="color:var(--muted);">0</span>
+          <span class="amount">0</span>
           <span class="per">/month</span>
         </div>
-        <p class="plan-desc">Free access to newsletter, backtest section, and market forecast for registered users</p>
+        <p class="plan-desc">Free access — register once and unlock the Market Forecast, Backtest history, and weekly newsletter</p>
         <ul>
+          <li>📊 Daily Market Forecast — by our Quant Analytics Research Engine</li>
+          <li>Backtest section access</li>
           <li>Weekly market newsletter</li>
           <li>BLEE research updates</li>
-          <li>Backtest section access</li>
-          <li>Market Forecast section access</li>
           <li class="muted">Daily signal page</li>
           <li class="muted">Email &amp; SMS alerts</li>
           <li class="muted">Auto-trade tools</li>
         </ul>
-        <a href="subscribe.html?plan=free" class="btn-plan outline">Join Free</a>
+        <a href="subscribe.html?plan=free" class="btn-plan" style="background:#16a34a;color:#fff;font-size:15px;font-weight:800;">Join Free — No Credit Card</a>
         <p class="plan-fine">Instant access · No credit card</p>
       </div>
 
