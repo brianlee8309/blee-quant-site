@@ -134,7 +134,12 @@ def fetch_and_store(today: dt.date | None = None) -> dict | None:
             log.warning(f"rsi_tracker: yfinance returned no data for {TICKER}")
             return None
 
-        closes = df["Close"].dropna().tolist()
+        # yfinance with auto_adjust=True may return multi-level columns (ticker, field)
+        # Flatten to a simple Series before calling .tolist()
+        close_col = df["Close"]
+        if hasattr(close_col, "columns"):          # multi-level: pick first ticker column
+            close_col = close_col.iloc[:, 0]
+        closes = close_col.dropna().tolist()
         dates  = [d.date().isoformat() for d in df.index]
 
         if len(closes) < RSI_PERIOD + 1:

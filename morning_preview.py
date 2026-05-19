@@ -444,6 +444,59 @@ def inject_into_index2(section_html: str) -> bool:
 
 
 # ── Git push ───────────────────────────────────────────────────────────────────
+def inject_rsi_into_backtest() -> bool:
+    """
+    Reads rsi_history.csv and injects the last 30 rows into Algorithm185History.html
+    between the RSI_INLINE_DATA_START / RSI_INLINE_DATA_END markers.
+    Returns True on success.
+    """
+    import csv, re
+    rsi_csv  = SCRIPT_DIR / "rsi_history.csv"
+    html_file = SCRIPT_DIR / "Algorithm185History.html"
+
+    if not rsi_csv.exists():
+        log("  RSI: rsi_history.csv not found — skipping RSI injection")
+        return False
+    if not html_file.exists():
+        log("  RSI: Algorithm185History.html not found — skipping RSI injection")
+        return False
+
+    try:
+        with open(rsi_csv, newline="") as f:
+            rows = list(csv.DictReader(f))
+        if not rows:
+            log("  RSI: rsi_history.csv is empty — skipping injection")
+            return False
+
+        # Sort newest-first, take last 30 trading days
+        rows.sort(key=lambda r: r["date"], reverse=True)
+        recent = rows[:30]
+
+        js_array = "var RSI_INLINE_DATA = [\n"
+        for row in recent:
+            close_val = float(row.get("close", 0))
+            rsi_val   = float(row.get("rsi14", 0))
+            js_array += f'  {{date:"{row["date"]}", rsi14:{rsi_val:.2f}, close:{close_val:.4f}}},\n'
+        js_array += "];"
+
+        html = html_file.read_text(encoding="utf-8")
+        pattern     = r"(// RSI_INLINE_DATA_START\n).*?(// RSI_INLINE_DATA_END)"
+        replacement = r"\g<1>" + js_array + "\n// RSI_INLINE_DATA_END"
+        new_html    = re.sub(pattern, replacement, html, flags=re.DOTALL)
+
+        if new_html == html:
+            log("  RSI: RSI_INLINE_DATA markers not found in HTML — skipping")
+            return False
+
+        html_file.write_text(new_html, encoding="utf-8")
+        log(f"  RSI: Injected {len(recent)} RSI rows into Algorithm185History.html")
+        return True
+
+    except Exception as e:
+        log(f"  RSI injection error: {e}")
+        return False
+
+
 def git_push(as_of: str) -> None:
     try:
         # Remove stale lock file if present
@@ -452,7 +505,7 @@ def git_push(as_of: str) -> None:
             lock.unlink(missing_ok=True)
 
         subprocess.run(
-            ["git", "add", "morning_preview.html", "index2.html"],
+            ["git", "add", "morning_preview.html", "index2.html", "Algorithm185History.html", "rsi_history.csv"],
             cwd=SCRIPT_DIR, check=True, capture_output=True
         )
         subprocess.run(
@@ -532,7 +585,11 @@ def main() -> None:
     section = build_index2_section(changes, symphony_name, prev_date, now_str)
     inject_into_index2(section)
 
-    # Push both files to GitHub
+    # Inject RSI history into Algorithm185History.html
+    log("Injecting RSI history into backtest page...")
+    inject_rsi_into_backtest()
+
+    # Push all updated files to GitHub
     git_push(now_str)
     log("Morning Preview complete.")
     log("=" * 60)
