@@ -7,15 +7,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg:     #0b1120;
-    --card:   #111827;
-    --text:   #f9fafb;
-    --muted:  #9ca3af;
-    --border: #1f2937;
-    --accent: #3b82f6;
-    --pos:    #4ade80;
-    --neg:    #f87171;
-    --shadow: 0 1px 4px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --pos: #16a34a;
+    --neg: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   }
   * { box-sizing: border-box; }
   body {
@@ -92,16 +92,56 @@
   }
   .download-row a:hover { border-color: var(--accent); color: var(--accent); }
 
+  /* ── SITE NAV ── */
+  .site-nav {
+    background: #0d1829;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 28px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+  }
+  .site-nav-brand {
+    font-size: 16px; font-weight: 800;
+    color: #fff; text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .site-nav-brand span { color: #f59e0b; }
+  .site-nav-links { display: flex; align-items: center; gap: 18px; }
+  .site-nav-links a {
+    color: rgba(255,255,255,0.55); font-size: 13px; text-decoration: none;
+    transition: color .15s;
+  }
+  .site-nav-links a:hover { color: #fff; }
+  .site-nav-links a.nav-cta {
+    background: #f59e0b; color: #000; padding: 5px 13px;
+    border-radius: 6px; font-weight: 700;
+  }
+  .site-nav-links a.nav-cta:hover { background: #fbbf24; color: #000; }
+  @media (max-width: 600px) {
+    .site-nav { padding: 0 14px; }
+    .site-nav-links { gap: 10px; }
+    .site-nav-links a { font-size: 12px; }
+  }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="nav.js"></script>
-<script>const BLEE_REQUIRED_TIER = "basic";</script>
-<script src="auth_guard.js"></script>
 </head>
 <body>
+
+<nav class="site-nav">
+  <a class="site-nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <div class="site-nav-links">
+    <a href="index.html">Home</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="performance1.html">Performance</a>
+    <a href="index.html#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
 
 <div class="container">
   <header>
@@ -144,7 +184,7 @@
   </div>
 
   <!-- RSI Signal Strip -->
-  <div id="rsi-strip" style="display:none;background:#1a2236;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
+  <div id="rsi-strip" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
     <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
     <div style="font-size:22px;font-weight:800;" id="rsi-val-display">—</div>
     <div style="font-size:12px;color:#64748b;" id="rsi-signal-display">—</div>
@@ -239,7 +279,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-19", "run_datetime": "05/19/2026 03:51 PM", "total_value": 1001.76, "day_change_pct": -0.2817, "total_return_pct": 0.176, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 81.182, "shares": 8.08644, "market_value": 813.24922758}, {"ticker": "TQQQ", "weight_pct": 9.6009, "shares": 1.31768, "market_value": 96.177594968}, {"ticker": "GLDM", "weight_pct": 9.1175, "shares": 1.0289, "market_value": 91.335453}, {"ticker": "$USD", "weight_pct": 0.0998, "shares": 1.0, "market_value": 1.0}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}, {"date": "2026-05-19", "total": 1001.76}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015, 0.0998], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413, 9.1175], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974, 81.182], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602, 0.0], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0, 9.6009], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19"], "baseline_date": null};
+const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-20", "run_datetime": "05/20/2026 03:51 PM", "total_value": 15075.36, "day_change_pct": 1404.8874, "total_return_pct": 1407.536, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.3197, "shares": 123.38444, "market_value": 12409.994636756}, {"ticker": "GLDM", "weight_pct": 9.2691, "shares": 15.5373, "market_value": 1397.3470755}, {"ticker": "TQQQ", "weight_pct": 8.3113, "shares": 16.45862, "market_value": 1252.95359405}, {"ticker": "$USD", "weight_pct": 0.0999, "shares": 15.06, "market_value": 15.06}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}, {"date": "2026-05-19", "total": 1001.76}, {"date": "2026-05-20", "total": 15075.36}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015, 0.0998, 0.0999], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413, 9.1175, 9.2691], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974, 81.182, 82.3197], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602, 0.0, 0.0], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0, 9.6009, 8.3113], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -757,4 +797,3 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              

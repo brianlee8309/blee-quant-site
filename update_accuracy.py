@@ -119,4 +119,14 @@ if _vspec:
 
 # ── Report accuracy stats ─────────────────────────────────────────────────
 total_days = sum(len(v) for v in price_map.values())
-print(f"\n✅ Injected {total_days} tota
+print(f"\n✅ Injected {total_days} total price records into {HTML_FILE.name}")
+print(f"   Updated: {now_str}")
+
+# Quick sanity check per symbol
+for sym, days in price_map.items():
+    up   = sum(1 for v in days.values() if v["change"] == "up")
+    down = sum(1 for v in days.values() if v["change"] == "down")
+    flat = sum(1 for v in days.values() if v["change"] == "flat")
+    print(f"   {sym}: {len(days)} days — ▲{up} up / ▼{down} down / ►{flat} flat")
+
+print("\nOpen Algorithm185History.html in your browser to see the updated Accuracy column.")

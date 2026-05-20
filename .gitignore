@@ -1,5 +1,8 @@
-# Never push sensitive config to GitHub
+# Never push sensitive credentials to GitHub
 composer_config.json
+firebase-service-account.json
+*-service-account.json
+alert_sender.log
 
 # Never push raw API response snapshots (contain account data)
 composer_raw_*.json

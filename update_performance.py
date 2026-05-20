@@ -392,4 +392,19 @@ def iso_to_mdy(iso):
 
 period_3yr_label = (
     "\U0001F4C5 Performance on 3 year period from "
-    + iso_to_mdy(stats_3yr["start_date"]) + " to " + iso_to_mdy(stats_3yr["end_dat
+    + iso_to_mdy(stats_3yr["start_date"]) + " to " + iso_to_mdy(stats_3yr["end_date"])
+)
+period_6yr_label = (
+    "\U0001F4C5 Performance on full "
+    + str(round(stats_3yr["n_days"] / 252)) + "-year period from "
+    + iso_to_mdy(stats_3yr["start_date"]) + " to " + iso_to_mdy(stats_3yr["end_date"])
+    + " (Full Backtest)"
+)
+
+perf_replacements["period_3yr"] = period_3yr_label
+perf_replacements["period_6yr"] = period_6yr_label
+
+print()
+print("Patching index.html + performance1.html...")
+for fp in [SCRIPT_DIR / "index.html", SCRIPT_DIR / "performance1.html"]:
+    patch_file(fp, perf_replacements)
