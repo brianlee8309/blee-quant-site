@@ -591,9 +591,64 @@ async function loadUsers() {
     updateStats();
     renderTable();
   } catch (e) {
-    document.querySelector("#user-tbody").innerHTML =
-      `<tr><td colspan="7" class="empty" style="color:#f87171;">
-        Error: ${e.message}</td></tr>`;
+    const isPermDenied = (e.code === "permission-denied") ||
+                         (e.message || "").toLowerCase().includes("permission");
+    if (isPermDenied) {
+      document.querySelector("#user-tbody").innerHTML = `
+        <tr><td colspan="7" style="padding:24px;">
+          <div style="color:#f87171;font-weight:700;font-size:14px;margin-bottom:10px;">
+            ⚠️ Firestore security rules are blocking the user list.
+          </div>
+          <div style="color:#9ca3af;font-size:13px;line-height:1.7;margin-bottom:12px;">
+            Your admin email (<strong style="color:#f5a623;">${currentFirebaseUser?.email||''}</strong>)
+            is recognised by the site, but Firestore's own rules don't yet grant it
+            read access to the <code>users</code> collection.<br><br>
+            <strong style="color:#fff;">Fix in 30 seconds:</strong><br>
+            1. Go to
+            <a href="https://console.firebase.google.com/project/blee-quant/firestore/rules"
+               target="_blank" style="color:#60a5fa;">Firebase Console → Firestore → Rules</a><br>
+            2. Replace the entire rules block with the rules shown below<br>
+            3. Click <strong>Publish</strong> — then refresh this page.
+          </div>
+          <pre style="background:#0d1525;border:1px solid #1f2937;border-radius:8px;
+                      padding:14px;font-size:12px;color:#a5f3fc;overflow-x:auto;
+                      white-space:pre-wrap;line-height:1.6;">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Super-admin: full access by email — no Firestore doc required
+    function isSuperAdmin() {
+      return request.auth != null
+          &amp;&amp; request.auth.token.email == 'brianlee1004@gmail.com';
+    }
+
+    // Staff: admin or manager tier stored in their Firestore user doc
+    function isStaff() {
+      return request.auth != null
+          &amp;&amp; exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          &amp;&amp; get(/databases/$(database)/documents/users/$(request.auth.uid)).data.tier
+             in ['admin', 'manager'];
+    }
+
+    match /users/{userId} {
+      // Any signed-in user can read/write their own doc (needed for signup &amp; login)
+      allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
+      // Super-admin and staff can read/write ALL user docs
+      allow read, write: if isSuperAdmin() || isStaff();
+    }
+
+    match /promoCodes/{code} {
+      allow read:  if request.auth != null;
+      allow write: if isSuperAdmin() || isStaff() || request.auth != null;
+    }
+  }
+}</pre>
+        </td></tr>`;
+    } else {
+      document.querySelector("#user-tbody").innerHTML =
+        `<tr><td colspan="7" class="empty" style="color:#f87171;">
+          Error loading users: ${e.message}</td></tr>`;
+    }
   }
 }
 
@@ -891,78 +946,4 @@ async function loadMyPromoCode(user) {
         myPromoCode = userSnap.data().promoCode;
       }
     }
-  } catch (e) { /* ignore — not critical */ }
-
-  const display = document.getElementById("my-promo-display");
-  const input   = document.getElementById("my-promo-input");
-  const copyBtn = document.getElementById("copy-my-promo");
-  if (myPromoCode) {
-    display.textContent = myPromoCode;
-    input.value         = myPromoCode;
-    copyBtn.style.display = "";
-  } else {
-    display.textContent = "— not set —";
-    copyBtn.style.display = "none";
-  }
-}
-
-async function saveMyPromoCode() {
-  const user = currentFirebaseUser;
-  if (!user) return;
-  const code = document.getElementById("my-promo-input").value.trim().toUpperCase();
-  if (!code) { alert("Please enter a promo code."); return; }
-
-  try {
-    // Write to promoCodes collection
-    await db.collection("promoCodes").doc(code).set({
-      uid:       user.uid,
-      email:     user.email,
-      code,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    }, { merge: true });
-
-    // Also write to or update the admin's own users doc
-    await db.collection("users").doc(user.uid).set({
-      email:              user.email,
-      tier:               currentRole === "manager" ? "manager" : "admin",
-      subscriptionStatus: "active",
-      promoCode:          code,
-      updatedAt:          firebase.firestore.FieldValue.serverTimestamp(),
-    }, { merge: true });
-
-    myPromoCode = code;
-    document.getElementById("my-promo-display").textContent = code;
-    document.getElementById("copy-my-promo").style.display = "";
-    showToast('✅ Promo code "' + code + '" saved. Share the referral link to start recruiting!');
-  } catch (e) { alert("Failed to save: " + e.message); }
-}
-
-function copyMyPromoLink() {
-  const base = window.location.href.replace("admin.html", "");
-  const url  = base + "subscribe.html?promoCode=" + encodeURIComponent(myPromoCode);
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = document.getElementById("copy-my-promo");
-    const orig = btn.textContent;
-    btn.textContent = "✅ Copied!";
-    setTimeout(() => btn.textContent = orig, 2200);
-  }).catch(() => prompt("Copy this referral link:", url));
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.style.display = "block";
-  setTimeout(() => t.style.display = "none", 4000);
-}
-function doSignOut() {
-  try {
-    firebase.auth().signOut().finally(function () {
-      window.location.replace("login.html");
-    });
-  } catch (e) {
-    window.location.replace("login.html");
-  }
-}
-</script>
-</body>
-</html>
+  } catch (e) { /* ignore — not critical */ 
