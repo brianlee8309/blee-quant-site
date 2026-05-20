@@ -48,7 +48,7 @@ GMAIL_CONFIG = {
     "SMTP_HOST":  "smtp.gmail.com",
     "SMTP_PORT":  587,
     "SMTP_USER":  "brianlee1004@bleeanalytics.com",
-    "SMTP_PASS":  os.environ.get("BLEE_SMTP_PASS", "tijo thnd heao vwbc"),
+    "SMTP_PASS":  os.environ.get("BLEE_SMTP_PASS", ""),  # Set via Windows env var — never hardcode
 }
 
 # ── Alert Configuration ────────────────────────────────────────────────────

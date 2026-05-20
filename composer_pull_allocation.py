@@ -16,8 +16,8 @@ API reference:
 Config file (in the same folder as this script):
     composer_config.json
     {
-        "api_key":      "c6060860-bbe2-4ada-bc3d-a5f2d49a14d9",
-        "api_secret":   "0f3bdefd-b2fa-417d-8e5c-4423aae85bcd",
+        "api_key":      "YOUR-COMPOSER-API-KEY-ID",
+        "api_secret":   "YOUR-COMPOSER-API-SECRET",
         "symphony_id":  "<symphony id, e.g. yrsRTIwEWPQpoZOWArGm>",
         "account_uuid": "<optional; auto-discovered if omitted>"
     }
