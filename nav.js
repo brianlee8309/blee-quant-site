@@ -243,7 +243,7 @@
       return;
     }
     firebase.auth().onAuthStateChanged(function (user) {
-      var link = document.getElementElementById("blee-nav-signin-link");
+      var link = document.getElementById("blee-nav-signin-link");
       if (link) link.style.display = user ? "none" : "";
     });
   }
