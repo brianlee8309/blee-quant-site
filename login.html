@@ -427,4 +427,35 @@ async function signInGoogle() {
     _googleSignInInProgress = false;
   } catch (e) {
     _googleSignInInProgress = false;
-    showMsg(fri
+    showMsg(friendlyError(e), "error");
+  } finally {
+    // Safety reset (covers the redirect path too, after navigation starts)
+    setTimeout(() => { _googleSignInInProgress = false; }, 3000);
+  }
+}
+
+async function forgotPassword() {
+  const email = document.getElementById("li-email").value.trim();
+  if (!email) { showMsg("Enter your email address first.", "error"); return; }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showMsg("Password reset email sent — check your inbox.", "success");
+  } catch (e) { showMsg(friendlyError(e), "error"); }
+}
+
+function friendlyError(e) {
+  const map = {
+    "auth/user-not-found":       "No account found with that email.",
+    "auth/wrong-password":       "Incorrect password.",
+    "auth/email-already-in-use": "An account with this email already exists. Sign in instead.",
+    "auth/invalid-email":        "Invalid email address.",
+    "auth/weak-password":        "Password is too weak (min 8 characters).",
+    "auth/too-many-requests":    "Too many attempts. Try again later.",
+    "auth/popup-closed-by-user": "Google sign-in was cancelled.",
+    "auth/invalid-credential":   "Incorrect email or password.",
+  };
+  return map[e.code] || e.message;
+}
+</script>
+</body>
+</html>
