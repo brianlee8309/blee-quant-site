@@ -40,11 +40,11 @@ const STRIPE = {
 
 // Site pages — relative paths work for both local file:// and GitHub Pages
 const BLEE_PAGES = {
-  login:     "login.html",
-  subscribe: "subscribe.html",
-  home:      "index.html",
-  signal:    "index2.html",
-  forecast:  "marketDailySummary.html",
-  admin:     "admin.html",
-  marketing: "marketing.html",
+  login:     "/login.html",
+  subscribe: "/subscribe.html",
+  home:      "/index.html",
+  signal:    "/index2.html",
+  forecast:  "/marketDailySummary.html",
+  admin:     "/admin.html",
+  marketing: "/marketing.html",
 };
