@@ -208,6 +208,24 @@ auth.onAuthStateChanged(async user => {
       }
     }
 
+    // ── Auto-provision missing Firestore doc ─────────────────────────────
+    // If the user has a Firebase Auth account but no Firestore document
+    // (e.g. signup error mid-way, or account created before this system),
+    // create a free-tier doc so they get newsletter access immediately.
+    if (!snap.exists && tier === "none") {
+      await db.collection("users").doc(user.uid).set({
+        email:              user.email,
+        tier:               "free",
+        subscriptionStatus: "active",
+        plan:               "free",
+        createdAt:          firebase.firestore.FieldValue.serverTimestamp(),
+        lastLoginAt:        firebase.firestore.FieldValue.serverTimestamp(),
+        source:             "auto_provisioned",
+        notes:              "Auto-created on login — Firestore doc was missing"
+      });
+      tier = "free";
+    }
+
     if (tier === "admin" || tier === "manager") {
       window.location.href = nextParam || BLEE_PAGES.admin;
       return;
@@ -216,16 +234,19 @@ auth.onAuthStateChanged(async user => {
       window.location.href = nextParam || (BLEE_PAGES.marketing || "marketing.html");
       return;
     }
-    // Free-tier (newsletter) → home; paid members → signal page
+    // Free-tier (newsletter) → home; paid tiers → signal page; "none" → subscribe
     if (tier === "free") {
       window.location.href = nextParam || BLEE_PAGES.home;
-    } else {
+    } else if (tier === "basic" || tier === "premium") {
       window.location.href = nextParam || BLEE_PAGES.signal;
+    } else {
+      // tier = "none" and no Firestore doc — send to subscribe
+      window.location.href = BLEE_PAGES.subscribe + "?reason=no_subscription";
     }
   } catch (e) {
     console.error("Login redirect error:", e);
-    // Firestore read failed — send to signal as safe fallback
-    window.location.href = nextParam || BLEE_PAGES.signal;
+    // Firestore read failed — send to home as safe fallback (not signal)
+    window.location.href = nextParam || BLEE_PAGES.home;
   }
 });
 
@@ -406,34 +427,4 @@ async function signInGoogle() {
     _googleSignInInProgress = false;
   } catch (e) {
     _googleSignInInProgress = false;
-    showMsg(friendlyError(e), "error");
-  } finally {
-    // Safety reset (covers the redirect path too, after navigation starts)
-    setTimeout(() => { _googleSignInInProgress = false; }, 3000);
-  }
-}
-
-async function forgotPassword() {
-  const email = document.getElementById("li-email").value.trim();
-  if (!email) { showMsg("Enter your email address first.", "error"); return; }
-  try {
-    await auth.sendPasswordResetEmail(email);
-    showMsg("Password reset email sent — check your inbox.", "success");
-  } catch (e) { showMsg(friendlyError(e), "error"); }
-}
-
-function friendlyError(e) {
-  const map = {
-    "auth/user-not-found":       "No account found with that email.",
-    "auth/wrong-password":       "Incorrect password.",
-    "auth/email-already-in-use": "An account with this email already exists. Sign in instead.",
-    "auth/invalid-email":        "Invalid email address.",
-    "auth/weak-password":        "Password is too weak (min 8 characters).",
-    "auth/too-many-requests":    "Too many attempts. Try again later.",
-    "auth/popup-closed-by-user": "Google sign-in was cancelled.",
-  };
-  return map[e.code] || e.message;
-}
-</script>
-</body>
-</html>
+    showMsg(fri
