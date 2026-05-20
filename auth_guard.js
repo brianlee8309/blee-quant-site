@@ -196,7 +196,7 @@
     const bar = document.createElement("div");
     bar.id = "blee-member-bar";
     bar.style.cssText = [
-      "position:fixed;top:0;left:0;right:0;z-index:9999",
+      "position:fixed;top:0;left:0;right:0;z-index:10001",
       "background:#0a0f1e;border-bottom:1px solid #222",
       "display:flex;align-items:center;justify-content:flex-end",
       "padding:6px 20px;gap:12px;font-size:12px",
@@ -229,6 +229,15 @@
     document.body.style.paddingTop =
       (parseInt(document.body.style.paddingTop || "0") + 36) + "px";
     document.body.prepend(bar);
+
+    // Push the sticky site nav down so it doesn't overlap the fixed member bar.
+    // nav.js sets #blee-site-nav to position:sticky;top:0 and z-index:10000.
+    // We need sticky threshold at 36px so the nav sticks just below this bar.
+    var siteNav = document.getElementById("blee-site-nav");
+    if (siteNav) siteNav.style.top = "36px";
+    // Mobile dropdown also needs adjusting (nav height 60px + bar height 36px)
+    var mobileMenu = document.getElementById("blee-mobile-menu");
+    if (mobileMenu) mobileMenu.style.top = "96px";
 
     if (tier === "admin" || tier === "manager") {
       document.addEventListener("DOMContentLoaded", function () { _bleeInjectAdminNavLink(); });
