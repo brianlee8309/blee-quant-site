@@ -186,9 +186,10 @@
       document.body.insertBefore(wrap.firstChild, document.body.firstChild);
     }
 
-    // Push body content down so sticky nav doesn't cover it
-    document.body.style.paddingTop =
-      (parseInt(document.body.style.paddingTop || "0") + 60) + "px";
+    // NOTE: No paddingTop needed here. position:sticky keeps the nav in the
+    // normal document flow, so it naturally pushes content below it. Adding
+    // paddingTop here would double-count the nav's height and create a gap.
+    // auth_guard.js adds its own 36px paddingTop for the fixed member bar.
 
     // ── Wire language buttons ─────────────────────────────────────────────
     document.querySelectorAll(".blee-lang-btn").forEach(function (btn) {
@@ -242,7 +243,7 @@
       return;
     }
     firebase.auth().onAuthStateChanged(function (user) {
-      var link = document.getElementById("blee-nav-signin-link");
+      var link = document.getElementElementById("blee-nav-signin-link");
       if (link) link.style.display = user ? "none" : "";
     });
   }
