@@ -946,4 +946,87 @@ async function sendResetFor(email, uid) {
 }
 
 // ── My Referral Code (admin / manager) ───────────────────────────────────
-async function loadMyPromoCo
+async function loadMyPromoCode(user) {
+  try {
+    const snap = await db.collection("promoCodes")
+      .where("email", "==", user.email).limit(1).get();
+    if (!snap.empty) {
+      myPromoCode = snap.docs[0].data().code || "";
+    } else {
+      const userSnap = await db.collection("users").doc(user.uid).get();
+      if (userSnap.exists && userSnap.data().promoCode) {
+        myPromoCode = userSnap.data().promoCode;
+      }
+    }
+  } catch (e) { /* ignore — not critical */ }
+
+  const display = document.getElementById("my-promo-display");
+  const input   = document.getElementById("my-promo-input");
+  const copyBtn = document.getElementById("copy-my-promo");
+  if (myPromoCode) {
+    display.textContent = myPromoCode;
+    input.value         = myPromoCode;
+    copyBtn.style.display = "";
+  } else {
+    display.textContent = "— not set —";
+    copyBtn.style.display = "none";
+  }
+}
+
+async function saveMyPromoCode() {
+  const user = currentFirebaseUser;
+  if (!user) return;
+  const code = document.getElementById("my-promo-input").value.trim().toUpperCase();
+  if (!code) { alert("Please enter a promo code."); return; }
+  try {
+    await db.collection("promoCodes").doc(code).set({
+      uid: user.uid, email: user.email, code,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      tier: currentRole === "manager" ? "manager" : "admin",
+      subscriptionStatus: "active",
+      promoCode: code,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+    myPromoCode = code;
+    document.getElementById("my-promo-display").textContent = code;
+    document.getElementById("copy-my-promo").style.display = "";
+    showToast('✅ Promo code "' + code + '" saved.');
+  } catch (e) { alert("Failed to save: " + e.message); }
+}
+
+function copyMyPromoLink() {
+  const base = window.location.href.replace("admin.html", "");
+  const url  = base + "subscribe.html?promoCode=" + encodeURIComponent(myPromoCode);
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById("copy-my-promo");
+    const orig = btn.textContent;
+    btn.textContent = "✅ Copied!";
+    setTimeout(() => btn.textContent = orig, 2200);
+  }).catch(() => prompt("Copy this referral link:", url));
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 4000);
+}
+
+function doSignOut() {
+  var loginPage = (typeof BLEE_PAGES !== "undefined" && BLEE_PAGES.login) || "login.html";
+  try {
+    firebase.auth().signOut().finally(function () {
+      window.location.replace(loginPage);
+    });
+  } catch (e) {
+    window.location.replace(loginPage);
+  }
+}
+</script>
+</body>
+</html>

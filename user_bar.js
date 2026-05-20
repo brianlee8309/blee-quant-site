@@ -37,6 +37,18 @@
         old.remove();
       }
 
+      // Toggle the nav Sign In link — show when logged out, hide when logged in
+      (function toggleSignInLink() {
+        var link = document.getElementById("nav-signin-link");
+        if (!link) {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", toggleSignInLink);
+          }
+          return;
+        }
+        link.style.display = user ? "none" : "";
+      })();
+
       if (!user) return;  // not signed in — show nothing
 
       // If auth_guard.js already drew its own bar, piggy-back only an admin
