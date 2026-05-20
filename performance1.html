@@ -246,41 +246,7 @@
 </head>
 <body>
 
-<!-- NAV -->
-
-
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="index.html">🏠 Home</a>
-  <a href="marketDailySummary.html">📈 Market Forecast</a>
-  <a href="index2.html">📊 Daily Signal</a>
-  <a href="Algorithm185History.html">📈 Backtest</a>
-  <a href="performance1.html" class="active">📊 Performance</a>
-  <a href="subscribe.html" class="btn-nav-mob">Subscribe</a>
-  <div class="mob-lang">
-    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
-    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
-    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
-    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
-  </div>
 </div>
-<script>
-(function () {
-  var btn = document.getElementById('nav-hamburger');
-  var menu = document.getElementById('mobile-menu');
-  btn.addEventListener('click', function () {
-    var open = menu.classList.toggle('open');
-    btn.classList.toggle('open', open);
-  });
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.remove('open');
-      btn.classList.remove('open');
-    });
-  });
-})();
-</script>
-
 <!-- LEGAL BAR -->
 <div class="legal-bar">
   <p>⚖️ <strong>All results below are simulated backtests — not actual trading returns.</strong> Hypothetical performance was created with the benefit of hindsight and does not guarantee future results. Investing involves risk, including loss of principal.</p>
