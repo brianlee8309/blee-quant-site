@@ -107,16 +107,16 @@ if not pattern.search(html_text):
 new_html = pattern.sub(new_block, html_text)
 HTML_FILE.write_text(new_html, encoding="utf-8")
 
+# ── Integrity check — catch silent truncation immediately after write ──────
+import importlib.util as _ilu, pathlib as _pl
+_vspec = _ilu.spec_from_file_location("verify_html", _pl.Path(__file__).parent / "verify_html.py")
+if _vspec:
+    _vm = _ilu.module_from_spec(_vspec); _vspec.loader.exec_module(_vm)
+    if not _vm.verify(HTML_FILE):
+        print("\n❌ Aborting: integrity check failed after write. Restore with:")
+        print(f"   git checkout HEAD -- {HTML_FILE.name}")
+        sys.exit(1)
+
 # ── Report accuracy stats ─────────────────────────────────────────────────
 total_days = sum(len(v) for v in price_map.values())
-print(f"\n✅ Injected {total_days} total price records into {HTML_FILE.name}")
-print(f"   Updated: {now_str}")
-
-# Quick sanity check per symbol
-for sym, days in price_map.items():
-    up   = sum(1 for v in days.values() if v["change"] == "up")
-    down = sum(1 for v in days.values() if v["change"] == "down")
-    flat = sum(1 for v in days.values() if v["change"] == "flat")
-    print(f"   {sym}: {len(days)} days — ▲{up} up / ▼{down} down / ►{flat} flat")
-
-print("\nOpen Algorithm185History.html in your browser to see the updated Accuracy column.")
+print(f"\n✅ Injected {total_days} tota
