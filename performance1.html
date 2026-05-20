@@ -10,6 +10,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="nav.js"></script>
 <script src="user_bar.js"></script>
 <style>
   :root {
@@ -34,55 +35,7 @@
   }
 
   /* ── UNIFIED NAV ── */
-  .blee-nav { background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 28px;height:60px;
-    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10000;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-  .blee-nav .nav-logo { font-size:17px;font-weight:800;color:#fff;text-decoration:none;white-space:nowrap;flex-shrink:0; }
-  .blee-nav .nav-logo span { color:#f59e0b; }
-  .blee-nav .nav-links { display:flex;align-items:center;gap:20px;flex:1;justify-content:center; }
-  .blee-nav .nav-links a { color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:500;text-decoration:none;white-space:nowrap;transition:color .15s; }
-  .blee-nav .nav-links a:hover { color:#fff; }
-  .blee-nav .nav-links a.active { color:#fff;font-weight:600; }
-  .blee-nav .nav-right { display:flex;align-items:center;gap:8px;flex-shrink:0; }
-  .blee-nav .nav-subscribe { background:#f59e0b;color:#000;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap; }
-  .blee-nav .nav-subscribe:hover { background:#fbbf24; }
-  .blee-nav .lang-btn { background:transparent;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:inherit; }
-  .blee-nav .lang-btn.active { background:#f59e0b;color:#000;border-color:#f59e0b; }
-  .blee-nav .lang-btn:hover { background:rgba(255,255,255,0.10);color:#fff; }
-  @media (max-width:960px) { .blee-nav .nav-links { display:none; } }
-
-  /* LEGAL BAR */
-  .legal-bar {
-    background: #fefce8; border-bottom: 2px solid #fde047;
-    padding: 10px 32px; display: flex; align-items: center; gap: 12px;
-  }
-  .legal-bar p { font-size: 12px; color: #713f12; margin: 0; }
-  .legal-bar strong { color: #92400e; }
-
-  /* PAGE HEADER */
-  .page-header {
-    background: linear-gradient(160deg, var(--navy) 0%, #0f2044 100%);
-    padding: 56px 32px 48px; text-align: center;
-  }
-  .page-tag {
-    display: inline-block; font-size: 11px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase; color: #93c5fd;
-    background: rgba(37,99,235,0.22); border: 1px solid rgba(37,99,235,0.40);
-    padding: 4px 14px; border-radius: 20px; margin-bottom: 18px;
-  }
-  .page-header h1 {
-    font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: #fff;
-    letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 14px;
-  }
-  .page-header h1 em { font-style: normal; color: var(--emerald); }
-  .page-header p {
-    color: rgba(255,255,255,0.60); font-size: 16px; max-width: 580px; margin: 0 auto;
-  }
-
-  /* SHARED */
-  section { padding: 60px 32px; }
-  section.light { background: var(--light); }
-  section.white { background: #fff; }
+  
   .inner { max-width: 1080px; margin: 0 auto; }
   .sec-label {
     font-size: 11px; font-weight: 700; text-transform: uppercase;
@@ -294,25 +247,7 @@
 <body>
 
 <!-- NAV -->
-<nav class="blee-nav">
-  <a href="index.html" class="nav-logo">BLEE <span>Quant</span></a>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="mission.html">Our Mission</a>
-    <a href="marketDailySummary.html">Market Forecast</a>
-    <a href="index2.html">Daily Signal</a>
-    <a href="Algorithm185History.html">Backtest</a>
-    <a href="performance1.html" class="active">Performance</a>
-    <a href="contact.html">Contact</a>
-  </div>
-  <div class="nav-right">
-    <a href="subscribe.html" class="nav-subscribe">Subscribe</a>
-    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
-    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
-    <button class="lang-btn" data-lang="vi">🇻🇳 VI</button>
-    <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
-  </div>
-</nav>
+
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
@@ -412,15 +347,15 @@
     <!-- Result strip -->
     <div class="result-strip">
       <div class="rs">
-        <div class="rv g" data-perf="blee_cum_3yr">+120.43%</div>
+        <div class="rv g" data-perf="blee_cum_3yr">+120.34%</div>
         <div class="rl">BLEE Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+84.92%</div>
+        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+84.52%</div>
         <div class="rl">SPY Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv g" data-perf="blee_final_3yr">$22,043</div>
+        <div class="rv g" data-perf="blee_final_3yr">$22,034</div>
         <div class="rl">BLEE Final Value</div>
       </div>
       <div class="rs">
@@ -454,21 +389,21 @@
         <tbody>
           <tr>
             <td class="metric">Cumulative Return</td>
-            <td class="blee blee-win" data-perf="blee_cum_3yr">+120.43%</td>
-            <td class="spy" data-perf="spy_cum_3yr">+84.92%</td>
-            <td><span class="badge" data-perf="edge_cum_3yr">+35.5pp ahead</span></td>
+            <td class="blee blee-win" data-perf="blee_cum_3yr">+120.34%</td>
+            <td class="spy" data-perf="spy_cum_3yr">+84.52%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+35.8pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric">Annualized Return</td>
-            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.19%</td>
-            <td class="spy" data-perf="spy_ann_3yr">+22.78%</td>
+            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.13%</td>
+            <td class="spy" data-perf="spy_ann_3yr">+22.69%</td>
             <td><span class="badge" data-perf="edge_ann_3yr">+7.4pp</span></td>
           </tr>
           <tr>
             <td class="metric">Final Value ($10K start)</td>
-            <td class="blee blee-win" data-perf="blee_final_3yr">$22,043</td>
-            <td class="spy" data-perf="spy_final_3yr">$18,492</td>
-            <td><span class="badge" data-perf="edge_final_3yr">+$3,551</span></td>
+            <td class="blee blee-win" data-perf="blee_final_3yr">$22,034</td>
+            <td class="spy" data-perf="spy_final_3yr">$18,452</td>
+            <td><span class="badge" data-perf="edge_final_3yr">+$3,582</span></td>
           </tr>
           <tr>
             <td class="metric">Max Drawdown</td>
@@ -902,7 +837,7 @@
     <a href="contact.html">Contact</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/19/2026 03:51 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/19/2026 04:18 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
@@ -1000,53 +935,4 @@
     type: 'line',
     data: {
       labels: labels6,
-      datasets: [
-        { label: 'BLEE Calm Growth Model', data: blee6, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#10b981' },
-        { label: 'S&P 500 (SPY)',    data: spy6,  borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.06)', borderWidth: 2,   fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#f472b6' }
-      ]
-    },
-    options: chartOpts('BLEE +172% ($27,197)  vs  SPY ~+155%  ·  BLEE outperforms on risk-adjusted basis')
-  });
-
-  function chartOpts(footerNote) {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1e293b',
-          titleColor: 'rgba(255,255,255,0.70)',
-          bodyColor: '#fff',
-          borderColor: 'rgba(255,255,255,0.10)',
-          borderWidth: 1,
-          padding: 12,
-          callbacks: {
-            label: ctx => {
-              const val = ctx.raw;
-              const pct = ((val - 10000) / 10000 * 100).toFixed(1);
-              return ` ${ctx.dataset.label}: $${val.toLocaleString()}  (${pct > 0 ? '+' : ''}${pct}%)`;
-            }
-          }
-        }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: 'rgba(255,255,255,0.35)', font: { size: 11 }, maxTicksLimit: 8 } },
-        y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: 'rgba(255,255,255,0.35)', font: { size: 11 }, callback: v => '$' + v.toLocaleString() } }
-      }
-    };
-  }
-})();
-</script>
-
-
-<!-- ══════════════════════════════════════ GOOGLE TRANSLATE ══ -->
-<div id="google_translate_element" style="display:none;"></div>
-<script>
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({ pageLanguage:'en', includedLanguages:'en,ja,vi,ko', autoDisplay:false }, 'google_translate_element');
-}
-(function () {
-  function setLang(lang) {
-    document.querySelectorAll('.lang-
+      datasets: 

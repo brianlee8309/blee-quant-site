@@ -4,6 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Subscribe — BLEE Quant Analytics</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
@@ -287,12 +291,4 @@ if (urlParams.get("registered")) {
 
 // ── Navigate to login/signup with chosen plan ─────────────────────────────
 function goPlan(plan) {
-  var code = (document.getElementById("promo-input").value || "").trim().toUpperCase();
-  var url  = "login.html?plan=" + plan + "&tab=signup";
-  if (code) url += "&promoCode=" + encodeURIComponent(code);
-  window.location.href = url;
-}
-</script>
-
-</body>
-</html>
+  var cod
