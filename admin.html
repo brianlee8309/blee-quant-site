@@ -586,10 +586,24 @@ async function loadUsers() {
   document.querySelector("#user-tbody").innerHTML =
     '<tr><td colspan="7" class="empty">Loading…</td></tr>';
   try {
-    const snap = await db.collection("users").orderBy("createdAt","desc").get();
-    allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    // Fetch ALL docs — no orderBy so documents without createdAt are not excluded.
+    // Sort client-side: newest first, missing timestamps fall to the bottom.
+    const snap = await db.collection("users").get();
+    allUsers = snap.docs
+      .map(d => ({ uid: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const ta = a.createdAt?.toDate?.()?.getTime?.() ?? 0;
+        const tb = b.createdAt?.toDate?.()?.getTime?.() ?? 0;
+        return tb - ta;
+      });
     updateStats();
     renderTable();
+    if (allUsers.length === 0) {
+      document.querySelector("#user-tbody").innerHTML =
+        '<tr><td colspan="7" class="empty" style="color:#6b7280;">' +
+        'No users found in Firestore. Users appear here after they register on the site.' +
+        '</td></tr>';
+    }
   } catch (e) {
     const isPermDenied = (e.code === "permission-denied") ||
                          (e.message || "").toLowerCase().includes("permission");
@@ -932,18 +946,4 @@ async function sendResetFor(email, uid) {
 }
 
 // ── My Referral Code (admin / manager) ───────────────────────────────────
-async function loadMyPromoCode(user) {
-  try {
-    // Try to find an existing promo code for this user in promoCodes collection
-    const snap = await db.collection("promoCodes")
-      .where("email", "==", user.email).limit(1).get();
-    if (!snap.empty) {
-      myPromoCode = snap.docs[0].data().code || "";
-    } else {
-      // Also check the user's own Firestore doc (if they have one)
-      const userSnap = await db.collection("users").doc(user.uid).get();
-      if (userSnap.exists && userSnap.data().promoCode) {
-        myPromoCode = userSnap.data().promoCode;
-      }
-    }
-  } catch (e) { /* ignore — not critical */ 
+async function loadMyPromoCo
