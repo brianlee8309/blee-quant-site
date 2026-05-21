@@ -83,7 +83,8 @@ def _is_hollow(path: Path) -> bool:
 def log(msg: str) -> None:
     ts   = dt.datetime.now().isoformat(timespec="seconds")
     line = f"[{ts}] archive: {msg}"
-    print(line)
+    # encode to ASCII-safe so Windows cp1252 console never crashes on arrows/emoji
+    print(line.encode("ascii", errors="replace").decode("ascii"))
     with open(LOG_PATH, "a") as f:
         f.write(line + "\n")
 
@@ -236,45 +237,14 @@ def rebuild_index(archives: list[dict]) -> None:
   tr:last-child td {{ border-bottom: 0 !important; }}
   tr:hover td {{ background: rgba(255,255,255,0.03); }}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<script>const BLEE_REQUIRED_TIER = "basic";</script>
+<script src="../auth_guard.js"></script>
 </head>
 <body>
-
-<div id="blee-pw-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0b1120;z-index:9999;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#1e293b;padding:40px;border-radius:16px;text-align:center;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
-    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">&#128274; BLEE Quant Analytics</div>
-    <div style="color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:24px;">Archive &mdash; Subscribers Only</div>
-    <input id="blee-pw-input" type="password" placeholder="Enter password"
-      style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:15px;margin-bottom:12px;outline:none;box-sizing:border-box;">
-    <button onclick="bleePwCheck()"
-      style="width:100%;padding:12px;background:#f59e0b;color:#000;font-weight:700;font-size:15px;border:none;border-radius:8px;cursor:pointer;">
-      View Archive
-    </button>
-    <div id="blee-pw-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;">
-      Incorrect password. Please try again.
-    </div>
-  </div>
-</div>
-<script>
-(function() {{
-  var PW = '{PASSWORD}';
-  function bleePwCheck() {{
-    if (document.getElementById('blee-pw-input').value === PW) {{
-      document.getElementById('blee-pw-overlay').style.display = 'none';
-      sessionStorage.setItem('{SESSION_KEY}', '1');
-    }} else {{
-      document.getElementById('blee-pw-error').style.display = 'block';
-    }}
-  }}
-  window.bleePwCheck = bleePwCheck;
-  document.addEventListener('DOMContentLoaded', function() {{
-    var inp = document.getElementById('blee-pw-input');
-    if (inp) inp.addEventListener('keypress', function(e) {{ if (e.key === 'Enter') bleePwCheck(); }});
-    if (sessionStorage.getItem('{SESSION_KEY}') === '1') {{
-      document.getElementById('blee-pw-overlay').style.display = 'none';
-    }}
-  }});
-}})();
-</script>
 
 <nav>
   <a class="nav-brand" href="../index.html">BLEE <span>Quant</span></a>
@@ -323,27 +293,30 @@ def main() -> None:
 
     # ── Step 1: Archive each live page ────────────────────────────────────────
     for page in PAGES:
-        src = page["src"]
-        if not src.exists():
-            log(f"  SKIP (not found): {src.name}")
-            continue
-
-        dest_name = f"{page['prefix']}_{today}.html"
-        dest      = BACKLOG_DIR / dest_name
-
-        if dest.exists() and not _is_hollow(dest):
-            log(f"  Already archived today (has real data): {dest_name}")
-        else:
-            if dest.exists():
-                log(f"  Re-archiving today (previous copy had no real data): {dest_name}")
-            html = src.read_text(encoding="utf-8")
-            # Only archive if the source itself has real data
-            if _is_hollow(src):
-                log(f"  SKIP — source {src.name} has no real data yet (market_report.py hasn't run successfully)")
+        try:
+            src = page["src"]
+            if not src.exists():
+                log(f"  SKIP (not found): {src.name}")
                 continue
-            html = patch_archive(html, page["label"], today)
-            dest.write_text(html, encoding="utf-8")
-            log(f"  Archived → {dest_name}")
+
+            dest_name = f"{page['prefix']}_{today}.html"
+            dest      = BACKLOG_DIR / dest_name
+
+            if dest.exists() and not _is_hollow(dest):
+                log(f"  Already archived today (has real data): {dest_name}")
+            else:
+                if dest.exists():
+                    log(f"  Re-archiving today (previous copy had no real data): {dest_name}")
+                html = src.read_text(encoding="utf-8", errors="replace")
+                # Only archive if the source itself has real data
+                if _is_hollow(src):
+                    log(f"  SKIP -- source {src.name} has no real data yet (market_report.py hasn't run successfully)")
+                    continue
+                html = patch_archive(html, page["label"], today)
+                dest.write_text(html, encoding="utf-8")
+                log(f"  Archived -> {dest_name}")
+        except Exception as exc:
+            log(f"  ERROR archiving {page['prefix']}: {exc}")
 
     # ── Step 2: Prune files older than KEEP_DAYS ─────────────────────────────
     pruned = 0
