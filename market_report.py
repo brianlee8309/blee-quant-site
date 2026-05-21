@@ -130,12 +130,12 @@ def market_temperature(score: float) -> tuple[str, str, str]:
     Positive tiers:
       >0  to <20  = Mostly Cloudy
       >=20 to <35 = Sunny and Partly Cloudy
-      >=35 to <50 = Almost Clear Sky All Day
-      >=50        = Nice Blue Sky Ahead
+      >=35 to <50 = Sunny Sky
+      >=50        = Clear Sky
     Negative tiers (0 to -50 = rain, below -50 = thunderstorm).
     """
-    if score >= 50:  return ("Nice Blue Sky Ahead",         "#16a34a", "^")
-    if score >= 35:  return ("Almost Clear Sky All Day",    "#22c55e", "^")
+    if score >= 50:  return ("Clear Sky",                    "#16a34a", "^")
+    if score >= 35:  return ("Sunny Sky",                    "#22c55e", "^")
     if score >= 20:  return ("Sunny and Partly Cloudy",     "#84cc16", "^")
     if score > 0:    return ("Mostly Cloudy",               "#f59e0b", "-")
     if score == 0:   return ("Neutral — Hold Gold/SGOV",    "#f59e0b", "-")
@@ -464,8 +464,8 @@ def main() -> int:
             "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
             "Mostly Cloudy":             "☁️ Mostly Cloudy",
             "Sunny and Partly Cloudy":   "⛅ Sunny and Partly Cloudy",
-            "Almost Clear Sky All Day":  "☀️ Almost Clear Sky All Day",
-            "Nice Blue Sky Ahead":       "🌈 Nice Blue Sky Ahead",
+            "Sunny Sky":                 "☀️ Sunny Sky",
+            "Clear Sky":                 "🌈 Clear Sky",
         }.get(label, label),
         "positive_weight": pos_w,
         "negative_weight": neg_w,
@@ -511,15 +511,4 @@ def main() -> int:
                 _pp.write_text(_new_html, encoding="utf-8")
                 log(f"Stamped last-updated ({_now_str}) into {_pg}")
         except Exception as _e:
-            log(f"  (stamp failed for {_pg}: {_e})")
-
-    log("=== Market report generation complete ===")
-    return 0
-
-
-if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    except Exception as e:
-        log(f"FATAL: {type(e).__name__}: {e}")
-        sys.exit(1)
+ 

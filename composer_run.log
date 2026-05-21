@@ -1837,3 +1837,81 @@
 [2026-05-20T15:51:12] Stamped last-updated (05/20/2026 03:51 PM ET) into Algorithm185History.html
 [2026-05-20T15:51:12] --- Pushing updates to GitHub ---
 [2026-05-20T15:51:12]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-20T15:51:45]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-20"
+[2026-05-20T15:51:47]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-20T15:51:53] GitHub push successful.
+[2026-05-20T15:53:01] market_report: === Market report generation started ===
+[2026-05-20T15:53:01] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-20T15:53:02] market_report: Loaded 17 ETF allocations from index_50.html
+[2026-05-20T15:53:06] market_report:   RSI-14 fetched: 67.19 (SPY close=741.28)
+[2026-05-20T15:53:06] market_report:   RSI signal: Overbought — moderate bear lean (10d avg=72.44, adj=-10, new score=+20.90)
+[2026-05-20T15:53:06] market_report:   RSI override not triggered: Today RSI 67.2 ≤ 76.0 — override not triggered
+[2026-05-20T15:53:06] market_report: Composite score: +20.90 -> Cloudy
+[2026-05-20T15:53:07] market_report:   RSS WSJ: 20 items fetched
+[2026-05-20T15:53:07] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-05-20T15:53:09] market_report:   RSS Yahoo Finance: 45 items fetched
+[2026-05-20T15:53:09] market_report:   Selected [Yahoo Finance] topic=FED: Half of Fund Managers Still Expect Fed Rate Cut in Next 12 Months, Bof
+[2026-05-20T15:53:10] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-05-20T15:53:10] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-20T15:53:10] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-20T15:53:10] market_report: Fetched 3 news items
+[2026-05-20T15:53:10] market_report: Updated marketDailySummary.html with score=+20.90 (Cloudy)
+[2026-05-20T15:53:10] market_report: Stamped last-updated (05/20/2026 03:53 PM ET) into index.html
+[2026-05-20T15:53:10] market_report: Stamped last-updated (05/20/2026 03:53 PM ET) into performance1.html
+[2026-05-20T15:53:10] market_report: Stamped last-updated (05/20/2026 03:53 PM ET) into Algorithm185History.html
+[2026-05-20T15:53:10] market_report: === Market report generation complete ===
+[2026-05-20T20:18:25] market_report: === Market report generation started ===
+[2026-05-20T20:18:25] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-20T20:18:25] market_report: Loaded 17 ETF allocations from index_50.html
+[2026-05-20T20:18:25] market_report:   RSI signal: Overbought — moderate bear lean (10d avg=73.04, adj=-10, new score=+20.90)
+[2026-05-20T20:18:25] market_report:   RSI override not triggered: Today RSI 63.2 ≤ 76.0 — override not triggered
+[2026-05-20T20:18:25] market_report: Composite score: +20.90 -> Cloudy
+[2026-05-20T20:18:25] market_report:   RSS fetch failed (WSJ): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-20T20:18:25] market_report:   WSJ: RSS unavailable, using hardcoded fallback
+[2026-05-20T20:18:25] market_report:   Selected [WSJ] topic=FED: Fed Signals Patience as Rate Path Stays Data-Dependent
+[2026-05-20T20:18:25] market_report:   RSS fetch failed (Yahoo Finance): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-20T20:18:25] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-05-20T20:18:25] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-05-20T20:18:25] market_report:   RSS fetch failed (Barron's): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-20T20:18:25] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-20T20:18:25] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-20T20:18:25] market_report: Fetched 3 news items
+[2026-05-20T20:18:25] market_report: Updated marketDailySummary.html with score=+20.90 (Cloudy)
+[2026-05-20T20:18:25] market_report: Stamped last-updated (05/20/2026 04:18 PM ET) into index.html
+[2026-05-20T20:18:25] market_report: Stamped last-updated (05/20/2026 04:18 PM ET) into performance1.html
+[2026-05-20T20:18:26] market_report: Stamped last-updated (05/20/2026 04:18 PM ET) into Algorithm185History.html
+[2026-05-20T20:18:26] market_report: === Market report generation complete ===
+[2026-05-21T15:51:01] archive: === Archive started ===
+[2026-05-21T15:51:01] archive:   Archived -> marketForecast_2026-05-21.html
+[2026-05-21T15:51:01] archive:   Archived -> dailySignal_2026-05-21.html
+[2026-05-21T15:51:01] archive: Rebuilt BackLog/index.html � 10 dates, 16 files
+[2026-05-21T15:51:01] archive: === Archive complete ===
+[2026-05-21T15:51:01] === Composer daily allocation pull ===
+[2026-05-21T15:51:01] Configured symphonies: ['sRxc0F27TQYj10bWwIlO', 'qjmHJ3IR19kmaAlbgkNj', 'uP4EOQmkexROiO18SaiN']
+[2026-05-21T15:51:01] No account_uuid in config; discovering via /accounts/list...
+[2026-05-21T15:51:03] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-21T15:51:03] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-21T15:51:03] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-21T15:51:03] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-21T15:51:04] Saved symphony-stats response to composer_symphony_stats_2026-05-21.json
+[2026-05-21T15:51:04] --- BLEE - 186 2026 ALL in One (sRxc0F27TQYj10bWwIlO) ---
+[2026-05-21T15:51:04]   WARN: symphony-stats-meta returned no positions for sRxc0F27TQYj10bWwIlO (check 2026-05-21 JSON to verify the id matches one in the response)
+[2026-05-21T15:51:04]   ERROR: no positions found for sRxc0F27TQYj10bWwIlO; skipping CSV/HTML for this symphony
+[2026-05-21T15:51:04] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-21T15:51:04]   Got 4 positions from symphony-stats-meta
+[2026-05-21T15:51:04]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-21T15:51:04]   Saved today's slice to composer_allocations_185_2026-05-21.json
+[2026-05-21T15:51:04]   Wrote 4 rows for 2026-05-21 to composer_allocations_185.csv (kept 39 prior rows, source=symphony-stats-meta)
+[2026-05-21T15:51:04] Generated dashboard -> index2.html (value=$15,086.70, days=12)
+[2026-05-21T15:51:04]   Prepended 2026-05-21 row to composer_allocations_185_3yr2.csv
+[2026-05-21T15:51:04]   Prepended 2026-05-21 row to Algorithm185History.html ALLOC_DATA
+[2026-05-21T15:51:04] --- BLEE - 185 Algorithm (uP4EOQmkexROiO18SaiN) ---
+[2026-05-21T15:51:04]   WARN: symphony-stats-meta returned no positions for uP4EOQmkexROiO18SaiN (check 2026-05-21 JSON to verify the id matches one in the response)
+[2026-05-21T15:51:04]   ERROR: no positions found for uP4EOQmkexROiO18SaiN; skipping CSV/HTML for this symphony
+[2026-05-21T15:51:04] Published signal_latest.json (3 positions, date=2026-05-21)
+[2026-05-21T15:51:04] === Done ===
+[2026-05-21T15:51:15] Stamped last-updated (05/21/2026 03:51 PM ET) into index.html
+[2026-05-21T15:51:15] Stamped last-updated (05/21/2026 03:51 PM ET) into performance1.html
+[2026-05-21T15:51:15] Stamped last-updated (05/21/2026 03:51 PM ET) into Algorithm185History.html
+[2026-05-21T15:51:15] --- Pushing updates to GitHub ---
+[2026-05-21T15:51:15]   $ git -C "C:\Kei\ComposerInvest" add .
