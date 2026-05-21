@@ -7,15 +7,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #0b1120;
-    --card: #111827;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --border: #1f2937;
-    --accent: #3b82f6;
-    --pos: #4ade80;
-    --neg: #f87171;
-    --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --pos: #16a34a;
+    --neg: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   }
   * { box-sizing: border-box; }
   body {
@@ -92,17 +92,56 @@
   }
   .download-row a:hover { border-color: var(--accent); color: var(--accent); }
 
+  /* ── SITE NAV ── */
+  .site-nav {
+    background: #0d1829;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 28px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+  }
+  .site-nav-brand {
+    font-size: 16px; font-weight: 800;
+    color: #fff; text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .site-nav-brand span { color: #f59e0b; }
+  .site-nav-links { display: flex; align-items: center; gap: 18px; }
+  .site-nav-links a {
+    color: rgba(255,255,255,0.55); font-size: 13px; text-decoration: none;
+    transition: color .15s;
+  }
+  .site-nav-links a:hover { color: #fff; }
+  .site-nav-links a.nav-cta {
+    background: #f59e0b; color: #000; padding: 5px 13px;
+    border-radius: 6px; font-weight: 700;
+  }
+  .site-nav-links a.nav-cta:hover { background: #fbbf24; color: #000; }
+  @media (max-width: 600px) {
+    .site-nav { padding: 0 14px; }
+    .site-nav-links { gap: 10px; }
+    .site-nav-links a { font-size: 12px; }
+  }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="nav.js"></script>
-<script>const BLEE_REQUIRED_TIER = "basic";</script>
-<script src="auth_guard.js"></script>
 </head>
 <body>
 
+<nav class="site-nav">
+  <a class="site-nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <div class="site-nav-links">
+    <a href="index.html">Home</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="performance1.html">Performance</a>
+    <a href="index.html#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
 
 <div class="container">
   <header>
@@ -145,10 +184,10 @@
   </div>
 
   <!-- RSI Signal Strip -->
-  <div id="rsi-strip" style="display:none;background:#131f35;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
-    <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
+  <div id="rsi-strip" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
     <div style="font-size:22px;font-weight:800;" id="rsi-val-display">—</div>
-    <div style="font-size:12px;color:#94a3b8;" id="rsi-signal-display">—</div>
+    <div style="font-size:12px;color:#64748b;" id="rsi-signal-display">—</div>
   </div>
 
   <div class="row">
@@ -330,16 +369,14 @@ new Chart(document.getElementById("pie"), {
     datasets: [{
       data: today.map(a => a.weight_pct),
       backgroundColor: today.map((_, i) => colorFor(i)),
-      borderWidth: 2, borderColor: "#0b1120"
+      borderWidth: 1, borderColor: "#fff"
     }]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
-      legend: { position: "right", labels: { boxWidth: 12, font: { size: 12 }, color: "rgba(255,255,255,0.70)" } },
+      legend: { position: "right", labels: { boxWidth: 12, font: { size: 12 } } },
       tooltip: {
-        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
-        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
         callbacks: {
           label: (ctx) => {
             const a = today[ctx.dataIndex];
@@ -361,7 +398,7 @@ new Chart(document.getElementById("value-line"), {
       label: "Total Value",
       data: hist.map(p => p.total),
       borderColor: "#2563eb",
-      backgroundColor: "rgba(59,130,246,0.10)",
+      backgroundColor: "rgba(37,99,235,0.08)",
       fill: true, tension: 0.25, pointRadius: 3, borderWidth: 2
     }]
   },
@@ -369,15 +406,10 @@ new Chart(document.getElementById("value-line"), {
     responsive: true, maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
-        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
-        callbacks: { label: (ctx) => fmt$(ctx.parsed.y) }
-      }
+      tooltip: { callbacks: { label: (ctx) => fmt$(ctx.parsed.y) } }
     },
     scales: {
-      x: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } },
-      y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
+      y: { ticks: { callback: (v) => "$" + Number(v).toLocaleString() } }
     }
   }
 });
@@ -429,16 +461,12 @@ new Chart(document.getElementById("weights-stack"), {
     responsive: true, maintainAspectRatio: false,
     interaction: { mode: "index", intersect: false },
     plugins: {
-      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 }, color: "rgba(255,255,255,0.70)" } },
-      tooltip: {
-        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
-        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
-        callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` }
-      }
+      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 } } },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
     },
     scales: {
-      y: { stacked: true, max: 100, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => v + "%" } },
-      x: { stacked: true, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } }
+      y: { stacked: true, max: 100, ticks: { callback: (v) => v + "%" } },
+      x: { stacked: true }
     }
   }
 });

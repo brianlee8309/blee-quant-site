@@ -127,15 +127,20 @@ def calculate_score(allocs: list[dict], points: dict[str, float]) -> tuple[float
 
 def market_temperature(score: float) -> tuple[str, str, str]:
     """Returns (label, hex_color, arrow).
-    Positive tiers (0–30 / 30–50 / 50+) use clear-sky language.
+    Positive tiers:
+      >0  to <20  = Mostly Cloudy
+      >=20 to <35 = Sunny and Partly Cloudy
+      >=35 to <50 = Almost Clear Sky All Day
+      >=50        = Nice Blue Sky Ahead
     Negative tiers (0 to -50 = rain, below -50 = thunderstorm).
     """
-    if score > 50:   return ("Nice Blue Sky Ahead",        "#16a34a", "^")
-    if score > 30:   return ("Almost Clear Sky All Day",   "#22c55e", "^")
-    if score > 0:    return ("Cloudy",                     "#f59e0b", "-")
-    if score == 0:   return ("Neutral — Hold Gold/SGOV",   "#f59e0b", "-")
-    if score > -50:  return ("Rain in the Forecast",       "#ef4444", "v")
-    return                  ("Thunderstorm Warning",       "#dc2626", "v")
+    if score >= 50:  return ("Nice Blue Sky Ahead",         "#16a34a", "^")
+    if score >= 35:  return ("Almost Clear Sky All Day",    "#22c55e", "^")
+    if score >= 20:  return ("Sunny and Partly Cloudy",     "#84cc16", "^")
+    if score > 0:    return ("Mostly Cloudy",               "#f59e0b", "-")
+    if score == 0:   return ("Neutral — Hold Gold/SGOV",    "#f59e0b", "-")
+    if score > -50:  return ("Rain in the Forecast",        "#ef4444", "v")
+    return                  ("Thunderstorm Warning",        "#dc2626", "v")
 
 
 def allocation_groups(breakdown: list[dict]) -> tuple[float, float, float]:
@@ -457,7 +462,8 @@ def main() -> int:
             "Thunderstorm Warning":      "⛈️ Thunderstorm Warning",
             "Rain in the Forecast":      "🌧️ Rain in the Forecast",
             "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
-            "Cloudy":                    "☁️ Cloudy",
+            "Mostly Cloudy":             "☁️ Mostly Cloudy",
+            "Sunny and Partly Cloudy":   "⛅ Sunny and Partly Cloudy",
             "Almost Clear Sky All Day":  "☀️ Almost Clear Sky All Day",
             "Nice Blue Sky Ahead":       "🌈 Nice Blue Sky Ahead",
         }.get(label, label),
