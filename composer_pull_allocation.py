@@ -632,6 +632,7 @@ def main() -> int:
         log(f"Saved symphony-stats response to {stats_path.name}")
 
     # For each configured symphony, extract its slice and write outputs.
+    symphony_watch_data: list[dict] = []  # collected for CurrentWatchSymphony.html
     for sym in symphonies:
         sid       = sym["id"]
         sname     = sym["name"]
@@ -705,6 +706,40 @@ def main() -> int:
                 "raw_api_entry":   raw_entry,
             }, f, indent=2, default=str)
         log(f"  Saved today's slice to {slice_path.name}")
+
+        # Collect data for CurrentWatchSymphony.html regeneration
+        try:
+            _sym_value     = raw_entry.get("value")   if raw_entry else None
+            _last_reb      = (raw_entry or {}).get("last_rebalanced_at") or                              (raw_entry or {}).get("last_rebalance") or                              (raw_entry or {}).get("rebalanced_at") or                              (raw_entry or {}).get("last_rebalanced")
+            if _last_reb and "T" in str(_last_reb):
+                _last_reb = str(_last_reb)[:10]
+            _ret_pct   = (raw_entry or {}).get("return_pct") or (raw_entry or {}).get("total_return")
+            _ann       = (raw_entry or {}).get("annualized_return") or (raw_entry or {}).get("annualized")
+            _watch_holdings = []
+            for _wp in positions:
+                if not _wp.get("ticker"):
+                    continue
+                _wv = float(_wp.get("market_value") or 0)
+                _ws = float(_wp.get("shares") or 0)
+                _wprice = round(_wv / _ws, 4) if _ws > 0 else None
+                _watch_holdings.append({
+                    "ticker": _wp["ticker"],
+                    "pct":    round(float(_wp.get("weight_pct") or 0), 2),
+                    "price":  _wprice,
+                    "shares": round(_ws, 4),
+                    "value":  round(_wv, 2),
+                })
+            symphony_watch_data.append({
+                "id":            sid,
+                "name":          sname,
+                "value":         round(float(_sym_value), 2) if isinstance(_sym_value, (int, float)) else None,
+                "last_rebalance": _last_reb,
+                "return_pct":    round(float(_ret_pct), 2) if isinstance(_ret_pct, (int, float)) else None,
+                "annualized":    round(float(_ann), 2) if isinstance(_ann, (int, float)) else None,
+                "holdings":      _watch_holdings,
+            })
+        except Exception as _we:
+            log(f"  (symphony-watch data collection failed for {sid}: {_we})")
 
         # Write to per-symphony CSV (idempotent).
         write_symphony_csv(csv_path, today, sid, positions, source_used)
@@ -838,6 +873,34 @@ def main() -> int:
             log("WARNING: No allocation JSON found — signal_latest.json not updated.")
     except Exception as _se:
         log(f"  (signal_latest.json publish failed: {type(_se).__name__}: {_se})")
+
+    # ---- Regenerate CurrentWatchSymphony.html ------------------------------------
+    import re as _re_watch
+    _watch_path = SCRIPT_DIR / "CurrentWatchSymphony.html"
+    if symphony_watch_data and _watch_path.exists():
+        try:
+            _watch_html = _watch_path.read_text(encoding="utf-8")
+            # Replace SYMPHONIES data placeholder (may span many characters)
+            _watch_html = _re_watch.sub(
+                r"/\* __SYMPHONY_DATA__ \*/ \[.*?\]",
+                "/* __SYMPHONY_DATA__ */ " + json.dumps(symphony_watch_data, default=str),
+                _watch_html,
+                flags=_re_watch.DOTALL,
+            )
+            # Replace GENERATED date placeholder
+            _watch_html = _re_watch.sub(
+                r'/\* __GENERATED__ \*/ "[^"]*"',
+                f'/* __GENERATED__ */ "{today}"',
+                _watch_html,
+            )
+            _watch_path.write_text(_watch_html, encoding="utf-8")
+            log(f"Regenerated CurrentWatchSymphony.html ({len(symphony_watch_data)} symphonies)")
+        except Exception as _cwe:
+            log(f"  (CurrentWatchSymphony.html regeneration failed: {type(_cwe).__name__}: {_cwe})")
+    elif not _watch_path.exists():
+        log("CurrentWatchSymphony.html not found — skipping regeneration")
+    else:
+        log("No symphony watch data collected — skipping CurrentWatchSymphony.html")
 
     log("=== Done ===")
 

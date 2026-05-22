@@ -48,6 +48,24 @@ PAGES = [
         "label":  "Daily Signal",
         "icon":   "📊",
     },
+    {
+        "src":    SCRIPT_DIR / "index_50.html",
+        "prefix": "signal186",
+        "label":  "BLEE-186 ALL in One",
+        "icon":   "📈",
+    },
+    {
+        "src":    SCRIPT_DIR / "index_185v2.html",
+        "prefix": "signal185",
+        "label":  "BLEE-185 SGOV Dual Reversal",
+        "icon":   "📈",
+    },
+    {
+        "src":    SCRIPT_DIR / "index_kei186.html",
+        "prefix": "signalKei186",
+        "label":  "BLEE A-186 Part 1 Kei",
+        "icon":   "📈",
+    },
 ]
 
 

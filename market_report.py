@@ -511,4 +511,15 @@ def main() -> int:
                 _pp.write_text(_new_html, encoding="utf-8")
                 log(f"Stamped last-updated ({_now_str}) into {_pg}")
         except Exception as _e:
- 
+             log(f"  (stamp failed for {_pg}: {_e})")
+
+    log("=== Market report generation complete ===")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception as e:
+        log(f"FATAL: {type(e).__name__}: {e}")
+        sys.exit(1)

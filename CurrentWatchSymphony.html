@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE Quant — Symphony Watch</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0b1120; --card: #111827; --card2: #131f35;
+    --text: #f1f5f9; --muted: #94a3b8; --border: #1f2937;
+    --gold: #f59e0b; --green: #4ade80; --red: #f87171; --blue: #60a5fa;
+    --shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; min-height: 100vh;
+  }
+
+  /* ── Access tier note (change BLEE_REQUIRED_TIER below to open to more users) ── */
+
+  .page-header {
+    background: linear-gradient(135deg, #0d1829 0%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+  }
+  .page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .page-header h1 span { color: var(--gold); }
+  .page-header .sub {
+    color: var(--muted); font-size: 13px; margin-top: 5px;
+  }
+  .page-header .updated {
+    font-size: 11px; color: #475569; margin-top: 4px;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* ── Symphony card ── */
+  .sym-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; margin-bottom: 28px;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  .sym-header {
+    background: var(--card2); padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .sym-name { font-size: 15px; font-weight: 700; line-height: 1.4; max-width: 600px; }
+  .sym-id   { font-size: 10px; color: #475569; font-family: monospace; margin-top: 3px; }
+  .sym-meta { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .meta-stat { text-align: right; }
+  .meta-stat .ml { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .meta-stat .mv { font-size: 18px; font-weight: 800; }
+
+  .sym-body {
+    display: grid; grid-template-columns: 220px 1fr;
+    gap: 0;
+  }
+  @media (max-width: 720px) {
+    .sym-body { grid-template-columns: 1fr; }
+    .chart-col { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  .chart-col {
+    padding: 20px; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .chart-col canvas { max-width: 180px; max-height: 180px; }
+  .chart-label { font-size: 11px; color: var(--muted); margin-top: 10px; text-align: center; }
+
+  .table-col { padding: 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: rgba(255,255,255,0.03); }
+  th {
+    padding: 10px 16px; text-align: left; font-size: 10px;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  th.r, td.r { text-align: right; }
+  td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tr:last-child td { border-bottom: 0; }
+  tr:hover td { background: rgba(255,255,255,0.025); }
+  .ticker-badge {
+    display: inline-block; background: rgba(96,165,250,0.15);
+    color: var(--blue); padding: 2px 8px; border-radius: 5px;
+    font-weight: 700; font-size: 12px; letter-spacing: 0.04em;
+  }
+  .bar-wrap { position: relative; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; min-width: 80px; }
+  .bar-fill  { height: 100%; border-radius: 3px; }
+
+  .rebalance-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 5px; font-weight: 600;
+  }
+  .badge-today { background: rgba(74,222,128,0.15); color: var(--green); }
+  .badge-old   { background: rgba(148,163,184,0.1);  color: var(--muted); }
+
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px;
+  }
+  .total-row { font-size: 13px; color: var(--muted); padding: 8px 24px 16px; }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<!-- ┌─────────────────────────────────────────────────────────────────┐
+     │  ACCESS CONTROL — change "admin" to "manager", "premium", etc  │
+     │  to open this page to more user tiers in the future            │
+     └─────────────────────────────────────────────────────────────────┘ -->
+<script>const BLEE_REQUIRED_TIER = "admin";</script>
+<script src="auth_guard.js"></script>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>🎼 Symphony <span>Watch</span></h1>
+  <div class="sub">Daily allocation snapshot across all tracked Composer symphonies</div>
+  <div class="updated" id="updated-line">Updated —</div>
+</div>
+
+<div class="container">
+  <div id="sym-list"></div>
+</div>
+
+<script>
+// ── Embedded data — regenerated daily by composer_pull_allocation.py ─────────
+const SYMPHONIES = /* __SYMPHONY_DATA__ */ [{"id": "ZGersOlsQFRHg7U2qnSw", "name": "BLEE - 185 2026 SGOV and Dual Reversal with Annual 16% perfomance", "value": 1020.76, "last_rebalance": "2026-05-18", "return_pct": 14.2, "annualized": 64.88, "holdings": [{"ticker": "GLDM", "pct": 8.98, "price": 89.84, "shares": 1.02, "value": 91.64}, {"ticker": "SGOV", "pct": 80.99, "price": 100.58, "shares": 8.2196, "value": 826.73}, {"ticker": "TQQQ", "pct": 9.93, "price": 76.93, "shares": 1.3178, "value": 101.38}]}, {"id": "jtQvlI5wINrxpOfxgmgl", "name": "BLEE - 186 2026 ALL in One 57% ave-7.8% Max-Down SGOV Bond (Rate high yeild year only over 4%)", "value": 179.13, "last_rebalance": "2026-05-20", "return_pct": -54.63, "annualized": -99.98, "holdings": [{"ticker": "EUM", "pct": 4.64, "price": 16.44, "shares": 0.5058, "value": 8.32}, {"ticker": "SVXY", "pct": 2.52, "price": 53.02, "shares": 0.0851, "value": 4.51}, {"ticker": "TECL", "pct": 11.01, "price": 201.22, "shares": 0.098, "value": 19.72}, {"ticker": "BTAL", "pct": 5.01, "price": 12.23, "shares": 0.7331, "value": 8.97}, {"ticker": "TQQQ", "pct": 10.25, "price": 76.93, "shares": 0.2386, "value": 18.35}, {"ticker": "SHV", "pct": 2.98, "price": 110.29, "shares": 0.0484, "value": 5.33}, {"ticker": "SGOV", "pct": 22.4, "price": 100.58, "shares": 0.3989, "value": 40.12}, {"ticker": "GLD", "pct": 17.57, "price": 416.93, "shares": 0.0755, "value": 31.48}, {"ticker": "TMV", "pct": 1.53, "price": 40.48, "shares": 0.0679, "value": 2.75}, {"ticker": "USMV", "pct": 3.03, "price": 96.0, "shares": 0.0565, "value": 5.43}, {"ticker": "SQQQ", "pct": 0.94, "price": 41.98, "shares": 0.0403, "value": 1.69}]}, {"id": "g7WBkfIc6UWUWC6NiAdu", "name": "BLEE A - 186 Part 1 Kei 90% NVDA double/GOLD Mini Drop Year Round (Buy Copy)", "value": 5950.48, "last_rebalance": "2026-05-20", "return_pct": 2.59, "annualized": 732.15, "holdings": [{"ticker": "UPRO", "pct": 7.78, "price": 141.70, "shares": 3.2684, "value": 463.12}, {"ticker": "SVXY", "pct": 3.42, "price": 53.02, "shares": 3.8388, "value": 203.53}, {"ticker": "TECL", "pct": 20.81, "price": 201.22, "shares": 6.1549, "value": 1238.51}, {"ticker": "TQQQ", "pct": 27.43, "price": 76.93, "shares": 21.2184, "value": 1632.33}, {"ticker": "SHV", "pct": 5.94, "price": 110.29, "shares": 3.2076, "value": 353.75}, {"ticker": "GLD", "pct": 24.77, "price": 416.93, "shares": 3.5353, "value": 1473.94}, {"ticker": "VGT", "pct": 7.18, "price": 114.46, "shares": 3.733, "value": 427.28}, {"ticker": "TMV", "pct": 1.97, "price": 40.48, "shares": 2.8903, "value": 116.99}, {"ticker": "VIXM", "pct": 0.57, "price": 15.64, "shares": 2.1818, "value": 34.13}]}, {"id": "qjmHJ3IR19kmaAlbgkNj", "name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "value": 15086.7, "last_rebalance": "2026-05-20", "return_pct": 1.04, "annualized": 71.79, "holdings": [{"ticker": "GLDM", "pct": 9.17, "price": 89.84, "shares": 15.4005, "value": 1383.58}, {"ticker": "SGOV", "pct": 82.68, "price": 100.58, "shares": 124.01, "value": 12472.94}, {"ticker": "TQQQ", "pct": 8.05, "price": 76.93, "shares": 15.7946, "value": 1215.08}]}];
+const GENERATED = /* __GENERATED__ */ "2026-05-21";
+
+// ── Chart colours ─────────────────────────────────────────────────────────────
+const PALETTE = [
+  "#3b82f6","#f59e0b","#10b981","#f87171","#a78bfa",
+  "#34d399","#fb923c","#60a5fa","#fbbf24","#4ade80",
+  "#e879f9","#38bdf8"
+];
+
+const fmt  = n  => "$" + Number(n).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtP = p  => (p >= 0 ? "+" : "") + p.toFixed(2) + "%";
+const today = new Date().toISOString().slice(0,10);
+
+document.getElementById("updated-line").textContent =
+  "Data as of " + GENERATED + " · Generated by daily allocation pull";
+
+const list = document.getElementById("sym-list");
+
+SYMPHONIES.forEach((sym, si) => {
+  const isToday = sym.last_rebalance === today;
+  const retColor = sym.return_pct >= 0 ? "var(--green)" : "var(--red)";
+  const annColor = sym.annualized >= 0 ? "var(--green)" : "var(--red)";
+
+  // Sort holdings descending by pct
+  const sorted = [...sym.holdings].sort((a,b) => b.pct - a.pct);
+
+  // ── Donut chart data ──
+  const labels = sorted.map(h => h.ticker);
+  const data   = sorted.map(h => h.pct);
+  const colors = sorted.map((_,i) => PALETTE[i % PALETTE.length]);
+
+  // ── Allocation rows ──
+  const rows = sorted.map((h, i) => `
+    <tr>
+      <td><span class="ticker-badge">${h.ticker}</span></td>
+      <td class="r" style="font-weight:700;color:${PALETTE[i%PALETTE.length]};">${h.pct.toFixed(1)}%</td>
+      <td class="r">
+        <div class="bar-wrap">
+          <div class="bar-fill" style="width:${Math.min(h.pct,100)}%;background:${PALETTE[i%PALETTE.length]};"></div>
+        </div>
+      </td>
+      <td class="r" style="color:var(--muted);">${fmt(h.price)}</td>
+      <td class="r">${h.shares.toFixed(4)}</td>
+      <td class="r" style="font-weight:600;">${fmt(h.value)}</td>
+    </tr>`).join("");
+
+  const card = document.createElement("div");
+  card.className = "sym-card";
+  card.innerHTML = `
+    <div class="sym-header">
+      <div>
+        <div class="sym-name">${sym.name}</div>
+        <div class="sym-id">${sym.id}</div>
+      </div>
+      <div class="sym-meta">
+        <div class="meta-stat">
+          <div class="ml">Portfolio Value</div>
+          <div class="mv" style="color:var(--gold);">${fmt(sym.value)}</div>
+        </div>
+        <div class="meta-stat">
+          <div class="ml">Return</div>
+          <div class="mv" style="color:${retColor};">${fmtP(sym.return_pct)}</div>
+        </div>
+        <div class="meta-stat">
+          <div class="ml">Annualized</div>
+          <div class="mv" style="color:${annColor};font-size:14px;">${fmtP(sym.annualized)}</div>
+        </div>
+        <div class="meta-stat">
+          <div class="ml">Last Rebalance</div>
+          <div class="mv" style="font-size:13px;">
+            <span class="rebalance-badge ${isToday ? 'badge-today' : 'badge-old'}">
+              ${sym.last_rebalance}${isToday ? ' ✓' : ''}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sym-body">
+      <div class="chart-col">
+        <canvas id="chart-${si}"></canvas>
+        <div class="chart-label">Today's Allocation</div>
+      </div>
+      <div class="table-col">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th class="r">Weight</th>
+              <th class="r">Bar</th>
+              <th class="r">Price</th>
+              <th class="r">Shares</th>
+              <th class="r">Value</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="total-row">
+          ${sym.holdings.length} positions &nbsp;·&nbsp; Total: ${fmt(sym.value)}
+        </div>
+      </div>
+    </div>`;
+  list.appendChild(card);
+
+  // Draw donut chart
+  new Chart(document.getElementById(`chart-${si}`), {
+    type: "doughnut",
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: "#111827", borderWidth: 2 }] },
+    options: {
+      cutout: "65%",
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#1e293b",
+          titleColor: "rgba(255,255,255,0.7)",
+          bodyColor: "#fff",
+          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed.toFixed(1)}%` }
+        }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
