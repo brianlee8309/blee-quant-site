@@ -66,6 +66,12 @@ PAGES = [
         "label":  "BLEE A-186 Part 1 Kei",
         "icon":   "📈",
     },
+    {
+        "src":    SCRIPT_DIR / "index_187hi.html",
+        "prefix": "signal187hi",
+        "label":  "BLEE-187 High Interest ALL in One",
+        "icon":   "📈",
+    },
 ]
 
 
