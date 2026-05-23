@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Your Ultimate Account — BLEE Quant Analytics</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b1120;--surface:#111827;--surface2:#1e293b;
+    --border:rgba(255,255,255,0.08);--text:#f1f5f9;--muted:#94a3b8;
+    --ultimate:#c084fc;
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+       background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;}
+
+  /* ── Hero ── */
+  .hero{
+    background:linear-gradient(135deg,#120a1e 0%,#1a0a2e 50%,#0b1120 100%);
+    border-bottom:1px solid rgba(192,132,252,0.2);
+    padding:56px 24px 48px;text-align:center;
+  }
+  .hero-badge{
+    display:inline-block;background:rgba(192,132,252,0.12);
+    border:1px solid rgba(192,132,252,0.35);border-radius:999px;
+    color:var(--ultimate);font-size:12px;font-weight:700;
+    letter-spacing:.08em;padding:4px 16px;margin-bottom:20px;text-transform:uppercase;
+  }
+  .hero h1{font-size:clamp(26px,4vw,40px);font-weight:900;letter-spacing:-.03em;
+            color:#fff;margin-bottom:12px;line-height:1.15;}
+  .hero h1 span{color:var(--ultimate);}
+  .hero-sub{color:var(--muted);font-size:16px;max-width:540px;margin:0 auto 28px;line-height:1.6;}
+  .hero-email{
+    display:inline-block;background:rgba(255,255,255,0.05);
+    border:1px solid var(--border);border-radius:8px;
+    color:var(--muted);font-size:13px;padding:6px 18px;
+  }
+  .hero-email strong{color:var(--text);}
+
+  /* ── Layout ── */
+  .container{max-width:900px;margin:0 auto;padding:0 24px;}
+
+  /* ── Section card ── */
+  .section{margin-top:40px;}
+  .section-label{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ultimate);margin-bottom:10px;
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:32px;
+  }
+  .card + .card{margin-top:16px;}
+  .card h2{font-size:20px;font-weight:800;margin-bottom:10px;color:#fff;}
+  .card p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;}
+  .card p:last-of-type{margin-bottom:0;}
+
+  /* ── Benefits list ── */
+  .benefits{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+  @media(max-width:560px){.benefits{grid-template-columns:1fr;}}
+  .benefits li{
+    display:flex;align-items:flex-start;gap:10px;
+    background:var(--surface2);border:1px solid var(--border);
+    border-radius:10px;padding:14px 16px;font-size:13.5px;color:var(--text);
+  }
+  .benefits li .icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .benefits li .txt{line-height:1.5;}
+  .benefits li .txt strong{display:block;color:#fff;font-weight:700;margin-bottom:2px;}
+
+  /* ── Guide card ── */
+  .guide-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;overflow:hidden;
+  }
+  .guide-card + .guide-card{margin-top:16px;}
+  .guide-header{
+    display:flex;align-items:center;gap:16px;
+    padding:20px 24px;border-bottom:1px solid var(--border);
+    background:var(--surface2);
+  }
+  .guide-icon{font-size:28px;flex-shrink:0;}
+  .guide-header-text h3{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;}
+  .guide-header-text p{font-size:12px;color:var(--muted);margin:0;}
+  .guide-body{padding:24px;}
+  .guide-body p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:14px;}
+  ol.steps{list-style:none;display:flex;flex-direction:column;gap:12px;margin:14px 0;}
+  ol.steps li{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;color:var(--muted);line-height:1.6;}
+  ol.steps li strong{color:var(--text);}
+  .step-num{
+    flex-shrink:0;width:24px;height:24px;border-radius:50%;
+    background:rgba(192,132,252,0.15);border:1px solid rgba(192,132,252,0.4);
+    color:var(--ultimate);font-size:11px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .tip-box{
+    background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.2);
+    border-radius:8px;padding:14px 16px;font-size:13px;color:var(--muted);
+    line-height:1.6;margin-top:16px;
+  }
+  .tip-box strong{color:var(--ultimate);}
+
+  /* ── CTA links ── */
+  .cta-link{
+    display:inline-block;background:var(--ultimate);color:#000;
+    font-weight:700;font-size:13px;border-radius:8px;
+    padding:9px 20px;text-decoration:none;margin-right:10px;
+  }
+  .cta-link-outline{
+    display:inline-block;border:1px solid rgba(192,132,252,0.4);color:var(--ultimate);
+    font-weight:600;font-size:13px;border-radius:8px;
+    padding:9px 20px;text-decoration:none;
+  }
+  .cta-link:hover{background:#a855f7;}
+  .cta-link-outline:hover{background:rgba(192,132,252,0.08);}
+
+  /* ── Download box ── */
+  .download-box{
+    display:flex;align-items:center;gap:20px;
+    background:linear-gradient(135deg,#120a1e,#111827);
+    border:2px solid rgba(192,132,252,0.3);border-radius:12px;
+    padding:22px 24px;text-decoration:none;color:inherit;
+    transition:border-color .2s;margin-top:16px;
+  }
+  .download-box:hover{border-color:rgba(192,132,252,0.6);}
+  .dl-icon{font-size:36px;flex-shrink:0;}
+  .dl-text h3{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px;}
+  .dl-text p{font-size:13px;color:var(--muted);margin:0;line-height:1.5;}
+  .dl-badge{
+    margin-left:auto;flex-shrink:0;background:var(--ultimate);color:#000;
+    font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    border-radius:6px;padding:6px 14px;
+  }
+
+  /* ── Symphony cards ── */
+  .sym-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+  @media(max-width:560px){.sym-grid{grid-template-columns:1fr;}}
+  .sym-card{
+    background:var(--surface2);border:1px solid rgba(192,132,252,0.2);
+    border-radius:12px;padding:20px;
+  }
+  .sym-card .sym-num{
+    display:inline-block;background:rgba(192,132,252,0.15);
+    border:1px solid rgba(192,132,252,0.35);border-radius:999px;
+    color:var(--ultimate);font-size:11px;font-weight:700;
+    letter-spacing:.08em;padding:3px 12px;margin-bottom:12px;text-transform:uppercase;
+  }
+  .sym-card h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;}
+  .sym-card p{font-size:13px;color:var(--muted);line-height:1.6;margin:0;}
+  .sym-card .sym-id{
+    display:block;margin-top:10px;font-size:11px;color:rgba(192,132,252,0.6);
+    font-family:monospace;
+  }
+
+  /* ── Auth gate ── */
+  #auth-gate{
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:var(--bg);align-items:center;justify-content:center;
+  }
+  #auth-gate.show{display:flex;}
+  .gate-box{
+    text-align:center;max-width:420px;padding:40px 32px;
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  }
+  .gate-box .gate-icon{font-size:40px;margin-bottom:16px;}
+  .gate-box h2{font-size:20px;font-weight:800;margin-bottom:10px;}
+  .gate-box p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:20px;}
+  .gate-box a{
+    display:inline-block;background:var(--ultimate);color:#000;font-weight:700;
+    font-size:14px;border-radius:8px;padding:10px 24px;text-decoration:none;
+  }
+
+  /* ── Bottom nav ── */
+  .bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;height:52px;
+    background:#0a0f1e;border-top:1px solid rgba(255,255,255,0.07);
+    display:flex;align-items:center;justify-content:space-around;
+    padding:0 8px;z-index:100;
+  }
+  .bottom-nav a{
+    color:var(--muted);text-decoration:none;font-size:12px;font-weight:600;
+    padding:8px 12px;border-radius:8px;transition:color .15s;
+  }
+  .bottom-nav a:hover{color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- Auth gate overlay -->
+<div id="auth-gate">
+  <div class="gate-box">
+    <div class="gate-icon">💎</div>
+    <h2>Ultimate Subscribers Only</h2>
+    <p id="gate-msg">This page is for Ultimate subscribers. Please sign in to access your account.</p>
+    <a id="gate-link" href="login.html">Sign in →</a>
+  </div>
+</div>
+
+<div id="page-content" style="display:none;">
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-badge">💎 Ultimate Plan</div>
+    <h1>Welcome back, <span id="welcome-name">Investor</span>.</h1>
+    <p class="hero-sub">Your Ultimate subscription is our most powerful plan — full site access, BLEETrader auto-trading, and two Composer symphonies including the High Interest strategy with possible 40%+ annual returns.</p>
+    <div class="hero-email">Signed in as <strong id="user-email-display">—</strong></div>
+  </div>
+
+  <div class="container">
+
+    <!-- ── ULTIMATE BENEFITS ── -->
+    <div class="section">
+      <div class="section-label">Everything included in your Ultimate plan</div>
+      <div class="card">
+        <h2>Your Ultimate Benefits</h2>
+        <ul class="benefits">
+          <li>
+            <span class="icon">📡</span>
+            <span class="txt"><strong>Daily ETF Allocation Signal</strong>See exactly which ETFs the BLEE algorithm holds today and what weight to target.</span>
+          </li>
+          <li>
+            <span class="icon">🤖</span>
+            <span class="txt"><strong>BLEETrader Auto-Trade App</strong>Desktop app that connects to your Schwab account and executes the daily rebalance automatically at 3:52 PM ET.</span>
+          </li>
+          <li>
+            <span class="icon">🎼</span>
+            <span class="txt"><strong>2 Auto-Trade Symphonies</strong>Access to both the Calm Growth Model and the High Interest strategy — giving you twice the algorithmic power.</span>
+          </li>
+          <li>
+            <span class="icon">⚡</span>
+            <span class="txt"><strong>High Interest Strategy</strong>Possible 40%+ annual returns with the same low-risk profile as the Pro model. Exclusive to Ultimate subscribers.</span>
+          </li>
+          <li>
+            <span class="icon">🔄</span>
+            <span class="txt"><strong>Reallocation Status</strong>Know instantly whether you need to rebalance today — no guesswork, no manual checking required.</span>
+          </li>
+          <li>
+            <span class="icon">🧮</span>
+            <span class="txt"><strong>Investment Calculator</strong>Enter your portfolio value and get exact dollar amounts to buy or sell for each ETF across both symphonies.</span>
+          </li>
+          <li>
+            <span class="icon">📊</span>
+            <span class="txt"><strong>Full Site Access</strong>Daily Signal, Market Forecast, Backtest History, Performance charts — everything unlocked.</span>
+          </li>
+          <li>
+            <span class="icon">📧</span>
+            <span class="txt"><strong>Weekly Market Newsletter</strong>Curated weekly market summary and BLEE research insights delivered to your inbox.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── YOUR TWO SYMPHONIES ── -->
+    <div class="section">
+      <div class="section-label">Your 2 auto-trade symphonies</div>
+      <div class="guide-card">
+        <div class="guide-header">
+          <div class="guide-icon">🎼</div>
+          <div class="guide-header-text">
+            <h3>Your Composer Symphonies</h3>
+            <p>Both symphonies run on Composer · BLEETrader can trade either one automatically</p>
+          </div>
+        </div>
+        <div class="guide-body">
+          <p>As an Ultimate subscriber, you have access to both BLEE symphonies on Composer. BLEETrader can be configured to auto-trade either symphony in your Schwab account. You choose which one to follow — or switch between them at any time.</p>
+          <div class="sym-grid">
+            <div class="sym-card">
+              <div class="sym-num">Symphony 1 · Pro Model</div>
+              <h3>Calm Growth Model</h3>
+              <p>Our flagship strategy. Rotates between equity ETFs and bonds based on RSI momentum. Targets 25–30% annualized return with low drawdown.</p>
+              <span class="sym-id">ID: qjmHJ3IR19kmaAlbgkNj</span>
+            </div>
+            <div class="sym-card">
+              <div class="sym-num">Symphony 2 · Ultimate Exclusive</div>
+              <h3>High Interest Strategy</h3>
+              <p>Possible 40%+ annual returns with the same low-risk framework as the Calm Growth Model. Exclusive to Ultimate plan subscribers.</p>
+              <span class="sym-id">ID: iPifD8uTozTr0sbu9qiB</span>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top:16px;">
+            <strong>💡 Which should I use?</strong> The Calm Growth Model is the proven flagship with a 6-year backtest. The High Interest strategy is newer but targets higher returns at comparable risk. You can run BLEETrader on either one, and switch at any time by changing the symphony selection in the BLEETrader settings.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BLETRADER DOWNLOAD ── -->
+    <div class="section">
+      <div class="section-label">Your exclusive trading tool</div>
+      <div class="card">
+        <h2>BLEETrader — Desktop Auto-Trade App</h2>
+        <p>BLEETrader is a Windows desktop application that connects directly to your Charles Schwab brokerage account via the official Schwab API. Every trading day at 3:52 PM ET, it automatically pulls the latest BLEE allocation and executes the rebalance trades in your account.</p>
+        <p>As an Ultimate subscriber, BLEETrader gives you access to both symphonies in the dropdown — choose which one to follow or switch any time. You remain in full control: BLEETrader shows a trade preview before executing, and you can override or cancel any trade.</p>
+
+        <a class="download-box" href="client/index.html">
+          <div class="dl-icon">💻</div>
+          <div class="dl-text">
+            <h3>Download BLEETrader for Windows</h3>
+            <p>Installation guide, system requirements, and setup instructions</p>
+          </div>
+          <div class="dl-badge">Download →</div>
+        </a>
+
+        <div class="tip-box" style="margin-top:20px;">
+          <strong>💡 First time?</strong> After downloading, run <code>install.bat</code> once to set up your environment, then <code>run.bat</code> to launch BLEETrader. Sign in with your BLEE account email to unlock both symphonies in the dropdown.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DAILY SIGNAL GUIDE ── -->
+    <div class="section">
+      <div class="section-label">Your most important daily page</div>
+      <div class="guide-card">
+        <div class="guide-header">
+          <div class="guide-icon">📡</div>
+          <div class="guide-header-text">
+            <h3>Daily Signal Page</h3>
+            <p>bleeanalytics.com/index2.html · Updated daily at 3:51 PM ET</p>
+          </div>
+        </div>
+        <div class="guide-body">
+          <p>If BLEETrader is running, it handles the daily rebalance automatically for whichever symphony you've selected. You can always check the Daily Signal page to monitor the algorithm, verify trades, or rebalance manually if needed.</p>
+          <ol class="steps">
+            <li>
+              <div class="step-num">1</div>
+              <div><strong>Today's Allocation</strong> — The current ETF mix for the Calm Growth Model. This is what BLEETrader will trade to (if using Symphony 1).</div>
+            </li>
+            <li>
+              <div class="step-num">2</div>
+              <div><strong>Reallocation Status</strong> — Whether a rebalance is needed today. BLEETrader checks this automatically, but you can verify here anytime.</div>
+            </li>
+            <li>
+              <div class="step-num">3</div>
+              <div><strong>Investment Calculator</strong> — Enter your portfolio value to get exact dollar amounts per ETF for manual trading if preferred.</div>
+            </li>
+            <li>
+              <div class="step-num">4</div>
+              <div><strong>Historical Weight Changes</strong> — A chart showing how each ETF's allocation has shifted over the past 2 weeks.</div>
+            </li>
+          </ol>
+          <div style="margin-top:24px;">
+            <a href="index2.html" class="cta-link">→ Open Daily Signal</a>
+            <a href="marketDailySummary.html" class="cta-link-outline">🌤 Market Forecast</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QUICK LINKS ── -->
+    <div class="section">
+      <div class="card" style="background:var(--surface2);">
+        <h2 style="font-size:16px;margin-bottom:16px;">Quick Links</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <a href="index2.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📡 Daily Signal</a>
+          <a href="marketDailySummary.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">🌤 Market Forecast</a>
+          <a href="Algorithm185History.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📊 Backtest History</a>
+          <a href="performance1.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📈 Performance</a>
+          <a href="client/index.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">💻 BLEETrader Download</a>
+          <a href="subscribe.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📋 Subscription Details</a>
+          <a href="contact.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">✉️ Contact Support</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <div class="bottom-nav">
+    <a href="index.html">Home</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+</div><!-- /page-content -->
+
+<!-- Firebase auth + user bar -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="user_bar.js"></script>
+
+<script>
+(function() {
+  var TIER_RANK = { free:0.5, newsletter:0.5, basic:1.0, starter:1.0,
+                    premium:2.0, pro:2.0, ultimate:2.5,
+                    marketer:3.0, manager:10.0, admin:99.0 };
+  var MIN_RANK = 2.5; // Ultimate minimum
+
+  function gate(msg, linkText, linkHref) {
+    document.getElementById("gate-msg").textContent = msg;
+    if (linkText) {
+      var a = document.getElementById("gate-link");
+      a.textContent = linkText; a.href = linkHref; a.style.display = "inline-block";
+    }
+    document.getElementById("auth-gate").classList.add("show");
+    document.getElementById("page-content").style.display = "none";
+  }
+
+  function show(email) {
+    document.getElementById("auth-gate").classList.remove("show");
+    document.getElementById("page-content").style.display = "block";
+    document.getElementById("user-email-display").textContent = email;
+    var name = email.split("@")[0].replace(/[._\-+]/g," ")
+                    .replace(/\b\w/g,function(c){return c.toUpperCase();});
+    document.getElementById("welcome-name").textContent = name;
+  }
+
+  try { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); } catch(e){}
+  var auth = firebase.auth();
+  var db   = firebase.firestore();
+
+  auth.onAuthStateChanged(function(user) {
+    if (!user) {
+      gate("This page is for Ultimate subscribers. Please sign in to continue.",
+           "Sign in →", BLEE_PAGES.login + "?next=account_ultimate.html");
+      return;
+    }
+    if ((user.email||"").toLowerCase() === (BLEE_ADMIN_EMAIL||"").toLowerCase()) {
+      show(user.email); return;
+    }
+    db.collection("users").doc(user.uid).get().then(function(snap) {
+      var tier = (snap.exists && snap.data().tier) || "free";
+      var rank = TIER_RANK[tier] || 0;
+      var status = (snap.exists && snap.data().subscriptionStatus) || "";
+      if (tier === "manager" || tier === "admin") { show(user.email); return; }
+      if (rank < MIN_RANK) {
+        gate("This page is for Ultimate subscribers. Your current plan doesn't include access.",
+             "View subscription plans →", BLEE_PAGES.subscribe);
+        return;
+      }
+      if (status && status !== "active") {
+        gate("Your subscription is currently " + status + ". Please contact support to restore access.",
+             "Contact support →", "contact.html");
+        return;
+      }
+      show(user.email);
+    }).catch(function() { show(user.email); });
+  });
+})();
+</script>
+</body>
+</html>
