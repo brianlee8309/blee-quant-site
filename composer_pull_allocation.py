@@ -881,12 +881,19 @@ def main() -> int:
         try:
             _watch_html = _watch_path.read_text(encoding="utf-8")
             # Replace SYMPHONIES data placeholder (may span many characters)
-            _watch_html = _re_watch.sub(
-                r"/\* __SYMPHONY_DATA__ \*/ \[.*?\]",
-                "/* __SYMPHONY_DATA__ */ " + json.dumps(symphony_watch_data, default=str),
-                _watch_html,
-                flags=_re_watch.DOTALL,
-            )
+            # Use json.JSONDecoder to find the true end of the nested array
+            # (regex \[.*?\] stops at the first ] inside holdings — corrupts the file)
+            import json as _json_watch
+            _sdm = "/* __SYMPHONY_DATA__ */ "
+            _si  = _watch_html.find(_sdm)
+            if _si >= 0:
+                _arr_s = _watch_html.index("[", _si + len(_sdm))
+                _, _arr_e = _json_watch.JSONDecoder().raw_decode(_watch_html, _arr_s)
+                _watch_html = (
+                    _watch_html[:_si + len(_sdm)]
+                    + _json_watch.dumps(symphony_watch_data, default=str)
+                    + _watch_html[_arr_e:]
+                )
             # Replace GENERATED date placeholder
             _watch_html = _re_watch.sub(
                 r'/\* __GENERATED__ \*/ "[^"]*"',
