@@ -49,6 +49,12 @@ PAGES = [
         "icon":   "📊",
     },
     {
+        "src":    SCRIPT_DIR / "index_186main.html",
+        "prefix": "signal186main",
+        "label":  "BLEE-186 Main (57% $132K)",
+        "icon":   "📈",
+    },
+    {
         "src":    SCRIPT_DIR / "index_50.html",
         "prefix": "signal186",
         "label":  "BLEE-186 ALL in One",

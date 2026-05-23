@@ -707,6 +707,23 @@ def main() -> int:
             }, f, indent=2, default=str)
         log(f"  Saved today's slice to {slice_path.name}")
 
+        # ── Stable copy for auto-rebalancer (schwab_rebalance.py) ────────────
+        # Maps symphony ID -> fixed filename so rebalance_config.json never
+        # needs to change as the date rolls over each day.
+        _STABLE_JSON_MAP = {
+            "7GJZdYouz3l3acrmUPOD": "composer_allocations_186main.json", # BLEE-186 main ($132K)
+            "jtQvlI5wINrxpOfxgmgl": "composer_allocations_186.json",   # BLEE-186 small copy
+            "qjmHJ3IR19kmaAlbgkNj": "composer_allocations_187.json",   # BLEE-187 SGOV Bond
+            "iPifD8uTozTr0sbu9qiB": "composer_allocations_187hi.json", # BLEE-187 Hi Interest
+            "ZGersOlsQFRHg7U2qnSw": "composer_allocations_185.json",   # BLEE-185
+            "g7WBkfIc6UWUWC6NiAdu": "composer_allocations_kei186.json",# BLEE A-186 Kei
+        }
+        if sid in _STABLE_JSON_MAP:
+            import shutil as _shutil
+            _stable_dst = SCRIPT_DIR / _STABLE_JSON_MAP[sid]
+            _shutil.copy(str(slice_path), str(_stable_dst))
+            log(f"  Updated stable file: {_stable_dst.name}")
+
         # Collect data for CurrentWatchSymphony.html regeneration
         try:
             _sym_value     = raw_entry.get("value")   if raw_entry else None
