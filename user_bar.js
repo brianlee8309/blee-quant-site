@@ -90,14 +90,22 @@
     free:     { label: "📧 Newsletter", color: "#94a3b8" },
   };
 
+  // ── Account page per tier ────────────────────────────────────────────────
+  var ACCOUNT_PAGES = {
+    basic:    "account_starter.html",
+    ultimate: "account_ultimate.html",
+    premium:  "account_pro.html",
+  };
+
   function drawBar(email, tier) {
     // Guard: don't double-draw
     if (document.getElementById("blee-user-bar")) return;
 
-    var info    = TIERS[tier] || { label: "Member", color: "#4ade80" };
-    var isStaff = tier === "admin" || tier === "manager";
-    var adminUrl = (typeof BLEE_PAGES !== "undefined" && BLEE_PAGES.admin) || "admin.html";
-    var loginUrl = (typeof BLEE_PAGES !== "undefined" && BLEE_PAGES.login) || "login.html";
+    var info       = TIERS[tier] || { label: "Member", color: "#4ade80" };
+    var isStaff    = tier === "admin" || tier === "manager";
+    var accountUrl = ACCOUNT_PAGES[tier] || null;
+    var adminUrl   = (typeof BLEE_PAGES !== "undefined" && BLEE_PAGES.admin) || "admin.html";
+    var loginUrl   = (typeof BLEE_PAGES !== "undefined" && BLEE_PAGES.login) || "login.html";
 
     var bar = document.createElement("div");
     bar.id = "blee-user-bar";
@@ -140,7 +148,11 @@
         ? '<a href="' + adminUrl + '" style="color:#f5a623;font-size:12px;font-weight:700;' +
           'text-decoration:none;border:1px solid rgba(245,166,35,0.4);border-radius:4px;' +
           'padding:3px 10px;background:rgba(245,166,35,0.1);flex-shrink:0;">⚙ Admin</a>'
-        : '') +
+        : (accountUrl
+          ? '<a href="' + accountUrl + '" style="color:' + info.color + ';font-size:12px;font-weight:700;' +
+            'text-decoration:none;border:1px solid ' + info.color + '44;border-radius:4px;' +
+            'padding:3px 10px;background:' + info.color + '11;flex-shrink:0;">My Account</a>'
+          : '')) +
       '<button id="blee-signout-btn" style="background:#7f1d1d;color:#fca5a5;' +
         'border:1px solid #991b1b;border-radius:5px;padding:4px 13px;cursor:pointer;' +
         'font-size:12px;font-weight:600;white-space:nowrap;font-family:inherit;' +
@@ -198,7 +210,4 @@
     return "basic";
   }
 
-  // ── Kick off ─────────────────────────────────────────────────────────────
-  waitForFirebase();
-
-})()
+  // ── Kick off ──────────────────────────────────────────────────

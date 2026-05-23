@@ -47,4 +47,7 @@ const BLEE_PAGES = {
   forecast:  "/marketDailySummary.html",
   admin:     "/admin.html",
   marketing: "/marketing.html",
+  account_starter:  "/account_starter.html",
+  account_pro:      "/account_pro.html",
+  account_ultimate: "/account_ultimate.html",
 };

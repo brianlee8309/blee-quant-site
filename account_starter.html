@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Your Starter Account — BLEE Quant Analytics</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b1120;--surface:#111827;--surface2:#1e293b;
+    --border:rgba(255,255,255,0.08);--text:#f1f5f9;--muted:#94a3b8;
+    --green:#4ade80;--gold:#f5a623;--accent:#38bdf8;
+    --starter:#4ade80;
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+       background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;}
+
+  /* ── Hero welcome ── */
+  .hero{
+    background:linear-gradient(135deg,#0a1a0a 0%,#0d2318 50%,#0b1120 100%);
+    border-bottom:1px solid rgba(74,222,128,0.15);
+    padding:56px 24px 48px;text-align:center;
+  }
+  .hero-badge{
+    display:inline-block;background:rgba(74,222,128,0.12);
+    border:1px solid rgba(74,222,128,0.35);border-radius:999px;
+    color:var(--starter);font-size:12px;font-weight:700;
+    letter-spacing:.08em;padding:4px 16px;margin-bottom:20px;text-transform:uppercase;
+  }
+  .hero h1{font-size:clamp(26px,4vw,40px);font-weight:900;letter-spacing:-.03em;
+            color:#fff;margin-bottom:12px;line-height:1.15;}
+  .hero h1 span{color:var(--starter);}
+  .hero-sub{color:var(--muted);font-size:16px;max-width:520px;margin:0 auto 28px;line-height:1.6;}
+  .hero-email{
+    display:inline-block;background:rgba(255,255,255,0.05);
+    border:1px solid var(--border);border-radius:8px;
+    color:var(--muted);font-size:13px;padding:6px 18px;
+  }
+  .hero-email strong{color:var(--text);}
+
+  /* ── Layout ── */
+  .container{max-width:900px;margin:0 auto;padding:0 24px;}
+
+  /* ── Section card ── */
+  .section{margin-top:40px;}
+  .section-label{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--starter);margin-bottom:10px;
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:32px;
+  }
+  .card + .card{margin-top:16px;}
+  .card h2{font-size:20px;font-weight:800;margin-bottom:10px;color:#fff;}
+  .card p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px;}
+  .card p:last-of-type{margin-bottom:0;}
+
+  /* ── Benefits list ── */
+  .benefits{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+  @media(max-width:560px){.benefits{grid-template-columns:1fr;}}
+  .benefits li{
+    display:flex;align-items:flex-start;gap:10px;
+    background:var(--surface2);border:1px solid var(--border);
+    border-radius:10px;padding:14px 16px;font-size:13.5px;color:var(--text);
+  }
+  .benefits li .icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .benefits li .txt{line-height:1.5;}
+  .benefits li .txt strong{display:block;color:#fff;font-weight:700;margin-bottom:2px;}
+
+  /* ── Video box ── */
+  .video-box{
+    display:flex;align-items:center;gap:20px;
+    background:linear-gradient(135deg,#0a2010,#0d2318);
+    border:1px solid rgba(74,222,128,0.25);border-radius:12px;
+    padding:24px 28px;margin-top:20px;
+  }
+  @media(max-width:560px){.video-box{flex-direction:column;text-align:center;}}
+  .play-btn{
+    width:64px;height:64px;border-radius:50%;flex-shrink:0;
+    background:var(--starter);display:flex;align-items:center;justify-content:center;
+    font-size:24px;text-decoration:none;transition:transform .15s,opacity .15s;
+    box-shadow:0 0 24px rgba(74,222,128,0.35);
+  }
+  .play-btn:hover{transform:scale(1.08);opacity:.9;}
+  .video-text h3{font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;}
+  .video-text p{color:rgba(255,255,255,0.6);font-size:13px;line-height:1.55;margin:0;}
+
+  /* ── Page guide cards ── */
+  .guide-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    overflow:hidden;margin-top:16px;
+  }
+  .guide-header{
+    display:flex;align-items:center;gap:14px;padding:20px 24px;
+    background:var(--surface2);border-bottom:1px solid var(--border);
+  }
+  .guide-icon{font-size:28px;}
+  .guide-header-text h3{font-size:17px;font-weight:800;color:#fff;margin-bottom:2px;}
+  .guide-header-text p{color:var(--muted);font-size:12px;margin:0;}
+  .guide-body{padding:24px;}
+  .guide-body p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:14px;}
+  .steps{list-style:none;display:flex;flex-direction:column;gap:10px;margin:4px 0 20px;}
+  .steps li{
+    display:flex;align-items:flex-start;gap:12px;
+    font-size:13.5px;color:var(--text);line-height:1.5;
+  }
+  .step-num{
+    width:24px;height:24px;border-radius:50%;flex-shrink:0;
+    background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.35);
+    color:var(--starter);font-size:11px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .cta-link{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--starter);color:#000;font-weight:700;font-size:14px;
+    border-radius:8px;padding:10px 22px;text-decoration:none;
+    transition:opacity .15s;
+  }
+  .cta-link:hover{opacity:.85;}
+  .cta-link-outline{
+    display:inline-flex;align-items:center;gap:8px;margin-left:10px;
+    border:1.5px solid rgba(74,222,128,0.4);color:var(--starter);
+    font-weight:600;font-size:14px;border-radius:8px;padding:9px 20px;
+    text-decoration:none;transition:opacity .15s;
+  }
+  .cta-link-outline:hover{opacity:.75;}
+
+  /* ── Tips box ── */
+  .tip-box{
+    background:rgba(56,189,248,0.07);border:1px solid rgba(56,189,248,0.2);
+    border-radius:10px;padding:16px 20px;margin-top:16px;
+    font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;
+  }
+  .tip-box strong{color:var(--accent);}
+
+  /* ── Footer nav ── */
+  .bottom-nav{
+    margin-top:48px;padding:24px;text-align:center;
+    border-top:1px solid var(--border);
+  }
+  .bottom-nav a{
+    color:var(--muted);font-size:13px;text-decoration:none;margin:0 12px;
+  }
+  .bottom-nav a:hover{color:var(--text);}
+
+  /* Auth gate overlay */
+  #auth-gate{
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:#0b1120;align-items:center;justify-content:center;
+    flex-direction:column;gap:16px;text-align:center;padding:24px;
+  }
+  #auth-gate.show{display:flex;}
+  #auth-gate p{color:var(--muted);font-size:15px;}
+  #auth-gate a{
+    color:#fff;background:var(--gold);font-weight:700;
+    padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Auth gate (shown while checking, or if not authorized) -->
+<div id="auth-gate">
+  <div style="font-size:32px;">⭐</div>
+  <p id="gate-msg">Checking your subscription…</p>
+  <a id="gate-link" href="login.html" style="display:none;">Sign in</a>
+</div>
+
+<!-- Main page content (hidden until auth confirmed) -->
+<div id="page-content" style="display:none;">
+
+  <!-- ── HERO WELCOME ── -->
+  <div class="hero">
+    <div class="hero-badge">⭐ Starter Membership</div>
+    <h1>Welcome to <span>BLEE Quant</span>,<br id="name-break"/> <span id="welcome-name" style="color:#fff;"></span>!</h1>
+    <p class="hero-sub">You're all set. Below is everything included in your Starter subscription — your daily edge for smarter, data-driven investing.</p>
+    <div class="hero-email">Signed in as <strong id="user-email-display">—</strong></div>
+  </div>
+
+  <div class="container">
+
+    <!-- ── YOUR BENEFITS ── -->
+    <div class="section">
+      <div class="section-label">What's included in your plan</div>
+      <div class="card">
+        <h2>Your Starter Benefits</h2>
+        <p>Your Starter subscription gives you daily market intelligence, access to our quantitative allocation signals, and everything you need to trade smarter — all without needing a professional trading setup.</p>
+        <ul class="benefits">
+          <li>
+            <span class="icon">📊</span>
+            <span class="txt"><strong>Daily Market Forecast</strong>Our Quant Analytics engine scans macro indicators every morning and delivers a structured market outlook.</span>
+          </li>
+          <li>
+            <span class="icon">📡</span>
+            <span class="txt"><strong>Daily ETF Allocation Signal</strong>See exactly which ETFs the BLEE algorithm holds today — and what percentage weight to target.</span>
+          </li>
+          <li>
+            <span class="icon">🔄</span>
+            <span class="txt"><strong>Reallocation Status</strong>Know instantly whether you need to rebalance today or hold steady — no guesswork.</span>
+          </li>
+          <li>
+            <span class="icon">🧮</span>
+            <span class="txt"><strong>Investment Calculator</strong>Enter your portfolio value and get exact dollar amounts to buy or sell for each ETF.</span>
+          </li>
+          <li>
+            <span class="icon">📈</span>
+            <span class="txt"><strong>Historical Allocation History</strong>Browse 3+ years of daily allocation changes to understand how the model has evolved.</span>
+          </li>
+          <li>
+            <span class="icon">📧</span>
+            <span class="txt"><strong>Weekly Market Newsletter</strong>A curated weekly summary of market conditions and BLEE research insights, delivered to your inbox.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── INTRO VIDEO ── -->
+    <div class="section">
+      <div class="section-label">Get started in 5 minutes</div>
+      <div class="card">
+        <h2>Watch the Introduction</h2>
+        <p>New to BLEE Quant? This short video walks you through how the algorithm works, how to read the daily signal, and how to apply it to your own brokerage account.</p>
+        <a class="video-box" href="https://www.youtube.com/watch?v=ITP2e1l5i6k" target="_blank" rel="noopener" style="text-decoration:none;">
+          <div class="play-btn">▶</div>
+          <div class="video-text">
+            <h3>BLEE Quant — How It Works</h3>
+            <p>Watch on YouTube &nbsp;·&nbsp; ~5 minutes &nbsp;·&nbsp; Opens in a new tab<br>Learn the model logic, how to read today's allocation, and how to place your first trade.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ── DAILY SIGNAL PAGE GUIDE ── -->
+    <div class="section">
+      <div class="section-label">Your most important daily page</div>
+
+      <div class="guide-card">
+        <div class="guide-header">
+          <div class="guide-icon">📡</div>
+          <div class="guide-header-text">
+            <h3>Daily Signal Page</h3>
+            <p>bleeanalytics.com/index2.html &nbsp;·&nbsp; Updated daily at 3:51 PM ET</p>
+          </div>
+        </div>
+        <div class="guide-body">
+          <p>The Daily Signal page is the core of your Starter subscription. Every trading day at 3:51 PM Eastern, the BLEE algorithm publishes today's ETF allocation — showing you exactly which funds to hold and at what percentage weight.</p>
+          <p>Here's what you'll find on the page and what to do with it:</p>
+          <ol class="steps">
+            <li>
+              <div class="step-num">1</div>
+              <div><strong>Today's Allocation</strong> — A donut chart and table showing the current ETF mix (e.g. SGOV 82%, GLDM 9%, TECL 8%). This is the model's recommended portfolio for the current market environment.</div>
+            </li>
+            <li>
+              <div class="step-num">2</div>
+              <div><strong>Reallocation Status</strong> — The most important section. It compares today's allocation to yesterday's and tells you clearly: <em>"No reallocation needed"</em> (hold) or <em>"Reallocation recommended"</em> (trades required). Check this first every day after 3:51 PM ET.</div>
+            </li>
+            <li>
+              <div class="step-num">3</div>
+              <div><strong>Investment Calculator</strong> — Enter your total portfolio value and the calculator converts the percentage weights into exact dollar amounts for each ETF. Use this to size your trades precisely.</div>
+            </li>
+            <li>
+              <div class="step-num">4</div>
+              <div><strong>Historical Weight Changes</strong> — A chart showing how each ETF's allocation has shifted over the past 2 weeks. Useful for understanding recent model activity and trends.</div>
+            </li>
+          </ol>
+          <div class="tip-box">
+            <strong>💡 Daily routine:</strong> Check the page after 3:51 PM ET each trading day. If reallocation is recommended, log into your brokerage, sell holdings that decreased, then buy those that increased — proportionally to your portfolio size using the Investment Calculator.
+          </div>
+          <div style="margin-top:24px;">
+            <a href="index2.html" class="cta-link">→ Open Daily Signal Page</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MARKET FORECAST GUIDE ── -->
+    <div class="section">
+      <div class="section-label">Daily market context</div>
+
+      <div class="guide-card">
+        <div class="guide-header">
+          <div class="guide-icon">🌤</div>
+          <div class="guide-header-text">
+            <h3>Market Forecast Page</h3>
+            <p>bleeanalytics.com/marketDailySummary.html &nbsp;·&nbsp; Updated each morning</p>
+          </div>
+        </div>
+        <div class="guide-body">
+          <p>The Market Forecast page gives you a structured, data-driven snapshot of current market conditions — generated each morning by our Quant Analytics Research Engine. Think of it as your morning briefing before the trading day begins.</p>
+          <p>What it covers:</p>
+          <ol class="steps">
+            <li>
+              <div class="step-num">1</div>
+              <div><strong>Market Weather Score</strong> — A composite score (like a weather forecast) summarizing whether current conditions favor risk-on or risk-off positioning. Ranges from stormy to clear.</div>
+            </li>
+            <li>
+              <div class="step-num">2</div>
+              <div><strong>Key Indicators</strong> — A breakdown of the signals feeding into the score: volatility (VIX), momentum (RSI), trend (moving averages), and macro environment. Each is rated and explained in plain language.</div>
+            </li>
+            <li>
+              <div class="step-num">3</div>
+              <div><strong>Today's Outlook</strong> — A narrative summary written by the engine describing what the current data means for the day ahead — useful context for understanding why the allocation may change.</div>
+            </li>
+            <li>
+              <div class="step-num">4</div>
+              <div><strong>Historical Forecast Archive</strong> — Browse past forecasts to see how market conditions have shifted over time and how the model responded.</div>
+            </li>
+          </ol>
+          <div class="tip-box">
+            <strong>💡 How to use it:</strong> Read the Market Forecast each morning for context, then check the Daily Signal after 3:51 PM ET to see if the allocation changed. The forecast helps you understand <em>why</em> the model is doing what it's doing — so you can follow the signal with confidence, not anxiety.
+          </div>
+          <div style="margin-top:24px;">
+            <a href="marketDailySummary.html" class="cta-link">→ Open Market Forecast</a>
+            <a href="Algorithm185History.html" class="cta-link-outline">📊 Backtest History</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QUICK LINKS ── -->
+    <div class="section">
+      <div class="card" style="background:var(--surface2);">
+        <h2 style="font-size:16px;margin-bottom:16px;">Quick Links</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <a href="index2.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📡 Daily Signal</a>
+          <a href="marketDailySummary.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">🌤 Market Forecast</a>
+          <a href="Algorithm185History.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📊 Backtest History</a>
+          <a href="performance1.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">📈 Performance</a>
+          <a href="https://www.youtube.com/watch?v=ITP2e1l5i6k" target="_blank" rel="noopener" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">▶ Intro Video</a>
+          <a href="contact.html" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-size:13px;font-weight:600;">✉️ Contact Support</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── UPGRADE TEASER ── -->
+    <div class="section">
+      <div class="card" style="border-color:rgba(245,166,35,0.2);background:linear-gradient(135deg,#1a1200,#111827);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-size:24px;">🚀</span>
+          <h2 style="font-size:17px;margin:0;">Want auto-trade? Upgrade to Pro</h2>
+        </div>
+        <p style="margin-bottom:16px;">Pro subscribers get BLEETrader — a desktop app that connects directly to your Schwab or IBKR account and executes the daily rebalance automatically at 3:52 PM ET. You stay in full control and approve every trade.</p>
+        <a href="subscribe.html" style="display:inline-block;background:var(--gold);color:#000;font-weight:700;font-size:14px;border-radius:8px;padding:10px 22px;text-decoration:none;">View Pro &amp; Ultimate Plans →</a>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <div class="bottom-nav">
+    <a href="index.html">Home</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+</div><!-- /page-content -->
+
+<!-- Firebase auth + user bar -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="user_bar.js"></script>
+
+<script>
+(function() {
+  var TIER_RANK = { free:0.5, newsletter:0.5, basic:1.0, starter:1.0,
+                    premium:2.0, pro:2.0, ultimate:2.5,
+                    marketer:3.0, manager:10.0, admin:99.0 };
+  var MIN_RANK = 1.0; // basic / starter minimum
+
+  function gate(msg, linkText, linkHref) {
+    var g = document.getElementById("auth-gate");
+    document.getElementById("gate-msg").textContent = msg;
+    if (linkText) {
+      var a = document.getElementById("gate-link");
+      a.textContent = linkText; a.href = linkHref; a.style.display = "inline-block";
+    }
+    g.classList.add("show");
+    document.getElementById("page-content").style.display = "none";
+  }
+
+  function show(email) {
+    document.getElementById("auth-gate").classList.remove("show");
+    document.getElementById("page-content").style.display = "block";
+    document.getElementById("user-email-display").textContent = email;
+    // Derive first name from email local part for the greeting
+    var name = email.split("@")[0].replace(/[._\-+]/g," ")
+                    .replace(/\b\w/g,function(c){return c.toUpperCase();});
+    document.getElementById("welcome-name").textContent = name;
+  }
+
+  try { if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG); } catch(e){}
+  var auth = firebase.auth();
+  var db   = firebase.firestore();
+
+  auth.onAuthStateChanged(function(user) {
+    if (!user) {
+      gate("This page is for Starter subscribers. Please sign in to continue.",
+           "Sign in →", BLEE_PAGES.login + "?next=account_starter.html");
+      return;
+    }
+    // Admin / manager — always allow
+    if ((user.email||"").toLowerCase() === (BLEE_ADMIN_EMAIL||"").toLowerCase()) {
+      show(user.email); return;
+    }
+    db.collection("users").doc(user.uid).get().then(function(snap) {
+      var tier = (snap.exists && snap.data().tier) || "free";
+      var rank = TIER_RANK[tier] || 0;
+      var status = (snap.exists && snap.data().subscriptionStatus) || "";
+      if (tier === "manager" || tier === "admin") { show(user.email); return; }
+      if (rank < MIN_RANK) {
+        gate("This page is for Starter subscribers and above. Your current plan doesn't include access.",
+             "View subscription plans →", BLEE_PAGES.subscribe);
+        return;
+      }
+      if (status && status !== "active") {
+        gate("Your subscription is currently " + status + ". Please contact support to restore access.",
+             "Contact support →", "contact.html");
+        return;
+      }
+      show(user.email);
+    }).catch(function() { show(user.email); }); // fail-open
+  });
+})();
+</script>
+</body>
+</html>
