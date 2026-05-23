@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BLEETrader — Download &amp; Setup | BLEE Quant Analytics</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b1120;--surface:#111827;--surface2:#1e293b;--surface3:#0d1829;
+    --border:rgba(255,255,255,0.08);--text:#f1f5f9;--muted:#94a3b8;
+    --gold:#f5a623;--blue:#38bdf8;--green:#4ade80;--purple:#c084fc;
+  }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;
+  }
+
+  /* ── Hero ── */
+  .hero{
+    background:linear-gradient(160deg,#0a0f1e 0%,#0f1f3d 55%,#0a1020 100%);
+    border-bottom:1px solid rgba(56,189,248,0.15);
+    padding:64px 24px 56px;text-align:center;
+  }
+  .hero-badge{
+    display:inline-block;background:rgba(56,189,248,0.1);
+    border:1px solid rgba(56,189,248,0.3);border-radius:999px;
+    color:var(--blue);font-size:12px;font-weight:700;
+    letter-spacing:.1em;padding:4px 18px;margin-bottom:24px;text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(32px,5vw,54px);font-weight:900;letter-spacing:-.03em;
+    color:#fff;margin-bottom:16px;line-height:1.1;
+  }
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{
+    color:var(--muted);font-size:17px;max-width:580px;
+    margin:0 auto 40px;line-height:1.65;
+  }
+  .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn-primary{
+    display:inline-block;background:var(--gold);color:#000;
+    font-weight:800;font-size:15px;border-radius:10px;
+    padding:13px 28px;text-decoration:none;
+    transition:background .15s,transform .15s;
+  }
+  .btn-primary:hover{background:#fbbf24;transform:translateY(-1px);}
+  .btn-outline{
+    display:inline-block;border:1px solid rgba(255,255,255,0.2);color:var(--text);
+    font-weight:600;font-size:15px;border-radius:10px;
+    padding:13px 28px;text-decoration:none;
+    transition:border-color .15s,background .15s;
+  }
+  .btn-outline:hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);}
+
+  /* ── Layout ── */
+  .container{max-width:960px;margin:0 auto;padding:0 24px;}
+  .section{padding:64px 0;}
+  .section-label{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--blue);margin-bottom:10px;
+  }
+  .section-title{font-size:clamp(22px,3vw,32px);font-weight:900;color:#fff;margin-bottom:12px;letter-spacing:-.02em;}
+  .section-sub{color:var(--muted);font-size:15px;max-width:620px;line-height:1.65;margin-bottom:40px;}
+
+  /* ── Platform cards ── */
+  .platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px;}
+  @media(max-width:600px){.platform-grid{grid-template-columns:1fr;}}
+  .platform-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:16px;padding:32px;
+    transition:border-color .2s;
+  }
+  .platform-card:hover{border-color:rgba(245,166,35,0.35);}
+  .platform-card .plat-icon{font-size:36px;margin-bottom:16px;}
+  .platform-card h3{font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;}
+  .platform-card p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:24px;}
+  .platform-card .plat-btn{
+    display:inline-block;background:var(--gold);color:#000;
+    font-weight:700;font-size:14px;border-radius:8px;
+    padding:10px 22px;text-decoration:none;
+  }
+  .platform-card .plat-btn:hover{background:#fbbf24;}
+  .platform-card .plat-req{
+    display:block;margin-top:12px;font-size:12px;color:var(--muted);
+  }
+
+  /* ── Features grid ── */
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:720px){.features-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:480px){.features-grid{grid-template-columns:1fr;}}
+  .feat-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;padding:22px 20px;
+  }
+  .feat-card .feat-icon{font-size:26px;margin-bottom:12px;}
+  .feat-card h4{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;}
+  .feat-card p{color:var(--muted);font-size:13px;line-height:1.6;}
+
+  /* ── Investment models ── */
+  .model-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+  @media(max-width:600px){.model-grid{grid-template-columns:1fr;}}
+  .model-card{
+    background:var(--surface);border:1px solid rgba(245,166,35,0.2);
+    border-radius:14px;padding:24px;
+  }
+  .model-badge{
+    display:inline-block;background:rgba(245,166,35,0.1);
+    border:1px solid rgba(245,166,35,0.3);border-radius:999px;
+    color:var(--gold);font-size:11px;font-weight:700;
+    letter-spacing:.08em;padding:3px 12px;margin-bottom:14px;text-transform:uppercase;
+  }
+  .model-badge.ultimate{
+    background:rgba(192,132,252,0.1);border-color:rgba(192,132,252,0.3);color:var(--purple);
+  }
+  .model-card h3{font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;}
+  .model-card p{color:var(--muted);font-size:13.5px;line-height:1.6;}
+
+  /* ── Requirements ── */
+  .req-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+  .req-list li{
+    display:flex;align-items:flex-start;gap:14px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:16px 18px;
+  }
+  .req-list li .req-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+  .req-list li .req-body{flex:1;}
+  .req-list li strong{display:block;color:#fff;font-weight:700;font-size:14px;margin-bottom:3px;}
+  .req-list li span{color:var(--muted);font-size:13px;}
+  .req-list li a{color:var(--blue);text-decoration:none;}
+  .req-list li a:hover{text-decoration:underline;}
+
+  /* ── Security box ── */
+  .security-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:600px){.security-grid{grid-template-columns:1fr;}}
+  .sec-item{
+    display:flex;align-items:flex-start;gap:12px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:16px;
+  }
+  .sec-item .sec-icon{font-size:20px;flex-shrink:0;}
+  .sec-item p{color:var(--muted);font-size:13px;line-height:1.5;}
+  .sec-item strong{color:var(--green);}
+
+  /* ── Section divider ── */
+  .divider{border:none;border-top:1px solid var(--border);margin:0;}
+
+  /* ── Footer ── */
+  footer{
+    background:var(--surface3);border-top:1px solid var(--border);
+    padding:40px 24px;text-align:center;
+  }
+  footer p{color:var(--muted);font-size:13px;line-height:1.7;}
+  footer a{color:var(--blue);text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+  .footer-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+  .footer-links a{color:var(--muted);font-size:13px;text-decoration:none;font-weight:500;}
+  .footer-links a:hover{color:#fff;}
+
+  /* ── Back nav ── */
+  .topbar{
+    background:#0a0f1e;border-bottom:1px solid var(--border);
+    padding:0 24px;height:52px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .topbar a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;}
+  .topbar a:hover{color:#fff;}
+  .topbar .brand{color:#fff;font-weight:800;font-size:15px;}
+  .topbar .brand span{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<!-- Top nav -->
+<div class="topbar">
+  <a href="/index.html" class="brand">BLEE <span>Quant</span> Analytics</a>
+  <div style="display:flex;gap:20px;">
+    <a href="/index.html">← Home</a>
+    <a href="/subscribe.html">Subscription Plans</a>
+    <a href="/contact.html">Support</a>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">💻 Desktop App · Pro &amp; Ultimate Subscribers</div>
+  <h1>BLEETrader<br><span>Auto-Trade Your Schwab Account</span></h1>
+  <p class="hero-sub">A desktop app that connects directly to your Charles Schwab brokerage account and automatically executes the daily BLEE rebalance — every trading day at 3:52 PM ET.</p>
+  <div class="hero-btns">
+    <a href="windows/SETUP_WINDOWS.md" class="btn-primary">⬇ Windows Setup Guide</a>
+    <a href="mac/SETUP_MAC.md" class="btn-outline">🍎 macOS Setup Guide</a>
+  </div>
+</div>
+
+<!-- Platform quick start -->
+<div class="container">
+  <div class="section">
+    <div class="section-label">Quick Start</div>
+    <div class="section-title">Choose Your Platform</div>
+    <p class="section-sub">BLEETrader runs on Windows and macOS. Follow the setup guide for your platform — takes about 10 minutes to get fully running.</p>
+
+    <div class="platform-grid">
+      <div class="platform-card">
+        <div class="plat-icon">🪟</div>
+        <h3>Windows</h3>
+        <p>Full support with automated install script. Run <code>install.bat</code> once, then <code>run.bat</code> each day to launch. Includes optional desktop shortcut.</p>
+        <a href="windows/SETUP_WINDOWS.md" class="plat-btn">Windows Setup Guide →</a>
+        <span class="plat-req">Requires Windows 10/11 · Python 3.11+</span>
+      </div>
+      <div class="platform-card">
+        <div class="plat-icon">🍎</div>
+        <h3>macOS</h3>
+        <p>Full support with shell scripts. Run <code>install.sh</code> once, then <code>run.sh</code> to launch. Works on both Intel and Apple Silicon Macs.</p>
+        <a href="mac/SETUP_MAC.md" class="plat-btn">macOS Setup Guide →</a>
+        <span class="plat-req">Requires macOS 12+ · Python 3.11+</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- Features -->
+<div class="container">
+  <div class="section">
+    <div class="section-label">What's Included</div>
+    <div class="section-title">Everything You Need to Auto-Trade</div>
+    <p class="section-sub">BLEETrader is a complete trading interface — from manual order entry to fully automated daily rebalancing.</p>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h4>Auto Rebalance</h4>
+        <p>One click computes the rebalance plan from live BLEE signals. Approve and it executes automatically — every day at 3:52 PM ET.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h4>Portfolio View</h4>
+        <p>Real-time positions and account balance from your Schwab account, updated live as the market moves.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <h4>Manual Trading</h4>
+        <p>Buy or sell any symbol manually — market or limit orders, regular or extended hours, day or GTC duration.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h4>Order Management</h4>
+        <p>View all pending orders in real time and cancel any order with a single click before it executes.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎼</div>
+        <h4>Investment Model Selector</h4>
+        <p>Choose which BLEE investment model to follow. Pro subscribers access 1 model; Ultimate subscribers access 2.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔐</div>
+        <h4>Secure Auth</h4>
+        <p>BLEE Quant Firebase login + encrypted Schwab OAuth token. Your credentials never leave your computer.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- Investment models -->
+<div class="container">
+  <div class="section">
+    <div class="section-label">Investment Models</div>
+    <div class="section-title">Available in BLEETrader</div>
+    <p class="section-sub">The investment model you can access depends on your subscription tier. Both models fetch live allocation data from bleeanalytics.com — always up to date, no Composer account needed.</p>
+
+    <div class="model-grid">
+      <div class="model-card">
+        <div class="model-badge">🚀 Pro &amp; Ultimate</div>
+        <h3>Calm Growth Model</h3>
+        <p>Conservative bond/equity rotation strategy. Rotates daily between equity ETFs and SGOV bonds based on RSI momentum signals. Flagship model with 6-year backtest — targets ~27% annualized return with low drawdown.</p>
+      </div>
+      <div class="model-card">
+        <div class="model-badge ultimate">💎 Ultimate Only</div>
+        <h3>High Interest Strategy</h3>
+        <p>Higher-return strategy for high-interest market environments. Possible 40%+ annual returns with the same low-risk profile as the Calm Growth Model. Exclusive to Ultimate plan subscribers.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- Requirements -->
+<div class="container">
+  <div class="section">
+    <div class="section-label">Before You Start</div>
+    <div class="section-title">Requirements</div>
+    <p class="section-sub">You'll need these four things set up before running BLEETrader.</p>
+
+    <ul class="req-list">
+      <li>
+        <div class="req-icon">🔑</div>
+        <div class="req-body">
+          <strong>BLEE Quant Pro or Ultimate Subscription</strong>
+          <span>Active Pro or Ultimate plan required. <a href="/subscribe.html">View subscription plans →</a></span>
+        </div>
+      </li>
+      <li>
+        <div class="req-icon">🏦</div>
+        <div class="req-body">
+          <strong>Charles Schwab Brokerage Account</strong>
+          <span>An active trading account at schwab.com. Individual or joint accounts supported.</span>
+        </div>
+      </li>
+      <li>
+        <div class="req-icon">🛠</div>
+        <div class="req-body">
+          <strong>Schwab Developer App (free)</strong>
+          <span>Create a free app at <a href="https://developer.schwab.com" target="_blank" rel="noopener">developer.schwab.com</a> to get your API Key and Secret. Takes about 5 minutes.</span>
+        </div>
+      </li>
+      <li>
+        <div class="req-icon">🐍</div>
+        <div class="req-body">
+          <strong>Python 3.11 or newer</strong>
+          <span>Free download at <a href="https://python.org" target="_blank" rel="noopener">python.org</a>. The setup script checks for this automatically.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- Security -->
+<div class="container">
+  <div class="section">
+    <div class="section-label">Privacy &amp; Security</div>
+    <div class="section-title">Your Data Stays on Your Computer</div>
+    <p class="section-sub">BLEETrader is designed with security as the foundation — your brokerage credentials never leave your machine.</p>
+
+    <div class="security-grid">
+      <div class="sec-item">
+        <div class="sec-icon">🔒</div>
+        <p><strong>Encrypted token storage</strong> — Your Schwab OAuth token is encrypted at rest with a passphrase you choose. It's stored locally in <code>src/.env</code> and never transmitted anywhere.</p>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">🏠</div>
+        <p><strong>Runs locally only</strong> — The app binds to <code>127.0.0.1</code> and is not accessible from outside your network. Nothing is hosted or cloud-based.</p>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">🔑</div>
+        <p><strong>OAuth only, no passwords</strong> — BLEETrader uses Schwab's official OAuth flow. Your Schwab password is never entered into or stored by the app.</p>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">✅</div>
+        <p><strong>BLEE login verified</strong> — Your BLEE Quant account is verified via Firebase on every launch. Only active Pro/Ultimate subscribers can access trading features.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-links">
+    <a href="/index.html">Home</a>
+    <a href="/subscribe.html">Subscription Plans</a>
+    <a href="/index2.html">Daily Signal</a>
+    <a href="/performance1.html">Performance</a>
+    <a href="/contact.html">Contact &amp; Support</a>
+  </div>
+  <p>© 2026 BLEE Quant Analytics. BLEETrader is for Pro &amp; Ultimate subscribers only.<br>
+  Questions? <a href="/contact.html">Contact support</a> or email <a href="mailto:brianlee1004@gmail.com">brianlee1004@gmail.com</a></p>
+</footer>
+
+</body>
+</html>
