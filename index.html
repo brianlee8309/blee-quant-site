@@ -605,11 +605,14 @@
 
   /* ── PRICING ── */
   .pricing-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 24px; margin-top: 48px; align-items: start;
-    max-width: 1050px; margin-left: auto; margin-right: auto;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px; margin-top: 48px; align-items: start;
+    max-width: 1400px; margin-left: auto; margin-right: auto;
   }
-  @media (max-width: 860px) {
+  @media (max-width: 1100px) {
+    .pricing-grid { grid-template-columns: repeat(2, 1fr); max-width: 860px; }
+  }
+  @media (max-width: 560px) {
     .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
   }
   .plan {
@@ -1617,18 +1620,44 @@
           <span class="amount">49</span>
           <span class="per">/month</span>
         </div>
-        <p class="plan-desc">Daily email &amp; SMS signals — plus possible integration of our tools with your investment firm</p>
+        <p class="plan-desc">Daily signals + BLEETrader app with 1 auto-trade symphony</p>
         <ul>
           <li>Everything in Starter</li>
           <li>Daily email signal alert</li>
           <li>Daily SMS signal alert</li>
           <li>BLEETrader desktop app (Win/Mac)</li>
-          <li>Possible integration with Schwab, IBKR, Robinhood, Alpaca</li>
-          <li>You stay in full control — approve every action yourself</li>
+          <li>1 auto-trade symphony (Schwab/IBKR)</li>
+          <li>You stay in full control</li>
           <li>Priority email support</li>
         </ul>
         <button class="btn-plan outline" disabled style="cursor:not-allowed;opacity:0.6;">Coming Soon</button>
         <p class="plan-fine">We'll notify you when Pro launches</p>
+      </div>
+
+      <!-- ULTIMATE — Coming Soon -->
+      <div class="plan" style="opacity:0.55;pointer-events:none;position:relative;border-color:#7e22ce;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;">
+          🔜 COMING SOON
+        </div>
+        <span class="plan-badge" style="background:rgba(192,132,252,0.15);color:#c084fc;">💎 Ultimate</span>
+        <h3 style="color:#c084fc;">Full Symphony Suite</h3>
+        <div class="plan-price">
+          <span class="dollar" style="color:#c084fc;">$</span>
+          <span class="amount" style="color:#c084fc;">99</span>
+          <span class="per">/month</span>
+        </div>
+        <p class="plan-desc">Everything in Pro — plus all BLEE Quant symphonies</p>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>2 auto-trade symphonies (full BLEE suite)</li>
+          <li>SGOV Bond Min Dual Reversal strategy</li>
+          <li>High Interest ALL in One strategy</li>
+          <li>Priority support &amp; early access to new models</li>
+        </ul>
+        <button class="btn-plan" style="background:#7e22ce;color:#fff;cursor:not-allowed;opacity:0.7;border:0;" disabled>Coming Soon</button>
+        <p class="plan-fine">We'll notify you when Ultimate launches</p>
       </div>
     </div>
   </div>
@@ -1676,7 +1705,7 @@
   <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
   <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
   <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
-    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/22/2026 03:51 PM ET</span>
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/22/2026 04:18 PM ET</span>
   </p>
 </footer>
 

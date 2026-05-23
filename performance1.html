@@ -153,11 +153,11 @@
   /* PRICING */
   .pricing-section { background: var(--light); padding: 60px 32px; }
   .pricing-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 24px; max-width: 1050px; margin: 40px auto 0;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px; max-width: 1400px; margin: 40px auto 0;
   }
-  @media (max-width: 860px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .pricing-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px)  { .pricing-grid { grid-template-columns: 1fr; } }
   .plan {
     background: #111827; border: 1px solid var(--border);
     border-radius: 18px; padding: 36px 32px;
@@ -792,7 +792,7 @@
     <!-- Pro (Coming Soon) -->
     <div class="plan" style="opacity:0.55;pointer-events:none;">
       <span class="plan-badge" style="background:rgba(107,114,128,0.2);color:#9ca3af;">🔜 Coming Soon</span>
-      <h3>Brokerage Integration</h3>
+      <h3>🚀 Pro</h3>
       <div class="plan-price">
         <span class="dollar">$</span>
         <span class="amount">49</span>
@@ -802,16 +802,43 @@
         <div class="as-num">$399/year</div>
         <div class="as-lbl">Annual membership · about $33.25/mo</div>
       </div>
-      <p class="plan-desc">Daily email &amp; SMS signals — plus possible integration of our tools with your investment firm.</p>
+      <p class="plan-desc">Daily signals + BLEETrader app with 1 auto-trade symphony</p>
       <ul>
         <li>Everything in Starter</li>
         <li>Daily email signal alert</li>
         <li>Daily SMS signal alert</li>
-        <li>Possible integration with Schwab, IBKR, Robinhood, Alpaca</li>
-        <li>You stay in full control — approve every action yourself</li>
+        <li>BLEETrader desktop app (Win/Mac)</li>
+        <li>1 auto-trade symphony (Schwab/IBKR)</li>
+        <li>You stay in full control</li>
+        <li>Priority email support</li>
       </ul>
       <button class="btn-plan" style="background:#374151;color:#6b7280;cursor:not-allowed;" disabled>Coming Soon</button>
       <p class="plan-fine">Want to be notified? <a href="contact.html" style="color:var(--gold);pointer-events:auto;">Contact us →</a></p>
+    </div>
+
+    <!-- Ultimate (Coming Soon) -->
+    <div class="plan" style="opacity:0.55;pointer-events:none;border-color:#7e22ce;">
+      <span class="plan-badge" style="background:rgba(192,132,252,0.15);color:#c084fc;">🔜 Coming Soon</span>
+      <h3 style="color:#c084fc;">💎 Ultimate</h3>
+      <div class="plan-price">
+        <span class="dollar" style="color:#c084fc;">$</span>
+        <span class="amount" style="color:#c084fc;">99</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="annual-saving">
+        <div class="as-num" style="color:#c084fc;">$899/year</div>
+        <div class="as-lbl">Annual membership · about $74.92/mo</div>
+      </div>
+      <p class="plan-desc">Everything in Pro — plus all BLEE Quant symphonies</p>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>2 auto-trade symphonies (full BLEE suite)</li>
+        <li>SGOV Bond Min Dual Reversal strategy</li>
+        <li>High Interest ALL in One strategy</li>
+        <li>Priority support &amp; early access to new models</li>
+      </ul>
+      <button class="btn-plan" style="background:#7e22ce;color:#fff;cursor:not-allowed;opacity:0.7;" disabled>Coming Soon</button>
+      <p class="plan-fine">We'll notify you when Ultimate launches</p>
     </div>
   </div>
 </section>
@@ -835,7 +862,7 @@
     <a href="contact.html">Contact</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/22/2026 03:51 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/22/2026 04:18 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
