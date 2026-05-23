@@ -83,6 +83,7 @@
   var TIERS = {
     admin:    { label: "🔑 Admin",    color: "#f5a623" },
     manager:  { label: "🛡️ Manager",  color: "#38bdf8" },
+    ultimate: { label: "💎 Ultimate", color: "#c084fc" },
     premium:  { label: "🚀 Pro",      color: "#facc15" },
     marketer: { label: "🎯 Marketer", color: "#a78bfa" },
     basic:    { label: "⭐ Starter",  color: "#4ade80" },

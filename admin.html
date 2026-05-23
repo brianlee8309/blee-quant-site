@@ -33,6 +33,7 @@
   .stat.s-starter  .stat-val{color:#4ade80;}
   .stat.s-pro      .stat-val{color:#f5a623;}
   .stat.s-marketer .stat-val{color:#a78bfa;}
+  .stat.s-ultimate .stat-val{color:#c084fc;}
   .stat.s-manager  .stat-val{color:#38bdf8;}
   .stat.s-mrr      .stat-val{font-size:20px;color:#60a5fa;}
 
@@ -67,6 +68,7 @@
   .role-starter {background:#052e16;color:#4ade80;border:1px solid #14532d;}
   .role-free    {background:#1f2937;color:#9ca3af;border:1px solid #374151;}
   .role-marketer{background:#1a0a2e;color:#a78bfa;border:1px solid #4c1d95;}
+  .role-ultimate{background:#1a0a2e;color:#c084fc;border:1px solid #7e22ce;}
   .role-none    {background:#111827;color:#4b5563;border:1px solid #1f2937;}
 
   .status-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
@@ -123,7 +125,7 @@
 <!-- Manager notice -->
 <div class="manager-notice" id="manager-notice">
   🛡️ You are logged in as <strong>Manager</strong>. Admin accounts are not shown.
-  You can manage Newsletter, Starter, Pro, and Marketer users.
+  You can manage Newsletter, Starter, Pro, Ultimate, and Marketer users.
 </div>
 
 <!-- My Referral Code (admin/manager can set their own promo code) -->
@@ -219,6 +221,10 @@
     <div class="stat-val" id="stat-pro">—</div>
     <div class="stat-lbl">🚀 Pro</div>
   </div>
+  <div class="stat s-ultimate">
+    <div class="stat-val" id="stat-ultimate">—</div>
+    <div class="stat-lbl">💎 Ultimate</div>
+  </div>
   <div class="stat s-marketer">
     <div class="stat-val" id="stat-marketer">—</div>
     <div class="stat-lbl">🎯 Marketers</div>
@@ -243,6 +249,7 @@
     <option value="free">📧 Newsletter</option>
     <option value="basic">⭐ Starter</option>
     <option value="premium">🚀 Pro</option>
+    <option value="ultimate">💎 Ultimate</option>
     <option value="marketer">🎯 Marketer</option>
     <!-- admin-only options added by JS -->
   </select>
@@ -292,7 +299,8 @@
       <option value="none">— None (no access)</option>
       <option value="free">📧 Newsletter (backtest + market forecast)</option>
       <option value="basic">⭐ Starter ($19/mo)</option>
-      <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
+      <option value="premium">🚀 Pro ($49/mo) — website + 1 symphony</option>
+      <option value="ultimate">💎 Ultimate ($99/mo) — website + 2 symphonies</option>
       <option value="marketer">🎯 Marketer (referral partner)</option>
       <!-- admin-only options injected by JS -->
     </select>
@@ -350,7 +358,8 @@
     <select class="field" id="add-tier" onchange="togglePromoField('add')">
       <option value="free">📧 Newsletter (backtest + market forecast)</option>
       <option value="basic">⭐ Starter ($19/mo)</option>
-      <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
+      <option value="premium">🚀 Pro ($49/mo) — website + 1 symphony</option>
+      <option value="ultimate">💎 Ultimate ($99/mo) — website + 2 symphonies</option>
       <option value="marketer">🎯 Marketer (referral partner)</option>
       <!-- admin-only options injected by JS -->
     </select>
@@ -558,6 +567,7 @@ function injectAdminOptions() {
 const ROLE_LABEL = {
   admin:    { label:"🔑 Admin",    cls:"role-admin" },
   manager:  { label:"🛡️ Manager",  cls:"role-manager" },
+  ultimate: { label:"💎 Ultimate", cls:"role-ultimate" },
   premium:  { label:"🚀 Pro",      cls:"role-pro" },
   basic:    { label:"⭐ Starter",  cls:"role-starter" },
   free:     { label:"📧 Newsletter", cls:"role-free" },
@@ -579,7 +589,7 @@ function planLabel(u) {
     : "Marketer";
   if (u.tier === "manager") return "Manager";
   if (u.tier === "admin")   return "Admin";
-  return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Newsletter (Free)", none:"—" }[u.tier] || "—";
+  return { ultimate:"Ultimate $99/mo", premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Newsletter (Free)", none:"—" }[u.tier] || "—";
 }
 function fmtDate(ts) {
   if (!ts) return "—";
@@ -683,14 +693,16 @@ function updateStats() {
   const free     = active.filter(u => u.tier === "free").length;
   const starter  = active.filter(u => u.tier === "basic").length;
   const pro      = active.filter(u => u.tier === "premium").length;
+  const ultimate = active.filter(u => u.tier === "ultimate").length;
   const mktr     = visible.filter(u => u.tier === "marketer").length;
   const mgr      = allUsers.filter(u => u.tier === "manager").length;
-  const mrr      = starter * 19 + pro * 49;
+  const mrr      = starter * 19 + pro * 49 + ultimate * 99;
 
   document.getElementById("stat-total").textContent    = visible.length;
   document.getElementById("stat-free").textContent     = free;
   document.getElementById("stat-starter").textContent  = starter;
   document.getElementById("stat-pro").textContent      = pro;
+  document.getElementById("stat-ultimate").textContent = ultimate;
   document.getElementById("stat-marketer").textContent = mktr;
   document.getElementById("stat-manager").textContent  = mgr;
   document.getElementById("stat-mrr").textContent      = "$" + mrr.toLocaleString();
