@@ -40,11 +40,15 @@
   .notice{display:none;background:#1a2a1a;border:1px solid #2d4a2d;
           border-radius:8px;padding:12px 16px;color:#4ade80;font-size:13px;
           max-width:1000px;margin:0 auto 24px;text-align:center;}
-  .plans{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
          max-width:1100px;margin:0 auto;}
-  .plan{background:#111827;border:1px solid #1f2937;border-radius:14px;
-        padding:32px 24px;width:100%;max-width:250px;position:relative;
-        display:flex;flex-direction:column;}
+  @media(max-width:860px){.plans{grid-template-columns:repeat(2,1fr);max-width:680px;}}
+  @media(max-width:560px){.plans{grid-template-columns:1fr;max-width:420px;}}
+  .plan{background:linear-gradient(160deg,#0a0f1e 0%,#111827 100%);
+        border:1px solid rgba(255,255,255,0.12);border-radius:14px;
+        padding:32px 24px 0;position:relative;
+        display:flex;flex-direction:column;
+        box-shadow:0 12px 40px rgba(0,0,0,0.5);}
   .plan.featured{border-color:#d1d5db;box-shadow:0 4px 24px rgba(0,0,0,0.08);}
   .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);
          background:#f5a623;color:#000;font-size:11px;font-weight:800;
@@ -122,6 +126,7 @@ function goPlan(plan) {
   </div>
 </div>
 
+<!-- 3-col grid: Free · Starter · Pro -->
 <div class="plans">
 
   <!-- FREE -->
@@ -138,13 +143,19 @@ function goPlan(plan) {
       <li><span class="icon off">—</span><span class="off">Email &amp; SMS alerts</span></li>
       <li><span class="icon off">—</span><span class="off">Auto-trade tools</span></li>
     </ul>
-    <a href="javascript:void(0)" onclick="goPlan('free')" class="btn btn-gray">Join Free</a>
-    <div class="plan-note">Instant access · No credit card</div>
+    <a href="javascript:void(0)" onclick="goPlan('free')" class="btn btn-gray" style="margin:0 0 8px;">Join Free</a>
+    <div class="plan-note" style="padding-bottom:12px;">Instant access · No credit card</div>
+    <div style="margin:8px -24px 0;border-top:1px solid rgba(255,255,255,0.07);overflow:hidden;border-radius:0 0 14px 14px;">
+      <img src="images/plan_free.png" alt="Free plan" style="width:100%;display:block;height:180px;object-fit:cover;object-position:center;">
+    </div>
   </div>
 
-  <!-- STARTER — Coming Soon -->
-  <div class="plan featured" style="opacity:0.55;pointer-events:none;position:relative;">
-    <div class="badge" style="background:#374151;color:#9ca3af;pointer-events:none;">🔜 COMING SOON</div>
+  <!-- STARTER — Coming Soon (fully visible) -->
+  <div class="plan featured" style="position:relative;">
+    <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                background:#b45309;color:#fff;font-size:11px;font-weight:800;
+                padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
+                box-shadow:0 0 12px rgba(245,166,35,0.5);">🔜 COMING SOON</div>
     <div class="plan-name">⭐ Starter</div>
     <div class="price"><sup>$</sup>19<sub>/mo</sub></div>
     <div class="plan-desc">Daily signals to guide your manual trades</div>
@@ -157,16 +168,18 @@ function goPlan(plan) {
       <li><span class="icon off">—</span><span class="off">BLEETrader desktop app</span></li>
       <li><span class="icon off">—</span><span class="off">Auto-trade (Schwab/IBKR)</span></li>
     </ul>
-    <button class="btn btn-gold" disabled style="cursor:not-allowed;opacity:0.6;">Coming Soon</button>
-    <div class="plan-note">Want to be notified? <a href="contact.html" style="color:#f5a623;pointer-events:auto;">Contact us →</a></div>
+    <button class="btn btn-gold" disabled style="cursor:not-allowed;margin:0 0 8px;">Coming Soon</button>
+    <div class="plan-note" style="padding-bottom:12px;">Want to be notified? <a href="contact.html" style="color:#f5a623;">Contact us →</a></div>
+    <div style="margin:8px -24px 0;border-top:1px solid rgba(255,255,255,0.07);overflow:hidden;border-radius:0 0 14px 14px;">
+      <img src="images/plan_starter.png" alt="Starter plan" style="width:100%;display:block;height:180px;object-fit:cover;object-position:center;">
+    </div>
   </div>
 
   <!-- PRO — Coming Soon -->
-  <div class="plan" style="opacity:0.55;pointer-events:none;position:relative;">
-    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  <div class="plan" style="position:relative;opacity:0.6;pointer-events:none;">
+    <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
                 background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
-                padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
-                pointer-events:none;">
+                padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;">
       🔜 COMING SOON
     </div>
     <div class="plan-name">🚀 Pro</div>
@@ -181,33 +194,47 @@ function goPlan(plan) {
       <li><span class="icon">✅</span> You stay in full control</li>
       <li><span class="icon">✅</span> Priority email support</li>
     </ul>
-    <button class="btn btn-gray" disabled style="cursor:not-allowed;opacity:0.5;">Coming Soon</button>
-    <div class="plan-note">We'll notify you when Pro is available</div>
+    <button class="btn btn-gray" disabled style="cursor:not-allowed;margin:0 0 8px;">Coming Soon</button>
+    <div class="plan-note" style="padding-bottom:12px;">We'll notify you when Pro is available</div>
+    <div style="margin:8px -24px 0;border-top:1px solid rgba(255,255,255,0.07);overflow:hidden;border-radius:0 0 14px 14px;">
+      <img src="images/plan_pro.png" alt="Pro plan" style="width:100%;display:block;height:180px;object-fit:cover;object-position:center;">
+    </div>
   </div>
 
-  <!-- ULTIMATE — Coming Soon -->
-  <div class="plan" style="opacity:0.55;pointer-events:none;position:relative;border-color:#7e22ce;">
-    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+</div>
+
+<!-- ULTIMATE — full-width row -->
+<div style="max-width:1100px;margin:28px auto 0;opacity:0.6;pointer-events:none;">
+  <div style="background:linear-gradient(160deg,#0a0f1e 0%,#111827 100%);
+              border:1px solid #7e22ce;border-radius:14px;
+              display:grid;grid-template-columns:1fr 1.6fr;gap:0;overflow:hidden;
+              box-shadow:0 12px 40px rgba(0,0,0,0.5);position:relative;">
+    <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
                 background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
-                padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
-                pointer-events:none;">
+                padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;z-index:2;">
       🔜 COMING SOON
     </div>
-    <div class="plan-name" style="color:#c084fc;">💎 Ultimate</div>
-    <div class="price" style="color:#c084fc;"><sup>$</sup>99<sub>/mo</sub></div>
-    <div class="plan-desc">Everything in Pro — plus access to all BLEE Quant symphonies</div>
-    <ul class="features">
-      <li><span class="icon">✅</span> Everything in Pro</li>
-      <li><span class="icon">✅</span> 2 auto-trade investment models (full BLEE suite)</li>
-      <li><span class="icon">✅</span> SGOV Bond Min Dual Reversal strategy</li>
-      <li><span class="icon">✅</span> Possible 40%+ annual returns with same Pro model low risk</li>
-      <li><span class="icon">✅</span> Priority support &amp; early access to new models</li>
-    </ul>
-    <button class="btn" disabled style="cursor:not-allowed;opacity:0.5;
-            background:#7e22ce;color:#fff;">Coming Soon</button>
-    <div class="plan-note">We'll notify you when Ultimate is available</div>
+    <!-- Left: plan details -->
+    <div style="padding:36px 32px;display:flex;flex-direction:column;">
+      <div class="plan-name" style="color:#c084fc;">💎 Ultimate</div>
+      <div class="price" style="color:#c084fc;"><sup>$</sup>99<sub>/mo</sub></div>
+      <div class="plan-desc" style="margin-bottom:20px;">Everything in Pro — plus access to the full BLEE Quant Intelligence Suite</div>
+      <ul class="features" style="flex:1;">
+        <li><span class="icon">✅</span> Everything in Pro</li>
+        <li><span class="icon">✅</span> 2 auto-trade investment models (full BLEE suite)</li>
+        <li><span class="icon">✅</span> SGOV Bond Min Dual Reversal strategy</li>
+        <li><span class="icon">✅</span> Possible 40%+ annual returns with same Pro model low risk</li>
+        <li><span class="icon">✅</span> Priority support &amp; early access to new models</li>
+      </ul>
+      <button class="btn" disabled style="cursor:not-allowed;background:#7e22ce;color:#fff;margin-top:20px;">Coming Soon</button>
+      <div class="plan-note" style="margin-top:8px;">We'll notify you when Ultimate is available</div>
+    </div>
+    <!-- Right: image -->
+    <div style="overflow:hidden;">
+      <img src="images/plan_ultimate.png" alt="Ultimate plan"
+           style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;min-height:320px;">
+    </div>
   </div>
-
 </div>
 
 <!-- Promo / referral code -->
@@ -307,4 +334,12 @@ if (urlParams.get("registered")) {
 
 // ── Navigate to login/signup with chosen plan ─────────────────────────────
 function goPlan(plan) {
-  var cod
+  var codeEl = document.getElementById('promo-input');
+  var promo = codeEl ? codeEl.value.trim() : '';
+  var url = 'login.html?tab=signup&plan=' + encodeURIComponent(plan);
+  if (promo) url += '&promo=' + encodeURIComponent(promo);
+  window.location.href = url;
+}
+</script>
+</body>
+</html>
