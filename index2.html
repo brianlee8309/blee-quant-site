@@ -147,13 +147,10 @@
     <div style="font-size:12px;color:#94a3b8;" id="rsi-signal-display">—</div>
   </div>
 
-  <div class="row">
-    <section class="card">
-      <h2>Today's Allocation</h2>
-      <div class="chart-wrap"><canvas id="pie"></canvas></div>
-    </section>
-
-  </div>
+  <section class="card">
+    <h2>Today's Allocation</h2>
+    <div class="chart-wrap"><canvas id="pie"></canvas></div>
+  </section>
 
   <section class="card">
     <h2>Holdings at Market Close — Opening Strategy for <span id="holdings-date"></span></h2>
@@ -291,27 +288,19 @@ if (DATA.day_change_pct == null) {
   dayEl.classList.add(DATA.day_change_pct >= 0 ? "pos" : "neg");
 }
 
-const totalEl = document.getElementById("stat-total");
-if (DATA.total_return_pct == null) {
-  totalEl.textContent = "—";
-} else {
-  totalEl.textContent = fmtPct(DATA.total_return_pct, true);
-  totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
-}
-// If a baseline_date is set, relabel "Total Return" to show the start date
-if (DATA.baseline_date) {
-  const lbl = document.getElementById("label-total");
-  if (lbl) lbl.textContent = "Return Since " + DATA.baseline_date;
-}
-
+// ---- Annualized return stat — use PERFORMANCE_DATA 1yr if available --------
 const annEl = document.getElementById("stat-annual");
-if (DATA.annualized_return_pct == null) {
-  annEl.textContent = "—";
-  annEl.classList.add("small");
-  annEl.textContent = "needs ≥ 14 days";
-} else {
-  annEl.textContent = fmtPct(DATA.annualized_return_pct, true);
-  annEl.classList.add(DATA.annualized_return_pct >= 0 ? "pos" : "neg");
+if (annEl) {
+  const perfAnn = (typeof PERFORMANCE_DATA !== "undefined" && PERFORMANCE_DATA.stats_1yr)
+                  ? PERFORMANCE_DATA.stats_1yr.ann_return : null;
+  const annVal = DATA.annualized_return_pct != null ? DATA.annualized_return_pct : perfAnn;
+  if (annVal == null) {
+    annEl.textContent = "—";
+    annEl.classList.add("small");
+  } else {
+    annEl.textContent = fmtPct(annVal, true);
+    annEl.classList.add(annVal >= 0 ? "pos" : "neg");
+  }
 }
 
 // ---- Pie chart -------------------------------------------------------------
