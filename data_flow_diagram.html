@@ -215,8 +215,8 @@
 
 <div class="page-header">
   <h1>📊 BLEE Analytics — Full System Data Flow</h1>
-  <p>Composer signal → PC Automation → GitHub Pages → Auth/Payments → Trading → Users</p>
-  <div class="version">v1.3 · Last updated 2026-05-17 · Admin only · bleeanalytics.com/data_flow_diagram.html</div>
+  <p>Investment Models → PC Automation → GitHub Pages + BackLog → Auth/Payments → Trading → Users</p>
+  <div class="version">v2.0 · Last updated 2026-05-23 · Admin only · bleeanalytics.com/data_flow_diagram.html</div>
 </div>
 
 <!-- Legend -->
@@ -238,7 +238,7 @@
   <div class="row-content">
     <div class="node c-blue wide" id="n-composer">
       <div class="node-title">🎼 Composer.trade</div>
-      <div class="node-sub">Symphony API<br>BLEE-187 · BLEE-186 · BLEE-185</div>
+      <div class="node-sub">Investment Model API<br>6 models tracked daily<br>Pro: Calm Growth · Ultimate: High Interest</div>
       <span class="node-badge">3:50 PM ET daily</span>
     </div>
     <div class="node c-teal" id="n-yfinance">
@@ -258,7 +258,12 @@
       <div class="group-inner">
         <div class="node c-orange" id="n-pull">
           <div class="node-title">composer_pull<br>_allocation.py</div>
-          <div class="node-sub">Pulls Composer API<br>Writes DATA → index2.html<br>composer_config.json</div>
+          <div class="node-sub">Pulls Composer API (6 models)<br>Writes index2.html + all index_*.html<br>Writes stable JSON files<br>Rebuilds CurrentWatchSymphony.html</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-orange" id="n-archive">
+          <div class="node-title">archive_pages.py</div>
+          <div class="node-sub">Archives 6 pages daily<br>→ BackLog/ folder<br>Rebuilds BackLog/index.html</div>
           <span class="node-badge">3:51 PM</span>
         </div>
         <div class="node c-orange" id="n-acc">
@@ -271,9 +276,19 @@
           <div class="node-sub">Injects PERFORMANCE_DATA<br>→ Algorithm185History.html</div>
           <span class="node-badge">3:51 PM</span>
         </div>
+        <div class="node c-orange" id="n-rsi">
+          <div class="node-title">rsi_tracker.py</div>
+          <div class="node-sub">Fetches SPY RSI-14<br>Appends rsi_history.csv<br>Triggers RSI override if >76</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-red" id="n-schwabpy">
+          <div class="node-title">schwab_rebalance.py</div>
+          <div class="node-sub">Reads rebalance_config.json<br>Loads stable JSON allocation<br>Auto-executes Schwab trades</div>
+          <span class="node-badge">3:54 PM</span>
+        </div>
         <div class="node c-red" id="n-ibkrpy">
           <div class="node-title">ibkr_trader.py</div>
-          <div class="node-sub">Reads index2.html<br>Auto-trades via IBKR TWS</div>
+          <div class="node-sub">Reads index2.html<br>Auto-trades Calm Growth Model<br>Account U25734106 via TWS</div>
           <span class="node-badge">3:55 PM</span>
         </div>
       </div>
@@ -290,29 +305,50 @@
       <div class="group-inner">
         <div class="node c-green" id="n-idx">
           <div class="node-title">index.html</div>
-          <div class="node-sub">Home / Landing<br>Public</div>
+          <div class="node-sub">Home / Landing · Public<br>user_bar.js (shows tier badge)</div>
         </div>
         <div class="node c-green" id="n-idx2">
           <div class="node-title">⭐ index2.html</div>
-          <div class="node-sub">Daily Signal Page<br>BLEE-187 · Member only</div>
-          <span class="node-badge">Premium</span>
+          <div class="node-sub">Daily Signal · Calm Growth Model<br>Portfolio chart · Holdings table</div>
+          <span class="node-badge">Basic+</span>
         </div>
         <div class="node c-green" id="n-algo">
           <div class="node-title">Algorithm185<br>History.html</div>
-          <div class="node-sub">3-yr Backtest<br>Accuracy Stats · Public</div>
+          <div class="node-sub">3-yr Backtest<br>Accuracy Stats</div>
           <span class="node-badge">Public</span>
         </div>
         <div class="node c-green" id="n-mds">
           <div class="node-title">marketDaily<br>Summary.html</div>
-          <div class="node-sub">Market Overview<br>Daily Digest</div>
+          <div class="node-sub">Market Weather Forecast<br>Daily Digest</div>
+          <span class="node-badge">Free+</span>
         </div>
         <div class="node c-green" id="n-perf1">
           <div class="node-title">performance1.html</div>
           <div class="node-sub">Portfolio Returns<br>Chart View</div>
         </div>
+        <div class="node c-green" id="n-account">
+          <div class="node-title">account_pro.html<br>account_ultimate.html<br>account_starter.html</div>
+          <div class="node-sub">Subscriber account pages<br>Per-tier: models, BLEETrader, guides</div>
+          <span class="node-badge">Pro / Ultimate</span>
+        </div>
+        <div class="node c-green" id="n-client">
+          <div class="node-title">client/index.html</div>
+          <div class="node-sub">BLEETrader download page<br>Windows + macOS<br>SETUP_WINDOWS.html guide</div>
+          <span class="node-badge">Pro+</span>
+        </div>
+        <div class="node c-green" id="n-backlog">
+          <div class="node-title">BackLog/index.html</div>
+          <div class="node-sub">Archive index · Daily history<br>Signal + Forecast + Model pages</div>
+          <span class="node-badge">Basic+</span>
+        </div>
+        <div class="node c-green" id="n-symphony">
+          <div class="node-title">CurrentWatchSymphony.html</div>
+          <div class="node-sub">All 6 models: value, return%<br>Holdings · Donut charts</div>
+          <span class="node-badge" style="background:#30363d;color:#f5a623">Admin</span>
+        </div>
         <div class="node c-green" id="n-authpages">
           <div class="node-title">login.html<br>subscribe.html<br>admin.html</div>
-          <div class="node-sub">Auth · Stripe · Admin</div>
+          <div class="node-sub">Auth · Stripe billing · Admin panel</div>
         </div>
       </div>
     </div>
@@ -326,11 +362,11 @@
     <div class="node c-purple xwide" id="n-firebase">
       <div class="node-title">🔥 Firebase Auth</div>
       <div class="node-sub">Email/Password + Google OAuth<br>Firestore: user tier tracking</div>
-      <span class="node-badge">none / basic / premium / admin</span>
+      <span class="node-badge">free / basic / pro / ultimate / admin</span>
     </div>
     <div class="node c-purple wide" id="n-stripe">
       <div class="node-title">💳 Stripe</div>
-      <div class="node-sub">Basic $19/mo · Premium $49/mo<br>billing portal</div>
+      <div class="node-sub">Pro · Ultimate tiers<br>Hosted billing portal</div>
     </div>
   </div>
 </div>
@@ -356,20 +392,29 @@
       </div>
     </div>
     <div class="group-box">
-      <div class="group-label">💻 Schwab Trader Web App (PC/Mac)</div>
+      <div class="group-label">💻 Schwab Trader Web App — Admin (trader_ui.py :5050)</div>
       <div class="group-inner">
         <div class="node c-red" id="n-trader">
           <div class="node-title">trader_ui.py</div>
-          <div class="node-sub">Flask app<br>http://127.0.0.1:5050<br>trader_ui.bat</div>
+          <div class="node-sub">Flask app :5050 · trader_ui.bat<br>Buy/Sell + Compute Rebalance<br>Fetches live alloc from bleeanalytics.com<br>Dropdown from CurrentWatchSymphony.html</div>
         </div>
         <div class="node c-red" id="n-schwab-api">
           <div class="node-title">Schwab API</div>
-          <div class="node-sub">OAuth<br>Account + Holdings<br>Buy/Sell orders</div>
+          <div class="node-sub">OAuth · Account + Holdings<br>Buy/Sell · Auto-rebalance<br>schwab_rebalance.py 3:54 PM ET</div>
         </div>
-        <div class="node c-red" id="n-import" style="border-style:dashed;opacity:0.8">
-          <div class="node-title">Import from<br>Composer</div>
-          <div class="node-sub">Reads index2.html<br>Computes target shares<br>Pre-fills trades</div>
-          <span class="node-badge" style="background:#30363d;color:#8b949e">⚠️ planned</span>
+      </div>
+    </div>
+    <div class="group-box">
+      <div class="group-label">📦 BLEETrader — Subscriber Desktop App</div>
+      <div class="group-inner">
+        <div class="node c-red" id="n-bleeclient">
+          <div class="node-title">trader_client.py</div>
+          <div class="node-sub">Flask app :5060<br>Pro/Ultimate subscriber install<br>Windows + macOS · run.bat</div>
+          <span class="node-badge">Pro+</span>
+        </div>
+        <div class="node c-red" id="n-bleeclient-api">
+          <div class="node-title">Schwab API</div>
+          <div class="node-sub">OAuth per subscriber<br>Reads allocation from<br>bleeanalytics.com (live)</div>
         </div>
       </div>
     </div>
@@ -388,8 +433,8 @@
     <div style="flex:1"></div>
     <div class="node c-red wide" id="n-sch-broker">
       <div class="node-title">🏦 Charles Schwab</div>
-      <div class="node-sub">Manual + Semi-Auto<br>via Import from Composer</div>
-      <span class="node-badge">manual</span>
+      <div class="node-sub">Auto-rebalance 3:54 PM ET<br>+ Manual via BLEETrader (subscriber)<br>+ Admin via trader_ui.py</div>
+      <span class="node-badge">auto + manual</span>
     </div>
   </div>
 </div>
@@ -400,21 +445,26 @@
   <div class="row-content" id="n-users-row">
     <div class="node c-gray" id="n-free">
       <div class="node-title">👤 Free Visitors</div>
-      <div class="node-sub">Public pages<br>History · Market Summary</div>
+      <div class="node-sub">Public pages<br>Home · Backtest · Market Summary</div>
     </div>
     <div class="node c-gray" id="n-basic">
       <div class="node-title">⭐ Basic Members</div>
-      <div class="node-sub">$19/mo<br>Signal pages</div>
+      <div class="node-sub">Daily Signal · BackLog archive<br>Market Forecast</div>
       <span class="node-badge" style="background:#30363d;color:#c9d1d9">Basic</span>
     </div>
-    <div class="node c-gray" id="n-premium">
-      <div class="node-title">🚀 Premium Members</div>
-      <div class="node-sub">$49/mo<br>Full access + alerts</div>
-      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Premium</span>
+    <div class="node c-gray" id="n-pro">
+      <div class="node-title">🚀 Pro Subscribers</div>
+      <div class="node-sub">Calm Growth Model<br>BLEETrader app download<br>Account page</div>
+      <span class="node-badge" style="background:#30363d;color:#facc15">Pro</span>
+    </div>
+    <div class="node c-gray" id="n-ultimate">
+      <div class="node-title">💎 Ultimate Subscribers</div>
+      <div class="node-sub">Both investment models<br>Calm Growth + High Interest<br>BLEETrader + full access</div>
+      <span class="node-badge" style="background:#30363d;color:#c084fc">Ultimate</span>
     </div>
     <div class="node c-gray" id="n-admin">
       <div class="node-title">🔑 Admin — Kei</div>
-      <div class="node-sub">admin.html<br>Manage users & tiers</div>
+      <div class="node-sub">admin.html · all pages<br>Manage users, tiers, symphonies</div>
       <span class="node-badge" style="background:#30363d;color:#c9d1d9">Admin</span>
     </div>
   </div>
@@ -454,13 +504,11 @@
         <td><span class="badge">v1.3</span></td>
         <td>Added to website (bleeanalytics.com/data_flow_diagram.html). Protected with Firebase admin-only auth guard. Linked from admin.html. Added to daily git push via run_signal.bat.</td>
       </tr>
-      <!-- Add new entries:
       <tr>
-        <td>YYYY-MM-DD</td>
-        <td><span class="badge orange">vX.X</span></td>
-        <td>What changed.</td>
+        <td>2026-05-23</td>
+        <td><span class="badge orange">v2.0</span></td>
+        <td>Major update: added schwab_rebalance.py (3:54 PM auto-trade), archive_pages.py (daily BackLog archiving), rsi_tracker.py (RSI-14 history + override). New pages: account_pro, account_ultimate, account_starter, client/index.html (BLEETrader download), BackLog/index.html, CurrentWatchSymphony.html (admin). BLEETrader subscriber desktop app (trader_client.py :5060). Removed planned "Import from Composer" node (replaced by live bleeanalytics.com fetch). Tiers updated: free/basic/pro/ultimate/admin. Symphony renamed Investment Model on all public pages. Schwab Trader dropdown now fetches live from CurrentWatchSymphony.html.</td>
       </tr>
-      -->
     </tbody>
   </table>
 </div>
