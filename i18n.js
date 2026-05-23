@@ -3,7 +3,7 @@
  * What it does
  * ------------
  *   1. Initializes the (hidden) Google Translate widget.
- *   2. Wires up any element with class="lang-btn" (and data-lang="en|ja|vi|ko")
+ *   2. Wires up any element with class="lang-btn" (and data-lang="en|ja|ko")
  *      to switch the page language.
  *   3. Remembers the user's choice in localStorage (key "blee-lang") and
  *      re-applies it on every subsequent page load.
@@ -17,8 +17,7 @@
  *        <div class="nav-translate">
  *          <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
  *          <button class="lang-btn"        data-lang="ja">🇯🇵 JP</button>
- *          <button class="lang-btn"        data-lang="vi">🇻🇳 VI</button>
- *          <button class="lang-btn"        data-lang="ko">🇰🇷 KR</button>
+ * *          <button class="lang-btn"        data-lang="ko">🇰🇷 KR</button>
  *        </div>
  *
  *   2. Add the matching CSS (or reuse this default block) somewhere in
@@ -64,7 +63,7 @@
   // Global callback Google's script will call once loaded.
   window.googleTranslateElementInit = function () {
     new google.translate.TranslateElement(
-      { pageLanguage: 'en', includedLanguages: 'en,ja,vi,ko', autoDisplay: false },
+      { pageLanguage: 'en', includedLanguages: 'en,ja,ko', autoDisplay: false },
       'google_translate_element'
     );
   };

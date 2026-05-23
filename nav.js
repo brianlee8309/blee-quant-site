@@ -31,7 +31,6 @@
   var LANGS = [
     { code: "en", flag: "🇺🇸", label: "EN" },
     { code: "ja", flag: "🇯🇵", label: "JP" },
-    { code: "vi", flag: "🇻🇳", label: "VI" },
     { code: "ko", flag: "🇰🇷", label: "KR" },
   ];
 
