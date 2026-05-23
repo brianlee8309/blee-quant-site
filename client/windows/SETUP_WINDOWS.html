@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Setup Guide — BLee Quant Analytics</title>
+  <style>
+    :root {
+      --bg:       #0b1120;
+      --surface:  #111827;
+      --surface2: #1e293b;
+      --border:   rgba(255,255,255,0.08);
+      --gold:     #f5a623;
+      --gold2:    #fbbf24;
+      --text:     #e2e8f0;
+      --muted:    #94a3b8;
+      --green:    #4ade80;
+      --blue:     #38bdf8;
+      --red:      #f87171;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* ── TOP NAV ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11,17,32,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 58px;
+    }
+    .topbar-brand {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .topbar-brand span { color: var(--text); font-weight: 400; }
+    .topbar-links { display: flex; gap: 20px; }
+    .topbar-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color .2s;
+    }
+    .topbar-links a:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #0f1a2e 0%, #0b1120 60%);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 32px 56px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(245,166,35,0.12);
+      color: var(--gold);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .hero h1 .gold { color: var(--gold); }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+    }
+    .btn-gold:hover { background: var(--gold2); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-block;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.9rem;
+      padding: 11px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-left: 12px;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── LAYOUT ── */
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    /* ── REQUIREMENTS TABLE ── */
+    .req-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+      margin: 24px 0 48px;
+    }
+    .req-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .req-card .req-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .req-card .req-val {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .req-card .req-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .req-card.highlight { border-color: rgba(245,166,35,0.35); }
+    .req-card.highlight .req-val { color: var(--gold); }
+
+    /* ── STEPS ── */
+    .step-list { display: flex; flex-direction: column; gap: 28px; }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 26px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .step-num {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #000;
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .step-body { padding: 22px 26px; }
+    .step-body ol {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-body li { color: var(--text); }
+    .step-body li strong { color: var(--gold); }
+    .step-body a { color: var(--blue); text-decoration: none; }
+    .step-body a:hover { text-decoration: underline; }
+
+    /* emphasis box inside steps */
+    .callout {
+      background: rgba(245,166,35,0.07);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+    .callout strong { color: var(--gold); }
+
+    .callout-info {
+      background: rgba(56,189,248,0.07);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-left: 4px solid var(--blue);
+    }
+    .callout-info strong { color: var(--blue); }
+
+    .callout-warn {
+      background: rgba(248,113,113,0.07);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-left: 4px solid var(--red);
+    }
+    .callout-warn strong { color: var(--red); }
+
+    /* code / env block */
+    pre {
+      background: #060d1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: #a5f3fc;
+      margin-top: 16px;
+    }
+    pre .key   { color: var(--gold); }
+    pre .val   { color: #86efac; }
+    pre .cmt   { color: var(--muted); font-style: italic; }
+    code {
+      background: rgba(255,255,255,0.07);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.88em;
+      color: var(--gold2);
+    }
+
+    /* ── APP TABS SECTION ── */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 56px 0 6px;
+    }
+    .section-sub {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .tabs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .tab-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      transition: border-color .2s, transform .15s;
+    }
+    .tab-card:hover { border-color: rgba(245,166,35,0.4); transform: translateY(-2px); }
+    .tab-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .tab-name { font-weight: 700; color: var(--gold); margin-bottom: 6px; font-size: 1rem; }
+    .tab-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── TROUBLESHOOTING ── */
+    .trouble-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+    .trouble-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .trouble-q { font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .trouble-q::before { content: '⚠ '; color: var(--gold); }
+    .trouble-a { font-size: 0.9rem; color: var(--muted); }
+    .trouble-a strong { color: var(--text); }
+
+    /* ── FILE TREE ── */
+    .filetree {
+      background: #060d1a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.88rem;
+      line-height: 2;
+      margin-top: 16px;
+    }
+    .filetree .dir  { color: var(--blue); font-weight: 700; }
+    .filetree .file { color: #e2e8f0; }
+    .filetree .note { color: var(--muted); font-style: italic; }
+    .filetree .warn { color: var(--red); }
+
+    /* ── SECURITY ── */
+    .sec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .sec-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .sec-card .sec-icon { font-size: 1.4rem; margin-bottom: 8px; }
+    .sec-card strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+    /* ── WEEKLY AUTH BANNER ── */
+    .weekly-banner {
+      background: linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(251,191,36,0.05) 100%);
+      border: 1px solid rgba(245,166,35,0.35);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-top: 16px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .weekly-icon { font-size: 2rem; flex-shrink: 0; }
+    .weekly-text h3 { color: var(--gold); font-size: 1.05rem; margin-bottom: 6px; }
+    .weekly-text p  { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 36px 24px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .footer a { color: var(--gold); text-decoration: none; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.7rem; }
+      .topbar { padding: 0 16px; }
+      .wrapper { padding: 36px 16px 60px; }
+      .step-header, .step-body { padding: 16px 18px; }
+      .weekly-banner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topbar">
+  <a class="topbar-brand" href="https://bleeanalytics.com">BLee <span>Quant Analytics</span></a>
+  <div class="topbar-links">
+    <a href="https://bleeanalytics.com">Home</a>
+    <a href="https://bleeanalytics.com/subscribe.html">Subscribe</a>
+    <a href="https://bleeanalytics.com/client/index.html">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Windows Setup Guide</div>
+  <h1>BLee Quant <span class="gold">Pro Trader</span></h1>
+  <p class="hero-sub">Step-by-step setup for the Windows desktop trading app — Python, Schwab API, and BLEETrader running on your PC.</p>
+  <a href="#step1" class="btn-gold">Get Started →</a>
+  <a href="https://bleeanalytics.com/client/index.html" class="btn-outline">← Back to Download</a>
+</div>
+
+<div class="wrapper">
+
+  <!-- REQUIREMENTS -->
+  <div class="section-title">System Requirements</div>
+  <p class="section-sub">Everything you need before starting the installation.</p>
+  <div class="req-grid">
+    <div class="req-card">
+      <div class="req-label">Windows</div>
+      <div class="req-val">10 or 11</div>
+      <div class="req-note">64-bit required</div>
+    </div>
+    <div class="req-card">
+      <div class="req-label">Python</div>
+      <div class="req-val">3.11 or later</div>
+      <div class="req-note"><a href="https://www.python.org/downloads/" style="color:var(--blue)">python.org/downloads</a></div>
+    </div>
+    <div class="req-card">
+      <div class="req-label">Schwab Account</div>
+      <div class="req-val">Active Brokerage</div>
+      <div class="req-note"><a href="https://schwab.com" style="color:var(--blue)">schwab.com</a></div>
+    </div>
+    <div class="req-card">
+      <div class="req-label">Schwab Developer App</div>
+      <div class="req-val">Free API App</div>
+      <div class="req-note"><a href="https://developer.schwab.com" style="color:var(--blue)">developer.schwab.com</a></div>
+    </div>
+    <div class="req-card highlight">
+      <div class="req-label">BLEE Subscription</div>
+      <div class="req-val">Pro or Ultimate</div>
+      <div class="req-note"><a href="https://bleeanalytics.com/subscribe.html" style="color:var(--gold)">Subscribe here</a></div>
+    </div>
+    <div class="req-card">
+      <div class="req-label">Internet</div>
+      <div class="req-val">Required</div>
+      <div class="req-note">For BLEE data + Schwab API</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- STEPS -->
+  <div class="section-title" id="step1">Installation Steps</div>
+  <p class="section-sub">Follow each step in order — the entire setup takes about 10 minutes.</p>
+
+  <div class="step-list">
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Install Python</div>
+      </div>
+      <div class="step-body">
+        <ol>
+          <li>Go to <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a></li>
+          <li>Download <strong>Python 3.11</strong> or later (the large button at the top)</li>
+          <li>Run the installer — <strong>check "Add Python to PATH"</strong> at the bottom of the first screen</li>
+          <li>Click <strong>"Install Now"</strong></li>
+          <li>Verify: open <strong>Command Prompt</strong> and type <code>python --version</code> — should show 3.11+</li>
+        </ol>
+        <div class="callout">
+          <strong>⚠ Critical:</strong> You must check <strong>"Add Python to PATH"</strong> during installation or the app will not be able to find Python. If you already installed Python without this option, reinstall it.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Get Schwab API Credentials</div>
+      </div>
+      <div class="step-body">
+        <ol>
+          <li>Go to <a href="https://developer.schwab.com" target="_blank">developer.schwab.com</a> and sign in with your Schwab account</li>
+          <li>Click <strong>My Apps → Add Application</strong></li>
+          <li>Fill in the form:
+            <br>— App Name: anything (e.g. <code>My Trader</code>)
+            <br>— Callback URL: <code>https://127.0.0.1:8182</code>
+          </li>
+          <li>After approval (usually instant), click your app to see your <strong>App Key</strong> and <strong>App Secret</strong></li>
+          <li>Save both — you'll enter them in Step 4</li>
+        </ol>
+        <div class="callout-info callout">
+          <strong>ℹ️ Note:</strong> Approval is typically instant. If it takes longer, check your email for a confirmation from Schwab.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Install the Trader App</div>
+      </div>
+      <div class="step-body">
+        <ol>
+          <li>Open the <code>windows\</code> folder inside your downloaded BLEETrader package</li>
+          <li>Double-click <strong><code>install.bat</code></strong></li>
+          <li>A terminal window opens and installs the required Python packages</li>
+          <li>Wait for <strong>"Installation complete!"</strong> — usually 1–2 minutes</li>
+        </ol>
+        <div class="callout">
+          <strong>Tip:</strong> If you see an error about <code>pip</code> not being recognized, Python was not added to PATH. Go back to Step 1 and reinstall Python with the PATH option checked.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <div class="step-title">Configure Your Credentials</div>
+      </div>
+      <div class="step-body">
+        <p>Open <code>src\.env</code> in Notepad and fill in your values:</p>
+<pre><span class="key">SCHWAB_API_KEY</span>=<span class="val">your_app_key_here</span>
+<span class="key">SCHWAB_APP_SECRET</span>=<span class="val">your_app_secret_here</span>
+<span class="key">SCHWAB_ACCOUNT_NUMBER</span>=<span class="val">12345678</span>          <span class="cmt"># 8-digit account number</span>
+<span class="key">SCHWAB_TOKEN_PASSPHRASE</span>=<span class="val">choose_a_passphrase</span> <span class="cmt"># anything secure</span>
+<span class="key">SCHWAB_CALLBACK_URL</span>=<span class="val">https://127.0.0.1:8182</span>
+<span class="key">PORTFOLIO_VALUE</span>=<span class="val">10000.00</span>                   <span class="cmt"># trading budget in dollars</span></pre>
+        <div class="callout-warn callout" style="margin-top:18px">
+          <strong>🔒 Security:</strong> Never share your <code>.env</code> file with anyone. It contains credentials that grant full trading access to your Schwab account.
+        </div>
+        <div class="callout-info callout">
+          <strong>ℹ️ Note:</strong> You can also update all these values later in the <strong>Settings</strong> tab inside the app.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">5</div>
+        <div class="step-title">Authenticate with Schwab <span style="font-size:0.8rem;color:var(--muted);font-weight:400;">(One-Time Setup)</span></div>
+      </div>
+      <div class="step-body">
+        <ol>
+          <li>Double-click <strong><code>windows\auth_schwab.bat</code></strong></li>
+          <li>Your browser opens — click <strong>"Sign in with Schwab"</strong></li>
+          <li>Your browser will warn about a certificate — click <strong>Advanced → Proceed to 127.0.0.1</strong> (this is expected and safe — the connection is local only)</li>
+          <li>Log in with your Schwab credentials and complete 2-factor authentication</li>
+          <li>You'll see a <strong>"Authenticated successfully"</strong> page</li>
+          <li>Close the browser tab and press <strong>Ctrl+C</strong> in the terminal window</li>
+        </ol>
+        <div class="callout">
+          <strong>🔑 Result:</strong> A token file is saved at <code>src\schwab_token.enc</code> — encrypted with your passphrase. Do not delete this file.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">6</div>
+        <div class="step-title">Start the App</div>
+      </div>
+      <div class="step-body">
+        <ol>
+          <li>Double-click <strong><code>windows\run.bat</code></strong> (or the desktop shortcut if you created one)</li>
+          <li>Your browser opens automatically at <code>http://127.0.0.1:5060</code></li>
+          <li>Sign in with your <strong>BLee Quant Analytics account</strong> (the same email you use on bleeanalytics.com)</li>
+          <li>You're in — start trading!</li>
+        </ol>
+        <div class="callout">
+          <strong>✅ You're all set!</strong> The app runs entirely on your computer — live investment model data is fetched from BLee Quant Analytics, and trades are sent directly to Schwab via their API.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 (Optional) -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">7</div>
+        <div class="step-title">Create a Desktop Shortcut <span style="font-size:0.8rem;color:var(--muted);font-weight:400;">(Optional)</span></div>
+      </div>
+      <div class="step-body">
+        <p>Double-click <code>windows\create_shortcut.bat</code> to add a <strong>"BLee Quant Pro Trader"</strong> shortcut to your desktop for quick access.</p>
+      </div>
+    </div>
+
+  </div><!-- /step-list -->
+
+  <hr class="divider" />
+
+  <!-- WEEKLY RE-AUTH -->
+  <div class="section-title">Weekly Schwab Re-Authentication</div>
+  <div class="weekly-banner">
+    <div class="weekly-icon">🔄</div>
+    <div class="weekly-text">
+      <h3>Schwab tokens expire every 7 days</h3>
+      <p>When the app shows a token error, stop the app, run <code>windows\auth_schwab.bat</code>, complete the Schwab login, then restart with <code>windows\run.bat</code>. This takes about 60 seconds.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- APP TABS -->
+  <div class="section-title">Using the App</div>
+  <p class="section-sub">Five tabs cover everything you need to manage and automate your trades.</p>
+  <div class="tabs-grid">
+    <div class="tab-card">
+      <div class="tab-icon">📈</div>
+      <div class="tab-name">Trade Tab</div>
+      <div class="tab-desc">Place manual buy/sell orders. Supports market and limit orders, pre/after-hours sessions, and Day/GTC duration.</div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-icon">⚖️</div>
+      <div class="tab-name">Rebalance Tab</div>
+      <div class="tab-desc">Select an investment model, enter your budget, click Compute Plan — then execute sells and buys to rebalance automatically.</div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-icon">📊</div>
+      <div class="tab-name">Positions Tab</div>
+      <div class="tab-desc">View your current holdings and account balance in real time.</div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-icon">📋</div>
+      <div class="tab-name">Orders Tab</div>
+      <div class="tab-desc">View and cancel pending or working orders placed through the app.</div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-icon">⚙️</div>
+      <div class="tab-name">Settings Tab</div>
+      <div class="tab-desc">Update Schwab API credentials and portfolio budget without editing files directly.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- TROUBLESHOOTING -->
+  <div class="section-title">Troubleshooting</div>
+  <p class="section-sub">Common issues and how to fix them quickly.</p>
+  <div class="trouble-list">
+    <div class="trouble-item">
+      <div class="trouble-q">"Schwab not configured" error</div>
+      <div class="trouble-a">Check that <code>src\.env</code> has your API key, secret, and passphrase filled in correctly.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-q">"No Schwab token found"</div>
+      <div class="trouble-a">Run <code>windows\auth_schwab.bat</code> to authenticate. This step is required before the first launch and after each 7-day expiry.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-q">Browser shows "Proceed" warning during auth</div>
+      <div class="trouble-a">This is <strong>expected</strong>. Click <strong>Advanced → Proceed to 127.0.0.1</strong>. The connection is entirely local — no data leaves your computer.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-q">"Access denied" on login</div>
+      <div class="trouble-a">Your BLee Quant subscription must be Pro or Ultimate. Check your status at <a href="https://bleeanalytics.com/subscribe.html" style="color:var(--blue)">bleeanalytics.com/subscribe.html</a>.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-q">App won't start — Python not found</div>
+      <div class="trouble-a">Reinstall Python from <a href="https://python.org/downloads" style="color:var(--blue)">python.org</a> and make sure to check <strong>"Add Python to PATH"</strong> during installation.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-q">"pip is not recognized"</div>
+      <div class="trouble-a">Python was not added to PATH. Reinstall Python with the <strong>"Add Python to PATH"</strong> option checked.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- FILE STRUCTURE -->
+  <div class="section-title">File Structure</div>
+  <p class="section-sub">What's included in your downloaded package.</p>
+  <div class="filetree">
+<span class="dir">client/</span><br>
+├── <span class="dir">src/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">trader_client.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Main app</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">auth_server.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Weekly Schwab re-auth</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">schwab_client.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Schwab API helper</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">token_manager.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Encrypted token storage</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">config.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Configuration loader</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">requirements.txt</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Python packages</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="warn">.env</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="warn">Your credentials — DO NOT SHARE</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="warn">schwab_token.enc</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="warn">Encrypted token — DO NOT SHARE</span><br>
+└── <span class="dir">windows/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">install.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Step 3 — install packages</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">run.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Start the app</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">auth_schwab.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Step 5 + weekly re-auth</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">create_shortcut.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Optional desktop shortcut</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">SETUP_WINDOWS.html</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">This guide</span>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECURITY -->
+  <div class="section-title">Security Notes</div>
+  <p class="section-sub">Your data and credentials stay on your computer.</p>
+  <div class="sec-grid">
+    <div class="sec-card">
+      <div class="sec-icon">🔒</div>
+      <strong>Credentials Stay Local</strong>
+      Never share your <code>.env</code> or <code>schwab_token.enc</code> files. They contain keys that grant trading access to your account.
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🔐</div>
+      <strong>Encrypted Token</strong>
+      The Schwab token is encrypted with your passphrase. Keep the passphrase somewhere safe — you'll need it if you reinstall.
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">🖥️</div>
+      <strong>Runs On Your PC</strong>
+      The app runs entirely locally. No trade data or account info is sent to BLee servers.
+    </div>
+    <div class="sec-card">
+      <div class="sec-icon">📡</div>
+      <strong>Read-Only Data Feed</strong>
+      Investment model allocations are fetched read-only from bleeanalytics.com. No personal data is transmitted.
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>© 2025 BLee Quant Analytics · <a href="https://bleeanalytics.com">bleeanalytics.com</a> · <a href="https://bleeanalytics.com/subscribe.html">Subscribe</a> · <a href="https://bleeanalytics.com/client/index.html">Download</a></p>
+</div>
+
+</body>
+</html>
