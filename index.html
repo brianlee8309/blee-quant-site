@@ -26,11 +26,11 @@
     --navy:    #0b1120;
     --navy2:   #111827;
     --navy3:   #1e2d45;
-    --card:    #ffffff;
-    --border:  #e5e7eb;
-    --text:    #111827;
-    --muted:   #6b7280;
-    --light:   #f6f7f9;
+    --card:    #111827;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #e2e8f0;
+    --muted:   #94a3b8;
+    --light:   #0b1120;
     --accent:  #2563eb;
     --gold:    #f59e0b;
     --emerald: #10b981;
@@ -42,7 +42,7 @@
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    background: var(--light);
+    background: var(--navy);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     line-height: 1.6;
@@ -239,8 +239,8 @@
 
   /* ── SECTION SHARED ── */
   section { padding: 72px 32px; }
-  section.light { background: var(--light); }
-  section.white { background: #fff; }
+  section.light { background: var(--navy2); }
+  section.white { background: var(--navy2); }
   .section-inner { max-width: 1100px; margin: 0 auto; }
   .section-label {
     font-size: 12px; font-weight: 700; text-transform: uppercase;
@@ -307,7 +307,7 @@
     border-radius: 14px; box-shadow: var(--shadow);
     border: 1px solid var(--border);
   }
-  table { width: 100%; border-collapse: collapse; background: #fff; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
   th, td {
     padding: 14px 20px; text-align: left; font-size: 14px;
     border-bottom: 1px solid var(--border);
@@ -325,7 +325,7 @@
   .badge {
     display: inline-block; font-size: 10px; font-weight: 700;
     padding: 2px 8px; border-radius: 4px; margin-left: 8px;
-    background: rgba(16,185,129,0.12); color: #065f46;
+    background: rgba(16,185,129,0.15); color: #34d399;
     text-transform: uppercase; letter-spacing: 0.06em;
   }
 
@@ -409,7 +409,7 @@
   }
   .start-banner .sb-text p strong { color: #6ee7b7; }
   .start-banner a {
-    background: #fff; color: #065f46;
+    background: var(--card); color: #34d399;
     padding: 12px 24px; border-radius: 9px; font-weight: 800; font-size: 15px;
     text-decoration: none; flex-shrink: 0; white-space: nowrap;
     transition: all .18s;
@@ -430,7 +430,7 @@
     .compare-strip { grid-template-columns: 1fr; }
   }
   .cs-item {
-    padding: 26px 22px; background: #fff;
+    padding: 26px 22px; background: var(--card);
     border-right: 1px solid var(--border);
     display: flex; flex-direction: column; gap: 8px;
   }
@@ -456,11 +456,11 @@
   .cs-badge {
     display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
     text-transform: uppercase; padding: 3px 9px; border-radius: 4px; margin-top: 6px;
-    background: rgba(16,185,129,0.14); color: #065f46; align-self: flex-start;
+    background: rgba(16,185,129,0.15); color: #34d399; align-self: flex-start;
   }
 
   /* ── HOW IT WORKS ── */
-  .how-section { background: #fff; }
+  .how-section { background: var(--navy2); }
   .layer-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 20px; margin-top: 40px;
@@ -540,7 +540,7 @@
   }
   .strat-card {
     border-radius: 16px; border: 1px solid var(--border);
-    background: #fff; padding: 32px;
+    background: var(--card); padding: 32px;
     box-shadow: var(--shadow);
     display: flex; flex-direction: column; gap: 20px;
     transition: transform .2s, box-shadow .2s;
@@ -559,12 +559,12 @@
     padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
     letter-spacing: 0.07em; margin-top: 6px;
   }
-  .tag.low-risk { background: rgba(16,185,129,0.12); color: #065f46; }
+  .tag.low-risk { background: rgba(16,185,129,0.15); color: #34d399; }
   .tag.high-risk { background: rgba(245,158,11,0.12); color: #92400e; }
   .strat-card p { color: var(--muted); font-size: 15px; line-height: 1.6; }
   .strat-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .ss {
-    background: var(--light); border-radius: 10px; padding: 14px 16px;
+    background: var(--navy3); border-radius: 10px; padding: 14px 16px;
   }
   .ss .sv { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
   .ss .sv.g { color: var(--emerald); }
@@ -593,7 +593,7 @@
     .why-grid { grid-template-columns: 1fr; }
   }
   .why-item {
-    background: #fff; border-radius: 14px; padding: 28px 24px;
+    background: var(--card); border-radius: 14px; padding: 28px 24px;
     border: 1px solid var(--border);
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   }
@@ -617,7 +617,7 @@
   }
   .plan {
     border-radius: 18px; padding: 36px 32px;
-    border: 1px solid var(--border); background: #fff;
+    border: 1px solid var(--border); background: var(--card);
     box-shadow: var(--shadow);
   }
   .plan.featured {
@@ -711,11 +711,11 @@
     vertical-align: middle;
   }
   .ds-tag.sim { background: rgba(99,102,241,0.12); color: #4338ca; }
-  .ds-tag.live { background: rgba(16,185,129,0.14); color: #065f46; }
+  .ds-tag.live { background: rgba(16,185,129,0.15); color: #34d399; }
 
   /* ── RISK CALLOUT (Analysis 2) ── */
   .risk-callout {
-    background: #fff7ed; border: 1px solid #fed7aa;
+    background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25);
     border-radius: 10px; padding: 16px 20px;
     margin-top: 16px; font-size: 13px; color: #7c2d12; line-height: 1.6;
   }
@@ -1985,4 +1985,49 @@ function googleTranslateElementInit() {
       'hs4.lbl':'Lợi nhuận trong thị trường giảm 2022 <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
       'perf.label':'Kiểm tra lịch sử',
       'perf.title':'~6 năm dữ liệu. Vượt trội S&amp;P 500 về cả lợi nhuận và rủi ro.',
-      'perf.sub':'Lợi nhuận mô phỏng từ 5/2020 đến 5/2026, so với S&amp;P 500 (SPY). 
+      'perf.sub':'Lợi nhuận mô phỏng từ 5/2020 đến 5/2026, so với S&amp;P 500 (SPY). Calm Growth Model đạt +177% so với +155% của SPY, với mức sụt giảm thấp hơn đáng kể.',
+      'bear.label':'Khả năng chống chịu thị trường giảm','bear.title':'Khi S&amp;P Giảm 18.6%, Chúng Tôi Tăng 11.2%',
+      'bear.sub':'Thị trường giảm năm 2022 (Tháng 1–12) là hiệu suất S&amp;P 500 tệ nhất trong hơn một thập kỷ. Logic luân chuyển trái phiếu của BLEE đã hoạt động và mang lại lợi nhuận dương ngay cả trong đợt giảm.',
+      'cmp.label':'Hiệu suất điều chỉnh rủi ro','cmp.title':'Những Con Số Không Nói Dối',
+      'cmp.sub':'Backtest 3 năm (5/2023 – 5/2026). Chiến lược BLEE vs. chuẩn SPY.',
+      'th.metric':'Chỉ số','th.blee':'Chiến lược BLEE','th.spy':'S&amp;P 500 (SPY)','th.edge':'Lợi thế',
+      'row1':'Lợi nhuận tích lũy (3 năm)','row2':'Lợi nhuận hàng năm','row3':'Sụt giảm tối đa','row4':'Tỷ số Calmar',
+      'row5':'Tỷ số Sharpe','row6':'Beta (Độ nhạy thị trường)','row7':'Lợi nhuận 3 tháng gần nhất','row8':'Alpha (so với SPY)',
+      'founder.tag':'👤 Về Người Tạo Ra',
+      'founder.title':'Được Xây Dựng Từ <em>Kinh Nghiệm Thực Tế</em> — Và Được Sử Dụng Trong Giao Dịch Thực',
+      'how.label':'Cơ Chế Hoạt Động',
+      'how.title':'Tại Sao Calm Growth Model Tăng Vọt Định Kỳ — Và Đó Là Thiết Kế Có Chủ Đích',
+      'how.sub':'Nhìn vào biểu đồ hiệu suất, bạn sẽ nhận thấy Calm Growth Model không tăng trưởng theo đường thẳng hoàn toàn mượt mà. Có những giai đoạn ổn định, sau đó là những đợt tăng đột ngột. Điều này là có chủ đích và là cốt lõi tạo nên sức mạnh của thuật toán.',
+      'l1.label':'Lớp 1 · Nền Tảng Hàng Ngày','l1.title':'🔄 Luân Chuyển Giữa Các Lớp Tài Sản',
+      'l2.label':'Lớp 2 · Giám Sát Điều Kiện Thị Trường','l2.title':'📡 Phát Hiện Quá Bán &amp; Quá Mua',
+      'l3.label':'Lớp 3 · Thu Nắm Cơ Hội Định Kỳ','l3.title':'⚡ Các Chiến Lược Tấn Công Có Tính Toán — Vài Lần Mỗi Năm',
+      'surge.title':'⚡ Những Đợt Tăng Vọt Trong Biểu Đồ Không Phải May Mắn','surge.stat.lbl':'Lần di chuyển độ tin cậy cao mỗi năm',
+      'strat.label':'Chiến Lược Của Chúng Tôi','strat.title':'Một Thuật Toán. Một Mục Tiêu: Tài Sản Dài Hạn.',
+      'cs1.name':'Tiết kiệm ngân hàng / CD','cs2.name':'Cổ phiếu cổ tức','cs3.name':'Chỉ số S&amp;P 500','cs4.name':'Calm Growth Model (Backtest)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Model dành cho ai?',
+      'why.label':'Tại Sao BLEE Quant Analytics','why.title':'Được Xây Dựng Cho Nhà Đầu Tư Dài Hạn Nghiêm Túc',
+      'why.sub':'Chúng tôi nghiên cứu. Bạn quyết định. Mỗi ngày, tín hiệu thuật toán mới để bạn không bao giờ mù quáng.',
+      'price.label':'Gói Đăng Ký','price.title':'Đầu Tư Vào Lợi Thế Của Bạn',
+      'price.sub':'Truy cập phân tích thuật toán cấp tổ chức với giá hợp lý. Hủy bất cứ lúc nào.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. Bảo lưu mọi quyền.',
+      'footer.disclaimer':'Chỉ là dữ liệu hiệu suất mô phỏng. Không phải lời khuyên đầu tư.',
+      'lastupdated':'Cập nhật lần cuối:',
+    },
+  };
+
+  function applyI18n(lang) {
+    const dict = i18n[lang];
+    if (!dict) return;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+  }
+
+  const initLang = localStorage.getItem('blee-lang') || 'en';
+  if (initLang !== 'en' && i18n[initLang]) applyI18n(initLang);
+})();
+</script>
+
+</body>
+</html>
