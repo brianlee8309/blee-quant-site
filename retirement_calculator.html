@@ -343,13 +343,13 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       <div class="model-chk on" id="chk-calm">✓</div>
     </div>
     <div class="model-crash-note calm-note">⚠️ Adjusted from 18% → 15% to account for 1–2 market crashes per generation (avg. −30% drawdown)</div>
-    <div class="model-badge ultimate" id="badge-ultimate" onclick="toggleModel('ultimate')">
+    <div class="model-badge ultimate inactive" id="badge-ultimate" onclick="toggleModel('ultimate')">
       <div class="model-dot ultimate"></div>
       <div class="model-info">
         <div class="name">Ultimate Growth Model</div>
         <div class="rate">🚀 25% adjusted return · Higher growth · Full BLEE Quant suite</div>
       </div>
-      <div class="model-chk on" id="chk-ultimate">✓</div>
+      <div class="model-chk off" id="chk-ultimate"></div>
     </div>
     <div class="model-crash-note ultimate-note">⚠️ Adjusted from 30% → 25% to account for 1–2 market crashes per generation (avg. −30% drawdown)</div>
   </div>
@@ -505,16 +505,46 @@ function fmtX(n) {
 }
 
 // ── Model selection state ───────────────────────────────────────────────────
-const modelState = { calm: true, ultimate: true };
+const modelState = { calm: true, ultimate: false };
+
+function setModel(m) {
+  // Activate chosen model, deactivate the other, clear custom
+  ['calm','ultimate'].forEach(function(k) {
+    modelState[k] = (k === m);
+    document.getElementById('badge-' + k).classList.toggle('inactive', !modelState[k]);
+    const chk = document.getElementById('chk-' + k);
+    chk.classList.toggle('on',  modelState[k]);
+    chk.classList.toggle('off', !modelState[k]);
+    chk.textContent = modelState[k] ? '✓' : '';
+  });
+  // Clear custom field
+  const ci = document.getElementById('inp-custom-rate');
+  ci.value = '';
+}
 
 function toggleModel(m) {
-  modelState[m] = !modelState[m];
-  document.getElementById('badge-' + m).classList.toggle('inactive', !modelState[m]);
-  const chk = document.getElementById('chk-' + m);
-  chk.classList.toggle('on', modelState[m]);
-  chk.classList.toggle('off', !modelState[m]);
-  chk.textContent = modelState[m] ? '✓' : '';
+  // If clicking the already-active model — do nothing (keep at least one active)
+  if (modelState[m] && !modelState[m === 'calm' ? 'ultimate' : 'calm']) return;
+  setModel(m);
 }
+
+// Typing a custom % deactivates both preset models
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('inp-custom-rate').addEventListener('input', function() {
+    if (this.value.trim() !== '') {
+      ['calm','ultimate'].forEach(function(k) {
+        modelState[k] = false;
+        document.getElementById('badge-' + k).classList.add('inactive');
+        const chk = document.getElementById('chk-' + k);
+        chk.className = 'model-chk off';
+        chk.textContent = '';
+      });
+    } else {
+      // Custom cleared — restore calm as default
+      setModel('calm');
+    }
+  });
+});
 
 // ── FV calculation ───────────────────────────────────────────────────────
 // principal: starting lump sum
