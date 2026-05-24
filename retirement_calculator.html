@@ -338,20 +338,20 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       <div class="model-dot calm"></div>
       <div class="model-info">
         <div class="name">Calm Growth Model</div>
-        <div class="rate">🎯 15% adjusted return · Low–Medium risk · SGOV core + GLDM hedge</div>
+        <div class="rate">🎯 17% adjusted return · Low–Medium risk · SGOV core + GLDM hedge</div>
       </div>
       <div class="model-chk on" id="chk-calm">✓</div>
     </div>
-    <div class="model-crash-note calm-note">⚠️ Adjusted from 18% → 15% to account for 1–2 market crashes per generation (avg. −30% drawdown)</div>
+    <div class="model-crash-note calm-note">⚠️ Adjusted from 18% → 17% to account for 1–2 market crashes per generation (avg. −30% drawdown)</div>
     <div class="model-badge ultimate inactive" id="badge-ultimate" onclick="toggleModel('ultimate')">
       <div class="model-dot ultimate"></div>
       <div class="model-info">
         <div class="name">Ultimate Growth Model</div>
-        <div class="rate">🚀 25% adjusted return · Higher growth · Full BLEE Quant suite</div>
+        <div class="rate">🚀 30% adjusted return · Higher growth · Full BLEE Quant suite</div>
       </div>
       <div class="model-chk off" id="chk-ultimate"></div>
     </div>
-    <div class="model-crash-note ultimate-note">⚠️ Adjusted from 30% → 25% to account for 1–2 market crashes per generation (avg. −30% drawdown)</div>
+    <div class="model-crash-note ultimate-note">⚠️ Keeps full 30% target — historically recovered within 2–3 yrs after each 1–2 market crashes per generation (avg. −30% drawdown)</div>
   </div>
 
   <!-- Custom growth rate -->
@@ -386,7 +386,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           <div class="rc-stat"><div class="sl">Invested</div><div class="sv" id="calm-contributed"></div></div>
           <div class="rc-stat"><div class="sl">Growth</div><div class="sv" id="calm-growth"></div></div>
           <div class="rc-stat"><div class="sl">Return %</div><div class="sv" id="calm-mult"></div></div>
-          <div class="rc-stat"><div class="sl">Adj. Rate</div><div class="sv">15%</div></div>
+          <div class="rc-stat"><div class="sl">Adj. Rate</div><div class="sv">17%</div></div>
         </div>
       </div>
       <div class="result-card ultimate">
@@ -398,7 +398,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           <div class="rc-stat"><div class="sl">Invested</div><div class="sv" id="ult-contributed"></div></div>
           <div class="rc-stat"><div class="sl">Growth</div><div class="sv" id="ult-growth"></div></div>
           <div class="rc-stat"><div class="sl">Return %</div><div class="sv" id="ult-mult"></div></div>
-          <div class="rc-stat"><div class="sl">Adj. Rate</div><div class="sv">25%</div></div>
+          <div class="rc-stat"><div class="sl">Annual Rate</div><div class="sv">30%</div></div>
         </div>
       </div>
       <!-- Custom model result card (shown only when custom rate is set) -->
@@ -593,8 +593,8 @@ function calculate() {
   const endAge    = age + years;
   const contributed = principal + monthly * 12 * years;
 
-  const calmBals = calcGrowth(principal, monthly, 0.15, years);
-  const ultBals  = calcGrowth(principal, monthly, 0.25, years);
+  const calmBals = calcGrowth(principal, monthly, 0.17, years);
+  const ultBals  = calcGrowth(principal, monthly, 0.30, years);
   const calmFinal = calmBals[years];
   const ultFinal  = ultBals[years];
 
@@ -659,12 +659,12 @@ function calculate() {
   const labels = Array.from({length: years + 1}, (_, i) => "Age " + (age + i));
   const chartDatasets = [];
   if (modelState.calm) chartDatasets.push({
-    label: "Calm Growth (15%)", data: calmBals,
+    label: "Calm Growth (17%)", data: calmBals,
     borderColor: "#10b981", backgroundColor: "rgba(16,185,129,0.08)",
     borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5
   });
   if (modelState.ultimate) chartDatasets.push({
-    label: "Ultimate Growth (25%)", data: ultBals,
+    label: "Ultimate Growth (30%)", data: ultBals,
     borderColor: "#a855f7", backgroundColor: "rgba(168,85,247,0.07)",
     borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5
   });
@@ -785,8 +785,8 @@ function runWithdrawal() {
   // After growth: B * (1 + r); then withdraw wPct of that = B*(1+r)*wPct
   // Net change = B*(1+r)*(1-wPct) - B = B*[(1+r)*(1-wPct) - 1]
   function netGrowthRate(r, w) { return (1 + r) * (1 - w) - 1; }
-  const calmNet = netGrowthRate(0.15, wPct);
-  const ultNet  = netGrowthRate(0.25, wPct);
+  const calmNet = netGrowthRate(0.17, wPct);
+  const ultNet  = netGrowthRate(0.30, wPct);
 
   function sustainClass(net) {
     if (net > 0.02)  return "growing";
@@ -821,8 +821,8 @@ function runWithdrawal() {
   for (let y = 1; y <= wYrs; y++) {
     const cStart = cBal, uStart = uBal;
     // grow then withdraw
-    const cAfterGrow = cStart * 1.15;
-    const uAfterGrow = uStart * 1.25;
+    const cAfterGrow = cStart * 1.17;
+    const uAfterGrow = uStart * 1.30;
     const cWithdraw = cAfterGrow * wPct;
     const uWithdraw = uAfterGrow * wPct;
     cBal = Math.max(0, cAfterGrow - cWithdraw);

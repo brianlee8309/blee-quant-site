@@ -21,6 +21,7 @@
   var LINKS = [
     { href: "index.html",               label: "Home"            },
     { href: "mission.html",             label: "Our Mission"     },
+    { href: "retirement_calculator.html", label: "Freedom Calc"  },
     { href: "marketDailySummary.html",  label: "Market Forecast" },
     { href: "index2.html",              label: "Daily Signal"    },
     { href: "Algorithm185History.html", label: "Backtest"        },
