@@ -42,7 +42,13 @@
   .hero h1{font-size:clamp(28px,5vw,52px);font-weight:800;line-height:1.15;
     color:#fff;max-width:820px;margin:0 auto 20px;}
   .hero h1 span{color:var(--gold);}
-  .hero p{font-size:18px;color:var(--muted);max-width:680px;margin:0 auto 40px;}
+  .hero p{font-size:18px;color:var(--muted);max-width:680px;margin:0 auto 28px;}
+  .hero-calc-link{display:inline-block;margin-top:4px;padding:10px 26px;
+    background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.45);
+    color:#f5a623;border-radius:30px;font-size:15px;font-weight:700;
+    text-decoration:none;letter-spacing:0.04em;
+    transition:background .18s,border-color .18s,color .18s;}
+  .hero-calc-link:hover{background:rgba(245,166,35,0.22);border-color:#f5a623;color:#fff;}
 
   /* ── SECTION WRAPPER ── */
   .section{max-width:1080px;margin:0 auto;padding:64px 24px;}
@@ -177,6 +183,7 @@
   <div class="hero-badge">Our Mission</div>
   <h1>Financial Freedom Is a Right,<br><span>Not a Privilege</span></h1>
   <p>We built BLEE Quant to give every person — young savers, near-retirees, and the financially independent — equal access to the same disciplined algorithmic strategies once reserved for institutions and the wealthy.</p>
+  <a href="retirement_calculator.html" class="hero-calc-link">&#127775; Retirement &amp; FIRE Calculator</a>
 </div>
 
 <!-- ══ SECTION 1 — Young Saver ══ -->
