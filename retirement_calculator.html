@@ -465,6 +465,13 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 
       <div class="w-input-row">
         <div class="field">
+          <label>Starting Budget <span id="wd-budget-hint" style="font-size:11px;color:rgba(245,158,11,0.8);font-weight:400;">(from calculator)</span></label>
+          <div class="input-wrap">
+            <span class="sfx" style="left:10px;right:auto;">$</span>
+            <input type="number" id="inp-wd-budget" class="has-sfx" style="padding-left:22px;" value="" min="1" step="1000" placeholder="e.g. 278800">
+          </div>
+        </div>
+        <div class="field">
           <label>Annual Withdrawal %</label>
           <div class="input-wrap">
             <input type="number" id="inp-withdraw" class="has-sfx" value="8" min="0.1" max="100" step="0.1" placeholder="8">
@@ -632,6 +639,15 @@ function calculate() {
                    calmFinal, ultFinal, custFinal,
                    calmBals, ultBals, custBals, customRate,
                    showCalm: modelState.calm, showUlt: modelState.ultimate };
+
+  // Auto-fill Starting Budget with the active model's retirement balance
+  var budgetEl = document.getElementById("inp-wd-budget");
+  if (budgetEl) {
+    var defaultBudget = modelState.calm ? calmFinal : (modelState.ultimate ? ultFinal : calmFinal);
+    budgetEl.value = Math.round(defaultBudget);
+    var hint = document.getElementById("wd-budget-hint");
+    if (hint) hint.textContent = "(auto-filled from calculator)";
+  }
 
   // ── Fill result cards ──────────────────────────────────────────────────
   document.getElementById("result-headline").textContent =
@@ -923,8 +939,12 @@ function runWithdrawal() {
   if (bUlt)  bUlt.addEventListener("click",  function() { toggleWdBadge("ult"); });
 
   // Build year-by-year rows: withdraw wPct of grown balance each year
+  // Use manually entered starting budget if provided, else fall back to model finals
+  const budgetInput = parseFloat(document.getElementById("inp-wd-budget").value);
+  const startBudget = (!isNaN(budgetInput) && budgetInput > 0) ? budgetInput : null;
   const rows = [];
-  let cBal = c.calmFinal, uBal = c.ultFinal;
+  let cBal = startBudget !== null ? startBudget : c.calmFinal;
+  let uBal = startBudget !== null ? startBudget : c.ultFinal;
   for (let y = 1; y <= wYrs; y++) {
     const cStart = cBal, uStart = uBal;
     const cAfterGrow = cStart * 1.17;
