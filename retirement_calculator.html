@@ -878,7 +878,8 @@ function runWithdrawal() {
   if (!c) return;
 
   // Withdrawal as annual percentage of portfolio
-  const wPct  = parseFloat(document.getElementById("inp-withdraw").value) / 100 || 0.08;
+  const _wRaw = parseFloat(document.getElementById("inp-withdraw").value);
+  const wPct  = isNaN(_wRaw) ? 0.08 : _wRaw / 100;
   const wYrs  = parseInt(document.getElementById("inp-wdyears").value) || 30;
 
   // Net growth rate after withdrawing wPct of grown balance each year
