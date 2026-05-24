@@ -1,127 +1,90 @@
 {
   "date": "2026-05-24",
-  "symphony_id": "jtQvlI5wINrxpOfxgmgl",
-  "symphony_name": "BLEE - 186 2026 ALL in One",
+  "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
+  "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 1.6658,
-      "shares": 4.0957,
-      "market_value": 586.012756
-    },
-    {
-      "ticker": "EUM",
-      "weight_pct": 0.0237,
-      "shares": 0.5058,
-      "market_value": 8.340642
-    },
-    {
-      "ticker": "SDOW",
-      "weight_pct": 2.3325,
-      "shares": 30.34663,
-      "market_value": 820.5728752
+      "weight_pct": 3.3308,
+      "shares": 1.40016,
+      "market_value": 200.3348928
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 2.6255,
-      "shares": 17.50332,
-      "market_value": 923.6501964
+      "weight_pct": 3.6306,
+      "shares": 4.13809,
+      "market_value": 218.3670093
     },
     {
       "ticker": "TECL",
-      "weight_pct": 16.0243,
-      "shares": 27.12226,
-      "market_value": 5637.361741
-    },
-    {
-      "ticker": "BTAL",
-      "weight_pct": 0.0254,
-      "shares": 0.73312,
-      "market_value": 8.944064
+      "weight_pct": 23.6841,
+      "shares": 6.8536,
+      "market_value": 1424.52076
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 18.6873,
-      "shares": 84.45782,
-      "market_value": 6574.1967088
+      "weight_pct": 32.779,
+      "shares": 25.32819,
+      "market_value": 1971.5463096
     },
     {
       "ticker": "SHV",
-      "weight_pct": 4.6451,
-      "shares": 14.81418,
-      "market_value": 1634.1521958
-    },
-    {
-      "ticker": "SGOV",
-      "weight_pct": 26.9583,
-      "shares": 94.24567,
-      "market_value": 9483.9417721
+      "weight_pct": 6.4267,
+      "shares": 3.50419,
+      "market_value": 386.5471989
     },
     {
       "ticker": "GLD",
-      "weight_pct": 18.3065,
-      "shares": 15.56292,
-      "market_value": 6440.2475544
+      "weight_pct": 19.9508,
+      "shares": 2.89975,
+      "market_value": 1199.974545
     },
     {
       "ticker": "VGT",
-      "weight_pct": 3.5962,
-      "shares": 10.93007,
-      "market_value": 1265.1556025
+      "weight_pct": 7.1841,
+      "shares": 3.73305,
+      "market_value": 432.1005375
     },
     {
       "ticker": "TMV",
-      "weight_pct": 1.5427,
-      "shares": 13.63253,
-      "market_value": 542.7110193
-    },
-    {
-      "ticker": "USMV",
-      "weight_pct": 2.9964,
-      "shares": 10.8807,
-      "market_value": 1054.122216
+      "weight_pct": 2.1044,
+      "shares": 3.17935,
+      "market_value": 126.5699235
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.4654,
-      "shares": 10.40904,
-      "market_value": 163.7341992
-    },
-    {
-      "ticker": "SQQQ",
-      "weight_pct": 0.0048,
-      "shares": 0.04027,
-      "market_value": 1.671205
+      "weight_pct": 0.5706,
+      "shares": 2.18176,
+      "market_value": 34.3190848
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1001,
-      "shares": 35.23,
-      "market_value": 35.23
+      "weight_pct": 0.339,
+      "shares": 20.39,
+      "market_value": 20.39
     }
   ],
   "raw_api_entry": {
-    "description": "",
+    "description": "(Created with Composer AI)",
     "community_review_status": null,
     "tags": [],
     "last_rebalance_on": "2026-05-22",
-    "annualized_rate_of_return": -0.9997,
-    "last_semantic_update_at": "2026-05-17T23:30:53.598689Z",
-    "color": "#FFEF5D",
-    "rebalance_frequency": "threshold",
+    "annualized_rate_of_return": 8.632,
+    "last_semantic_update_at": "2025-10-31T23:11:00.303Z",
+    "color": "#BA84FF",
+    "rebalance_frequency": "daily",
     "last_rebalance_attempted_on": "2026-05-22",
-    "name": "BLEE - 186 2026 ALL in One 57% ave-7.8% Max-Down SGOV Bond (Rate high yeild year only over 4%)",
-    "value": 35180.04,
-    "sharpe_ratio": -2.8097,
-    "time_weighted_return": -0.54612,
+    "name": "BLEE A - 186 Part 1 Kei 90% NVDA double/GOLD Mini Drop Year Round  (Buy Copy)",
+    "value": 6014.67,
+    "sharpe_ratio": 33.2572,
+    "time_weighted_return": 0.03701,
     "asset_class": "EQUITIES",
     "may_rebalance_today": false,
-    "invested_since": "2026-04-20",
-    "cash": 35.23,
-    "deposit_adjusted_value": 16793.54,
-    "last_dollar_change": 35000.8472911,
-    "rebalance_corridor_width": 0.05,
+    "invested_since": "2026-05-19",
+    "cash": 20.39,
+    "deposit_adjusted_value": 6014.67,
+    "last_dollar_change": 61.0615,
     "skip_rebalance_today": false,
     "tickers": [
       {
@@ -133,16 +96,8 @@
         "name": "Direxion Shares ETF Trust - Direxion Daily Consumer Discretionary Bull 3X ETF"
       },
       {
-        "symbol": "EQUITIES::SDOW//USD",
-        "name": "ProShares Trust - ProShares UltraPro Short Dow30 -3x Shares"
-      },
-      {
         "symbol": "EQUITIES::EUM//USD",
         "name": "ProShares Trust - ProShares Short MSCI Emerging Markets -1x Shares"
-      },
-      {
-        "symbol": "EQUITIES::TQQQ//USD",
-        "name": "ProShares Trust - ProShares UltraPro QQQ 3x Shares"
       },
       {
         "symbol": "EQUITIES::XLV//USD",
@@ -281,16 +236,8 @@
         "name": "Select Sector SPDR Trust (The) - State Street Real Estate Select Sector SPDR ETF"
       },
       {
-        "symbol": "EQUITIES::SPY//USD",
-        "name": "SPDR S&P 500 ETF TRUST - SPDR S&P 500 ETF Trust"
-      },
-      {
         "symbol": "EQUITIES::XLU//USD",
         "name": "Select Sector SPDR Trust (The) - State Street Utilities Select Sector SPDR ETF"
-      },
-      {
-        "symbol": "EQUITIES::SGOV//USD",
-        "name": "iShares Trust - iShares 0-3 Month Treasury Bond ETF"
       },
       {
         "symbol": "EQUITIES::GLD//USD",
@@ -317,10 +264,6 @@
         "name": "Vanguard World Fund - Vanguard Information Technology ETF"
       },
       {
-        "symbol": "EQUITIES::SQQQ//USD",
-        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
-      },
-      {
         "symbol": "EQUITIES::XLK//USD",
         "name": "Select Sector SPDR Trust (The) - State Street Technology Select Sector SPDR ETF"
       },
@@ -331,10 +274,6 @@
       {
         "symbol": "EQUITIES::TMV//USD",
         "name": "Direxion Shares ETF Trust - Direxion Daily 20+ Year Treasury Bear -3X Shares"
-      },
-      {
-        "symbol": "EQUITIES::USMV//USD",
-        "name": "iShares Trust - iShares MSCI USA Min Vol Factor ETF"
       },
       {
         "symbol": "EQUITIES::VIXM//USD",
@@ -361,10 +300,6 @@
         "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
       },
       {
-        "symbol": "EQUITIES::GLD//USD",
-        "name": "SPDR Gold Trust - SPDR Gold Shares"
-      },
-      {
         "symbol": "EQUITIES::AGG//USD",
         "name": "iShares Trust - iShares Core U.S. Aggregate Bond ETF"
       },
@@ -389,130 +324,86 @@
         "name": "ProShares Trust - ProShares Short QQQ -1x Shares"
       }
     ],
-    "max_drawdown": 0.5786,
-    "id": "jtQvlI5wINrxpOfxgmgl",
-    "net_deposits": 33200.0,
-    "position_id": "26d5ff28-cbdc-45c9-ac83-582bd957a363",
+    "max_drawdown": 0.0,
+    "id": "g7WBkfIc6UWUWC6NiAdu",
+    "net_deposits": 5800.0,
+    "position_id": "908c6d77-30bb-4de6-afda-efd00c8e6774",
     "holdings": [
       {
         "ticker": "UPRO",
-        "allocation": 0.016657535,
+        "allocation": 0.033307711,
         "price": 143.08,
-        "amount": 4.0957,
-        "value": 586.012756
-      },
-      {
-        "ticker": "EUM",
-        "allocation": 0.000237084,
-        "price": 16.49,
-        "amount": 0.5058,
-        "value": 8.340642,
-        "last_percent_change": 0.002431611
-      },
-      {
-        "ticker": "SDOW",
-        "allocation": 0.023324956,
-        "price": 27.04,
-        "amount": 30.34663,
-        "value": 820.5728752
+        "amount": 1.40016,
+        "value": 200.3348928,
+        "last_percent_change": 0.010594717
       },
       {
         "ticker": "SVXY",
-        "allocation": 0.02625495,
+        "allocation": 0.036305734,
         "price": 52.77,
-        "amount": 17.50332,
-        "value": 923.6501964,
-        "last_percent_change": 203.612923648
+        "amount": 4.13809,
+        "value": 218.3670093,
+        "last_percent_change": -0.005652911
       },
       {
         "ticker": "TECL",
-        "allocation": 0.160243187,
+        "allocation": 0.23684105,
         "price": 207.85,
-        "amount": 27.12226,
-        "value": 5637.361741,
-        "last_percent_change": 284.338606304
-      },
-      {
-        "ticker": "BTAL",
-        "allocation": 0.000254237,
-        "price": 12.2,
-        "amount": 0.73312,
-        "value": 8.944064,
-        "last_percent_change": -0.003267974
+        "amount": 6.8536,
+        "value": 1424.52076,
+        "last_percent_change": 0.010142966
       },
       {
         "ticker": "TQQQ",
-        "allocation": 0.186872917,
+        "allocation": 0.327789606,
         "price": 77.84,
-        "amount": 84.45782,
-        "value": 6574.1967088,
-        "last_percent_change": 357.096466951
+        "amount": 25.32819,
+        "value": 1971.5463096,
+        "last_percent_change": 0.011565952
       },
       {
         "ticker": "SHV",
-        "allocation": 0.046451118,
+        "allocation": 0.064267399,
         "price": 110.31,
-        "amount": 14.81418,
-        "value": 1634.1521958,
-        "last_percent_change": 305.323473329
-      },
-      {
-        "ticker": "SGOV",
-        "allocation": 0.26958303,
-        "price": 100.63,
-        "amount": 94.24567,
-        "value": 9483.9417721,
-        "last_percent_change": 235.375425782
+        "amount": 3.50419,
+        "value": 386.5471989,
+        "last_percent_change": 0.00018134
       },
       {
         "ticker": "GLD",
-        "allocation": 0.183065385,
+        "allocation": 0.199507961,
         "price": 413.82,
-        "amount": 15.56292,
-        "value": 6440.2475544,
-        "last_percent_change": 203.564359124
+        "amount": 2.89975,
+        "value": 1199.974545,
+        "last_percent_change": 0.009183105
       },
       {
         "ticker": "VGT",
-        "allocation": 0.035962313,
+        "allocation": 0.071841105,
         "price": 115.75,
-        "amount": 10.93007,
-        "value": 1265.1556025
+        "amount": 3.73305,
+        "value": 432.1005375,
+        "last_percent_change": 0.011005328
       },
       {
         "ticker": "TMV",
-        "allocation": 0.015426674,
+        "allocation": 0.021043536,
         "price": 39.81,
-        "amount": 13.63253,
-        "value": 542.7110193,
-        "last_percent_change": 197.027030852
-      },
-      {
-        "ticker": "USMV",
-        "allocation": 0.029963645,
-        "price": 96.88,
-        "amount": 10.8807,
-        "value": 1054.122216,
-        "last_percent_change": 193.160029583
+        "amount": 3.17935,
+        "value": 126.5699235,
+        "last_percent_change": -0.014115899
       },
       {
         "ticker": "VIXM",
-        "allocation": 0.004654179,
+        "allocation": 0.005705897,
         "price": 15.73,
-        "amount": 10.40904,
-        "value": 163.7341992
-      },
-      {
-        "ticker": "SQQQ",
-        "allocation": 4.7504e-05,
-        "price": 41.5,
-        "amount": 0.04027,
-        "value": 1.671205,
-        "last_percent_change": -0.010962822
+        "amount": 2.18176,
+        "value": 34.3190848,
+        "last_percent_change": 0.005754476
       }
     ],
-    "last_percent_change": 195.3252,
-    "simple_return": 0.059639,
+    "last_percent_change": 0.0103,
+    "simple_return": 0.037012,
     "is_shared": true,
     "as_of": "2026-05-22",
     "asset_classes": [

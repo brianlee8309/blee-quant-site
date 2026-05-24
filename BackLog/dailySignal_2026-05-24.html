@@ -122,10 +122,6 @@
       <div class="value" id="stat-day"></div>
     </div>
     <div class="stat">
-      <div class="label" id="label-total">Total Return</div>
-      <div class="value" id="stat-total"></div>
-    </div>
-    <div class="stat">
       <div class="label">Annualized Return</div>
       <div class="value" id="stat-annual"></div>
     </div>
@@ -151,22 +147,16 @@
     <div style="font-size:12px;color:#94a3b8;" id="rsi-signal-display">—</div>
   </div>
 
-  <div class="row">
-    <section class="card">
-      <h2>Today's Allocation</h2>
-      <div class="chart-wrap"><canvas id="pie"></canvas></div>
-    </section>
-    <section class="card">
-      <h2>Portfolio Value Over Time</h2>
-      <div class="chart-wrap"><canvas id="value-line"></canvas></div>
-    </section>
-  </div>
+  <section class="card">
+    <h2>Today's Allocation</h2>
+    <div class="chart-wrap"><canvas id="pie"></canvas></div>
+  </section>
 
   <section class="card">
     <h2>Holdings at Market Close — Opening Strategy for <span id="holdings-date"></span></h2>
     <div style="overflow-x:auto"><table id="holdings"></table></div>
     <div class="download-row">
-      <a id="csv-download" href="composer_allocations.csv" download>Download full history (CSV)</a>
+      <a id="csv-download" href="../composer_allocations.csv" download>Download full history (CSV)</a>
     </div>
   </section>
 
@@ -240,7 +230,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-24", "run_datetime": "05/24/2026 03:51 PM", "total_value": 5119.46, "day_change_pct": -66.1424, "total_return_pct": 411.946, "annualized_return_pct": 3.093761807677231e+20, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.711, "shares": 42.07849, "market_value": 4234.3584487}, {"ticker": "GLDM", "weight_pct": 9.1923, "shares": 5.27515, "market_value": 470.5961315}, {"ticker": "TECL", "weight_pct": 7.9974, "shares": 1.9698, "market_value": 409.42293}, {"ticker": "$USD", "weight_pct": 0.0992, "shares": 5.08, "market_value": 5.08}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}, {"date": "2026-05-19", "total": 1001.76}, {"date": "2026-05-20", "total": 15075.36}, {"date": "2026-05-21", "total": 15086.7}, {"date": "2026-05-22", "total": 15120.57}, {"date": "2026-05-24", "total": 5119.46}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015, 0.0998, 0.0999, 0.1001, 0.1554, 0.0992], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413, 9.1175, 9.2691, 9.1709, 9.0831, 9.1923], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974, 81.182, 82.3197, 82.6751, 82.5306, 82.711], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602, 0.0, 0.0, 0.0, 8.2309, 7.9974], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0, 9.6009, 8.3113, 8.054, 0.0, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-24"], "baseline_date": null};
+const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-22", "run_datetime": "05/22/2026 03:51 PM", "total_value": 15120.57, "day_change_pct": 0.2245, "total_return_pct": 1412.057, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.5306, "shares": 124.01001, "market_value": 12479.090103297}, {"ticker": "GLDM", "weight_pct": 9.0831, "shares": 15.4005, "market_value": 1373.41659}, {"ticker": "TECL", "weight_pct": 8.2309, "shares": 5.98665, "market_value": 1244.5646685}, {"ticker": "$USD", "weight_pct": 0.1554, "shares": 23.5, "market_value": 23.5}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}, {"date": "2026-05-19", "total": 1001.76}, {"date": "2026-05-20", "total": 15075.36}, {"date": "2026-05-21", "total": 15086.7}, {"date": "2026-05-22", "total": 15120.57}], "all_tickers": ["$USD", "GLDM", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015, 0.0998, 0.0999, 0.1001, 0.1554], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413, 9.1175, 9.2691, 9.1709, 9.0831], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974, 81.182, 82.3197, 82.6751, 82.5306], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602, 0.0, 0.0, 0.0, 8.2309], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0, 9.6009, 8.3113, 8.054, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -298,27 +288,19 @@ if (DATA.day_change_pct == null) {
   dayEl.classList.add(DATA.day_change_pct >= 0 ? "pos" : "neg");
 }
 
-const totalEl = document.getElementById("stat-total");
-if (DATA.total_return_pct == null) {
-  totalEl.textContent = "—";
-} else {
-  totalEl.textContent = fmtPct(DATA.total_return_pct, true);
-  totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
-}
-// If a baseline_date is set, relabel "Total Return" to show the start date
-if (DATA.baseline_date) {
-  const lbl = document.getElementById("label-total");
-  if (lbl) lbl.textContent = "Return Since " + DATA.baseline_date;
-}
-
+// ---- Annualized return stat — use PERFORMANCE_DATA 1yr if available --------
 const annEl = document.getElementById("stat-annual");
-if (DATA.annualized_return_pct == null) {
-  annEl.textContent = "—";
-  annEl.classList.add("small");
-  annEl.textContent = "needs ≥ 14 days";
-} else {
-  annEl.textContent = fmtPct(DATA.annualized_return_pct, true);
-  annEl.classList.add(DATA.annualized_return_pct >= 0 ? "pos" : "neg");
+if (annEl) {
+  const perfAnn = (typeof PERFORMANCE_DATA !== "undefined" && PERFORMANCE_DATA.stats_1yr)
+                  ? PERFORMANCE_DATA.stats_1yr.ann_return : null;
+  const annVal = DATA.annualized_return_pct != null ? DATA.annualized_return_pct : perfAnn;
+  if (annVal == null) {
+    annEl.textContent = "—";
+    annEl.classList.add("small");
+  } else {
+    annEl.textContent = fmtPct(annVal, true);
+    annEl.classList.add(annVal >= 0 ? "pos" : "neg");
+  }
 }
 
 // ---- Pie chart -------------------------------------------------------------
@@ -347,37 +329,6 @@ new Chart(document.getElementById("pie"), {
           }
         }
       }
-    }
-  }
-});
-
-// ---- Portfolio value line --------------------------------------------------
-const hist = DATA.value_history || [];
-new Chart(document.getElementById("value-line"), {
-  type: "line",
-  data: {
-    labels: hist.map(p => p.date),
-    datasets: [{
-      label: "Total Value",
-      data: hist.map(p => p.total),
-      borderColor: "#2563eb",
-      backgroundColor: "rgba(59,130,246,0.10)",
-      fill: true, tension: 0.25, pointRadius: 3, borderWidth: 2
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
-        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
-        callbacks: { label: (ctx) => fmt$(ctx.parsed.y) }
-      }
-    },
-    scales: {
-      x: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } },
-      y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
     }
   }
 });
