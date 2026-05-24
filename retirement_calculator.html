@@ -474,8 +474,15 @@ tr:hover td{background:rgba(255,255,255,0.02);}
         <div class="field">
           <label>Annual Withdrawal %</label>
           <div class="input-wrap">
-            <input type="number" id="inp-withdraw" class="has-sfx" value="8" min="0.1" max="100" step="0.1" placeholder="8">
+            <input type="number" id="inp-withdraw" class="has-sfx" value="0" min="0" max="100" step="0.1" placeholder="0">
             <span class="sfx">% / yr</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Fixed Withdrawal <span style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:400;">$ / yr</span></label>
+          <div class="input-wrap">
+            <span class="sfx" style="left:10px;right:auto;">$</span>
+            <input type="number" id="inp-wd-fixed" class="has-sfx" style="padding-left:22px;" value="0" min="0" step="1000" placeholder="0">
           </div>
         </div>
         <div class="field">
@@ -873,8 +880,12 @@ function renderWdChart() {
   const tw = document.getElementById("wTableWrap");
   tw.style.display = "block";
   let html = '<table><thead><tr><th>Year</th><th>Age</th>';
-  if (_wdSelected.calm) html += '<th class="c-val">Calm Start</th><th class="w-val">Withdrawal</th><th class="c-val">Calm End</th>';
-  if (_wdSelected.ult)  html += '<th class="u-val">Ultimate Start</th><th class="w-val">Withdrawal</th><th class="u-val">Ultimate End</th>';
+  var _wParts = [];
+  if (wPct > 0)   _wParts.push((wPct*100).toFixed(1) + "%");
+  if (wFixed > 0) _wParts.push("$" + wFixed.toLocaleString());
+  var _wHdr = (_wParts.length ? _wParts.join("+") : "0%") + "/yr";
+  if (_wdSelected.calm) html += '<th class="c-val">Calm Start</th><th class="w-val">Withdrawal<br><small style="color:#7a95b8">' + _wHdr + '</small></th><th class="c-val">Calm End</th>';
+  if (_wdSelected.ult)  html += '<th class="u-val">Ultimate Start</th><th class="w-val">Withdrawal<br><small style="color:#7a95b8">' + _wHdr + '</small></th><th class="u-val">Ultimate End</th>';
   html += '</tr></thead><tbody>';
   d.rows.forEach(function(r, i) {
     const rc = i % 2 === 0 ? '' : ' style="background:rgba(255,255,255,0.015)"';
@@ -893,24 +904,34 @@ function runWithdrawal() {
   const c = window._calc;
   if (!c) return;
 
-  // Withdrawal as annual percentage of portfolio
-  const _wRaw = parseFloat(document.getElementById("inp-withdraw").value);
-  const wPct  = isNaN(_wRaw) ? 0.08 : _wRaw / 100;
-  const wYrs  = parseInt(document.getElementById("inp-wdyears").value) || 30;
+  // Withdrawal: % of grown balance + optional fixed $ per year (can combine both)
+  const _wRaw  = parseFloat(document.getElementById("inp-withdraw").value);
+  const wPct   = isNaN(_wRaw) ? 0 : _wRaw / 100;
+  const wFixed = parseFloat(document.getElementById("inp-wd-fixed").value) || 0;
+  const wYrs   = parseInt(document.getElementById("inp-wdyears").value) || 30;
 
-  // Net growth rate after withdrawing wPct of grown balance each year
-  // Net = (1+r)*(1-wPct) - 1
-  function netGrowthRate(r, w) { return (1 + r) * (1 - w) - 1; }
-  const calmNet = netGrowthRate(0.17, wPct);
-  const ultNet  = netGrowthRate(0.30, wPct);
+  // Sustainability: compare year-1 net change vs starting budget
+  const _sb = (() => {
+    const v = parseFloat(document.getElementById("inp-wd-budget").value);
+    return (!isNaN(v) && v > 0) ? v : (c.showCalm ? c.calmFinal : c.ultFinal);
+  })();
+  function yearNetRate(bal, r) {
+    const grown = bal * (1 + r);
+    return bal > 0 ? (grown - (grown * wPct + wFixed)) / bal - 1 : -1;
+  }
+  const calmNet = yearNetRate(_sb, 0.17);
+  const ultNet  = yearNetRate(_sb, 0.30);
 
   function sustainClass(net) { return net > 0.02 ? "growing" : net > -0.01 ? "shrinking" : "depleting"; }
   function sustainIcon(net)  { return net > 0.02 ? "🌱" : net > -0.01 ? "⚠️" : "⛔"; }
   function sustainMsg(net, model) {
-    const annualW = (wPct * 100).toFixed(1);
-    if (net > 0.02)  return "Portfolio <strong>grows</strong> at +" + (net*100).toFixed(1) + "%/yr net — " + annualW + "% withdrawal is fully sustainable.";
-    if (net > -0.01) return "Portfolio is nearly <strong>flat</strong> — " + annualW + "% withdrawal consumes most growth. Monitor closely.";
-    return "Portfolio will <strong>deplete</strong> over time — " + annualW + "% withdrawal exceeds " + model + " net growth.";
+    const parts = [];
+    if (wPct > 0)   parts.push((wPct * 100).toFixed(1) + "%");
+    if (wFixed > 0) parts.push("$" + wFixed.toLocaleString() + "/yr");
+    const wDesc = parts.length ? parts.join(" + ") : "0% withdrawal";
+    if (net > 0.02)  return "Portfolio <strong>grows</strong> at +" + (net*100).toFixed(1) + "%/yr net — " + wDesc + " is fully sustainable.";
+    if (net > -0.01) return "Portfolio is nearly <strong>flat</strong> — " + wDesc + " consumes most growth. Monitor closely.";
+    return "Portfolio will <strong>deplete</strong> over time — " + wDesc + " exceeds " + model + " net growth.";
   }
 
   // Default: show whichever model(s) are active from the accumulation section
@@ -949,8 +970,8 @@ function runWithdrawal() {
     const cStart = cBal, uStart = uBal;
     const cAfterGrow = cStart * 1.17;
     const uAfterGrow = uStart * 1.30;
-    const cWithdraw  = cAfterGrow * wPct;
-    const uWithdraw  = uAfterGrow * wPct;
+    const cWithdraw  = Math.min(cAfterGrow, cAfterGrow * wPct + wFixed);
+    const uWithdraw  = Math.min(uAfterGrow, uAfterGrow * wPct + wFixed);
     cBal = Math.max(0, cAfterGrow - cWithdraw);
     uBal = Math.max(0, uAfterGrow - uWithdraw);
     rows.push({ year: y, age: c.endAge + y,
