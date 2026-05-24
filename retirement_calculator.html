@@ -880,9 +880,11 @@ function renderWdChart() {
   const tw = document.getElementById("wTableWrap");
   tw.style.display = "block";
   let html = '<table><thead><tr><th>Year</th><th>Age</th>';
+  var _wPct   = d.wPct   || 0;
+  var _wFixed = d.wFixed || 0;
   var _wParts = [];
-  if (wPct > 0)   _wParts.push((wPct*100).toFixed(1) + "%");
-  if (wFixed > 0) _wParts.push("$" + wFixed.toLocaleString());
+  if (_wPct > 0)   _wParts.push((_wPct*100).toFixed(1) + "%");
+  if (_wFixed > 0) _wParts.push("$" + _wFixed.toLocaleString());
   var _wHdr = (_wParts.length ? _wParts.join("+") : "0%") + "/yr";
   if (_wdSelected.calm) html += '<th class="c-val">Calm Start</th><th class="w-val">Withdrawal<br><small style="color:#7a95b8">' + _wHdr + '</small></th><th class="c-val">Calm End</th>';
   if (_wdSelected.ult)  html += '<th class="u-val">Ultimate Start</th><th class="w-val">Withdrawal<br><small style="color:#7a95b8">' + _wHdr + '</small></th><th class="u-val">Ultimate End</th>';
@@ -980,7 +982,7 @@ function runWithdrawal() {
     if (cBal <= 0 && uBal <= 0) break;
   }
 
-  window._wdData = { rows: rows, labels: rows.map(r => "Age " + r.age) };
+  window._wdData = { rows: rows, labels: rows.map(r => "Age " + r.age), wPct: wPct, wFixed: wFixed };
   renderWdChart();
 }
 </script>
