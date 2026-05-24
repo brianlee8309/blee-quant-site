@@ -596,8 +596,8 @@ function renderYearDetails() {
   for (let y = 1; y <= years; y++) {
     const addedThisYear = y === 1 ? principal + monthly * 12 : monthly * 12;
     const cumulInvested = principal + monthly * 12 * y;
-    const calmGain = calmBals[y] - calmBals[y-1] - (y === 1 ? principal : monthly * 12);
-    const ultGain  = ultBals[y]  - ultBals[y-1]  - (y === 1 ? principal : monthly * 12);
+    const calmGain = calmBals[y] - calmBals[y-1] - monthly * 12;
+    const ultGain  = ultBals[y]  - ultBals[y-1]  - monthly * 12;
     const rowBg = y % 2 === 0 ? ' style="background:rgba(255,255,255,0.015)"' : '';
     html += '<tr' + rowBg + '>'
       + '<td><strong>' + y + '</strong></td>'
