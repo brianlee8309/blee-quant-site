@@ -271,9 +271,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .sustain-badge.selected.growing{background:rgba(16,185,129,0.22);border-color:#10b981;box-shadow:0 0 0 2px rgba(16,185,129,0.35);}
 .sustain-badge.selected.shrinking{background:rgba(245,158,11,0.22);border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.35);}
 .sustain-badge.selected.depleting{background:rgba(239,68,68,0.22);border-color:#ef4444;box-shadow:0 0 0 2px rgba(239,68,68,0.35);}
-.sustain-badge:not(.selected){opacity:0.45;}
-.sustain-badge .sb-chk{font-size:13px;margin-top:1px;color:rgba(255,255,255,0.4);}
+.sustain-badge.unselected{opacity:0.38;}
+.sustain-badge .sb-chk{font-size:14px;font-weight:700;margin-top:1px;min-width:14px;color:rgba(255,255,255,0.4);}
 .sustain-badge.selected .sb-chk{color:#10b981;}
+.sustain-badge small{font-size:11px;color:rgba(255,255,255,0.45);display:block;margin-top:3px;}
 .sustain-icon{font-size:22px;flex-shrink:0;}
 .sustain-text strong{display:block;font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;}
 .sustain-text span{font-size:12px;color:rgba(255,255,255,0.78);line-height:1.5;}
@@ -464,10 +465,10 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 
       <div class="w-input-row">
         <div class="field">
-          <label>Annual Withdrawal</label>
+          <label>Annual Withdrawal %</label>
           <div class="input-wrap">
-            <input type="number" id="inp-withdraw" class="has-sfx" value="36000" min="1" max="9999999" step="1000" placeholder="36000">
-            <span class="sfx">$ / yr</span>
+            <input type="number" id="inp-withdraw" class="has-sfx" value="8" min="0.1" max="100" step="0.1" placeholder="8">
+            <span class="sfx">% / yr</span>
           </div>
         </div>
         <div class="field">
@@ -790,25 +791,31 @@ function toggleWithdrawal() {
 
 // ── Withdrawal calc ──────────────────────────────────────────────────────
 // ── Withdrawal planner state ─────────────────────────────────────────────
-var _wdSelected = { calm: true, ult: true };
+var _wdSelected = { calm: true, ult: false };
 
 function toggleWdBadge(m) {
   // Require at least one selected
   const other = m === 'calm' ? 'ult' : 'calm';
   if (_wdSelected[m] && !_wdSelected[other]) return; // can't deselect last
   _wdSelected[m] = !_wdSelected[m];
-  renderWdBadges();
+  // Re-render badges + chart/table
+  const grid = document.getElementById('sustainGrid');
+  if (grid) {
+    ['calm','ult'].forEach(function(key) {
+      const el = document.getElementById('wd-badge-' + key);
+      if (!el) return;
+      if (_wdSelected[key]) {
+        el.classList.add('selected');
+        el.classList.remove('unselected');
+      } else {
+        el.classList.remove('selected');
+        el.classList.add('unselected');
+      }
+      const chk = el.querySelector('.sb-chk');
+      if (chk) chk.textContent = _wdSelected[key] ? '✓' : '○';
+    });
+  }
   if (window._wdData) renderWdChart();
-}
-
-function renderWdBadges() {
-  ['calm','ult'].forEach(function(m) {
-    const el = document.getElementById('wd-badge-' + m);
-    if (!el) return;
-    el.classList.toggle('selected', !!_wdSelected[m]);
-    const chk = el.querySelector('.sb-chk');
-    if (chk) chk.textContent = _wdSelected[m] ? '✓' : '○';
-  });
 }
 
 function renderWdChart() {
@@ -846,15 +853,14 @@ function renderWdChart() {
       }
     }
   });
-  // Update table
-  const d2 = window._wdData;
+  // Rebuild table
   const tw = document.getElementById("wTableWrap");
   tw.style.display = "block";
   let html = '<table><thead><tr><th>Year</th><th>Age</th>';
   if (_wdSelected.calm) html += '<th class="c-val">Calm Start</th><th class="w-val">Withdrawal</th><th class="c-val">Calm End</th>';
   if (_wdSelected.ult)  html += '<th class="u-val">Ultimate Start</th><th class="w-val">Withdrawal</th><th class="u-val">Ultimate End</th>';
   html += '</tr></thead><tbody>';
-  d2.rows.forEach(function(r, i) {
+  d.rows.forEach(function(r, i) {
     const rc = i % 2 === 0 ? '' : ' style="background:rgba(255,255,255,0.015)"';
     const cEndFmt = r.cEnd <= 0 ? '<span class="depleted">Depleted</span>' : '<span class="c-val">' + fmtFull$(r.cEnd) + '</span>';
     const uEndFmt = r.uEnd <= 0 ? '<span class="depleted">Depleted</span>' : '<span class="u-val">' + fmtFull$(r.uEnd) + '</span>';
@@ -870,49 +876,55 @@ function renderWdChart() {
 function runWithdrawal() {
   const c = window._calc;
   if (!c) return;
-  const wAnnual = parseFloat(document.getElementById("inp-withdraw").value) || 36000;
-  const wYrs    = parseInt(document.getElementById("inp-wdyears").value) || 30;
 
-  // Sustainability: does portfolio net grow or shrink year-over-year?
-  // After 1 yr: bal*(1+r) - wAnnual; net rate = (bal*(1+r) - wAnnual)/bal - 1
-  function netRate(bal, r, w) { return bal > 0 ? (bal * (1 + r) - w) / bal - 1 : -1; }
-  const calmNet = netRate(c.calmFinal, 0.17, wAnnual);
-  const ultNet  = netRate(c.ultFinal,  0.30, wAnnual);
+  // Withdrawal as annual percentage of portfolio
+  const wPct  = parseFloat(document.getElementById("inp-withdraw").value) / 100 || 0.08;
+  const wYrs  = parseInt(document.getElementById("inp-wdyears").value) || 30;
+
+  // Net growth rate after withdrawing wPct of grown balance each year
+  // Net = (1+r)*(1-wPct) - 1
+  function netGrowthRate(r, w) { return (1 + r) * (1 - w) - 1; }
+  const calmNet = netGrowthRate(0.17, wPct);
+  const ultNet  = netGrowthRate(0.30, wPct);
 
   function sustainClass(net) { return net > 0.02 ? "growing" : net > -0.01 ? "shrinking" : "depleting"; }
   function sustainIcon(net)  { return net > 0.02 ? "🌱" : net > -0.01 ? "⚠️" : "⛔"; }
-  function sustainMsg(net, model, bal, r) {
-    const wFmt = "$" + wAnnual.toLocaleString();
-    const grow1 = fmtFull$(bal * (1 + r));
-    if (net > 0.02)  return "Portfolio <strong>grows</strong> at +" + (net*100).toFixed(1) + "%/yr net — " + wFmt + "/yr is fully sustainable.";
-    if (net > -0.01) return "Portfolio is nearly <strong>flat</strong> — " + wFmt + "/yr consumes most of the " + (r*100).toFixed(0) + "% growth. Monitor closely.";
-    return "Portfolio will <strong>deplete</strong> — " + wFmt + "/yr exceeds annual growth of " + grow1 + ".";
+  function sustainMsg(net, model) {
+    const annualW = (wPct * 100).toFixed(1);
+    if (net > 0.02)  return "Portfolio <strong>grows</strong> at +" + (net*100).toFixed(1) + "%/yr net — " + annualW + "% withdrawal is fully sustainable.";
+    if (net > -0.01) return "Portfolio is nearly <strong>flat</strong> — " + annualW + "% withdrawal consumes most growth. Monitor closely.";
+    return "Portfolio will <strong>deplete</strong> over time — " + annualW + "% withdrawal exceeds " + model + " net growth.";
   }
 
-  // Reset both selected by default when re-running
-  _wdSelected = { calm: true, ult: true };
+  // Default: show whichever model(s) are active from the accumulation section
+  _wdSelected = { calm: !!c.showCalm, ult: !!c.showUlt };
+  // Guarantee at least one is on
+  if (!_wdSelected.calm && !_wdSelected.ult) _wdSelected.calm = true;
 
+  // Build sustain badges — show both always so user can toggle either on
+  const calmSelCls = _wdSelected.calm ? 'selected' : 'unselected';
+  const ultSelCls  = _wdSelected.ult  ? 'selected' : 'unselected';
   document.getElementById("sustainGrid").innerHTML =
-    '<div class="sustain-badge selected ' + sustainClass(calmNet) + '" id="wd-badge-calm" onclick="toggleWdBadge('calm')">'
-    + '<div class="sb-chk">✓</div>'
+    '<div class="sustain-badge ' + calmSelCls + ' ' + sustainClass(calmNet) + '" id="wd-badge-calm" onclick="toggleWdBadge('calm')" style="cursor:pointer;">'
+    + '<div class="sb-chk">' + (_wdSelected.calm ? '✓' : '○') + '</div>'
     + '<div class="sustain-icon">' + sustainIcon(calmNet) + '</div>'
     + '<div class="sustain-text"><strong>Calm Growth (17%)</strong>'
-    + '<span>' + sustainMsg(calmNet, "Calm", c.calmFinal, 0.17) + '</span></div></div>'
-    + '<div class="sustain-badge selected ' + sustainClass(ultNet) + '" id="wd-badge-ult" onclick="toggleWdBadge('ult')">'
-    + '<div class="sb-chk">✓</div>'
+    + '<span>' + sustainMsg(calmNet, "Calm") + '</span></div></div>'
+    + '<div class="sustain-badge ' + ultSelCls + ' ' + sustainClass(ultNet) + '" id="wd-badge-ult" onclick="toggleWdBadge('ult')" style="cursor:pointer;">'
+    + '<div class="sb-chk">' + (_wdSelected.ult ? '✓' : '○') + '</div>'
     + '<div class="sustain-icon">' + sustainIcon(ultNet) + '</div>'
     + '<div class="sustain-text"><strong>Ultimate Growth (30%)</strong>'
-    + '<span>' + sustainMsg(ultNet, "Ultimate", c.ultFinal, 0.30) + '</span></div></div>';
+    + '<span>' + sustainMsg(ultNet, "Ultimate") + '</span></div></div>';
 
-  // Build year-by-year rows (fixed dollar withdrawal each year)
+  // Build year-by-year rows: withdraw wPct of grown balance each year
   const rows = [];
   let cBal = c.calmFinal, uBal = c.ultFinal;
   for (let y = 1; y <= wYrs; y++) {
     const cStart = cBal, uStart = uBal;
     const cAfterGrow = cStart * 1.17;
     const uAfterGrow = uStart * 1.30;
-    const cWithdraw  = Math.min(cAfterGrow, wAnnual);
-    const uWithdraw  = Math.min(uAfterGrow, wAnnual);
+    const cWithdraw  = cAfterGrow * wPct;
+    const uWithdraw  = uAfterGrow * wPct;
     cBal = Math.max(0, cAfterGrow - cWithdraw);
     uBal = Math.max(0, uAfterGrow - uWithdraw);
     rows.push({ year: y, age: c.endAge + y,
