@@ -538,18 +538,6 @@ function toggleModel(m) {
 
 // Typing a custom % deactivates both preset models
 document.addEventListener('DOMContentLoaded', function() {
-  // ── Live recalc when any input changes (only if results already shown) ──
-  var recalcTimer = null;
-  function scheduleRecalc() {
-    if (document.getElementById('results').style.display === 'none') return;
-    clearTimeout(recalcTimer);
-    recalcTimer = setTimeout(calculate, 350);
-  }
-  ['inp-age','inp-years','inp-principal','inp-monthly'].forEach(function(id) {
-    document.getElementById(id).addEventListener('input', scheduleRecalc);
-    document.getElementById(id).addEventListener('change', scheduleRecalc);
-  });
-
   document.getElementById('inp-custom-rate').addEventListener('input', function() {
     if (this.value.trim() !== '') {
       ['calm','ultimate'].forEach(function(k) {
