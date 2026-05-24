@@ -905,16 +905,21 @@ function runWithdrawal() {
   const calmSelCls = _wdSelected.calm ? 'selected' : 'unselected';
   const ultSelCls  = _wdSelected.ult  ? 'selected' : 'unselected';
   document.getElementById("sustainGrid").innerHTML =
-    '<div class="sustain-badge ' + calmSelCls + ' ' + sustainClass(calmNet) + '" id="wd-badge-calm" onclick="toggleWdBadge('calm')" style="cursor:pointer;">'
-    + '<div class="sb-chk">' + (_wdSelected.calm ? '✓' : '○') + '</div>'
+    '<div class="sustain-badge ' + calmSelCls + ' ' + sustainClass(calmNet) + '" id="wd-badge-calm">'
+    + '<div class="sb-chk">' + (_wdSelected.calm ? '\u2713' : '\u25cb') + '</div>'
     + '<div class="sustain-icon">' + sustainIcon(calmNet) + '</div>'
     + '<div class="sustain-text"><strong>Calm Growth (17%)</strong>'
     + '<span>' + sustainMsg(calmNet, "Calm") + '</span></div></div>'
-    + '<div class="sustain-badge ' + ultSelCls + ' ' + sustainClass(ultNet) + '" id="wd-badge-ult" onclick="toggleWdBadge('ult')" style="cursor:pointer;">'
-    + '<div class="sb-chk">' + (_wdSelected.ult ? '✓' : '○') + '</div>'
+    + '<div class="sustain-badge ' + ultSelCls + ' ' + sustainClass(ultNet) + '" id="wd-badge-ult">'
+    + '<div class="sb-chk">' + (_wdSelected.ult ? '\u2713' : '\u25cb') + '</div>'
     + '<div class="sustain-icon">' + sustainIcon(ultNet) + '</div>'
     + '<div class="sustain-text"><strong>Ultimate Growth (30%)</strong>'
     + '<span>' + sustainMsg(ultNet, "Ultimate") + '</span></div></div>';
+  // Wire click handlers after innerHTML is set (avoids inline-onclick quoting issues)
+  var bCalm = document.getElementById("wd-badge-calm");
+  var bUlt  = document.getElementById("wd-badge-ult");
+  if (bCalm) bCalm.addEventListener("click", function() { toggleWdBadge("calm"); });
+  if (bUlt)  bUlt.addEventListener("click",  function() { toggleWdBadge("ult"); });
 
   // Build year-by-year rows: withdraw wPct of grown balance each year
   const rows = [];
