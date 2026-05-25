@@ -2149,3 +2149,68 @@
 [2026-05-24T15:53:13] market_report: Stamped last-updated (05/24/2026 03:53 PM ET) into performance1.html
 [2026-05-24T15:53:13] market_report: Stamped last-updated (05/24/2026 03:53 PM ET) into Algorithm185History.html
 [2026-05-24T15:53:13] market_report: === Market report generation complete ===
+[2026-05-25T15:51:00] archive: === Archive started ===
+[2026-05-25T15:51:00] archive:   Archived -> marketForecast_2026-05-25.html
+[2026-05-25T15:51:00] archive:   Archived -> dailySignal_2026-05-25.html
+[2026-05-25T15:51:00] archive:   SKIP (not found): index_186main.html
+[2026-05-25T15:51:00] archive:   Archived -> signal185_2026-05-25.html
+[2026-05-25T15:51:00] archive:   Archived -> signalKei186_2026-05-25.html
+[2026-05-25T15:51:00] archive:   Archived -> signal187hi_2026-05-25.html
+[2026-05-25T15:51:00] archive: Rebuilt BackLog/index.html — 13 dates, 28 files
+[2026-05-25T15:51:00] archive: === Archive complete ===
+[2026-05-25T15:51:01] === Composer daily allocation pull ===
+[2026-05-25T15:51:01] Configured symphonies: ['7GJZdYouz3l3acrmUPOD', 'jtQvlI5wINrxpOfxgmgl', 'qjmHJ3IR19kmaAlbgkNj', 'ZGersOlsQFRHg7U2qnSw', 'g7WBkfIc6UWUWC6NiAdu', 'iPifD8uTozTr0sbu9qiB']
+[2026-05-25T15:51:01] No account_uuid in config; discovering via /accounts/list...
+[2026-05-25T15:51:02] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-05-25T15:51:02] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-05-25T15:51:02] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-05-25T15:51:02] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-05-25T15:51:04] Saved symphony-stats response to composer_symphony_stats_2026-05-25.json
+[2026-05-25T15:51:04] --- BLEE - 186 2026 ALL in One 57% Max-Down SGOV Bond (7GJZdYouz3l3acrmUPOD) ---
+[2026-05-25T15:51:04]   WARN: symphony-stats-meta returned no positions for 7GJZdYouz3l3acrmUPOD (check 2026-05-25 JSON to verify the id matches one in the response)
+[2026-05-25T15:51:04]   ERROR: no positions found for 7GJZdYouz3l3acrmUPOD; skipping CSV/HTML for this symphony
+[2026-05-25T15:51:04] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-05-25T15:51:04]   Got 16 positions from symphony-stats-meta
+[2026-05-25T15:51:04]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-25T15:51:04]   Saved today's slice to composer_allocations_2026-05-25.json
+[2026-05-25T15:51:04]   Updated stable file: composer_allocations_186.json
+[2026-05-25T15:51:04]   Wrote 16 rows for 2026-05-25 to composer_allocations.csv (kept 170 prior rows, source=symphony-stats-meta)
+[2026-05-25T15:51:04] Generated dashboard -> index_50.html (value=$35,180.04, days=12)
+[2026-05-25T15:51:04] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-05-25T15:51:04]   Got 4 positions from symphony-stats-meta
+[2026-05-25T15:51:04]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-25T15:51:04]   Saved today's slice to composer_allocations_185_2026-05-25.json
+[2026-05-25T15:51:04]   Updated stable file: composer_allocations_187.json
+[2026-05-25T15:51:04]   Wrote 4 rows for 2026-05-25 to composer_allocations_185.csv (kept 51 prior rows, source=symphony-stats-meta)
+[2026-05-25T15:51:04] Generated dashboard -> index2.html (value=$5,119.46, days=15)
+[2026-05-25T15:51:04]   Prepended 2026-05-25 row to composer_allocations_185_3yr2.csv
+[2026-05-25T15:51:04]   Prepended 2026-05-25 row to Algorithm185History.html ALLOC_DATA
+[2026-05-25T15:51:04] --- BLEE - 185 2026 SGOV and Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-05-25T15:51:04]   Got 4 positions from symphony-stats-meta
+[2026-05-25T15:51:04]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-25T15:51:04]   Saved today's slice to composer_allocations_185v2_2026-05-25.json
+[2026-05-25T15:51:04]   Updated stable file: composer_allocations_185.json
+[2026-05-25T15:51:04]   Wrote 4 rows for 2026-05-25 to composer_allocations_185v2.csv (kept 8 prior rows, source=symphony-stats-meta)
+[2026-05-25T15:51:04] Generated dashboard -> index_185v2.html (value=$1,023.68, days=3)
+[2026-05-25T15:51:04] --- BLEE A - 186 Part 1 Kei 90% NVDA (g7WBkfIc6UWUWC6NiAdu) ---
+[2026-05-25T15:51:04]   Got 10 positions from symphony-stats-meta
+[2026-05-25T15:51:04]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-25T15:51:04]   Saved today's slice to composer_allocations_kei186_2026-05-25.json
+[2026-05-25T15:51:05]   Updated stable file: composer_allocations_kei186.json
+[2026-05-25T15:51:05]   Wrote 10 rows for 2026-05-25 to composer_allocations_kei186.csv (kept 20 prior rows, source=symphony-stats-meta)
+[2026-05-25T15:51:05] Generated dashboard -> index_kei186.html (value=$6,014.67, days=3)
+[2026-05-25T15:51:05] --- BLEE - 187 2026 ALL in One For High Interest Period (iPifD8uTozTr0sbu9qiB) ---
+[2026-05-25T15:51:05]   Got 13 positions from symphony-stats-meta
+[2026-05-25T15:51:05]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-05-25T15:51:05]   Saved today's slice to composer_allocations_187hi_2026-05-25.json
+[2026-05-25T15:51:05]   Updated stable file: composer_allocations_187hi.json
+[2026-05-25T15:51:05]   Wrote 13 rows for 2026-05-25 to composer_allocations_187hi.csv (kept 26 prior rows, source=symphony-stats-meta)
+[2026-05-25T15:51:05] Generated dashboard -> index_187hi.html (value=$5,147.17, days=3)
+[2026-05-25T15:51:05] Published signal_latest.json (3 positions, date=2026-05-25)
+[2026-05-25T15:51:05] Regenerated CurrentWatchSymphony.html (5 symphonies)
+[2026-05-25T15:51:05] === Done ===
+[2026-05-25T15:51:12] Stamped last-updated (05/25/2026 03:51 PM ET) into index.html
+[2026-05-25T15:51:12] Stamped last-updated (05/25/2026 03:51 PM ET) into performance1.html
+[2026-05-25T15:51:12] Stamped last-updated (05/25/2026 03:51 PM ET) into Algorithm185History.html
+[2026-05-25T15:51:12] --- Pushing updates to GitHub ---
+[2026-05-25T15:51:12]   $ git -C "C:\Kei\ComposerInvest" add .
