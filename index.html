@@ -742,10 +742,6 @@
   .landing-hero {
     position: relative;
     min-height: 620px;
-    background-image: url('HomeLandingImage1.png');
-    background-size: 100% auto;
-    background-position: center top;
-    background-repeat: no-repeat;
     background-color: #07111f;
     display: flex;
     flex-direction: column;
@@ -758,10 +754,10 @@
     inset: 0;
     background: linear-gradient(to right,
       rgba(5,15,35,0.98) 0%,
-      rgba(5,15,35,0.94) 34%,
-      rgba(5,15,35,0.76) 58%,
-      rgba(5,15,35,0.36) 78%,
-      rgba(5,15,35,0.18) 100%);
+      rgba(5,15,35,0.94) 36%,
+      rgba(5,15,35,0.70) 50%,
+      rgba(5,15,35,0.00) 52%,
+      rgba(5,15,35,0.00) 100%);
     z-index: 0;
   }
   .landing-hero::after {
@@ -775,6 +771,17 @@
       rgba(7,17,31,0.92) 100%);
     z-index: 0;
     pointer-events: none;
+  }
+  .hero-photo {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    object-fit: contain;
+    object-position: right center;
+    z-index: 0;
+    display: block;
   }
   .landing-hero-inner {
     position: relative;
@@ -1076,6 +1083,7 @@
 
 <!-- ══════════════════════════════════════ LANDING HERO ══ -->
 <div class="landing-hero">
+  <img class="hero-photo" src="HomeLandingImage1.png" alt="Family enjoying financial freedom at a resort pool">
   <div class="landing-hero-inner">
 
     <div class="landing-pre">For Every Investor Who Has Been Hurt Before</div>
