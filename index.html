@@ -20,6 +20,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="nav.js"></script>
 <script src="user_bar.js"></script>
 <style>
   :root {
@@ -1049,66 +1050,6 @@
 </style>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════ NAV ══ -->
-<nav>
-  <a href="index.html" class="nav-logo">
-    <div class="icon">B</div>
-    <div class="brand">BLEE <span>Quant Analytics</span></div>
-  </a>
-  <div class="nav-links">
-    <a href="index.html" data-i18n="nav.home">Home</a>
-    <a href="mission.html">Our Mission</a>
-    <a href="marketDailySummary.html" data-i18n="nav.profile">Market Forecast</a>
-    <a href="index2.html" data-i18n="nav.signal">Daily Signal</a>
-    <a href="Algorithm185History.html" data-i18n="nav.backtest">Backtest</a>
-    <a href="performance1.html" data-i18n="nav.performance">Performance</a>
-    <a href="#pricing" class="btn-nav" data-i18n="nav.subscribe">Subscribe</a>
-    <a href="contact.html" style="color:rgba(255,255,255,0.7);font-size:13px;text-decoration:none;padding:6px 10px;">Contact</a>
-    <a href="login.html" id="nav-signin-link" class="btn-nav" style="background:#f5a623;color:#000;">Sign In</a>
-  </div>
-  <div class="nav-translate">
-    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
-    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
-        <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
-  </div>
-  <!-- Hamburger (mobile only) -->
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="index.html">🏠 Home</a>
-  <a href="marketDailySummary.html">📈 Market Forecast</a>
-  <a href="index2.html">📊 Daily Signal</a>
-  <a href="Algorithm185History.html">📈 Backtest</a>
-  <a href="performance1.html">📊 Performance</a>
-  <a href="#pricing" class="btn-nav-mob" id="mob-subscribe">Subscribe</a>
-  <div class="mob-lang">
-    <button class="lang-btn active" data-lang="en">🇺🇸 EN</button>
-    <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
-        <button class="lang-btn" data-lang="ko">🇰🇷 KR</button>
-  </div>
-</div>
-<script>
-(function () {
-  var btn = document.getElementById('nav-hamburger');
-  var menu = document.getElementById('mobile-menu');
-  btn.addEventListener('click', function () {
-    var open = menu.classList.toggle('open');
-    btn.classList.toggle('open', open);
-  });
-  // Close menu when any link is clicked
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.remove('open');
-      btn.classList.remove('open');
-    });
-  });
-})();
-</script>
 
 <!-- ══════════════════════════════════════ LEGAL BAR ══ -->
 <div class="legal-bar">
