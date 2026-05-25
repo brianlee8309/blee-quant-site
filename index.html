@@ -847,6 +847,91 @@
     line-height: 1.5;
     margin: 0;
   }
+  /* ── HERO PAIN POINTS ── */
+  .hero-pain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 32px 0 28px;
+    max-width: 860px;
+  }
+  .hero-pain-card {
+    background: rgba(15,23,42,0.72);
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: border-color .2s;
+  }
+  .hero-pain-card:hover { border-color: rgba(245,158,11,0.35); }
+  .pain-icon { font-size: 26px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .hero-pain-card p {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .hero-pain-card p strong { color: #fff; }
+  .hero-conclusion {
+    max-width: 760px;
+    margin-bottom: 36px;
+  }
+  .hero-if-you {
+    font-size: 17px;
+    color: rgba(255,255,255,0.70);
+    margin: 0 0 14px;
+    line-height: 1.65;
+  }
+  .hero-if-you strong { color: #fff; }
+  .hero-mission-stmt {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.7;
+    border-left: 3px solid var(--gold);
+    padding-left: 18px;
+    margin: 0;
+  }
+  .hero-mission-stmt strong { color: var(--gold); }
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .hero-cta-gold {
+    background: var(--gold);
+    color: #000;
+    font-weight: 800;
+    padding: 13px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .hero-cta-gold:hover { opacity: .88; }
+  .hero-cta-outline {
+    background: transparent;
+    color: #fff;
+    font-weight: 700;
+    padding: 13px 28px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.28);
+    text-decoration: none;
+    font-size: 15px;
+    transition: border-color .15s;
+    white-space: nowrap;
+  }
+  .hero-cta-outline:hover { border-color: rgba(255,255,255,0.65); }
+  @media (max-width: 680px) {
+    .hero-pain-grid { grid-template-columns: 1fr; }
+    .hero-mission-stmt { font-size: 15px; }
+  }
   /* ── CTA BAND ── */
   .cta-band {
     position: relative;
@@ -1040,46 +1125,44 @@
 <!-- ══════════════════════════════════════ LANDING HERO ══ -->
 <div class="landing-hero">
   <div class="landing-hero-inner">
-    <div class="landing-pre">Build Wealth That Lasts</div>
+
+    <div class="landing-pre">For Every Investor Who Has Been Hurt Before</div>
+
     <h1>
-      Through Disciplined ETF Rotation
-      <span class="h1-gold">Grow Smarter. Retire Safer.</span>
+      Financial Freedom Is a Right,
+      <span class="h1-gold">Not a Privilege.</span>
     </h1>
-    <div class="landing-tagline">
-      <span>🛡️ Protect Capital.</span>
-      <span>📈 Grow Consistently.</span>
-      <span>🏖️ Live Freely.</span>
-    </div>
-    <div class="landing-hero-body">
-      Our disciplined ETF rotation models are built for people who want their money to keep working:
-      retirees who do not want to drain savings too quickly, FIRE investors seeking long-term independence,
-      Roth IRA investors pursuing tax-advantaged compounding, and parents building future college funds.
-      The goal is not to get rich overnight —
-      it is to <strong style="color:var(--gold)">grow wealth steadily</strong>,
-      <strong style="color:var(--gold)">manage downside risk</strong>, and stay disciplined through changing markets.
-    </div>
-    <div class="landing-features">
-      <div class="landing-feat">
-        <div class="fi">🛡️</div>
-        <h4>Retirement<br>Protection</h4>
-        <p>Designed to help savings last longer while still seeking growth.</p>
+
+    <div class="hero-pain-grid">
+      <div class="hero-pain-card">
+        <div class="pain-icon">📉</div>
+        <p>Did you <strong>follow a stock tip from a friend, guru, or influencer</strong> — only to watch it go south while they moved on to the next recommendation?</p>
       </div>
-      <div class="landing-feat">
-        <div class="fi">📊</div>
-        <h4>Daily<br>Allocation Signals</h4>
-        <p>Clear ETF allocation updates for disciplined rebalancing.</p>
+      <div class="hero-pain-card">
+        <div class="pain-icon">😰</div>
+        <p>Did you put your hard-earned savings into an <strong>S&amp;P 500 index ETF</strong> thinking it was the safest heaven — then watch it drop 15%+ and spend sleepless nights wondering when it would recover?</p>
       </div>
-      <div class="landing-feat">
-        <div class="fi">📈</div>
-        <h4>Roth IRA & FIRE<br>Growth</h4>
-        <p>Built for long-term compounding in tax-advantaged accounts.</p>
+      <div class="hero-pain-card">
+        <div class="pain-icon">🏦</div>
+        <p>Did you park your money in <strong>CDs or bonds</strong> for "safety" — only to see inflation quietly erase your real purchasing power year after year, leaving you further behind despite doing everything right?</p>
       </div>
-      <div class="landing-feat">
-        <div class="fi">🌴</div>
-        <h4>College Fund<br>Planning</h4>
-        <p>For parents building education savings over 10–20 years.</p>
+      <div class="hero-pain-card">
+        <div class="pain-icon">💔</div>
+        <p>Or were you the target of a <strong>romance scam</strong> — someone who built your trust, directed you to a convincing fake investment platform, and vanished with every dollar you worked years to save?</p>
       </div>
     </div>
+
+    <div class="hero-conclusion">
+      <p class="hero-if-you">If any of this sounds familiar — <strong>you are not alone, and it was not your fault.</strong> The financial system was not designed with you in mind. We are here to change that.</p>
+      <p class="hero-mission-stmt">We built BLEE Quant to give every person — young savers, near-retirees, and the financially independent — equal access to the same <strong>disciplined algorithmic strategies</strong> once reserved for institutions and the wealthy.</p>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="retirement_calculator.html" class="hero-cta-gold">✨ Try Freedom Calculator</a>
+      <a href="mission.html" class="hero-cta-outline">🎯 Our Mission</a>
+      <a href="index2.html" class="hero-cta-outline">📊 Daily Signal</a>
+    </div>
+
   </div>
 </div>
 
@@ -1727,7 +1810,7 @@
   <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
   <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
   <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
-    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/24/2026 03:51 PM ET</span>
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/24/2026 03:53 PM ET</span>
   </p>
 </footer>
 
