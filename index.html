@@ -741,39 +741,48 @@
   /* ── LANDING HERO (image) ── */
   .landing-hero {
     position: relative;
+    min-height: 620px;
+    background-image: url('HomeLandingImage1.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     background-color: #07111f;
     display: flex;
-    flex-direction: row;
-    align-items: stretch;
+    flex-direction: column;
+    justify-content: center;
     overflow: hidden;
-    min-height: 620px;
+  }
+  .landing-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right,
+      rgba(5,15,35,0.97) 0%,
+      rgba(5,15,35,0.92) 38%,
+      rgba(5,15,35,0.65) 62%,
+      rgba(5,15,35,0.25) 82%,
+      rgba(5,15,35,0.05) 100%);
+    z-index: 0;
+  }
+  .landing-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+      rgba(7,17,31,0.00) 0%,
+      rgba(7,17,31,0.00) 40%,
+      rgba(7,17,31,0.60) 75%,
+      rgba(7,17,31,0.95) 100%);
+    z-index: 0;
+    pointer-events: none;
   }
   .landing-hero-inner {
     position: relative;
     z-index: 2;
-    flex: 0 0 71%;
-    max-width: 71%;
-    padding: 72px 0 28px 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .landing-hero-img-col {
-    flex: 0 0 29%;
-    max-width: 29%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    padding: 0;
-  }
-  .landing-hero-img-col img {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px 28px 60px;
     width: 100%;
-    height: auto;
-    max-height: 100%;
-    object-fit: contain;
-    object-position: left center;
-    display: block;
   }
   .landing-pre {
     font-size: 18px;
@@ -1019,9 +1028,7 @@
     .landing-features { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
-    .landing-hero { flex-direction: column; }
-    .landing-hero-inner { flex: unset; max-width: 100%; padding: 52px 24px 32px; }
-    .landing-hero-img-col { flex: unset; max-width: 100%; height: 260px; justify-content: center; }
+    .landing-hero-inner { padding: 52px 24px 32px; }
     .cta-band { flex-direction: column; text-align: center; padding: 32px 24px; }
     .cta-band-left { flex-direction: column; text-align: center; }
     .cta-band-btns { justify-content: center; }
@@ -1115,9 +1122,6 @@
 
 
   </div><!-- /landing-hero-inner -->
-  <div class="landing-hero-img-col">
-    <img src="HomeLandingImage1.png" alt="Family enjoying financial freedom at a resort pool">
-  </div>
 </div>
 
 <!-- ══════════════════════════════════════ CTA BAND ══ -->
