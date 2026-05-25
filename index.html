@@ -769,10 +769,12 @@
   }
   .landing-hero-img-col img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
     object-position: center center;
     display: block;
+    align-self: center;
   }
   /* Subtle left-edge fade so image blends into the dark left column */
   .landing-hero-img-col::before {
