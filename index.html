@@ -743,48 +743,50 @@
     position: relative;
     background-color: #07111f;
     display: flex;
-    flex-direction: row;
-    align-items: stretch;
+    flex-direction: column;
+    justify-content: center;
     overflow: hidden;
     min-height: 620px;
   }
   .landing-hero-inner {
     position: relative;
     z-index: 2;
-    flex: 0 0 71%;
-    max-width: 71%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 72px 48px 72px 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    width: 100%;
   }
+  /* Floating image: right-anchored, overlaps the text area on its left */
   .landing-hero-img-col {
-    flex: 0 0 29%;
-    max-width: 29%;
-    position: relative;
-    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 38%;
+    z-index: 3;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    pointer-events: none;
   }
   .landing-hero-img-col img {
     width: 100%;
     height: auto;
     max-height: 100%;
     object-fit: contain;
-    object-position: center center;
+    object-position: right center;
     display: block;
-    align-self: center;
   }
-  /* Subtle left-edge fade so image blends into the dark left column */
+  /* Left-edge fade: blends the image into the dark hero background */
   .landing-hero-img-col::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(to right,
-      rgba(7,17,31,0.85) 0%,
-      rgba(7,17,31,0.20) 22%,
-      rgba(7,17,31,0.00) 42%);
+      rgba(7,17,31,1.00)  0%,
+      rgba(7,17,31,0.70) 18%,
+      rgba(7,17,31,0.20) 38%,
+      rgba(7,17,31,0.00) 55%);
     z-index: 1;
     pointer-events: none;
   }
@@ -1029,9 +1031,8 @@
     .landing-features { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
-    .landing-hero { flex-direction: column; }
-    .landing-hero-inner { flex: unset; max-width: 100%; padding: 52px 24px 32px; }
-    .landing-hero-img-col { flex: unset; max-width: 100%; height: 280px; }
+    .landing-hero-inner { padding: 52px 24px 32px; }
+    .landing-hero-img-col { position: relative; width: 100%; height: 260px; }
     .cta-band { flex-direction: column; text-align: center; padding: 32px 24px; }
     .cta-band-left { flex-direction: column; text-align: center; }
     .cta-band-btns { justify-content: center; }
