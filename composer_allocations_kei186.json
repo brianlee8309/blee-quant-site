@@ -1,66 +1,66 @@
 {
-  "date": "2026-05-25",
+  "date": "2026-05-26",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 3.3308,
+      "weight_pct": 3.2669,
       "shares": 1.40016,
-      "market_value": 200.3348928
+      "market_value": 204.1853328
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 3.6306,
+      "weight_pct": 3.5494,
       "shares": 4.13809,
-      "market_value": 218.3670093
+      "market_value": 221.8430049
     },
     {
       "ticker": "TECL",
-      "weight_pct": 23.6841,
+      "weight_pct": 24.6495,
       "shares": 6.8536,
-      "market_value": 1424.52076
+      "market_value": 1540.62005864
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 32.779,
+      "weight_pct": 33.232,
       "shares": 25.32819,
-      "market_value": 1971.5463096
+      "market_value": 2077.03822095
     },
     {
       "ticker": "SHV",
-      "weight_pct": 6.4267,
+      "weight_pct": 6.1855,
       "shares": 3.50419,
-      "market_value": 386.5471989
+      "market_value": 386.59976175
     },
     {
       "ticker": "GLD",
-      "weight_pct": 19.9508,
+      "weight_pct": 19.1974,
       "shares": 2.89975,
-      "market_value": 1199.974545
+      "market_value": 1199.858555
     },
     {
       "ticker": "VGT",
-      "weight_pct": 7.1841,
+      "weight_pct": 7.053,
       "shares": 3.73305,
-      "market_value": 432.1005375
+      "market_value": 440.81720925
     },
     {
       "ticker": "TMV",
-      "weight_pct": 2.1044,
+      "weight_pct": 1.9974,
       "shares": 3.17935,
-      "market_value": 126.5699235
+      "market_value": 124.83717775
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.5706,
+      "weight_pct": 0.5428,
       "shares": 2.18176,
-      "market_value": 34.3190848
+      "market_value": 33.925495296
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.339,
+      "weight_pct": 0.3262,
       "shares": 20.39,
       "market_value": 20.39
     }
@@ -70,21 +70,21 @@
     "community_review_status": null,
     "tags": [],
     "last_rebalance_on": "2026-05-22",
-    "annualized_rate_of_return": 8.632,
+    "annualized_rate_of_return": 41.407,
     "last_semantic_update_at": "2025-10-31T23:11:00.303Z",
     "color": "#BA84FF",
     "rebalance_frequency": "daily",
     "last_rebalance_attempted_on": "2026-05-22",
     "name": "BLEE A - 186 Part 1 Kei 90% NVDA double/GOLD Mini Drop Year Round  (Buy Copy)",
-    "value": 6014.67,
-    "sharpe_ratio": 33.2572,
-    "time_weighted_return": 0.03701,
+    "value": 6250.11,
+    "sharpe_ratio": 20.8642,
+    "time_weighted_return": 0.07761,
     "asset_class": "EQUITIES",
-    "may_rebalance_today": false,
+    "may_rebalance_today": true,
     "invested_since": "2026-05-19",
     "cash": 20.39,
-    "deposit_adjusted_value": 6014.67,
-    "last_dollar_change": 61.0615,
+    "deposit_adjusted_value": 6250.11,
+    "last_dollar_change": 235.4397386,
     "skip_rebalance_today": false,
     "tickers": [
       {
@@ -331,81 +331,81 @@
     "holdings": [
       {
         "ticker": "UPRO",
-        "allocation": 0.033307711,
-        "price": 143.08,
+        "allocation": 0.032669078,
+        "price": 145.83,
         "amount": 1.40016,
-        "value": 200.3348928,
-        "last_percent_change": 0.010594717
+        "value": 204.1853328,
+        "last_percent_change": 0.019220017
       },
       {
         "ticker": "SVXY",
-        "allocation": 0.036305734,
-        "price": 52.77,
+        "allocation": 0.035494256,
+        "price": 53.61,
         "amount": 4.13809,
-        "value": 218.3670093,
-        "last_percent_change": -0.005652911
+        "value": 221.8430049,
+        "last_percent_change": 0.015918135
       },
       {
         "ticker": "TECL",
-        "allocation": 0.23684105,
-        "price": 207.85,
+        "allocation": 0.246494871,
+        "price": 224.7899,
         "amount": 6.8536,
-        "value": 1424.52076,
-        "last_percent_change": 0.010142966
+        "value": 1540.62005864,
+        "last_percent_change": 0.081500601
       },
       {
         "ticker": "TQQQ",
-        "allocation": 0.327789606,
-        "price": 77.84,
+        "allocation": 0.332320267,
+        "price": 82.005,
         "amount": 25.32819,
-        "value": 1971.5463096,
-        "last_percent_change": 0.011565952
+        "value": 2077.03822095,
+        "last_percent_change": 0.053507194
       },
       {
         "ticker": "SHV",
-        "allocation": 0.064267399,
-        "price": 110.31,
+        "allocation": 0.061854873,
+        "price": 110.325,
         "amount": 3.50419,
-        "value": 386.5471989,
-        "last_percent_change": 0.00018134
+        "value": 386.59976175,
+        "last_percent_change": 0.00013598
       },
       {
         "ticker": "GLD",
-        "allocation": 0.199507961,
-        "price": 413.82,
+        "allocation": 0.19197399,
+        "price": 413.78,
         "amount": 2.89975,
-        "value": 1199.974545,
-        "last_percent_change": 0.009183105
+        "value": 1199.858555,
+        "last_percent_change": -9.666e-05
       },
       {
         "ticker": "VGT",
-        "allocation": 0.071841105,
-        "price": 115.75,
+        "allocation": 0.070529512,
+        "price": 118.085,
         "amount": 3.73305,
-        "value": 432.1005375,
-        "last_percent_change": 0.011005328
+        "value": 440.81720925,
+        "last_percent_change": 0.020172786
       },
       {
         "ticker": "TMV",
-        "allocation": 0.021043536,
-        "price": 39.81,
+        "allocation": 0.019973597,
+        "price": 39.265,
         "amount": 3.17935,
-        "value": 126.5699235,
-        "last_percent_change": -0.014115899
+        "value": 124.83717775,
+        "last_percent_change": -0.013690028
       },
       {
         "ticker": "VIXM",
-        "allocation": 0.005705897,
-        "price": 15.73,
+        "allocation": 0.005427984,
+        "price": 15.5496,
         "amount": 2.18176,
-        "value": 34.3190848,
-        "last_percent_change": 0.005754476
+        "value": 33.925495296,
+        "last_percent_change": -0.011468531
       }
     ],
-    "last_percent_change": 0.0103,
-    "simple_return": 0.037012,
+    "last_percent_change": 0.0391,
+    "simple_return": 0.077605,
     "is_shared": true,
-    "as_of": "2026-05-22",
+    "as_of": "2026-05-26",
     "asset_classes": [
       "EQUITIES"
     ],

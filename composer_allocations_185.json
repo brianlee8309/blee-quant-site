@@ -1,30 +1,30 @@
 {
-  "date": "2026-05-25",
+  "date": "2026-05-26",
   "symphony_id": "ZGersOlsQFRHg7U2qnSw",
   "symphony_name": "BLEE - 185 2026 SGOV and Dual Reversal",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "GLDM",
-      "weight_pct": 8.8891,
+      "weight_pct": 8.812,
       "shares": 1.02002,
-      "market_value": 90.9959842
+      "market_value": 90.9551834
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 80.8004,
+      "weight_pct": 80.1384,
       "shares": 8.21959,
-      "market_value": 827.1373417
+      "market_value": 827.164466347
     },
     {
       "ticker": "TECL",
-      "weight_pct": 10.197,
+      "weight_pct": 10.9373,
       "shares": 0.50221,
-      "market_value": 104.3843485
+      "market_value": 112.891735679
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1133,
+      "weight_pct": 0.1124,
       "shares": 1.16,
       "market_value": 1.16
     }
@@ -34,21 +34,21 @@
     "community_review_status": null,
     "tags": [],
     "last_rebalance_on": "2026-05-21",
-    "annualized_rate_of_return": 0.6541,
+    "annualized_rate_of_return": 0.6924,
     "last_semantic_update_at": "2026-05-14T21:13:27.797900Z",
     "color": "#F274E9",
     "rebalance_frequency": "daily",
     "last_rebalance_attempted_on": "2026-05-22",
     "name": "BLEE - 185 2026 SGOV and Dual Reversal with Annual 16% perfomance",
-    "value": 1023.68,
-    "sharpe_ratio": 3.4764,
-    "time_weighted_return": 0.14524,
+    "value": 1032.17,
+    "sharpe_ratio": 3.6455,
+    "time_weighted_return": 0.15473,
     "asset_class": "EQUITIES",
-    "may_rebalance_today": false,
+    "may_rebalance_today": true,
     "invested_since": "2026-02-17",
     "cash": 1.16,
-    "deposit_adjusted_value": 20385.18,
-    "last_dollar_change": 2.8688602,
+    "deposit_adjusted_value": 20554.25,
+    "last_dollar_change": 8.4923256,
     "skip_rebalance_today": false,
     "tickers": [
       {
@@ -107,33 +107,33 @@
     "holdings": [
       {
         "ticker": "GLDM",
-        "allocation": 0.088891044,
-        "price": 89.21,
+        "allocation": 0.088120352,
+        "price": 89.17,
         "amount": 1.02002,
-        "value": 90.9959842,
-        "last_percent_change": -0.007343941
+        "value": 90.9551834,
+        "last_percent_change": -0.00044838
       },
       {
         "ticker": "SGOV",
-        "allocation": 0.808003811,
-        "price": 100.63,
+        "allocation": 0.801383945,
+        "price": 100.6333,
         "amount": 8.21959,
-        "value": 827.1373417,
-        "last_percent_change": 0.000497117
+        "value": 827.164466347,
+        "last_percent_change": 3.2793e-05
       },
       {
         "ticker": "TECL",
-        "allocation": 0.101969706,
-        "price": 207.85,
+        "allocation": 0.1093732,
+        "price": 224.7899,
         "amount": 0.50221,
-        "value": 104.3843485,
-        "last_percent_change": 0.030899712
+        "value": 112.891735679,
+        "last_percent_change": 0.081500601
       }
     ],
-    "last_percent_change": 0.0028,
-    "simple_return": 7.5307,
+    "last_percent_change": 0.0083,
+    "simple_return": 7.6014,
     "is_shared": true,
-    "as_of": "2026-05-22",
+    "as_of": "2026-05-26",
     "asset_classes": [
       "EQUITIES"
     ],
