@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Retirement Calculator — BLEE Quant Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<script src="user_bar.js" defer></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060d1c;--surface:#0e1a2e;--surface2:#162236;
+  --border:rgba(255,255,255,0.08);--text:#e2ecff;--muted:#b8cce8;
+  --gold:#f5a623;--calm:#10b981;--ultimate:#a855f7;
+  --calm-dim:rgba(16,185,129,0.10);--ultimate-dim:rgba(168,85,247,0.10);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero{
+  position:relative;padding:80px 24px 64px;text-align:center;
+  background-image:url('images/plan_ultimate.png');
+  background-size:cover;background-position:center 30%;
+  background-color:#07111f;
+  overflow:hidden;
+  max-width:860px;
+  margin:0 auto;
+  border-radius:16px 16px 0 0;
+}
+/* Dark overlay so text stays readable over the photo */
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(to bottom, rgba(4,10,24,0.82) 0%, rgba(4,10,24,0.70) 50%, rgba(4,10,24,0.90) 100%),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(16,185,129,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 20% 110%, rgba(168,85,247,0.10) 0%, transparent 60%);
+}
+.hero-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 3s infinite;}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.6}}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);
+  border-radius:999px;color:var(--calm);font-size:12px;font-weight:700;
+  letter-spacing:.08em;padding:5px 18px;margin-bottom:24px;text-transform:uppercase;
+  position:relative;z-index:1;
+}
+.hero h1{
+  font-size:clamp(30px,5.5vw,58px);font-weight:900;letter-spacing:-.03em;
+  line-height:1.08;color:#fff;margin-bottom:18px;position:relative;z-index:1;
+}
+.hero h1 em{font-style:normal;color:var(--calm);}
+.hero-sub{
+  font-size:16px;color:rgba(255,255,255,0.88);max-width:540px;margin:0 auto;
+  line-height:1.7;position:relative;z-index:1;
+}
+
+/* ── Container ────────────────────────────────────────────── */
+.container{max-width:860px;margin:0 auto;padding:0 20px;}
+
+/* ── Main calc card ────────────────────────────────────────── */
+.calc-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:20px;
+  padding:40px;margin-top:-32px;position:relative;z-index:2;
+  box-shadow:0 32px 80px rgba(0,0,0,0.55);
+}
+@media(max-width:600px){.calc-card{padding:24px 20px;}}
+
+.section-title{
+  font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:20px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+
+/* ── Inputs ────────────────────────────────────────────────── */
+.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px;}
+@media(max-width:560px){.input-grid{grid-template-columns:1fr;}}
+.field label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(255,255,255,0.80);margin-bottom:8px;
+}
+.input-wrap{position:relative;}
+.pfx,.sfx{
+  position:absolute;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:14px;font-weight:600;pointer-events:none;
+}
+.pfx{left:13px;}.sfx{right:13px;font-size:12px;}
+.field input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:13px 14px;color:var(--text);font-size:15px;
+  font-family:inherit;outline:none;transition:border-color .2s;
+}
+.field input.has-pfx{padding-left:28px;}
+.field input.has-sfx{padding-right:42px;}
+.field input:focus{border-color:var(--calm);box-shadow:0 0 0 3px rgba(16,185,129,0.12);}
+.field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+/* ── Model badges ──────────────────────────────────────────── */
+.models{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+@media(max-width:500px){.models{grid-template-columns:1fr;}}
+.model-badge{
+  display:flex;align-items:flex-start;gap:12px;
+  border-radius:12px;padding:14px 18px 14px 16px;
+  cursor:pointer;user-select:none;position:relative;
+  transition:opacity .2s,border-color .2s,background .2s;
+}
+.model-badge.calm{background:var(--calm-dim);border:1px solid rgba(16,185,129,0.25);}
+.model-badge.ultimate{background:var(--ultimate-dim);border:1px solid rgba(168,85,247,0.25);}
+.model-badge.inactive{opacity:0.32;border-color:rgba(255,255,255,0.07)!important;background:rgba(255,255,255,0.03)!important;}
+.model-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.model-dot.calm{background:var(--calm);box-shadow:0 0 10px var(--calm);}
+.model-dot.ultimate{background:var(--ultimate);box-shadow:0 0 10px var(--ultimate);}
+.model-info{flex:1;}
+.model-info .name{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;}
+.model-info .rate{font-size:12px;color:rgba(255,255,255,0.78);}
+.model-badge.calm .model-info .name{color:var(--calm);}
+.model-badge.ultimate .model-info .name{color:var(--ultimate);}
+.model-chk{
+  width:22px;height:22px;border-radius:6px;flex-shrink:0;margin-top:1px;
+  border:2px solid rgba(255,255,255,0.22);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;transition:all .18s;
+}
+.model-badge.calm .model-chk.on{background:var(--calm);border-color:var(--calm);color:#000;}
+.model-badge.ultimate .model-chk.on{background:var(--ultimate);border-color:var(--ultimate);color:#fff;}
+.model-chk.off{background:transparent;color:transparent;}
+.model-crash-note{
+  font-size:11px;line-height:1.5;padding:7px 12px 7px 14px;
+  border-radius:0 0 10px 10px;margin-top:-2px;
+  border-left:2px solid;
+}
+.calm-note{color:rgba(255,220,100,0.82);background:rgba(245,166,35,0.07);border-color:rgba(245,166,35,0.35);}
+.ultimate-note{color:rgba(255,220,100,0.82);background:rgba(245,166,35,0.07);border-color:rgba(245,166,35,0.35);}
+
+/* ── Custom model row ────────────────────────────────────────── */
+.custom-model-row{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:rgba(245,166,35,0.06);border:1px dashed rgba(245,166,35,0.28);
+  border-radius:12px;padding:14px 18px;margin-bottom:28px;
+}
+.custom-model-label{flex:1;min-width:160px;}
+.custom-model-label strong{font-size:13px;font-weight:800;color:var(--gold);}
+.custom-model-label small{display:block;font-size:11px;color:rgba(255,255,255,0.52);margin-top:2px;line-height:1.4;}
+.custom-rate-wrap{display:flex;align-items:center;gap:8px;}
+.custom-rate-wrap input{
+  width:88px;background:var(--surface2);border:1px solid rgba(245,166,35,0.30);
+  border-radius:8px;padding:9px 10px;color:#fff;font-size:15px;font-weight:700;
+  font-family:inherit;outline:none;text-align:center;transition:border-color .2s;
+}
+.custom-rate-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,0.12);}
+.custom-rate-wrap span{font-size:13px;font-weight:600;color:rgba(255,255,255,0.55);}
+
+/* ── Result cards grid — auto-fit for 1/2/3 cards ───────────── */
+.result-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-bottom:28px;}
+
+/* ── Custom result card ─────────────────────────────────────── */
+.result-card.custom{
+  background:linear-gradient(160deg,#180f02 0%,#291a04 100%);
+  border:1px solid rgba(245,166,35,0.38);
+}
+.result-card.custom::before{background:radial-gradient(ellipse at 50% 0%,rgba(245,166,35,0.10) 0%,transparent 65%);}
+.result-card.custom .rc-label{color:var(--gold);}
+.result-card.custom .rc-amount{color:var(--gold);}
+
+/* ── Calculate button ──────────────────────────────────────── */
+.btn-calc{
+  width:100%;padding:17px;border:0;border-radius:12px;
+  background:linear-gradient(135deg,#059669 0%,#10b981 100%);
+  color:#fff;font-size:16px;font-weight:800;letter-spacing:.02em;
+  cursor:pointer;box-shadow:0 6px 28px rgba(16,185,129,0.38);
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-calc:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(16,185,129,0.48);}
+.btn-calc:active{transform:translateY(0);}
+
+/* ── Results ────────────────────────────────────────────────── */
+.results{margin-top:40px;animation:fadeUp .45s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.result-header{text-align:center;margin-bottom:28px;}
+.result-header h2{font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;}
+.result-header p{font-size:14px;color:rgba(255,255,255,0.82);}
+
+/* result-cards grid now defined in model badges section */
+@media(max-width:560px){.result-cards{grid-template-columns:1fr;}}
+
+.result-card{border-radius:16px;padding:30px 24px;text-align:center;position:relative;overflow:hidden;}
+.result-card::before{content:'';position:absolute;inset:0;pointer-events:none;}
+.result-card.calm{
+  background:linear-gradient(160deg,#031510 0%,#062516 100%);
+  border:1px solid rgba(16,185,129,0.35);
+}
+.result-card.calm::before{background:radial-gradient(ellipse at 50% 0%,rgba(16,185,129,0.1) 0%,transparent 65%);}
+.result-card.ultimate{
+  background:linear-gradient(160deg,#0f0318 0%,#190430 100%);
+  border:1px solid rgba(168,85,247,0.35);
+}
+.result-card.ultimate::before{background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,0.1) 0%,transparent 65%);}
+.result-card .rc-label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.result-card.calm .rc-label{color:var(--calm);}
+.result-card.ultimate .rc-label{color:var(--ultimate);}
+.result-card .rc-age{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:18px;}
+.result-card .rc-amount{font-size:clamp(26px,4vw,38px);font-weight:900;letter-spacing:-.03em;line-height:1;margin-bottom:4px;position:relative;}
+.result-card.calm .rc-amount{color:var(--calm);}
+.result-card.ultimate .rc-amount{color:var(--ultimate);}
+.result-card .rc-gain{font-size:12px;color:rgba(255,255,255,0.72);margin-bottom:20px;}
+.rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.rc-stat{background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;}
+.rc-stat .sl{font-size:10px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.rc-stat .sv{font-size:14px;font-weight:700;color:#fff;}
+
+/* ── Chart ────────────────────────────────────────────────── */
+.chart-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:14px;padding:24px;margin-bottom:20px;
+}
+.chart-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.72);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.chart-wrap{position:relative;height:260px;}
+
+/* ── Year Details toggle ─────────────────────────────────────── */
+.btn-yeardetail-toggle{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:13px;border:1px solid rgba(16,185,129,0.28);border-radius:12px;
+  background:rgba(16,185,129,0.06);color:var(--calm);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .2s;font-family:inherit;margin-top:14px;
+}
+.btn-yeardetail-toggle:hover{border-color:var(--calm);background:rgba(16,185,129,0.13);color:#fff;}
+.yeardetail-section{margin-top:18px;animation:fadeUp .4s ease;}
+.yd-head{font-size:11px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:12px;}
+.yd-note{font-size:12px;color:rgba(255,255,255,0.60);margin-bottom:16px;line-height:1.5;}
+
+/* ── Divider ────────────────────────────────────────────────── */
+.divider{height:1px;background:var(--border);margin:28px 0;}
+
+/* ── Withdrawal toggle ──────────────────────────────────────── */
+.btn-withdraw-toggle{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:15px;border:1px solid var(--border);border-radius:12px;
+  background:transparent;color:rgba(255,255,255,0.75);font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .2s;font-family:inherit;
+}
+.btn-withdraw-toggle:hover{border-color:var(--gold);color:var(--gold);background:rgba(245,166,35,0.05);}
+
+/* ── Withdrawal section ──────────────────────────────────────── */
+.withdrawal-section{margin-top:28px;animation:fadeUp .4s ease;}
+.withdrawal-section h3{font-size:18px;font-weight:800;color:#fff;margin-bottom:6px;}
+.withdrawal-section .wsub{font-size:13px;color:rgba(255,255,255,0.82);margin-bottom:24px;line-height:1.6;}
+.w-input-row{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-bottom:24px;}
+.w-input-row .field{flex:1;min-width:180px;}
+.btn-run-withdraw{
+  padding:13px 26px;border:0;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+  box-shadow:0 4px 20px rgba(168,85,247,0.3);transition:transform .15s;
+}
+.btn-run-withdraw:hover{transform:translateY(-1px);}
+
+/* ── Sustainability ──────────────────────────────────────────── */
+.sustain-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+@media(max-width:500px){.sustain-grid{grid-template-columns:1fr;}}
+.sustain-badge{display:flex;align-items:flex-start;gap:12px;border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .18s;user-select:none;}
+.sustain-badge.growing{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);}
+.sustain-badge.shrinking{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);}
+.sustain-badge.depleting{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);}
+.sustain-badge.selected.growing{background:rgba(16,185,129,0.22);border-color:#10b981;box-shadow:0 0 0 2px rgba(16,185,129,0.35);}
+.sustain-badge.selected.shrinking{background:rgba(245,158,11,0.22);border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.35);}
+.sustain-badge.selected.depleting{background:rgba(239,68,68,0.22);border-color:#ef4444;box-shadow:0 0 0 2px rgba(239,68,68,0.35);}
+.sustain-badge.unselected{opacity:0.38;}
+.sustain-badge .sb-chk{font-size:14px;font-weight:700;margin-top:1px;min-width:14px;color:rgba(255,255,255,0.4);}
+.sustain-badge.selected .sb-chk{color:#10b981;}
+.sustain-badge small{font-size:11px;color:rgba(255,255,255,0.45);display:block;margin-top:3px;}
+.sustain-icon{font-size:22px;flex-shrink:0;}
+.sustain-text strong{display:block;font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;}
+.sustain-text span{font-size:12px;color:rgba(255,255,255,0.78);line-height:1.5;}
+
+/* ── Table ───────────────────────────────────────────────────── */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{
+  padding:11px 14px;text-align:right;font-size:10px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,0.70);
+  background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{padding:10px 14px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.04);}
+th:first-child,td:first-child{text-align:left;}
+tr:last-child td{border-bottom:0;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.c-val{color:var(--calm);font-weight:600;}
+.u-val{color:var(--ultimate);font-weight:600;}
+.w-val{color:var(--gold);}
+.depleted{color:#ef4444;font-style:italic;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <!-- Twinkling stars -->
+  <div class="hero-stars" id="stars"></div>
+  <div class="hero-chip">🌿 Peaceful Retirement Planning</div>
+  <h1>Your Path to<br><em>Financial Freedom</em></h1>
+  <p class="hero-sub">
+    Model your retirement across two BLEE growth strategies — see exactly how disciplined
+    ETF rotation can grow your wealth while you live your life.
+  </p>
+</div>
+
+<div class="container">
+<div class="calc-card">
+
+  <!-- ── Inputs ── -->
+  <div class="section-title">Your Retirement Inputs</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>Starting Age</label>
+      <div class="input-wrap">
+        <input type="number" id="inp-age" value="35" min="18" max="80" placeholder="35">
+        <span class="sfx">yrs</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Years to Invest</label>
+      <div class="input-wrap">
+        <input type="number" id="inp-years" value="25" min="1" max="60" placeholder="25">
+        <span class="sfx">yrs</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Starting Investment</label>
+      <div class="input-wrap">
+        <span class="pfx">$</span>
+        <input type="number" id="inp-principal" class="has-pfx" value="10000" min="0" placeholder="10,000">
+      </div>
+    </div>
+    <div class="field">
+      <label>Monthly Contribution</label>
+      <div class="input-wrap">
+        <span class="pfx">$</span>
+        <input type="number" id="inp-monthly" class="has-pfx" value="500" min="0" placeholder="500">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Models ── -->
+  <div class="section-title">Investment Models</div>
+  <div class="models">
+    <div class="model-badge calm" id="badge-calm" onclick="toggleModel('calm')">
+      <div class="model-dot calm"></div>
+      <div class="model-info">
+        <div class="name">Calm Growth Model</div>
+        <div class="rate">🎯 17% adjusted return · Low–Medium risk · SGOV core + GLDM hedge</div>
+      </div>
+      <div class="model-chk on" id="chk-calm">✓</div>
+    </div>
+    <div class="model-crash-note calm-note">⚠️ Adjusted from 18% → 17% to account for 1–2 market crashes per generation (avg. −30% drawdown)</div>
+    <div class="model-badge ultimate inactive" id="badge-ultimate" onclick="toggleModel('ultimate')">
+      <div class="model-dot ultimate"></div>
+      <div class="model-info">
+        <div class="name">Ultimate Growth Model</div>
+        <div class="rate">🚀 30% adjusted return · Higher growth · Full BLEE Quant suite</div>
+      </div>
+      <div class="model-chk off" id="chk-ultimate"></div>
+    </div>
+    <div class="model-crash-note ultimate-note">⚠️ Keeps full 30% target — historically recovered within 2–3 yrs after each 1–2 market crashes per generation (avg. −30% drawdown)</div>
+  </div>
+
+  <!-- Custom growth rate -->
+  <div class="custom-model-row">
+    <div class="custom-model-label">
+      <strong>⚡ Custom Growth Rate</strong>
+      <small>Enter your own annual return % to model alongside BLEE strategies (optional)</small>
+    </div>
+    <div class="custom-rate-wrap">
+      <input type="number" id="inp-custom-rate" min="1" max="200" step="0.1" placeholder="e.g. 12">
+      <span>% / yr</span>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">📈 Calculate My Retirement</button>
+
+  <!-- ── Results (hidden until calculate) ── -->
+  <div class="results" id="results" style="display:none;">
+
+    <div class="result-header">
+      <h2 id="result-headline">Your Projected Wealth</h2>
+      <p id="result-sub"></p>
+    </div>
+
+    <div class="result-cards">
+      <div class="result-card calm">
+        <div class="rc-label">🌿 Calm Growth Model</div>
+        <div class="rc-age" id="calm-age-label"></div>
+        <div class="rc-amount" id="calm-total"></div>
+        <div class="rc-gain" id="calm-gain"></div>
+        <div class="rc-stats">
+          <div class="rc-stat"><div class="sl">Invested</div><div class="sv" id="calm-contributed"></div></div>
+          <div class="rc-stat"><div class="sl">Growth</div><div class="sv" id="calm-growth"></div></div>
+          <div class="rc-stat"><div class="sl">Return %</div><div class="sv" id="calm-mult"></div></div>
+          <div class="rc-stat"><div class="sl">Adj. Rate</div><div class="sv">17%</div></div>
+        </div>
+      </div>
+      <div class="result-card ultimate">
+        <div class="rc-label">🚀 Ultimate Growth Model</div>
+        <div class="rc-age" id="ult-age-label"></div>
+        <div class="rc-amount" id="ult-total"></div>
+        <div class="rc-gain" id="ult-gain"></div>
+        <div class="rc-stats">
+          <div class="rc-stat"><div class="sl">Invested</div><div class="sv" id="ult-contributed"></div></div>
+          <div class="rc-stat"><div class="sl">Growth</div><div class="sv" id="ult-growth"></div></div>
+          <div class="rc-stat"><div class="sl">Return %</div><div class="sv" id="ult-mult"></div></div>
+          <div class="rc-stat"><div class="sl">Annual Rate</div><div class="sv">30%</div></div>
+        </div>
+      </div>
+      <!-- Custom model result card (shown only when custom rate is set) -->
+      <div class="result-card custom" id="custom-card" style="display:none;">
+        <div class="rc-label" id="custom-label">⚡ Custom Model</div>
+        <div class="rc-age" id="cust-age-label"></div>
+        <div class="rc-amount" id="cust-total"></div>
+        <div class="rc-gain" id="cust-gain"></div>
+        <div class="rc-stats">
+          <div class="rc-stat"><div class="sl">Invested</div><div class="sv" id="cust-contributed"></div></div>
+          <div class="rc-stat"><div class="sl">Growth</div><div class="sv" id="cust-growth"></div></div>
+          <div class="rc-stat"><div class="sl">Return %</div><div class="sv" id="cust-mult"></div></div>
+          <div class="rc-stat"><div class="sl">Annual Rate</div><div class="sv" id="cust-rate-display"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth chart -->
+    <div class="chart-card">
+      <div class="chart-label">📊 Projected Growth Over Time</div>
+      <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+    </div>
+
+    <!-- Year details toggle -->
+    <button class="btn-yeardetail-toggle" id="yearDetailToggle" onclick="toggleYearDetails()">
+      📅 See Details by Year ↓
+    </button>
+    <!-- Year details section -->
+    <div class="yeardetail-section" id="yearDetailSection" style="display:none;">
+      <div class="yd-head">Year-by-Year Accumulation</div>
+      <p class="yd-note">Each row shows one investment year — contributions added, gains earned, and running balance for both models.</p>
+      <div class="table-wrap" id="ydTableWrap"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Withdrawal toggle -->
+    <button class="btn-withdraw-toggle" id="withdrawalToggle" onclick="toggleWithdrawal()">
+      💸 Plan Retirement Withdrawals →
+    </button>
+
+    <!-- Withdrawal section (hidden until toggled) -->
+    <div class="withdrawal-section" id="withdrawalSection" style="display:none;">
+      <h3>Withdrawal Planning</h3>
+      <p class="wsub">
+        After your accumulation phase ends, model how much you can withdraw annually
+        as a percentage of your portfolio — and watch how your balance evolves over time.
+      </p>
+
+      <div class="w-input-row">
+        <div class="field">
+          <label>Starting Budget <span id="wd-budget-hint" style="font-size:11px;color:rgba(245,158,11,0.8);font-weight:400;">(from calculator)</span></label>
+          <div class="input-wrap">
+            <span class="sfx" style="left:10px;right:auto;">$</span>
+            <input type="number" id="inp-wd-budget" class="has-sfx" style="padding-left:22px;" value="" min="1" step="1000" placeholder="e.g. 278800">
+          </div>
+        </div>
+        <div class="field">
+          <label>Annual Withdrawal %</label>
+          <div class="input-wrap">
+            <input type="number" id="inp-withdraw" class="has-sfx" value="0" min="0" max="100" step="0.1" placeholder="0">
+            <span class="sfx">% / yr</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Fixed Withdrawal <span style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:400;">$ / yr</span></label>
+          <div class="input-wrap">
+            <span class="sfx" style="left:10px;right:auto;">$</span>
+            <input type="number" id="inp-wd-fixed" class="has-sfx" style="padding-left:22px;" value="0" min="0" step="1000" placeholder="0">
+          </div>
+        </div>
+        <div class="field">
+          <label>Years to Show</label>
+          <div class="input-wrap">
+            <input type="number" id="inp-wdyears" class="has-sfx" value="30" min="5" max="60" placeholder="30">
+            <span class="sfx">yrs</span>
+          </div>
+        </div>
+        <button class="btn-run-withdraw" onclick="runWithdrawal()">Run Withdrawal Plan</button>
+      </div>
+
+      <!-- Sustainability badges -->
+      <div class="sustain-grid" id="sustainGrid"></div>
+
+      <!-- Withdrawal chart -->
+      <div class="chart-card" id="wChartCard" style="display:none;margin-bottom:20px;">
+        <div class="chart-label">📉 Portfolio Balance During Withdrawal</div>
+        <div class="chart-wrap"><canvas id="withdrawalChart"></canvas></div>
+      </div>
+
+      <!-- Withdrawal table -->
+      <div class="table-wrap" id="wTableWrap" style="display:none;">
+        <table id="wTable"></table>
+      </div>
+    </div>
+
+  </div><!-- /results -->
+
+</div><!-- /calc-card -->
+</div><!-- /container -->
+
+<script>
+// ── Helpers ─────────────────────────────────────────────────────────────
+function fmt$(n) {
+  if (n >= 1e9)  return "$" + (n/1e9).toFixed(2) + "B";
+  if (n >= 1e6)  return "$" + (n/1e6).toFixed(2) + "M";
+  if (n >= 1e3)  return "$" + (n/1e3).toFixed(1) + "K";
+  return "$" + Math.round(n).toLocaleString();
+}
+function fmtFull$(n) {
+  return "$" + Math.round(n).toLocaleString();
+}
+function fmtPct(n) {
+  return n >= 0 ? "+" + n.toFixed(1) + "%" : n.toFixed(1) + "%";
+}
+function fmtX(n) {
+  return n.toFixed(1) + "×";
+}
+
+// ── Model selection state ───────────────────────────────────────────────────
+const modelState = { calm: true, ultimate: false };
+
+function setModel(m) {
+  // Activate chosen model, deactivate the other, clear custom
+  ['calm','ultimate'].forEach(function(k) {
+    modelState[k] = (k === m);
+    document.getElementById('badge-' + k).classList.toggle('inactive', !modelState[k]);
+    const chk = document.getElementById('chk-' + k);
+    chk.classList.toggle('on',  modelState[k]);
+    chk.classList.toggle('off', !modelState[k]);
+    chk.textContent = modelState[k] ? '✓' : '';
+  });
+  // Clear custom field
+  const ci = document.getElementById('inp-custom-rate');
+  ci.value = '';
+}
+
+function toggleModel(m) {
+  // If clicking the already-active model — do nothing (keep at least one active)
+  if (modelState[m] && !modelState[m === 'calm' ? 'ultimate' : 'calm']) return;
+  setModel(m);
+}
+
+// Typing a custom % deactivates both preset models
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('inp-custom-rate').addEventListener('input', function() {
+    if (this.value.trim() !== '') {
+      ['calm','ultimate'].forEach(function(k) {
+        modelState[k] = false;
+        document.getElementById('badge-' + k).classList.add('inactive');
+        const chk = document.getElementById('chk-' + k);
+        chk.className = 'model-chk off';
+        chk.textContent = '';
+      });
+    } else {
+      // Custom cleared — restore calm as default
+      setModel('calm');
+    }
+  });
+});
+
+// ── FV calculation ───────────────────────────────────────────────────────
+// principal: starting lump sum
+// monthly: monthly contribution
+// rate: annual rate (e.g. 0.18 for 18%)
+// years: number of years
+// returns: array of annual balances [year0, year1, ..., yearN]
+function calcGrowth(principal, monthly, rate, years) {
+  const rm = rate / 12;
+  const balances = [principal];
+  let bal = principal;
+  for (let y = 1; y <= years; y++) {
+    for (let m = 0; m < 12; m++) {
+      bal = bal * (1 + rm) + monthly;
+    }
+    balances.push(bal);
+  }
+  return balances;
+}
+
+// ── Twinkling stars ──────────────────────────────────────────────────────
+(function() {
+  const c = document.getElementById("stars");
+  for (let i = 0; i < 55; i++) {
+    const s = document.createElement("div");
+    const sz = Math.random() * 2 + 1;
+    s.className = "star";
+    s.style.cssText = "width:"+sz+"px;height:"+sz+"px;left:"+(Math.random()*100)+"%;"
+      + "top:"+(Math.random()*100)+"%;"
+      + "animation-delay:"+(Math.random()*3)+"s;"
+      + "animation-duration:"+(2+Math.random()*3)+"s;opacity:"+(Math.random()*0.3+0.05);
+    c.appendChild(s);
+  }
+})();
+
+// ── Growth chart instance ────────────────────────────────────────────────
+let growthChartInst = null;
+let withdrawChartInst = null;
+
+// ── Main calculate ───────────────────────────────────────────────────────
+function calculate() {
+  const age       = parseInt(document.getElementById("inp-age").value) || 35;
+  const years     = parseInt(document.getElementById("inp-years").value) || 25;
+  const principal = parseFloat(document.getElementById("inp-principal").value) || 0;
+  const monthly   = parseFloat(document.getElementById("inp-monthly").value) || 0;
+  const endAge    = age + years;
+  const contributed = principal + monthly * 12 * years;
+
+  const calmBals = calcGrowth(principal, monthly, 0.17, years);
+  const ultBals  = calcGrowth(principal, monthly, 0.30, years);
+  const calmFinal = calmBals[years];
+  const ultFinal  = ultBals[years];
+
+  // Custom model
+  const customRateRaw = parseFloat(document.getElementById("inp-custom-rate").value);
+  const customRate = (!isNaN(customRateRaw) && customRateRaw > 0) ? customRateRaw / 100 : null;
+  const custBals   = customRate ? calcGrowth(principal, monthly, customRate, years) : null;
+  const custFinal  = custBals ? custBals[years] : null;
+
+  // Show/hide result cards
+  const calmCard = document.querySelector('.result-card.calm');
+  const ultCard  = document.querySelector('.result-card.ultimate');
+  const custCard = document.getElementById('custom-card');
+  calmCard.style.display = modelState.calm    ? '' : 'none';
+  ultCard.style.display  = modelState.ultimate ? '' : 'none';
+  custCard.style.display = custBals            ? '' : 'none';
+
+  // Store for withdrawal + year details
+  window._calc = { age, years, endAge, principal, monthly, contributed,
+                   calmFinal, ultFinal, custFinal,
+                   calmBals, ultBals, custBals, customRate,
+                   showCalm: modelState.calm, showUlt: modelState.ultimate };
+
+  // Auto-fill Starting Budget with the active model's retirement balance
+  var budgetEl = document.getElementById("inp-wd-budget");
+  if (budgetEl) {
+    var defaultBudget = modelState.calm ? calmFinal : (modelState.ultimate ? ultFinal : calmFinal);
+    budgetEl.value = Math.round(defaultBudget);
+    var hint = document.getElementById("wd-budget-hint");
+    if (hint) hint.textContent = "(auto-filled from calculator)";
+  }
+
+  // ── Fill result cards ──────────────────────────────────────────────────
+  document.getElementById("result-headline").textContent =
+    "Your Projected Retirement Wealth";
+  document.getElementById("result-sub").textContent =
+    "Starting at age " + age + " · Investing for " + years + " years · Retirement at age " + endAge;
+
+  const gainLine = "From $" + principal.toLocaleString() + " + $" + monthly.toLocaleString() + "/mo";
+
+  // Calm
+  document.getElementById("calm-age-label").textContent  = "Retire at age " + endAge;
+  document.getElementById("calm-total").textContent       = fmt$(calmFinal);
+  document.getElementById("calm-gain").textContent        = gainLine;
+  document.getElementById("calm-contributed").textContent = fmt$(contributed);
+  document.getElementById("calm-growth").textContent      = fmt$(calmFinal - contributed);
+  document.getElementById("calm-mult").textContent        = fmtX(calmFinal / Math.max(contributed, 1));
+
+  // Ultimate
+  document.getElementById("ult-age-label").textContent  = "Retire at age " + endAge;
+  document.getElementById("ult-total").textContent       = fmt$(ultFinal);
+  document.getElementById("ult-gain").textContent        = gainLine;
+  document.getElementById("ult-contributed").textContent = fmt$(contributed);
+  document.getElementById("ult-growth").textContent      = fmt$(ultFinal - contributed);
+  document.getElementById("ult-mult").textContent        = fmtX(ultFinal / Math.max(contributed, 1));
+
+  // Custom
+  if (custBals) {
+    const pct = (customRate * 100).toFixed(1);
+    document.getElementById("custom-label").textContent      = "⚡ Custom (" + pct + "%) Model";
+    document.getElementById("cust-age-label").textContent    = "Retire at age " + endAge;
+    document.getElementById("cust-total").textContent        = fmt$(custFinal);
+    document.getElementById("cust-gain").textContent         = gainLine;
+    document.getElementById("cust-contributed").textContent  = fmt$(contributed);
+    document.getElementById("cust-growth").textContent       = fmt$(custFinal - contributed);
+    document.getElementById("cust-mult").textContent         = fmtX(custFinal / Math.max(contributed, 1));
+    document.getElementById("cust-rate-display").textContent = pct + "%";
+  }
+
+  // ── Growth chart ───────────────────────────────────────────────────────
+  const labels = Array.from({length: years + 1}, (_, i) => "Age " + (age + i));
+  const chartDatasets = [];
+  if (modelState.calm) chartDatasets.push({
+    label: "Calm Growth (17%)", data: calmBals,
+    borderColor: "#10b981", backgroundColor: "rgba(16,185,129,0.08)",
+    borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5
+  });
+  if (modelState.ultimate) chartDatasets.push({
+    label: "Ultimate Growth (30%)", data: ultBals,
+    borderColor: "#a855f7", backgroundColor: "rgba(168,85,247,0.07)",
+    borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5
+  });
+  if (custBals) chartDatasets.push({
+    label: "Custom (" + (customRate*100).toFixed(1) + "%)", data: custBals,
+    borderColor: "#f5a623", backgroundColor: "rgba(245,166,35,0.07)",
+    borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5
+  });
+  chartDatasets.push({
+    label: "Total Contributed",
+    data: Array.from({length: years + 1}, (_, i) => principal + monthly * 12 * i),
+    borderColor: "rgba(255,255,255,0.25)", backgroundColor: "transparent",
+    borderWidth: 1.5, borderDash: [5,4], fill: false, tension: 0, pointRadius: 0
+  });
+
+  if (growthChartInst) growthChartInst.destroy();
+  growthChartInst = new Chart(document.getElementById("growthChart"), {
+    type: "line",
+    data: { labels, datasets: chartDatasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: "rgba(255,255,255,0.6)", font: { size: 11 }, boxWidth: 12 }
+        },
+        tooltip: {
+          backgroundColor: "#0e1a2e", borderColor: "rgba(255,255,255,0.1)", borderWidth: 1,
+          titleColor: "rgba(255,255,255,0.7)", bodyColor: "#fff", padding: 12,
+          callbacks: {
+            label: ctx => "  " + ctx.dataset.label + ": " + fmtFull$(ctx.parsed.y)
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "rgba(255,255,255,0.35)", font: { size: 11 }, maxTicksLimit: 10 } },
+        y: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "rgba(255,255,255,0.35)", font: { size: 11 }, callback: v => fmt$(v) } }
+      }
+    }
+  });
+
+  // Reset year details (re-calculate resets the table)
+  document.getElementById("yearDetailSection").style.display = "none";
+  document.getElementById("yearDetailToggle").textContent = "📅 See Details by Year ↓";
+  renderYearDetails();
+
+  document.getElementById("results").style.display = "block";
+  document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ── Year details toggle ─────────────────────────────────────────────────────
+function toggleYearDetails() {
+  const s = document.getElementById("yearDetailSection");
+  const btn = document.getElementById("yearDetailToggle");
+  const visible = s.style.display !== "none";
+  s.style.display = visible ? "none" : "block";
+  btn.textContent = visible ? "📅 See Details by Year ↓" : "📅 Hide Year Details ↑";
+}
+
+// ── Year details table render ─────────────────────────────────────────────
+function renderYearDetails() {
+  const c = window._calc;
+  if (!c) return;
+  const { age, years, principal, monthly, calmBals, ultBals, custBals, customRate,
+          showCalm, showUlt } = c;
+  const custPct = customRate ? (customRate * 100).toFixed(1) + "%" : null;
+
+  let head = '<tr><th>Year</th><th>Age</th>'
+    + '<th>Added This Year</th><th>Cumul. Invested</th>';
+  if (showCalm) head += '<th class="c-val">Calm Gains</th><th class="c-val">Calm Balance</th>';
+  if (showUlt)  head += '<th class="u-val">Ultimate Gains</th><th class="u-val">Ultimate Balance</th>';
+  if (custBals) head += '<th class="w-val">Custom (' + custPct + ') Gains</th><th class="w-val">Custom Balance</th>';
+  head += '</tr>';
+
+  let rows = '';
+  for (let y = 1; y <= years; y++) {
+    const addedThisYear = y === 1 ? principal + monthly * 12 : monthly * 12;
+    const cumulInvested = principal + monthly * 12 * y;
+    const calmGain = showCalm ? calmBals[y] - calmBals[y-1] - monthly * 12 : 0;
+    const ultGain  = showUlt  ? ultBals[y]  - ultBals[y-1]  - monthly * 12 : 0;
+    const custGain = custBals ? custBals[y]  - custBals[y-1] - monthly * 12 : 0;
+    const rowBg = y % 2 === 0 ? ' style="background:rgba(255,255,255,0.015)"' : '';
+    rows += '<tr' + rowBg + '>'
+      + '<td><strong>' + y + '</strong></td>'
+      + '<td>' + (age + y) + '</td>'
+      + '<td style="color:rgba(255,255,255,0.75)">+' + fmtFull$(addedThisYear) + '</td>'
+      + '<td style="color:rgba(255,255,255,0.70)">' + fmtFull$(cumulInvested) + '</td>';
+    if (showCalm) rows += '<td class="c-val">+' + fmtFull$(Math.max(0,calmGain)) + '</td>'
+      + '<td class="c-val"><strong>' + fmtFull$(calmBals[y]) + '</strong></td>';
+    if (showUlt)  rows += '<td class="u-val">+' + fmtFull$(Math.max(0,ultGain)) + '</td>'
+      + '<td class="u-val"><strong>' + fmtFull$(ultBals[y]) + '</strong></td>';
+    if (custBals) rows += '<td class="w-val">+' + fmtFull$(Math.max(0,custGain)) + '</td>'
+      + '<td class="w-val"><strong>' + fmtFull$(custBals[y]) + '</strong></td>';
+    rows += '</tr>';
+  }
+
+  document.getElementById("ydTableWrap").innerHTML =
+    '<table><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
+}
+
+// ── Withdrawal toggle ────────────────────────────────────────────────────
+function toggleWithdrawal() {
+  const s = document.getElementById("withdrawalSection");
+  const visible = s.style.display !== "none";
+  s.style.display = visible ? "none" : "block";
+  document.getElementById("withdrawalToggle").textContent =
+    visible ? "💸 Plan Retirement Withdrawals →" : "💸 Hide Withdrawal Planner ↑";
+}
+
+// ── Withdrawal calc ──────────────────────────────────────────────────────
+// ── Withdrawal planner state ─────────────────────────────────────────────
+var _wdSelected = { calm: true, ult: false };
+
+function toggleWdBadge(m) {
+  // Require at least one selected
+  const other = m === 'calm' ? 'ult' : 'calm';
+  if (_wdSelected[m] && !_wdSelected[other]) return; // can't deselect last
+  _wdSelected[m] = !_wdSelected[m];
+  // Re-render badges + chart/table
+  const grid = document.getElementById('sustainGrid');
+  if (grid) {
+    ['calm','ult'].forEach(function(key) {
+      const el = document.getElementById('wd-badge-' + key);
+      if (!el) return;
+      if (_wdSelected[key]) {
+        el.classList.add('selected');
+        el.classList.remove('unselected');
+      } else {
+        el.classList.remove('selected');
+        el.classList.add('unselected');
+      }
+      const chk = el.querySelector('.sb-chk');
+      if (chk) chk.textContent = _wdSelected[key] ? '✓' : '○';
+    });
+  }
+  if (window._wdData) renderWdChart();
+}
+
+function renderWdChart() {
+  const d = window._wdData;
+  if (!d) return;
+  document.getElementById("wChartCard").style.display = "block";
+  if (withdrawChartInst) withdrawChartInst.destroy();
+  const datasets = [];
+  if (_wdSelected.calm) datasets.push({
+    label: "Calm Balance", data: d.rows.map(r => r.cEnd),
+    backgroundColor: "rgba(16,185,129,0.65)", borderColor: "#10b981",
+    borderWidth: 1, borderRadius: 3
+  });
+  if (_wdSelected.ult) datasets.push({
+    label: "Ultimate Balance", data: d.rows.map(r => r.uEnd),
+    backgroundColor: "rgba(168,85,247,0.55)", borderColor: "#a855f7",
+    borderWidth: 1, borderRadius: 3
+  });
+  withdrawChartInst = new Chart(document.getElementById("withdrawalChart"), {
+    type: "bar",
+    data: { labels: d.labels, datasets: datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: "rgba(255,255,255,0.6)", font: { size: 11 }, boxWidth: 12 } },
+        tooltip: {
+          backgroundColor: "#0e1a2e", borderColor: "rgba(255,255,255,0.1)", borderWidth: 1,
+          titleColor: "rgba(255,255,255,0.7)", bodyColor: "#fff", padding: 12,
+          callbacks: { label: ctx => "  " + ctx.dataset.label + ": " + fmtFull$(ctx.parsed.y) }
+        }
+      },
+      scales: {
+        x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "rgba(255,255,255,0.35)", font: { size: 10 }, maxTicksLimit: 12 } },
+        y: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "rgba(255,255,255,0.35)", font: { size: 11 }, callback: v => fmt$(v) } }
+      }
+    }
+  });
+  // Rebuild table
+  const tw = document.getElementById("wTableWrap");
+  tw.style.display = "block";
+  let html = '<table><thead><tr><th>Year</th><th>Age</th>';
+  var _wPct   = d.wPct   || 0;
+  var _wFixed = d.wFixed || 0;
+  var _wParts = [];
+  if (_wPct > 0)   _wParts.push((_wPct*100).toFixed(1) + "%");
+  if (_wFixed > 0) _wParts.push("$" + _wFixed.toLocaleString());
+  var _wHdr = (_wParts.length ? _wParts.join("+") : "0%") + "/yr";
+  if (_wdSelected.calm) html += '<th class="c-val">Calm Start</th><th class="w-val">Withdrawal<br><small style="color:#7a95b8">' + _wHdr + '</small></th><th class="c-val">Calm End</th>';
+  if (_wdSelected.ult)  html += '<th class="u-val">Ultimate Start</th><th class="w-val">Withdrawal<br><small style="color:#7a95b8">' + _wHdr + '</small></th><th class="u-val">Ultimate End</th>';
+  html += '</tr></thead><tbody>';
+  d.rows.forEach(function(r, i) {
+    const rc = i % 2 === 0 ? '' : ' style="background:rgba(255,255,255,0.015)"';
+    const cEndFmt = r.cEnd <= 0 ? '<span class="depleted">Depleted</span>' : '<span class="c-val">' + fmtFull$(r.cEnd) + '</span>';
+    const uEndFmt = r.uEnd <= 0 ? '<span class="depleted">Depleted</span>' : '<span class="u-val">' + fmtFull$(r.uEnd) + '</span>';
+    html += '<tr' + rc + '><td>' + r.year + '</td><td>' + r.age + '</td>';
+    if (_wdSelected.calm) html += '<td class="c-val">' + fmtFull$(r.cStart) + '</td><td class="w-val">−' + fmtFull$(r.cWithdraw) + '</td><td>' + cEndFmt + '</td>';
+    if (_wdSelected.ult)  html += '<td class="u-val">' + fmtFull$(r.uStart) + '</td><td class="w-val">−' + fmtFull$(r.uWithdraw) + '</td><td>' + uEndFmt + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  tw.innerHTML = html;
+}
+
+function runWithdrawal() {
+  const c = window._calc;
+  if (!c) return;
+
+  // Withdrawal: % of grown balance + optional fixed $ per year (can combine both)
+  const _wRaw  = parseFloat(document.getElementById("inp-withdraw").value);
+  const wPct   = isNaN(_wRaw) ? 0 : _wRaw / 100;
+  const wFixed = parseFloat(document.getElementById("inp-wd-fixed").value) || 0;
+  const wYrs   = parseInt(document.getElementById("inp-wdyears").value) || 30;
+
+  // Sustainability: compare year-1 net change vs starting budget
+  const _sb = (() => {
+    const v = parseFloat(document.getElementById("inp-wd-budget").value);
+    return (!isNaN(v) && v > 0) ? v : (c.showCalm ? c.calmFinal : c.ultFinal);
+  })();
+  function yearNetRate(bal, r) {
+    const grown = bal * (1 + r);
+    return bal > 0 ? (grown - (grown * wPct + wFixed)) / bal - 1 : -1;
+  }
+  const calmNet = yearNetRate(_sb, 0.17);
+  const ultNet  = yearNetRate(_sb, 0.30);
+
+  function sustainClass(net) { return net > 0.02 ? "growing" : net > -0.01 ? "shrinking" : "depleting"; }
+  function sustainIcon(net)  { return net > 0.02 ? "🌱" : net > -0.01 ? "⚠️" : "⛔"; }
+  function sustainMsg(net, model) {
+    const parts = [];
+    if (wPct > 0)   parts.push((wPct * 100).toFixed(1) + "%");
+    if (wFixed > 0) parts.push("$" + wFixed.toLocaleString() + "/yr");
+    const wDesc = parts.length ? parts.join(" + ") : "0% withdrawal";
+    if (net > 0.02)  return "Portfolio <strong>grows</strong> at +" + (net*100).toFixed(1) + "%/yr net — " + wDesc + " is fully sustainable.";
+    if (net > -0.01) return "Portfolio is nearly <strong>flat</strong> — " + wDesc + " consumes most growth. Monitor closely.";
+    return "Portfolio will <strong>deplete</strong> over time — " + wDesc + " exceeds " + model + " net growth.";
+  }
+
+  // Default: show whichever model(s) are active from the accumulation section
+  _wdSelected = { calm: !!c.showCalm, ult: !!c.showUlt };
+  // Guarantee at least one is on
+  if (!_wdSelected.calm && !_wdSelected.ult) _wdSelected.calm = true;
+
+  // Build sustain badges — show both always so user can toggle either on
+  const calmSelCls = _wdSelected.calm ? 'selected' : 'unselected';
+  const ultSelCls  = _wdSelected.ult  ? 'selected' : 'unselected';
+  document.getElementById("sustainGrid").innerHTML =
+    '<div class="sustain-badge ' + calmSelCls + ' ' + sustainClass(calmNet) + '" id="wd-badge-calm">'
+    + '<div class="sb-chk">' + (_wdSelected.calm ? '\u2713' : '\u25cb') + '</div>'
+    + '<div class="sustain-icon">' + sustainIcon(calmNet) + '</div>'
+    + '<div class="sustain-text"><strong>Calm Growth (17%)</strong>'
+    + '<span>' + sustainMsg(calmNet, "Calm") + '</span></div></div>'
+    + '<div class="sustain-badge ' + ultSelCls + ' ' + sustainClass(ultNet) + '" id="wd-badge-ult">'
+    + '<div class="sb-chk">' + (_wdSelected.ult ? '\u2713' : '\u25cb') + '</div>'
+    + '<div class="sustain-icon">' + sustainIcon(ultNet) + '</div>'
+    + '<div class="sustain-text"><strong>Ultimate Growth (30%)</strong>'
+    + '<span>' + sustainMsg(ultNet, "Ultimate") + '</span></div></div>';
+  // Wire click handlers after innerHTML is set (avoids inline-onclick quoting issues)
+  var bCalm = document.getElementById("wd-badge-calm");
+  var bUlt  = document.getElementById("wd-badge-ult");
+  if (bCalm) bCalm.addEventListener("click", function() { toggleWdBadge("calm"); });
+  if (bUlt)  bUlt.addEventListener("click",  function() { toggleWdBadge("ult"); });
+
+  // Build year-by-year rows: withdraw wPct of grown balance each year
+  // Use manually entered starting budget if provided, else fall back to model finals
+  const budgetInput = parseFloat(document.getElementById("inp-wd-budget").value);
+  const startBudget = (!isNaN(budgetInput) && budgetInput > 0) ? budgetInput : null;
+  const rows = [];
+  let cBal = startBudget !== null ? startBudget : c.calmFinal;
+  let uBal = startBudget !== null ? startBudget : c.ultFinal;
+  for (let y = 1; y <= wYrs; y++) {
+    const cStart = cBal, uStart = uBal;
+    const cAfterGrow = cStart * 1.17;
+    const uAfterGrow = uStart * 1.30;
+    const cWithdraw  = Math.min(cAfterGrow, cAfterGrow * wPct + wFixed);
+    const uWithdraw  = Math.min(uAfterGrow, uAfterGrow * wPct + wFixed);
+    cBal = Math.max(0, cAfterGrow - cWithdraw);
+    uBal = Math.max(0, uAfterGrow - uWithdraw);
+    rows.push({ year: y, age: c.endAge + y,
+      cStart, cWithdraw, cEnd: cBal,
+      uStart, uWithdraw, uEnd: uBal });
+    if (cBal <= 0 && uBal <= 0) break;
+  }
+
+  window._wdData = { rows: rows, labels: rows.map(r => "Age " + r.age), wPct: wPct, wFixed: wFixed };
+  renderWdChart();
+}
+</script>
+</body>
+</html>

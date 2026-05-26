@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin — BLEE Quant</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
+       background:#0a0f1e;color:#fff;min-height:100vh;padding:24px;}
+  header{display:flex;align-items:center;justify-content:space-between;
+         margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #1f2937;}
+  .logo{font-size:18px;font-weight:800;color:#f5a623;}
+  .logo span{color:#fff;}
+  .logo sub{font-size:11px;color:#6b7280;font-weight:400;margin-left:6px;}
+
+  .quick-links{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .quick-link{display:flex;align-items:center;gap:10px;background:#111827;
+    border:1px solid #1f2937;border-radius:10px;padding:12px 18px;text-decoration:none;
+    transition:border-color .2s,background .2s;flex:1;min-width:180px;}
+  .quick-link:hover{border-color:#f5a623;background:#1a1f2e;}
+  .quick-link-icon{font-size:22px;line-height:1;}
+  .quick-link-title{font-size:13px;font-weight:700;color:#f5a623;}
+  .quick-link-sub{font-size:11px;color:#6b7280;margin-top:1px;}
+  .quick-link-arrow{margin-left:auto;color:#374151;font-size:14px;}
+
+  .stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+  .stat{background:#111827;border:1px solid #1f2937;border-radius:10px;
+        padding:14px 18px;flex:1;min-width:90px;}
+  .stat-val{font-size:26px;font-weight:800;color:#f5a623;}
+  .stat-lbl{font-size:11px;color:#6b7280;margin-top:2px;}
+  .stat.s-free     .stat-val{color:#9ca3af;}
+  .stat.s-starter  .stat-val{color:#4ade80;}
+  .stat.s-pro      .stat-val{color:#f5a623;}
+  .stat.s-marketer .stat-val{color:#a78bfa;}
+  .stat.s-manager  .stat-val{color:#38bdf8;}
+  .stat.s-mrr      .stat-val{font-size:20px;color:#60a5fa;}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  input.search{background:#111827;border:1px solid #1f2937;color:#fff;
+               padding:8px 12px;border-radius:8px;font-size:13px;width:220px;}
+  input.search::placeholder{color:#4b5563;}
+  input.search:focus{outline:none;border-color:#f5a623;}
+  select.filter{background:#111827;border:1px solid #1f2937;color:#fff;
+                padding:8px 12px;border-radius:8px;font-size:13px;}
+  .btn{padding:8px 14px;border:0;border-radius:8px;font-size:13px;
+       font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .btn-gold{background:#f5a623;color:#000;}
+  .btn-outline{background:transparent;border:1px solid #374151;color:#d1d5db;}
+  .btn-danger{background:#7f1d1d;color:#fca5a5;}
+  .btn-sm{padding:4px 10px;font-size:12px;}
+  .btn:hover{opacity:.8;}
+
+  .card{background:#111827;border:1px solid #1f2937;border-radius:12px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:#0d1525;padding:10px 14px;text-align:left;font-size:11px;
+     color:#6b7280;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+  td{padding:11px 14px;border-bottom:1px solid #1a2035;vertical-align:middle;}
+  tr:last-child td{border-bottom:0;}
+  tr:hover td{background:#0f1928;}
+
+  .role-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+              border-radius:12px;font-size:11px;font-weight:700;}
+  .role-admin   {background:#3b1f06;color:#f5a623;border:1px solid #78350f;}
+  .role-manager {background:#0c1f2e;color:#38bdf8;border:1px solid #0e4f6e;}
+  .role-pro     {background:#1a1f06;color:#facc15;border:1px solid #3f3f00;}
+  .role-starter {background:#052e16;color:#4ade80;border:1px solid #14532d;}
+  .role-free    {background:#1f2937;color:#9ca3af;border:1px solid #374151;}
+  .role-marketer{background:#1a0a2e;color:#a78bfa;border:1px solid #4c1d95;}
+  .role-none    {background:#111827;color:#4b5563;border:1px solid #1f2937;}
+
+  .status-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+  .status-active   {background:#052e16;color:#4ade80;}
+  .status-pending  {background:#1c1a06;color:#ca8a04;}
+  .status-inactive {background:#1f1f1f;color:#6b7280;}
+  .status-cancelled{background:#2b0a0a;color:#f87171;}
+
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+            align-items:center;justify-content:center;z-index:100;}
+  .modal-bg.show{display:flex;}
+  .modal{background:#111827;border:1px solid #1f2937;border-radius:14px;
+         padding:28px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;}
+  .modal h3{font-size:16px;font-weight:700;margin-bottom:16px;}
+  label.f{display:block;font-size:11px;color:#9ca3af;font-weight:600;
+          text-transform:uppercase;margin-bottom:4px;margin-top:14px;}
+  input.field,select.field,textarea.field{width:100%;padding:9px 12px;
+    background:#1f2937;border:1px solid #374151;border-radius:8px;
+    color:#fff;font-size:13px;font-family:inherit;}
+  input.field:focus,select.field:focus,textarea.field:focus{outline:none;border-color:#f5a623;}
+  textarea.field{resize:vertical;min-height:60px;}
+  .hint-box{background:#1f2937;border-radius:8px;padding:10px 12px;
+            font-size:13px;color:#9ca3af;margin-top:4px;}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+  .info-row{display:flex;gap:6px;font-size:12px;color:#6b7280;margin-top:6px;flex-wrap:wrap;}
+  .info-label{color:#4b5563;}
+  .promo-field{display:none;}
+
+  .toast{position:fixed;bottom:24px;right:24px;background:#052e16;color:#4ade80;
+         border:1px solid #14532d;border-radius:8px;padding:10px 16px;
+         font-size:13px;display:none;z-index:200;}
+  .empty{padding:32px;text-align:center;color:#4b5563;font-size:14px;}
+  .actions{display:flex;gap:6px;flex-wrap:wrap;}
+
+  /* Manager notice banner */
+  .manager-notice{background:#0c1f2e;border:1px solid #0e4f6e;border-radius:8px;
+                  padding:10px 16px;margin-bottom:16px;font-size:12px;color:#7dd3fc;display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">BLEE <span>Quant</span>
+      <sub id="header-role-label">Admin Dashboard</sub>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span id="admin-email" style="font-size:12px;color:#6b7280;"></span>
+    <button class="btn btn-outline btn-sm" onclick="doSignOut()">Sign out</button>
+  </div>
+</header>
+
+<!-- Manager notice -->
+<div class="manager-notice" id="manager-notice">
+  🛡️ You are logged in as <strong>Manager</strong>. Admin accounts are not shown.
+  You can manage Newsletter, Starter, Pro, and Marketer users.
+</div>
+
+<!-- My Referral Code (admin/manager can set their own promo code) -->
+<div id="my-promo-section" style="display:none;background:#120820;border:1px solid #4c1d95;
+     border-radius:10px;padding:14px 18px;margin-bottom:20px;
+     display:none;align-items:center;gap:14px;flex-wrap:wrap;">
+  <div>
+    <div style="font-size:10px;color:#a78bfa;font-weight:700;text-transform:uppercase;
+                letter-spacing:.1em;margin-bottom:4px;">My Referral Code</div>
+    <div style="font-size:18px;font-weight:800;color:#fff;letter-spacing:.1em;"
+         id="my-promo-display">— not set —</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <input id="my-promo-input" type="text" placeholder="e.g. BLEE-ADMIN-01"
+           maxlength="30"
+           style="background:#1f2937;border:1px solid #4c1d95;color:#fff;
+                  padding:7px 12px;border-radius:7px;font-size:13px;width:180px;
+                  text-transform:uppercase;font-family:inherit;"
+           oninput="this.value=this.value.toUpperCase()"/>
+    <button onclick="saveMyPromoCode()"
+            style="background:#4c1d95;color:#e9d5ff;border:0;border-radius:7px;
+                   padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">
+      Save Code
+    </button>
+    <button onclick="copyMyPromoLink()" id="copy-my-promo"
+            style="background:transparent;border:1px solid #4c1d95;color:#a78bfa;
+                   border-radius:7px;padding:7px 14px;font-size:12px;
+                   font-weight:700;cursor:pointer;display:none;">
+      📋 Copy Link
+    </button>
+  </div>
+  <div style="font-size:11px;color:#6b7280;flex:1;min-width:200px;">
+    Set a code and share the referral link to track members you recruit personally.
+    Recruits appear in the <a href="marketing.html" style="color:#a78bfa;">Marketing Dashboard</a>.
+  </div>
+</div>
+
+<!-- Quick Links -->
+<div class="quick-links">
+  <a href="index.html" class="quick-link">
+    <span class="quick-link-icon">🏠</span>
+    <div><div class="quick-link-title">Home</div>
+         <div class="quick-link-sub">BLEE Quant homepage</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
+  <a href="data_flow_diagram.html" class="quick-link">
+    <span class="quick-link-icon">📊</span>
+    <div><div class="quick-link-title">System Data Flow</div>
+         <div class="quick-link-sub">Architecture diagram</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
+  <a href="index2.html" class="quick-link">
+    <span class="quick-link-icon">📈</span>
+    <div><div class="quick-link-title">Daily Signal</div>
+         <div class="quick-link-sub">Today's allocation</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
+  <a href="Algorithm185History.html" class="quick-link">
+    <span class="quick-link-icon">📉</span>
+    <div><div class="quick-link-title">Backtest History</div>
+         <div class="quick-link-sub">3-year performance</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
+  <a href="marketing.html" class="quick-link">
+    <span class="quick-link-icon">🎯</span>
+    <div><div class="quick-link-title">Marketing</div>
+         <div class="quick-link-sub">Referral & commission</div></div>
+    <span class="quick-link-arrow">›</span>
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-val" id="stat-total">—</div>
+    <div class="stat-lbl">Total Users</div>
+  </div>
+  <div class="stat s-free">
+    <div class="stat-val" id="stat-free">—</div>
+    <div class="stat-lbl">📧 Newsletter</div>
+  </div>
+  <div class="stat s-starter">
+    <div class="stat-val" id="stat-starter">—</div>
+    <div class="stat-lbl">⭐ Starter</div>
+  </div>
+  <div class="stat s-pro">
+    <div class="stat-val" id="stat-pro">—</div>
+    <div class="stat-lbl">🚀 Pro</div>
+  </div>
+  <div class="stat s-marketer">
+    <div class="stat-val" id="stat-marketer">—</div>
+    <div class="stat-lbl">🎯 Marketers</div>
+  </div>
+  <!-- Admin-only stats -->
+  <div class="stat s-manager" id="stat-manager-card" style="display:none;">
+    <div class="stat-val" id="stat-manager">—</div>
+    <div class="stat-lbl">🛡️ Managers</div>
+  </div>
+  <div class="stat s-mrr">
+    <div class="stat-val" id="stat-mrr">—</div>
+    <div class="stat-lbl">Est. MRR</div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <input class="search" id="search" type="text"
+         placeholder="Search email…" oninput="renderTable()"/>
+  <select class="filter" id="filter-role" onchange="renderTable()">
+    <option value="">All roles</option>
+    <option value="free">📧 Newsletter</option>
+    <option value="basic">⭐ Starter</option>
+    <option value="premium">🚀 Pro</option>
+    <option value="marketer">🎯 Marketer</option>
+    <!-- admin-only options added by JS -->
+  </select>
+  <select class="filter" id="filter-status" onchange="renderTable()">
+    <option value="">All statuses</option>
+    <option value="active">Active</option>
+    <option value="pending">Pending</option>
+    <option value="inactive">Inactive</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
+  <button class="btn btn-gold" onclick="openAddModal()">+ Add User</button>
+  <button class="btn btn-outline" onclick="loadUsers()" style="margin-left:auto;">⟳ Refresh</button>
+</div>
+
+<!-- User Table -->
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Plan / Code</th>
+        <th>Started</th>
+        <th>Last Login</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="user-tbody">
+      <tr><td colspan="7" class="empty">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── EDIT USER MODAL ── -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <h3 id="modal-title">Edit User</h3>
+    <input type="hidden" id="edit-uid"/>
+
+    <label class="f">Email</label>
+    <input class="field" id="edit-email" type="email" readonly
+           style="opacity:.6;cursor:default;"/>
+
+    <label class="f">Role / Tier</label>
+    <select class="field" id="edit-tier" onchange="togglePromoField('edit')">
+      <option value="none">— None (no access)</option>
+      <option value="free">📧 Newsletter (backtest + market forecast)</option>
+      <option value="basic">⭐ Starter ($19/mo)</option>
+      <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
+      <option value="marketer">🎯 Marketer (referral partner)</option>
+      <!-- admin-only options injected by JS -->
+    </select>
+
+    <div class="promo-field" id="edit-promo-row">
+      <label class="f">Promo Code</label>
+      <input class="field" id="edit-promoCode" type="text"
+             placeholder="e.g. BLEE-JOHN-01" style="text-transform:uppercase;"
+             oninput="this.value=this.value.toUpperCase()"/>
+    </div>
+
+    <label class="f">Subscription Status</label>
+    <select class="field" id="edit-status">
+      <option value="active">✅ Active</option>
+      <option value="pending">⏳ Pending</option>
+      <option value="inactive">❌ Inactive</option>
+      <option value="cancelled">🚫 Cancelled</option>
+    </select>
+
+    <label class="f">Security Hint</label>
+    <div class="hint-box" id="edit-hint">—</div>
+
+    <label class="f">Admin Notes</label>
+    <textarea class="field" id="edit-notes" rows="2"
+              placeholder="Internal notes…"></textarea>
+
+    <div class="info-row" id="edit-info"></div>
+
+    <div class="modal-btns">
+      <button class="btn btn-danger btn-sm" id="btn-delete"
+              onclick="deleteUser()">Delete</button>
+      <button class="btn btn-outline" onclick="sendResetFromModal()">
+        📧 Send Reset
+      </button>
+      <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveUser()">Save & Sync</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD USER MODAL ── -->
+<div class="modal-bg" id="add-modal">
+  <div class="modal">
+    <h3>Add / Invite User</h3>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:16px;line-height:1.6;">
+      Creates a Firestore record so the user's role is pre-set when they register.
+      For Marketers, the promo code activates on first login.
+    </p>
+
+    <label class="f">Email Address</label>
+    <input class="field" id="add-email" type="email"
+           placeholder="member@example.com"/>
+
+    <label class="f">Role / Tier</label>
+    <select class="field" id="add-tier" onchange="togglePromoField('add')">
+      <option value="free">📧 Newsletter (backtest + market forecast)</option>
+      <option value="basic">⭐ Starter ($19/mo)</option>
+      <option value="premium">🚀 Pro ($49/mo) — all features + auto-trade</option>
+      <option value="marketer">🎯 Marketer (referral partner)</option>
+      <!-- admin-only options injected by JS -->
+    </select>
+
+    <div class="promo-field" id="add-promo-row">
+      <label class="f">Promo Code
+        <span style="color:#6b7280;font-weight:400;">
+          (unique — marketer shares this to recruit members)
+        </span>
+      </label>
+      <input class="field" id="add-promoCode" type="text"
+             placeholder="e.g. BLEE-JOHN-01" style="text-transform:uppercase;"
+             oninput="this.value=this.value.toUpperCase()"/>
+    </div>
+
+    <label class="f">Subscription Status</label>
+    <select class="field" id="add-status">
+      <option value="active">✅ Active (grant access now)</option>
+      <option value="pending">⏳ Pending (awaiting payment)</option>
+    </select>
+
+    <label class="f">Security Hint (optional)</label>
+    <input class="field" id="add-hint" type="text"
+           placeholder="Optional hint for the user"/>
+
+    <label class="f">Admin Notes</label>
+    <input class="field" id="add-notes" type="text"
+           placeholder="e.g. 'Beta tester', 'Partner from conference'"/>
+
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="addUser()">Add & Sync to Firestore</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+let allUsers            = [];
+let currentRole         = "";    // "admin" | "manager"
+let currentFirebaseUser = null;
+let myPromoCode         = "";
+
+// ── Full-screen loading overlay (prevents content flash before auth check) ──
+(function () {
+  const ov = document.createElement("div");
+  ov.id = "admin-overlay";
+  ov.style.cssText = [
+    "position:fixed;inset:0;z-index:99999;background:#0a0f1e",
+    "display:flex;flex-direction:column;align-items:center;justify-content:center",
+    "font-family:-apple-system,system-ui,'Segoe UI',sans-serif;color:#fff",
+  ].join(";");
+  ov.innerHTML = `
+    <div style="font-size:22px;font-weight:800;color:#f5a623;
+                letter-spacing:.05em;margin-bottom:12px;">BLEE Quant</div>
+    <div style="font-size:14px;color:#9ca3af;margin-bottom:28px;">
+      Verifying access…</div>
+    <div style="width:36px;height:36px;border:3px solid #1f2937;
+                border-top-color:#f5a623;border-radius:50%;
+                animation:blee-spin .8s linear infinite;"></div>
+    <style>@keyframes blee-spin{to{transform:rotate(360deg);}}</style>`;
+  document.body.appendChild(ov);
+})();
+
+function removeOverlay() {
+  const el = document.getElementById("admin-overlay");
+  if (el) el.remove();
+}
+
+// ── Auth gate ─────────────────────────────────────────────────────────────
+let _authResolved = false;
+
+auth.onAuthStateChanged(async user => {
+  // First call with null can be a race with session restoration — wait briefly
+  if (!user) {
+    if (!_authResolved) {
+      // Give Firebase up to 2 s to restore the session before giving up
+      await new Promise(r => setTimeout(r, 2000));
+      if (auth.currentUser) return; // session restored — next callback will handle it
+    }
+    window.location.replace((BLEE_PAGES.login || "login.html") + "?next=admin.html");
+    return;
+  }
+  _authResolved = true;
+
+  // Super-admin by email — always granted (case-insensitive, trim whitespace)
+  if ((user.email || "").trim().toLowerCase() ===
+      (BLEE_ADMIN_EMAIL || "").trim().toLowerCase()) {
+    currentRole = "admin";
+    removeOverlay();
+    initDashboard(user);
+    return;
+  }
+
+  // Check Firestore for admin or manager tier
+  // admin/manager are staff roles — subscriptionStatus is intentionally NOT checked
+  try {
+    const snap = await db.collection("users").doc(user.uid).get();
+    if (snap.exists) {
+      const { tier } = snap.data();
+      if (tier === "admin") {
+        currentRole = "admin";
+        removeOverlay();
+        initDashboard(user);
+        return;
+      }
+      if (tier === "manager") {
+        currentRole = "manager";
+        removeOverlay();
+        initDashboard(user);
+        return;
+      }
+    }
+    // Firestore doc exists but tier is not admin/manager — show denial, don't silently redirect
+    removeOverlay();
+    const actualTier = snap.exists ? (snap.data().tier || "none") : "none";
+    document.body.insertAdjacentHTML("afterbegin",
+      '<div style="position:fixed;inset:0;z-index:99999;background:#0a0f1e;' +
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+      'font-family:system-ui,sans-serif;color:#fff;padding:24px;text-align:center;">' +
+      '<div style="font-size:40px;margin-bottom:16px;">🚫</div>' +
+      '<div style="font-size:22px;font-weight:800;color:#f87171;margin-bottom:8px;">Access Denied</div>' +
+      '<div style="font-size:14px;color:#9ca3af;max-width:400px;margin-bottom:24px;">' +
+        'Your account (<strong style="color:#e5e7eb">' + (user.email || "") + '</strong>) ' +
+        'has tier <strong style="color:#fbbf24">"' + actualTier + '"</strong>. ' +
+        'Admin access requires <strong style="color:#38bdf8">manager</strong> or <strong style="color:#f5a623">admin</strong> tier. ' +
+        'Please ask an admin to update your role in the Admin panel.' +
+      '</div>' +
+      '<div style="display:flex;gap:12px;">' +
+        '<a href="' + (BLEE_PAGES.home || "index.html") + '" style="background:#374151;color:#d1d5db;' +
+          'border:1px solid #4b5563;border-radius:8px;padding:10px 20px;text-decoration:none;font-weight:600;">← Home</a>' +
+        '<button onclick="firebase.auth().signOut().finally(()=>location.href=\'login.html\')" ' +
+          'style="background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b;border-radius:8px;' +
+          'padding:10px 20px;font-weight:600;cursor:pointer;font-family:inherit;">Sign Out & Switch Account</button>' +
+      '</div>' +
+      '</div>');
+  } catch (e) {
+    // Firestore error (permissions, network) — fail open, don't boot the user
+    console.error("Admin auth check error:", e);
+    removeOverlay();
+    // Show a visible error rather than silently redirecting
+    document.body.insertAdjacentHTML("afterbegin",
+      '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;' +
+      'background:#7f1d1d;color:#fca5a5;padding:12px 20px;font-size:13px;' +
+      'font-family:system-ui,sans-serif;text-align:center;">' +
+      '⚠️ Could not verify your role from Firestore (' + e.message + '). ' +
+      'Check Firestore security rules. ' +
+      '<a href="admin.html" style="color:#fff;font-weight:700;">Retry</a>' +
+      '</div>');
+  }
+});
+
+function initDashboard(user) {
+  document.getElementById("admin-email").textContent = user.email;
+  currentFirebaseUser = user;
+
+  if (currentRole === "manager") {
+    document.getElementById("header-role-label").textContent = "Manager Dashboard";
+    document.getElementById("manager-notice").style.display = "block";
+  } else {
+    injectAdminOptions();
+    document.getElementById("stat-manager-card").style.display = "";
+  }
+
+  // Show My Referral Code panel for both admin and manager
+  document.getElementById("my-promo-section").style.display = "flex";
+  loadMyPromoCode(user);
+
+  loadUsers();
+}
+
+// Inject admin/manager role options visible only to admin
+function injectAdminOptions() {
+  const adminOpts = `
+    <option value="manager">🛡️ Manager (admin panel + all pages)</option>
+    <option value="admin">🔑 Admin (full access)</option>`;
+
+  ["edit-tier", "add-tier"].forEach(id => {
+    document.getElementById(id).insertAdjacentHTML("beforeend", adminOpts);
+  });
+
+  // Add to filter dropdown
+  document.getElementById("filter-role").insertAdjacentHTML("beforeend", `
+    <option value="manager">🛡️ Manager</option>
+    <option value="admin">🔑 Admin</option>`);
+}
+
+// ── Role helpers ──────────────────────────────────────────────────────────
+const ROLE_LABEL = {
+  admin:    { label:"🔑 Admin",    cls:"role-admin" },
+  manager:  { label:"🛡️ Manager",  cls:"role-manager" },
+  premium:  { label:"🚀 Pro",      cls:"role-pro" },
+  basic:    { label:"⭐ Starter",  cls:"role-starter" },
+  free:     { label:"📧 Newsletter", cls:"role-free" },
+  marketer: { label:"🎯 Marketer", cls:"role-marketer" },
+  none:     { label:"— None",      cls:"role-none" },
+};
+function roleBadge(tier) {
+  const r = ROLE_LABEL[tier] || ROLE_LABEL.none;
+  return `<span class="role-badge ${r.cls}">${r.label}</span>`;
+}
+function statusBadge(s) {
+  const m = { active:"✅ Active", pending:"⏳ Pending",
+              inactive:"❌ Inactive", cancelled:"🚫 Cancelled" };
+  return `<span class="status-badge status-${s||'inactive'}">${m[s]||s||"—"}</span>`;
+}
+function planLabel(u) {
+  if (u.tier === "marketer") return u.promoCode
+    ? `<span style="color:#a78bfa;font-size:11px;font-weight:700;">${u.promoCode}</span>`
+    : "Marketer";
+  if (u.tier === "manager") return "Manager";
+  if (u.tier === "admin")   return "Admin";
+  return { premium:"Pro $49/mo", basic:"Starter $19/mo", free:"Newsletter (Free)", none:"—" }[u.tier] || "—";
+}
+function fmtDate(ts) {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+}
+
+// ── Load users ────────────────────────────────────────────────────────────
+async function loadUsers() {
+  document.querySelector("#user-tbody").innerHTML =
+    '<tr><td colspan="7" class="empty">Loading…</td></tr>';
+  try {
+    const snap = await db.collection("users").orderBy("createdAt","desc").get();
+    allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    updateStats();
+    renderTable();
+  } catch (e) {
+    document.querySelector("#user-tbody").innerHTML =
+      `<tr><td colspan="7" class="empty" style="color:#f87171;">
+        Error: ${e.message}</td></tr>`;
+  }
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────
+function updateStats() {
+  // Managers see stats for the accounts they can manage (not admin/manager)
+  const visible = currentRole === "manager"
+    ? allUsers.filter(u => !isAdminTier(u))
+    : allUsers;
+
+  const active   = visible.filter(u => u.subscriptionStatus === "active");
+  const free     = active.filter(u => u.tier === "free").length;
+  const starter  = active.filter(u => u.tier === "basic").length;
+  const pro      = active.filter(u => u.tier === "premium").length;
+  const mktr     = visible.filter(u => u.tier === "marketer").length;
+  const mgr      = allUsers.filter(u => u.tier === "manager").length;
+  const mrr      = starter * 19 + pro * 49;
+
+  document.getElementById("stat-total").textContent    = visible.length;
+  document.getElementById("stat-free").textContent     = free;
+  document.getElementById("stat-starter").textContent  = starter;
+  document.getElementById("stat-pro").textContent      = pro;
+  document.getElementById("stat-marketer").textContent = mktr;
+  document.getElementById("stat-manager").textContent  = mgr;
+  document.getElementById("stat-mrr").textContent      = "$" + mrr.toLocaleString();
+}
+
+// ── Which tiers are "admin-level" (hidden from managers) ──────────────────
+function isAdminTier(u) {
+  return u.tier === "admin" || u.tier === "manager" || u.email === BLEE_ADMIN_EMAIL;
+}
+
+// ── Render table ──────────────────────────────────────────────────────────
+function renderTable() {
+  const q      = document.getElementById("search").value.toLowerCase();
+  const role   = document.getElementById("filter-role").value;
+  const status = document.getElementById("filter-status").value;
+
+  let rows = allUsers.filter(u => {
+    // Managers cannot see admin or manager accounts
+    if (currentRole === "manager" && isAdminTier(u)) return false;
+    if (q      && !(u.email||"").toLowerCase().includes(q)) return false;
+    if (role   && u.tier               !== role)            return false;
+    if (status && u.subscriptionStatus !== status)          return false;
+    return true;
+  });
+
+  if (!rows.length) {
+    document.querySelector("#user-tbody").innerHTML =
+      '<tr><td colspan="7" class="empty">No users found.</td></tr>';
+    return;
+  }
+
+  document.querySelector("#user-tbody").innerHTML = rows.map(u => {
+    const isPending = u.uid.startsWith("pending_");
+    return `<tr>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;"
+          title="${u.email||''}">
+        ${u.email||"—"}
+        ${isPending
+          ? '<span style="font-size:10px;color:#ca8a04;margin-left:4px;">(invited)</span>'
+          : ''}
+      </td>
+      <td>${roleBadge(u.tier)}</td>
+      <td>${statusBadge(u.subscriptionStatus)}</td>
+      <td style="color:#9ca3af;font-size:12px;">${planLabel(u)}</td>
+      <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">
+        ${fmtDate(u.createdAt)}</td>
+      <td style="color:#9ca3af;white-space:nowrap;font-size:12px;">
+        ${fmtDate(u.lastLoginAt)}</td>
+      <td><div class="actions">
+        <button class="btn btn-outline btn-sm"
+                onclick="openEditModal('${u.uid}')">Edit</button>
+        <button class="btn btn-outline btn-sm"
+                onclick="sendResetFor('${u.email}','${u.uid}')"
+                title="${isPending ? 'Send signup invite link' : 'Send password reset email'}">
+          ${isPending ? '🔗' : '📧'}</button>
+        ${u.tier === "marketer"
+          ? `<a href="marketing.html" class="btn btn-outline btn-sm"
+               style="text-decoration:none;">🎯</a>`
+          : ""}
+      </div></td>
+    </tr>`;
+  }).join("");
+}
+
+// ── Promo code visibility ─────────────────────────────────────────────────
+function togglePromoField(prefix) {
+  const tier = document.getElementById(prefix + "-tier").value;
+  document.getElementById(prefix + "-promo-row").style.display =
+    (tier === "marketer") ? "block" : "none";
+}
+
+// ── Edit modal ────────────────────────────────────────────────────────────
+function openEditModal(uid) {
+  const u = allUsers.find(x => x.uid === uid);
+  if (!u) return;
+
+  document.getElementById("edit-uid").value        = uid;
+  document.getElementById("edit-email").value      = u.email || "";
+  document.getElementById("edit-tier").value       = u.tier  || "none";
+  document.getElementById("edit-status").value     = u.subscriptionStatus || "pending";
+  document.getElementById("edit-hint").textContent = u.securityHint || "— not set —";
+  document.getElementById("edit-notes").value      = u.notes || "";
+  document.getElementById("edit-promoCode").value  = u.promoCode || "";
+  togglePromoField("edit");
+
+  // Build info row
+  let infoHtml = `
+    <span class="info-label">UID:</span>
+    <span style="font-size:11px;">${uid}</span> &nbsp;·&nbsp;
+    <span class="info-label">Source:</span>
+    <span style="font-size:11px;">${u.source||"—"}</span> &nbsp;·&nbsp;
+    <span class="info-label">Plan:</span>
+    <span style="font-size:11px;">${u.plan||"—"}</span>`;
+  if (u.referredBy)
+    infoHtml += ` &nbsp;·&nbsp;<span class="info-label">Referred by:</span>
+      <span style="color:#a78bfa;font-size:11px;">${u.referredBy}</span>`;
+
+  document.getElementById("edit-info").innerHTML = infoHtml;
+  document.getElementById("modal-title").textContent = "Edit: " + (u.email || uid);
+
+  // Manager: hide Delete button to reduce risk
+  document.getElementById("btn-delete").style.display =
+    currentRole === "manager" ? "none" : "";
+
+  document.getElementById("edit-modal").classList.add("show");
+}
+function closeEditModal() {
+  document.getElementById("edit-modal").classList.remove("show");
+}
+
+async function saveUser() {
+  const uid       = document.getElementById("edit-uid").value;
+  const tier      = document.getElementById("edit-tier").value;
+  const status    = document.getElementById("edit-status").value;
+  const notes     = document.getElementById("edit-notes").value.trim();
+  const promoCode = document.getElementById("edit-promoCode").value.trim().toUpperCase();
+
+  const updates = { tier, subscriptionStatus: status, notes };
+  if (tier === "marketer" && promoCode) updates.promoCode = promoCode;
+
+  try {
+    await db.collection("users").doc(uid).update(updates);
+
+    if (tier === "marketer" && promoCode) {
+      const u = allUsers.find(x => x.uid === uid);
+      await db.collection("promoCodes").doc(promoCode).set(
+        { uid, email: u ? u.email : "", code: promoCode,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    }
+
+    const idx = allUsers.findIndex(u => u.uid === uid);
+    if (idx >= 0) Object.assign(allUsers[idx], updates);
+    closeEditModal();
+    updateStats();
+    renderTable();
+    showToast("✅ User updated & synced to Firestore.");
+  } catch (e) { alert("Save failed: " + e.message); }
+}
+
+async function deleteUser() {
+  const uid   = document.getElementById("edit-uid").value;
+  const email = document.getElementById("edit-email").value;
+  if (!confirm(
+    `Delete Firestore record for ${email}?\n\n` +
+    `Note: This removes membership data only. Firebase Auth login is NOT deleted.`
+  )) return;
+  try {
+    await db.collection("users").doc(uid).delete();
+    allUsers = allUsers.filter(u => u.uid !== uid);
+    closeEditModal();
+    updateStats();
+    renderTable();
+    showToast("🗑️ User record deleted from Firestore.");
+  } catch (e) { alert("Delete failed: " + e.message); }
+}
+
+function sendResetFromModal() {
+  const uid   = document.getElementById("edit-uid").value;
+  const email = document.getElementById("edit-email").value;
+  sendResetFor(email, uid);
+}
+
+// ── Add user modal ────────────────────────────────────────────────────────
+function openAddModal() {
+  document.getElementById("add-tier").value = "free";
+  document.getElementById("add-status").value = "active";
+  togglePromoField("add");
+  document.getElementById("add-modal").classList.add("show");
+}
+function closeAddModal() {
+  document.getElementById("add-modal").classList.remove("show");
+}
+
+async function addUser() {
+  const email     = document.getElementById("add-email").value.trim();
+  const tier      = document.getElementById("add-tier").value;
+  const status    = document.getElementById("add-status").value;
+  const hint      = document.getElementById("add-hint").value.trim();
+  const notes     = document.getElementById("add-notes").value.trim();
+  const promoCode = document.getElementById("add-promoCode").value.trim().toUpperCase();
+
+  if (!email) { alert("Email is required."); return; }
+  if (tier === "marketer" && !promoCode) {
+    alert("Please set a promo code for this marketer."); return;
+  }
+
+  const docId   = "pending_" + email.replace(/[^a-zA-Z0-9]/g, "_");
+  const planMap = { premium:"pro", basic:"starter", marketer:"marketer",
+                    manager:"manager", admin:"admin", free:"free" };
+  const docData = {
+    email, tier, subscriptionStatus: status,
+    plan:         planMap[tier] || "free",
+    securityHint: hint,
+    notes:        notes || "Manually added by admin",
+    createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+    lastLoginAt:  null,
+    source:       "admin_invited",
+  };
+  if (tier === "marketer" && promoCode) docData.promoCode = promoCode;
+
+  try {
+    await db.collection("users").doc(docId).set(docData);
+
+    if (tier === "marketer" && promoCode) {
+      await db.collection("promoCodes").doc(promoCode).set({
+        uid: null, email, code: promoCode,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+
+    closeAddModal();
+    const roleDisplay = ROLE_LABEL[tier]?.label || tier;
+    showToast(`✅ ${roleDisplay} invitation created for ${email}.`);
+    loadUsers();
+    ["add-email","add-hint","add-notes","add-promoCode"].forEach(id =>
+      document.getElementById(id).value = "");
+  } catch (e) { alert("Failed: " + e.message); }
+}
+
+// ── Password reset / invite ──────────────────────────────────────────────
+async function sendResetFor(email, uid) {
+  if (!email) return;
+
+  // Pending invite = no Firebase Auth account yet → send signup link instead
+  const isPending = uid
+    ? uid.startsWith("pending_")
+    : !!(allUsers.find(u => u.email === email)?.uid || "").startsWith("pending_");
+
+  if (isPending) {
+    const base = window.location.href.replace("admin.html", "");
+    const link = base + "login.html?tab=signup&email=" + encodeURIComponent(email);
+    if (!confirm(
+      `"${email}" has not signed up yet — they have no password to reset.\n\n` +
+      `Send them this signup invitation link instead?\n\n${link}`
+    )) return;
+    try {
+      await navigator.clipboard.writeText(link);
+      showToast("🔗 Signup link copied to clipboard! Share it with " + email);
+    } catch (e) {
+      prompt("Copy this signup link and share it with " + email + ":", link);
+    }
+    return;
+  }
+
+  // Real Firebase Auth account → send password reset email
+  if (!confirm(`Send password reset email to ${email}?`)) return;
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showToast("📧 Reset email sent to " + email);
+  } catch (e) {
+    if (e.code === "auth/user-not-found") {
+      alert(`No Firebase Auth account found for ${email}.\n\nThis user may have been added manually. They need to sign up first.`);
+    } else {
+      alert("Failed: " + e.message);
+    }
+  }
+}
+
+// ── My Referral Code (admin / manager) ───────────────────────────────────
+async function loadMyPromoCode(user) {
+  try {
+    // Try to find an existing promo code for this user in promoCodes collection
+    const snap = await db.collection("promoCodes")
+      .where("email", "==", user.email).limit(1).get();
+    if (!snap.empty) {
+      myPromoCode = snap.docs[0].data().code || "";
+    } else {
+      // Also check the user's own Firestore doc (if they have one)
+      const userSnap = await db.collection("users").doc(user.uid).get();
+      if (userSnap.exists && userSnap.data().promoCode) {
+        myPromoCode = userSnap.data().promoCode;
+      }
+    }
+  } catch (e) { /* ignore — not critical */ }
+
+  const display = document.getElementById("my-promo-display");
+  const input   = document.getElementById("my-promo-input");
+  const copyBtn = document.getElementById("copy-my-promo");
+  if (myPromoCode) {
+    display.textContent = myPromoCode;
+    input.value         = myPromoCode;
+    copyBtn.style.display = "";
+  } else {
+    display.textContent = "— not set —";
+    copyBtn.style.display = "none";
+  }
+}
+
+async function saveMyPromoCode() {
+  const user = currentFirebaseUser;
+  if (!user) return;
+  const code = document.getElementById("my-promo-input").value.trim().toUpperCase();
+  if (!code) { alert("Please enter a promo code."); return; }
+
+  try {
+    // Write to promoCodes collection
+    await db.collection("promoCodes").doc(code).set({
+      uid:       user.uid,
+      email:     user.email,
+      code,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    // Also write to or update the admin's own users doc
+    await db.collection("users").doc(user.uid).set({
+      email:              user.email,
+      tier:               currentRole === "manager" ? "manager" : "admin",
+      subscriptionStatus: "active",
+      promoCode:          code,
+      updatedAt:          firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    myPromoCode = code;
+    document.getElementById("my-promo-display").textContent = code;
+    document.getElementById("copy-my-promo").style.display = "";
+    showToast('✅ Promo code "' + code + '" saved. Share the referral link to start recruiting!');
+  } catch (e) { alert("Failed to save: " + e.message); }
+}
+
+function copyMyPromoLink() {
+  const base = window.location.href.replace("admin.html", "");
+  const url  = base + "subscribe.html?promoCode=" + encodeURIComponent(myPromoCode);
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById("copy-my-promo");
+    const orig = btn.textContent;
+    btn.textContent = "✅ Copied!";
+    setTimeout(() => btn.textContent = orig, 2200);
+  }).catch(() => prompt("Copy this referral link:", url));
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 4000);
+}
+function doSignOut() {
+  try {
+    firebase.auth().signOut().finally(function () {
+      window.location.replace("login.html");
+    });
+  } catch (e) {
+    window.location.replace("login.html");
+  }
+}
+</script>
+</body>
+</html>

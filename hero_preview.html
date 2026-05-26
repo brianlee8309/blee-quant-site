@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hero Image Versions — Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a1a; color: #fff; font-family: -apple-system, sans-serif; padding: 30px 20px; }
+  h1 { text-align: center; font-size: 22px; color: #f5c842; margin-bottom: 8px; }
+  p.sub { text-align: center; color: #aaa; font-size: 14px; margin-bottom: 30px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 1400px; margin: 0 auto; }
+  .card { border: 2px solid #1e2a4a; border-radius: 12px; overflow: hidden; cursor: pointer;
+          transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: #f5c842; transform: scale(1.01); }
+  .card.selected { border-color: #f5c842; box-shadow: 0 0 0 3px rgba(245,200,66,.35); }
+  .card img { width: 100%; display: block; aspect-ratio: 1536/600; object-fit: cover; object-position: right center; }
+  .card-info { background: #0f1829; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+  .card-name { font-size: 15px; font-weight: 700; color: #e2e8f0; }
+  .card-desc { font-size: 12px; color: #94a3b8; margin-top: 3px; }
+  .badge { font-size: 11px; background: #1e3a5f; color: #7dd3fc; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .badge.selected { background: #92400e; color: #fbbf24; }
+  .btn-row { text-align: center; margin-top: 32px; }
+  .btn { background: #f5c842; color: #07111f; font-size: 15px; font-weight: 700;
+         padding: 12px 36px; border: none; border-radius: 8px; cursor: pointer; margin: 0 8px; }
+  .btn:hover { background: #fbbf24; }
+  .btn.secondary { background: transparent; border: 2px solid #334155; color: #94a3b8; }
+  .btn.secondary:hover { border-color: #64748b; color: #e2e8f0; }
+  #chosen { text-align: center; margin-top: 16px; font-size: 14px; color: #7dd3fc; min-height: 20px; }
+  .overlay-demo { position: relative; overflow: hidden; }
+  .overlay-demo::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, rgba(7,17,31,.96) 0%, rgba(7,17,31,.88) 32%,
+      rgba(7,17,31,.60) 55%, rgba(7,17,31,.15) 80%, rgba(7,17,31,.00) 100%);
+    z-index: 1; pointer-events: none;
+  }
+  .overlay-demo::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(7,17,31,.00) 0%, rgba(7,17,31,.55) 70%, rgba(7,17,31,.92) 100%);
+    z-index: 1; pointer-events: none;
+  }
+  .overlay-label {
+    position: absolute; top: 50%; left: 20px; transform: translateY(-50%);
+    z-index: 2; pointer-events: none; line-height: 1.4;
+  }
+  .overlay-label .pre { font-size: 11px; color: rgba(255,255,255,.75); }
+  .overlay-label .h1  { font-size: 20px; font-weight: 800; color: #fff; }
+  .overlay-label .h1 span { color: #f5c842; }
+  .toggle-overlay { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+  .toggle-btn { background: #1e2a4a; color: #94a3b8; border: 1px solid #334155; padding: 6px 16px;
+                border-radius: 6px; cursor: pointer; font-size: 13px; }
+  .toggle-btn.active { background: #1e3a5f; color: #7dd3fc; border-color: #3b82f6; }
+</style>
+</head>
+<body>
+<h1>Hero Image Versions — Choose Your Favorite</h1>
+<p class="sub">Click a card to select it. Toggle "Show overlay" to preview how it looks under the actual hero gradients.</p>
+
+<div class="toggle-overlay">
+  <button class="toggle-btn" id="btn-raw" onclick="setMode('raw')">Raw image</button>
+  <button class="toggle-btn active" id="btn-ov" onclick="setMode('overlay')">Show overlay + text</button>
+</div>
+
+<div class="grid" id="grid">
+
+  <div class="card" id="card-1" onclick="select(1)">
+    <div class="overlay-demo">
+      <img src="hero_v1_golden_hour.jpg" alt="Version 1">
+      <div class="overlay-label">
+        <div class="pre">For Every Investor Who Has Been Hurt Before</div>
+        <div class="h1">Financial Freedom Is a Right,<br><span>Not a Privilege.</span></div>
+      </div>
+    </div>
+    <div class="card-info">
+      <div>
+        <div class="card-name">Version 1 — Golden Hour Sunset</div>
+        <div class="card-desc">Warm amber/orange sky · golden pool shimmer · rich &amp; inviting</div>
+      </div>
+      <div class="badge" id="badge-1">Click to select</div>
+    </div>
+  </div>
+
+  <div class="card" id="card-2" onclick="select(2)">
+    <div class="overlay-demo">
+      <img src="hero_v2_tropical_day.jpg" alt="Version 2">
+      <div class="overlay-label">
+        <div class="pre">For Every Investor Who Has Been Hurt Before</div>
+        <div class="h1">Financial Freedom Is a Right,<br><span>Not a Privilege.</span></div>
+      </div>
+    </div>
+    <div class="card-info">
+      <div>
+        <div class="card-name">Version 2 — Tropical Bright Day</div>
+        <div class="card-desc">Vivid cyan/turquoise pool · bright blue sky · cheerful &amp; energetic</div>
+      </div>
+      <div class="badge" id="badge-2">Click to select</div>
+    </div>
+  </div>
+
+  <div class="card" id="card-3" onclick="select(3)">
+    <div class="overlay-demo">
+      <img src="hero_v3_twilight_luxury.jpg" alt="Version 3">
+      <div class="overlay-label">
+        <div class="pre">For Every Investor Who Has Been Hurt Before</div>
+        <div class="h1">Financial Freedom Is a Right,<br><span>Not a Privilege.</span></div>
+      </div>
+    </div>
+    <div class="card-info">
+      <div>
+        <div class="card-name">Version 3 — Twilight Luxury</div>
+        <div class="card-desc">Deep purple-blue dusk · glowing pool lights · sophisticated &amp; premium</div>
+      </div>
+      <div class="badge" id="badge-3">Click to select</div>
+    </div>
+  </div>
+
+  <div class="card" id="card-4" onclick="select(4)">
+    <div class="overlay-demo">
+      <img src="hero_v4_morning_glow.jpg" alt="Version 4">
+      <div class="overlay-label">
+        <div class="pre">For Every Investor Who Has Been Hurt Before</div>
+        <div class="h1">Financial Freedom Is a Right,<br><span>Not a Privilege.</span></div>
+      </div>
+    </div>
+    <div class="card-info">
+      <div>
+        <div class="card-name">Version 4 — Warm Morning Glow</div>
+        <div class="card-desc">Soft coral/rose sunrise · calm water · peaceful &amp; hopeful</div>
+      </div>
+      <div class="badge" id="badge-4">Click to select</div>
+    </div>
+  </div>
+
+</div>
+
+<div id="chosen"></div>
+<div class="btn-row">
+  <button class="btn secondary" onclick="window.close()">Close</button>
+</div>
+
+<script>
+  var current = 0;
+  var overlayOn = true;
+  var names = {1:'hero_v1_golden_hour.jpg',2:'hero_v2_tropical_day.jpg',3:'hero_v3_twilight_luxury.jpg',4:'hero_v4_morning_glow.jpg'};
+  var labels = {1:'Version 1 — Golden Hour Sunset',2:'Version 2 — Tropical Bright Day',3:'Version 3 — Twilight Luxury',4:'Version 4 — Morning Glow'};
+
+  function select(n) {
+    if (current) {
+      document.getElementById('card-'+current).classList.remove('selected');
+      document.getElementById('badge-'+current).textContent = 'Click to select';
+      document.getElementById('badge-'+current).classList.remove('selected');
+    }
+    current = n;
+    document.getElementById('card-'+n).classList.add('selected');
+    document.getElementById('badge-'+n).textContent = '✓ Selected';
+    document.getElementById('badge-'+n).classList.add('selected');
+    document.getElementById('chosen').innerHTML =
+      '✓ Selected: <strong style="color:#f5c842">' + labels[n] + '</strong> — ' +
+      'just tell me this version number and I\'ll apply it to your home page!';
+  }
+
+  function setMode(mode) {
+    overlayOn = (mode === 'overlay');
+    document.getElementById('btn-raw').classList.toggle('active', !overlayOn);
+    document.getElementById('btn-ov').classList.toggle('active', overlayOn);
+    var ods = document.querySelectorAll('.overlay-demo');
+    ods.forEach(function(od) {
+      od.style.setProperty('--hide-overlay', overlayOn ? '' : 'none');
+    });
+    if (!overlayOn) {
+      document.querySelectorAll('.overlay-demo::before, .overlay-demo::after').forEach(function(e){ e.style.display='none'; });
+      document.querySelectorAll('.overlay-label').forEach(function(e){ e.style.display='none'; });
+      document.querySelectorAll('.overlay-demo').forEach(function(od){
+        od.classList.add('no-overlay');
+      });
+    } else {
+      document.querySelectorAll('.overlay-demo').forEach(function(od){
+        od.classList.remove('no-overlay');
+      });
+      document.querySelectorAll('.overlay-label').forEach(function(e){ e.style.display=''; });
+    }
+  }
+</script>
+<style>
+  .overlay-demo.no-overlay::before,
+  .overlay-demo.no-overlay::after { display: none !important; }
+  .overlay-demo.no-overlay .overlay-label { display: none !important; }
+</style>
+</body>
+</html>

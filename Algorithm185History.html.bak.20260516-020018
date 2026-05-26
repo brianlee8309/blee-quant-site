@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE - 185 Algorithm · 3-Year History</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0b1120; color: #e8edf5; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  nav { background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 28px;height:58px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10000; }
+  .nav-brand { font-size:16px;font-weight:800;color:#fff;text-decoration:none;display:flex;align-items:center;gap:6px; }
+  .nav-brand span { color:#f59e0b; }
+  .nav-links { display:flex;align-items:center;gap:18px; }
+  .nav-links a { color:rgba(255,255,255,0.55);font-size:13px;text-decoration:none;transition:color .15s; }
+  .nav-links a:hover { color:#fff; }
+  .nav-links a.active { color:#f59e0b;font-weight:600; }
+  .nav-links a.nav-cta { background:#f59e0b;color:#000;padding:5px 13px;border-radius:6px;font-weight:700; }
+  @media(max-width:680px){.nav-links{gap:10px;}.nav-links a{font-size:11px;}}
+  .container { max-width:1100px;margin:0 auto;padding:36px 20px 80px; }
+  .page-header { margin-bottom:28px; }
+  .page-header h1 { font-size:26px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px; }
+  .page-header .sub { color:#64748b;font-size:13px;line-height:1.5; }
+  .badge { display:inline-block;background:#1e3a5f;color:#93c5fd;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:6px;margin-bottom:8px; }
+  .stats-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px; }
+  .stat-card { background:#131f35;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px; }
+  .stat-card .label { font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px; }
+  .stat-card .value { font-size:22px;font-weight:900;letter-spacing:-0.02em; }
+  .stat-card .vs { font-size:11px;color:#64748b;margin-top:3px; }
+  .pos { color:#4ade80; } .neg { color:#f87171; } .neu { color:#94a3b8; }
+  .card { background:#131f35;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:22px 24px;margin-bottom:20px; }
+  .card h2 { font-size:16px;font-weight:800;margin-bottom:16px;color:#f1f5f9; }
+  .chart-wrap { height:300px;position:relative; }
+  .compare-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px; }
+  .compare-card { border-radius:12px;padding:18px 20px;border:2px solid; }
+  .compare-card.blee { background:#0f2744;border-color:#2563eb; }
+  .compare-card.spy  { background:#1a1a2e;border-color:#7c3aed; }
+  .compare-card .name { font-size:12px;font-weight:700;margin-bottom:10px; }
+  .compare-card .big  { font-size:28px;font-weight:900;letter-spacing:-0.02em; }
+  .compare-card .metrics { display:flex;gap:16px;margin-top:10px;flex-wrap:wrap; }
+  .compare-card .metric-item .mlabel { font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em; }
+  .compare-card .metric-item .mval   { font-size:14px;font-weight:700; }
+  @media(max-width:600px){.compare-grid{grid-template-columns:1fr;}}
+  .notice-box { background:#1c1000;border:1.5px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:20px; }
+  .search-row { display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap; }
+  .search-row input { flex:1;min-width:160px;max-width:300px;padding:8px 12px;border:1.5px solid #334155;border-radius:7px;background:#0f172a;color:#f1f5f9;font-size:13px;outline:none; }
+  .filter-btn { padding:7px 12px;border-radius:7px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;font-weight:600; }
+  .filter-btn.active { background:#1e3a5f;border-color:#2563eb;color:#93c5fd; }
+  .alloc-table { width:100%;border-collapse:collapse;font-size:12px; }
+  .alloc-table th { padding:8px 10px;text-align:left;font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid #1e3a5f;background:#0d1829;white-space:nowrap; }
+  .alloc-table td { padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04); }
+  .alloc-table tr:hover td { background:rgba(255,255,255,0.03); }
+  .alloc-table tr.special td { background:rgba(251,191,36,0.04); }
+  .pill { display:inline-block;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap; }
+  .pill-sgov{background:#0c2340;color:#60a5fa;} .pill-gldm{background:#1c1200;color:#fbbf24;}
+  .pill-sqqq{background:#2d0a0a;color:#f87171;} .pill-tqqq{background:#0f2d1e;color:#4ade80;}
+  .pill-upro{background:#1a0f2d;color:#c084fc;} .pill-usd{background:#1e293b;color:#94a3b8;}
+  .pill-tecl{background:#0a2010;color:#34d399;} .pill-gld{background:#1c1200;color:#fde68a;}
+  .pill-udow{background:#0f1f2d;color:#7dd3fc;} .pill-psq{background:#2d1500;color:#fb923c;}
+  .pill-none{color:#334155;} .row-count{font-size:12px;color:#64748b;margin-left:auto;}
+  .pg-btn{padding:5px 11px;border-radius:6px;border:1.5px solid #334155;background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;}
+  .pg-btn.active{background:#1e3a5f;border-color:#2563eb;color:#93c5fd;font-weight:700;}
+  .pagination{display:flex;gap:6px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  footer{text-align:center;color:#334155;font-size:12px;margin-top:40px;line-height:1.8;}
+  .acc-hit   { color:#4ade80; font-weight:800; font-size:15px; }
+  .acc-miss  { color:#f87171; font-weight:800; font-size:15px; }
+  .acc-na    { color:#94a3b8; font-size:12px; }
+  .acc-price { font-size:11px; font-weight:600; }
+  .acc-sym   { font-size:10px; color:#64748b; margin-right:2px; }
+  #accuracy-th { cursor:help; border-bottom:2px dashed #2563eb; white-space:nowrap; }
+  #spike-th    { cursor:help; border-bottom:2px dashed #f59e0b; white-space:nowrap; }
+  .spike-hit   { color:#4ade80; font-weight:800; font-size:15px; }
+  .spike-miss  { color:#f87171; font-weight:800; font-size:15px; }
+  .spike-na    { color:#334155; font-size:12px; }
+  .acc-badge { display:inline-block; background:#0f2744; color:#93c5fd; font-size:10px;
+    font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="index.html">BLEE <span>Quant</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="Algorithm185History.html" class="active">Backtest</a>
+    <a href="performance1.html">Performance</a>
+    <a href="index.html#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div style="margin-bottom:10px;">
+      <span class="badge">BLEE - 185 Algorithm</span>
+      <span class="badge">May 12, 2023 → May 12, 2026</span>
+      <span class="badge">752 Trading Days · 3 Years</span>
+      <span class="badge">10 ETFs: SGOV GLDM UPRO TQQQ TECL GLD UDOW SQQQ PSQ $USD</span>
+    </div>
+    <h1>📈 3-Year Allocation & Performance History</h1>
+    <p class="sub">Full daily allocation history for BLEE-185 (20% Yield target). Data from Composer.trade · No password required.</p>
+  </div>
+
+  
+
+  <!-- Growth headline -->
+  <div style="background:linear-gradient(135deg,#0f2744,#1e3a8a);border:2px solid #2563eb;border-radius:14px;padding:22px 26px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-size:12px;font-weight:600;color:#93c5fd;margin-bottom:5px;">💰 $10,000 Invested — May 12, 2023</div>
+      <div style="font-size:40px;font-weight:900;color:#4ade80;letter-spacing:-0.02em;">~$23,594</div>
+      <div style="font-size:13px;color:#93c5fd;margin-top:4px;">135.9% cumulative return · 33.3% annualized return · Max Drawdown -4.9%</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:12px;color:#64748b;margin-bottom:3px;">Strategy Name</div>
+      <div style="font-size:14px;font-weight:800;color:#f1f5f9;line-height:1.4;">Strategy Backtest</div>
+      <div style="font-size:11px;color:#64748b;margin-top:6px;">Update stats by connecting API →</div>
+    </div>
+  </div>
+
+  <!-- Compare cards -->
+  <div class="compare-grid">
+    <div class="compare-card blee">
+      <div class="name" style="color:#60a5fa;">🔵 BLEE-185 · 20% Yield Target</div>
+      <div class="big pos">~20% / yr</div>
+      <div class="metrics">
+        <div class="metric-item"><div class="mlabel">Core Hold</div><div class="mval neu">SGOV 82.8%</div></div>
+        <div class="metric-item"><div class="mlabel">Gold Hedge</div><div class="mval neu">GLDM 9.2%</div></div>
+        <div class="metric-item"><div class="mlabel">Tactical Slot</div><div class="mval neu">8% rotating</div></div>
+        <div class="metric-item"><div class="mlabel">Trading Days</div><div class="mval neu">752</div></div>
+      </div>
+    </div>
+    <div class="compare-card spy">
+      <div class="name" style="color:#a78bfa;">🟣 Strategy Design</div>
+      <div class="big neu">T-Bill Core</div>
+      <div class="metrics">
+        <div class="metric-item"><div class="mlabel">Risk Profile</div><div class="mval neu">Low–Medium</div></div>
+        <div class="metric-item"><div class="mlabel">Max Bearish</div><div class="mval neg">SQQQ 92%</div></div>
+        <div class="metric-item"><div class="mlabel">Max Bullish</div><div class="mval pos">UPRO+TQQQ 92%</div></div>
+        <div class="metric-item"><div class="mlabel">ETFs Used</div><div class="mval neu">10 total</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card"><div class="label">Core Allocation</div><div class="value neu" style="font-size:18px;">SGOV 82.8%</div><div class="vs">T-bill income base</div></div>
+    <div class="stat-card"><div class="label">Gold Hedge</div><div class="value" style="font-size:18px;color:#fbbf24;">GLDM 9.2%</div><div class="vs">Inflation / tail risk</div></div>
+    <div class="stat-card"><div class="label">Trading Days</div><div class="value neu">752</div><div class="vs">May 2023 – May 2026</div></div>
+    <div class="stat-card"><div class="label">Tactical ETFs</div><div class="value neu">8</div><div class="vs">UPRO TQQQ TECL GLD UDOW PSQ SQQQ $USD</div></div>
+    <div class="stat-card"><div class="label">Bearish Days</div><div class="value neg" id="bearish-count">—</div><div class="vs">SQQQ or PSQ tactical</div></div>
+    <div class="stat-card"><div class="label">Bullish Days</div><div class="value pos" id="bullish-count">—</div><div class="vs">UPRO TQQQ TECL UDOW</div></div>
+    <div class="stat-card"><div class="label">Accuracy · 1 Year</div><div class="value pos" id="accuracy-rate-1yr">—</div><div class="vs" id="accuracy-detail-1yr">Run update_accuracy.py</div></div>
+    <div class="stat-card"><div class="label">Accuracy · 3 Years</div><div class="value pos" id="accuracy-rate-3yr">—</div><div class="vs" id="accuracy-detail-3yr">QQQ · SPY · DIA</div></div>
+    <div class="stat-card"><div class="label">Signal Accuracy</div><div class="value pos" id="accuracy-rate">Run script</div><div class="vs" id="accuracy-detail">QQQ · SPY · DIA checked</div></div>
+    <div class="stat-card" style="border-color:rgba(245,158,11,0.3);"><div class="label" style="color:#f59e0b;">⚡ Spike Acc · 1 Year</div><div class="value" id="spike-rate-1yr" style="color:#f59e0b;">—</div><div class="vs" id="spike-detail-1yr">&gt;50% to single 3x ETF</div></div>
+    <div class="stat-card" style="border-color:rgba(245,158,11,0.3);"><div class="label" style="color:#f59e0b;">⚡ Spike Acc · 3 Years</div><div class="value" id="spike-rate-3yr" style="color:#f59e0b;">—</div><div class="vs" id="spike-detail-3yr">&gt;50% to single 3x ETF</div></div>
+  </div>
+
+  <!-- Accuracy methodology note -->
+  <div style="background:#0c1a0c;border:1.5px solid #166534;border-radius:10px;padding:14px 18px;margin-bottom:20px;">
+    <div style="font-size:12px;font-weight:800;color:#4ade80;margin-bottom:8px;">📊 How Signal Accuracy Is Calculated</div>
+    <div style="font-size:11px;color:#94a3b8;line-height:1.8;">
+      <b style="color:#e2e8f0;">Core Strategy days (~90% of all days)</b> — SGOV 82.8% + GLDM 9.2% + 8% tactical:
+      counted as <span style="color:#4ade80;">✅ accurate</span> because SGOV accrues ~5% annual dividends daily
+      and GLDM appreciated ~45% over the 3-year period, contributing steady portfolio growth regardless of market direction.<br>
+      <b style="color:#e2e8f0;">Capital Preservation days</b> (SGOV 92%) — counted as <span style="color:#4ade80;">✅ accurate</span>: SGOV dividend accrual continues.<br>
+      <b style="color:#e2e8f0;">Gold Tactical days</b> (SGOV + GLD) — counted as <span style="color:#4ade80;">✅ accurate</span>: SGOV dividend + GLD appreciation.<br>
+      <b style="color:#e2e8f0;">PSQ Inverse days</b> (SGOV 82.8% + PSQ 8%) — counted as <span style="color:#4ade80;">✅ accurate</span>: SGOV dominates return at 82.8%.<br>
+      <b style="color:#e2e8f0;">3x Leveraged directional days</b> (TQQQ, SQQQ, UPRO, TECL, UDOW) — verified against the
+      <b>next market day's</b> closing price of QQQ, SPY, or DIA. ✅ if direction matched, ❌ if not.<br>
+      <b style="color:#f59e0b;">⚡ Spike days</b> — subset of 3x days where a single ETF holds &gt;50% allocation (high-conviction calls). Tracked separately.
+    </div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.07);font-size:11px;color:#f87171;line-height:1.7;">
+      ⚠️ <b style="color:#fca5a5;">Important:</b> We do <b>not</b> recommend using this signal as a standalone market up/down betting tool.
+      Even random long-term directional betting can statistically score above 50% over time — but a winning prediction rate alone does not guarantee profitable returns.
+      3x leveraged ETFs amplify <b>losses</b> as much as gains: a single wrong high-conviction call can erase multiple correct ones.
+      This algorithm is designed as a <b>portfolio allocation strategy</b>, not a directional trading signal —
+      the steady growth comes primarily from the SGOV dividend base and disciplined position sizing, not from market timing alone.
+    </div>
+  </div>
+
+  <!-- Growth chart -->
+  <div class="card">
+    <h2>📊 3-Year Backtest Growth — $10,000 Starting Value</h2>
+    <div style="font-size:11px;color:#475569;margin-bottom:12px;margin-top:-10px;">
+      Composer 3-year backtest view: strategy outperformed SPY over the full period.
+    </div>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+  </div>
+
+  <!-- Notable shifts -->
+  <div class="card">
+    <h2>⚡ Strategy Signals — Notable Allocation Types</h2>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#2d0a0a;border:1.5px solid #dc2626;border-radius:9px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;">🔴</div>
+        <div><div style="font-size:13px;font-weight:700;color:#f87171;">SQQQ 92% — Full Bearish Hedge</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Algorithm shifted fully inverse on high market-stress signals (e.g. Jul 2024, Jul 2025, May 2026)</div></div>
+      </div>
+      <div style="background:#0f2d1e;border:1.5px solid #16a34a;border-radius:9px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;">🚀</div>
+        <div><div style="font-size:13px;font-weight:700;color:#4ade80;">UPRO 23% + TQQQ 69% + PSQ 8% — Leveraged Bullish Surge</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Full risk-on mode during strong uptrend signals (Apr 2025, Mar 2026)</div></div>
+      </div>
+      <div style="background:#0c2340;border:1.5px solid #2563eb;border-radius:9px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;">⚖️</div>
+        <div><div style="font-size:13px;font-weight:700;color:#60a5fa;">SGOV 82.8% + GLDM 9.2% + 8% Tactical — Core Strategy</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">~90% of all trading days. Tactical slot rotates through: UPRO, TQQQ, TECL, GLD, UDOW, PSQ, SQQQ based on momentum signals</div></div>
+      </div>
+      <div style="background:#1e293b;border:1.5px solid #334155;border-radius:9px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:20px;">🛡️</div>
+        <div><div style="font-size:13px;font-weight:700;color:#94a3b8;">SGOV 92% — Capital Preservation Mode</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px;">Temporary full T-bill during high uncertainty (Jan 2026, Oct 2025)</div></div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- Full history table -->
+  <div class="card">
+    <h2 style="color:#ffffff;font-weight:900;">📅 Full 3-Year Daily Allocation History (752 Days)</h2>
+    <div class="search-row">
+      <input type="text" id="searchBox" placeholder="Search date or ETF…" oninput="filterTable()">
+      <button class="filter-btn active" id="btn-all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" id="btn-special" onclick="setFilter('special')">⚡ Special Days</button>
+      <button class="filter-btn" id="btn-bearish" onclick="setFilter('bearish')">🔴 Bearish</button>
+      <button class="filter-btn" id="btn-bullish" onclick="setFilter('bullish')">🟢 Bullish</button>
+      <span class="row-count" id="rowCount"></span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="alloc-table" id="allocTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>UPRO</th><th>GLDM</th><th>$USD</th><th>TECL</th><th>TQQQ</th>
+            <th>SGOV</th><th>GLD</th><th>UDOW</th><th>SQQQ</th><th>PSQ</th>
+            <th>Strategy Signal</th>
+            <th id="accuracy-th" title="Checks if the 3x leveraged signal matched next-day price direction">Signal Accuracy</th>
+            <th id="spike-th" title="Only days where >50% allocated to a single 3x position (high-conviction calls)">⚡ Spike Accuracy</th>
+          </tr>
+        </thead>
+        <tbody id="allocBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <footer>
+    Data: Composer.trade · Strategy Backtest<br>
+    3-Year Period: May 12, 2023 – May 12, 2026 · 752 Trading Days<br>
+    Past performance does not guarantee future results ·
+    <a href="index2.html" style="color:#2563eb;text-decoration:none;">Daily Signal</a> ·
+    <a href="marketDailySummary.html" style="color:#2563eb;text-decoration:none;">Market Forecast</a> ·
+    <a href="index.html#pricing" style="color:#f59e0b;text-decoration:none;">Subscribe</a><br>
+    <span style="font-size:11px;color:#64748b;">Last Updated: <span id="page-last-updated">05/15/2026 07:04 PM ET</span></span>
+  </footer>
+</div>
+
+<script>
+// ── 3-Year Allocation Data (752 trading days) ────────────────────────────
+// Cols: [date, UPRO, GLDM, $USD, TECL, TQQQ, SGOV, GLD, UDOW, SQQQ, PSQ]
+const ALLOC_DATA = [
+  ["2026-05-15", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-05-14", "-", "-", "-", "-", "10%", "-", "-", "-", "90%", "-"],
+  ["2026-05-13", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-05-12", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-05-11", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-05-08", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-05-07", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-05-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-05-05", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-05-04", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-05-01", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-30", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-29", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-28", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-27", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-24", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-23", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-22", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-21", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-20", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-17", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-16", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-15", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-14", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-13", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-10", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2026-04-09", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-04-08", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-04-07", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2026-04-02", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-04-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-03-31", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-03-30", "22.5%", "-", "-", "-", "67.5%", "-", "-", "-", "-", "10%"],
+  ["2026-03-27", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-26", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-25", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-03-24", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-23", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-20", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-19", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-18", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-03-17", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-03-16", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-13", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-12", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-03-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-03-09", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-03-06", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-05", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-03-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-03-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-03-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-27", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-02-19", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-02-18", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2026-02-17", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-02-13", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-02-12", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-02-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-02-10", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-02-09", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-02-06", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-02-05", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-02-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-02-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-02-02", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2026-01-30", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2026-01-29", "-", "-", "-", "-", "-", "90%", "10%", "-", "-", "-"],
+  ["2026-01-28", "-", "-", "-", "-", "-", "90%", "10%", "-", "-", "-"],
+  ["2026-01-27", "-", "-", "-", "-", "-", "90%", "10%", "-", "-", "-"],
+  ["2026-01-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-22", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-09", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-01-08", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-01-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2026-01-06", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-01-05", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2026-01-02", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-12-31", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-12-30", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-12-29", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-12-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-22", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-10", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-12-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-12-08", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-12-05", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-12-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-12-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-28", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-21", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-20", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-19", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-18", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-17", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-14", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-12", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-11-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-11-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-11-07", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-06", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-11-05", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-11-04", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-11-03", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-31", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-30", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-29", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-28", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-27", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-24", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-23", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-10-21", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-10-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-16", "-", "-", "-", "-", "-", "90%", "10%", "-", "-", "-"],
+  ["2025-10-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-10-08", "-", "-", "-", "-", "-", "90%", "10%", "-", "-", "-"],
+  ["2025-10-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-06", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-10-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-30", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-29", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-22", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-09-19", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-09-18", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-09-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-09", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-08", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-05", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-09-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-08-29", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-08-28", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-26", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-25", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-21", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-08-20", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-19", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-08-18", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-08-15", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-08-14", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-08-13", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-08-12", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-08-11", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-08-08", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-08-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-08-06", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-08-05", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-08-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-08-01", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-07-31", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-30", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-29", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-28", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-25", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-24", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-23", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-22", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-07-21", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-07-18", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-17", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-16", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-15", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-14", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-11", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-10", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-08", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-07", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-07-03", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-07-02", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-07-01", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-06-30", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-27", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-26", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-25", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-24", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-23", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-20", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-18", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-17", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-16", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-06-12", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-11", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-10", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-05", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-06-04", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-06-03", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-06-02", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-30", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-29", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-28", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-27", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-05-22", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-21", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-20", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-19", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2025-05-16", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-15", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-14", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-13", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-12", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-08", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-07", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-06", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-05-05", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-02", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-05-01", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-04-30", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-04-29", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-28", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-22", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-09", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-08", "22.5%", "-", "-", "-", "67.5%", "-", "-", "-", "-", "10%"],
+  ["2025-04-07", "22.5%", "-", "-", "-", "67.5%", "-", "-", "-", "-", "10%"],
+  ["2025-04-04", "22.5%", "-", "-", "-", "67.5%", "-", "-", "-", "-", "10%"],
+  ["2025-04-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-04-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-04-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-31", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-28", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-27", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-03-13", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-12", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-11", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-10", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-07", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-06", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-05", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-03-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-02-28", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-02-27", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-02-26", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-02-25", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-02-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-06", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-05", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-02-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-31", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-30", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-01-29", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-01-28", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-01-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-01-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-23", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2025-01-22", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-14", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-01-13", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2025-01-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-08", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2025-01-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2025-01-02", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-31", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-30", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-27", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-26", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-12-24", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-23", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-12-20", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-19", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-18", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-12-17", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-16", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-13", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-12", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-11", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-10", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-09", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-06", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-12-05", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-12-04", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-12-03", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-12-02", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-11-29", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-26", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-25", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-21", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-20", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-11-19", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-11-18", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-15", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-11-14", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-13", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-11-12", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-11-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-08", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-11-07", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-11-06", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-11-05", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-11-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-11-01", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-10-31", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-10-30", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-29", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-28", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-22", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-16", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-10-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-14", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-10-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-10-10", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-10-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-10-08", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-10-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-10-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-30", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-09-27", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-19", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-09-18", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-09-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-09-09", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-09-06", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-09-05", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-09-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-09-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-08-30", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-29", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-28", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-26", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-23", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-08-21", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-15", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-08-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-09", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-08-08", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2024-08-07", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-08-06", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-08-05", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-08-02", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-08-01", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-07-31", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-07-30", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-07-29", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2024-07-26", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-07-25", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-07-24", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-07-23", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-19", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-07-18", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-17", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-16", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-15", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-12", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-07-10", "10%", "-", "-", "-", "-", "-", "-", "-", "90%", "-"],
+  ["2024-07-09", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-07-08", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-07-05", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-07-03", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-07-02", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-07-01", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-28", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-06-27", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-06-26", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-06-25", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-06-24", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-06-21", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-20", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-06-18", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-17", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-14", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-13", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-12", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-11", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-10", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-07", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-06", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-05", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-04", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-06-03", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-05-31", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-05-30", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-05-29", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-05-28", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-05-24", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-05-23", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-05-22", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-05-21", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-05-20", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2024-05-17", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-16", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-15", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-14", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-13", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-10", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-09", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-08", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-07", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-05-06", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-05-03", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-05-02", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-05-01", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-04-30", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2024-04-29", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-25", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2024-04-24", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2024-04-23", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2024-04-22", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-04-19", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-04-18", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-04-17", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-04-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-10", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-09", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-08", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-05", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-04-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-28", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-27", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-22", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-03-21", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-03-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-15", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-14", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-12", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-11", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-08", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-07", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-06", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-05", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-04", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-03-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2024-02-29", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-28", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-27", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-26", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-02-23", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-22", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-21", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-02-20", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-02-16", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-15", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-14", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-13", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-12", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-09", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-08", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-07", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-06", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-05", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-02-02", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-02-01", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-31", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-30", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-29", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-26", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-25", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-24", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-23", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-22", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-19", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-18", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-17", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-16", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-12", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2024-01-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-10", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-09", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-08", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-05", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2024-01-03", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2024-01-02", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-29", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-28", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-26", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-21", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-20", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-19", "-", "-", "-", "-", "-", "-", "-", "10%", "90%", "-"],
+  ["2023-12-18", "-", "-", "-", "-", "-", "-", "-", "10%", "90%", "-"],
+  ["2023-12-15", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-14", "-", "-", "-", "-", "-", "-", "-", "10%", "90%", "-"],
+  ["2023-12-13", "-", "-", "-", "-", "-", "-", "-", "10%", "90%", "-"],
+  ["2023-12-12", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-11", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-08", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-07", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-06", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-05", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-04", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-12-01", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-30", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-29", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-28", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-24", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-22", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-11-21", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-20", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-17", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-16", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-15", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-14", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-13", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-10", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-08", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-07", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-11-03", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-11-02", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-11-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-31", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-30", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-27", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-26", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-25", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-24", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-23", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-20", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-17", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-16", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-13", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-10-12", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-10-11", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-10-10", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-10-09", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-10-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-10-05", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-10-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-10-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-10-02", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-09-29", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-09-28", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-27", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-26", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-25", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-22", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-21", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-20", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-19", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-09-18", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-09-15", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-14", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-09-13", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-09-12", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-09-11", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-09-08", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-09-07", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-09-06", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-09-05", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-09-01", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-08-31", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-08-30", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-08-29", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-08-28", "-", "9%", "-", "-", "-", "81%", "10%", "-", "-", "-"],
+  ["2023-08-25", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-08-24", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-23", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-08-22", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-08-21", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-08-18", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-17", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-16", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-15", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-14", "-", "9%", "-", "-", "-", "81%", "-", "-", "10%", "-"],
+  ["2023-08-11", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-10", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-09", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-08", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-07", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-08-04", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-03", "-", "9%", "-", "-", "-", "81%", "-", "-", "-", "10%"],
+  ["2023-08-02", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-08-01", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-31", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-28", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-27", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-26", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-25", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-24", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-21", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-20", "-", "9%", "-", "-", "-", "81%", "-", "10%", "-", "-"],
+  ["2023-07-19", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-18", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-17", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-14", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-13", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-12", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-07-11", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-07-10", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-07-07", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-06", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-07-05", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-07-03", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-30", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-29", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-28", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-27", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-26", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-23", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-22", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-21", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-20", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-16", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-15", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-14", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-13", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-12", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-09", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-08", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-07", "10%", "9%", "-", "-", "-", "81%", "-", "-", "-", "-"],
+  ["2023-06-06", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-05", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-02", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-06-01", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-31", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-05-30", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-05-26", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-05-25", "-", "9%", "-", "10%", "-", "81%", "-", "-", "-", "-"],
+  ["2023-05-24", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-23", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-22", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-19", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-18", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-17", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-16", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"],
+  ["2023-05-15", "-", "9%", "-", "-", "10%", "81%", "-", "-", "-", "-"]
+];
+
+// ── Strategy classifier ──────────────────────────────────────────────────
+// underlying:     symbol to verify for 3x directional days (QQQ/SPY/DIA)
+// alwaysAccurate: true = portfolio earns regardless of market direction
+//                 (SGOV dividends ~5%/yr accrue daily; GLDM +45% over 3yr)
+// accLabel:       short description shown in the Accuracy column cell
+function classify(r) {
+  // r = [date, UPRO, GLDM, $USD, TECL, TQQQ, SGOV, GLD, UDOW, SQQQ, PSQ]
+  const [,upro,gldm,usd,tecl,tqqq,sgov,gld,udow,sqqq,psq] = r;
+  const pct = s => s === "-" ? 0 : parseFloat(s);
+  if (pct(sqqq) >= 90) return {text:"⚠️ Full Bearish Hedge (SQQQ)",           type:"bearish",  underlying:"QQQ", alwaysAccurate:false};
+  if (pct(upro)  >= 20) return {text:"🚀 Leveraged Bullish Surge (UPRO+TQQQ)", type:"bullish",  underlying:"QQQ", alwaysAccurate:false};
+  if (pct(sgov) === 92) return {text:"🛡️ Capital Preservation (SGOV 92%)",     type:"preserve", underlying:null,  alwaysAccurate:true,  accLabel:"SGOV div"};
+  if (sqqq !== "-" && pct(sgov) > 0) return {text:"🔴 Bearish Tactical (SGOV+SQQQ)", type:"bearish", underlying:"QQQ", alwaysAccurate:false};
+  if (psq  !== "-" && pct(sgov) > 0) return {text:"🟠 Inverse Tactical (SGOV+PSQ)",  type:"bearish", underlying:null,  alwaysAccurate:true,  accLabel:"SGOV div (82.8%)"};
+  if (upro !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — UPRO",          type:"bullish", underlying:"SPY", alwaysAccurate:false};
+  if (tecl !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — TECL",          type:"bullish", underlying:"QQQ", alwaysAccurate:false};
+  if (tqqq !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — TQQQ",          type:"bullish", underlying:"QQQ", alwaysAccurate:false};
+  if (udow !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — UDOW",          type:"bullish", underlying:"DIA", alwaysAccurate:false};
+  if (gld  !== "-" && pct(sgov) > 0) return {text:"Gold Tactical (SGOV+GLD)", type:"gold", underlying:null, alwaysAccurate:true, accLabel:"SGOV div + GLD"};
+  return {text:"Core Strategy (SGOV+GLDM+Tactical)", type:"core", underlying:null, alwaysAccurate:true, accLabel:"SGOV div + GLDM"};
+}
+
+// ── PRICE_DATA_START (auto-updated by update_accuracy.py — do not edit manually) ──
+const PRICE_DATA = {"QQQ":{"2023-05-11":{"close":"320.51","prev":"319.47","change":"up"},"2023-05-12":{"close":"319.37","prev":"320.51","change":"down"},"2023-05-15":{"close":"321.09","prev":"319.37","change":"up"},"2023-05-16":{"close":"321.46","prev":"321.09","change":"up"},"2023-05-17":{"close":"325.35","prev":"321.46","change":"up"},"2023-05-18":{"close":"331.39","prev":"325.35","change":"up"},"2023-05-19":{"close":"330.65","prev":"331.39","change":"down"},"2023-05-22":{"close":"331.76","prev":"330.65","change":"up"},"2023-05-23":{"close":"327.55","prev":"331.76","change":"down"},"2023-05-24":{"close":"325.87","prev":"327.55","change":"down"},"2023-05-25":{"close":"333.80","prev":"325.87","change":"up"},"2023-05-26":{"close":"342.33","prev":"333.80","change":"up"},"2023-05-30":{"close":"343.88","prev":"342.33","change":"up"},"2023-05-31":{"close":"341.92","prev":"343.88","change":"down"},"2023-06-01":{"close":"345.87","prev":"341.92","change":"up"},"2023-06-02":{"close":"348.47","prev":"345.87","change":"up"},"2023-06-05":{"close":"348.71","prev":"348.47","change":"up"},"2023-06-06":{"close":"348.66","prev":"348.71","change":"flat"},"2023-06-07":{"close":"342.74","prev":"348.66","change":"down"},"2023-06-08":{"close":"347.00","prev":"342.74","change":"up"},"2023-06-09":{"close":"348.32","prev":"347.00","change":"up"},"2023-06-12":{"close":"354.21","prev":"348.32","change":"up"},"2023-06-13":{"close":"356.93","prev":"354.21","change":"up"},"2023-06-14":{"close":"359.52","prev":"356.93","change":"up"},"2023-06-15":{"close":"363.81","prev":"359.52","change":"up"},"2023-06-16":{"close":"361.52","prev":"363.81","change":"down"},"2023-06-20":{"close":"361.00","prev":"361.52","change":"down"},"2023-06-21":{"close":"356.08","prev":"361.00","change":"down"},"2023-06-22":{"close":"360.28","prev":"356.08","change":"up"},"2023-06-23":{"close":"356.71","prev":"360.28","change":"down"},"2023-06-26":{"close":"351.93","prev":"356.71","change":"down"},"2023-06-27":{"close":"357.98","prev":"351.93","change":"up"},"2023-06-28":{"close":"358.68","prev":"357.98","change":"up"},"2023-06-29":{"close":"357.96","prev":"358.68","change":"down"},"2023-06-30":{"close":"363.48","prev":"357.96","change":"up"},"2023-07-03":{"close":"364.34","prev":"363.48","change":"up"},"2023-07-05":{"close":"364.33","prev":"364.34","change":"flat"},"2023-07-06":{"close":"361.55","prev":"364.33","change":"down"},"2023-07-07":{"close":"360.35","prev":"361.55","change":"down"},"2023-07-10":{"close":"360.47","prev":"360.35","change":"flat"},"2023-07-11":{"close":"362.25","prev":"360.47","change":"up"},"2023-07-12":{"close":"366.82","prev":"362.25","change":"up"},"2023-07-13":{"close":"373.05","prev":"366.82","change":"up"},"2023-07-14":{"close":"372.97","prev":"373.05","change":"flat"},"2023-07-17":{"close":"376.46","prev":"372.97","change":"up"},"2023-07-18":{"close":"379.54","prev":"376.46","change":"up"},"2023-07-19":{"close":"379.45","prev":"379.54","change":"flat"},"2023-07-20":{"close":"370.70","prev":"379.45","change":"down"},"2023-07-21":{"close":"369.59","prev":"370.70","change":"down"},"2023-07-24":{"close":"370.18","prev":"369.59","change":"up"},"2023-07-25":{"close":"372.69","prev":"370.18","change":"up"},"2023-07-26":{"close":"371.45","prev":"372.69","change":"down"},"2023-07-27":{"close":"370.56","prev":"371.45","change":"down"},"2023-07-28":{"close":"377.31","prev":"370.56","change":"up"},"2023-07-31":{"close":"377.51","prev":"377.31","change":"up"},"2023-08-01":{"close":"376.63","prev":"377.51","change":"down"},"2023-08-02":{"close":"368.37","prev":"376.63","change":"down"},"2023-08-03":{"close":"367.78","prev":"368.37","change":"down"},"2023-08-04":{"close":"366.06","prev":"367.78","change":"down"},"2023-08-07":{"close":"369.16","prev":"366.06","change":"up"},"2023-08-08":{"close":"366.02","prev":"369.16","change":"down"},"2023-08-09":{"close":"361.99","prev":"366.02","change":"down"},"2023-08-10":{"close":"362.66","prev":"361.99","change":"up"},"2023-08-11":{"close":"360.35","prev":"362.66","change":"down"},"2023-08-14":{"close":"364.39","prev":"360.35","change":"up"},"2023-08-15":{"close":"360.53","prev":"364.39","change":"down"},"2023-08-16":{"close":"356.71","prev":"360.53","change":"down"},"2023-08-17":{"close":"352.81","prev":"356.71","change":"down"},"2023-08-18":{"close":"352.37","prev":"352.81","change":"down"},"2023-08-21":{"close":"358.05","prev":"352.37","change":"up"},"2023-08-22":{"close":"357.54","prev":"358.05","change":"down"},"2023-08-23":{"close":"363.17","prev":"357.54","change":"up"},"2023-08-24":{"close":"355.41","prev":"363.17","change":"down"},"2023-08-25":{"close":"358.17","prev":"355.41","change":"up"},"2023-08-28":{"close":"360.86","prev":"358.17","change":"up"},"2023-08-29":{"close":"368.74","prev":"360.86","change":"up"},"2023-08-30":{"close":"370.80","prev":"368.74","change":"up"},"2023-08-31":{"close":"371.91","prev":"370.80","change":"up"},"2023-09-01":{"close":"371.52","prev":"371.91","change":"down"},"2023-09-05":{"close":"371.99","prev":"371.52","change":"up"},"2023-09-06":{"close":"368.71","prev":"371.99","change":"down"},"2023-09-07":{"close":"366.08","prev":"368.71","change":"down"},"2023-09-08":{"close":"366.59","prev":"366.08","change":"up"},"2023-09-11":{"close":"370.91","prev":"366.59","change":"up"},"2023-09-12":{"close":"366.80","prev":"370.91","change":"down"},"2023-09-13":{"close":"368.19","prev":"366.80","change":"up"},"2023-09-14":{"close":"371.20","prev":"368.19","change":"up"},"2023-09-15":{"close":"364.85","prev":"371.20","change":"down"},"2023-09-18":{"close":"365.23","prev":"364.85","change":"up"},"2023-09-19":{"close":"364.45","prev":"365.23","change":"down"},"2023-09-20":{"close":"359.20","prev":"364.45","change":"down"},"2023-09-21":{"close":"352.61","prev":"359.20","change":"down"},"2023-09-22":{"close":"352.66","prev":"352.61","change":"flat"},"2023-09-25":{"close":"354.34","prev":"352.66","change":"up"},"2023-09-26":{"close":"349.02","prev":"354.34","change":"down"},"2023-09-27":{"close":"349.84","prev":"349.02","change":"up"},"2023-09-28":{"close":"352.76","prev":"349.84","change":"up"},"2023-09-29":{"close":"353.02","prev":"352.76","change":"up"},"2023-10-02":{"close":"355.97","prev":"353.02","change":"up"},"2023-10-03":{"close":"349.72","prev":"355.97","change":"down"},"2023-10-04":{"close":"354.48","prev":"349.72","change":"up"},"2023-10-05":{"close":"353.43","prev":"354.48","change":"down"},"2023-10-06":{"close":"359.35","prev":"353.43","change":"up"},"2023-10-09":{"close":"361.19","prev":"359.35","change":"up"},"2023-10-10":{"close":"363.19","prev":"361.19","change":"up"},"2023-10-11":{"close":"365.78","prev":"363.19","change":"up"},"2023-10-12":{"close":"364.51","prev":"365.78","change":"down"},"2023-10-13":{"close":"359.93","prev":"364.51","change":"down"},"2023-10-16":{"close":"364.00","prev":"359.93","change":"up"},"2023-10-17":{"close":"362.80","prev":"364.00","change":"down"},"2023-10-18":{"close":"358.04","prev":"362.80","change":"down"},"2023-10-19":{"close":"354.69","prev":"358.04","change":"down"},"2023-10-20":{"close":"349.40","prev":"354.69","change":"down"},"2023-10-23":{"close":"350.46","prev":"349.40","change":"up"},"2023-10-24":{"close":"353.87","prev":"350.46","change":"up"},"2023-10-25":{"close":"345.21","prev":"353.87","change":"down"},"2023-10-26":{"close":"338.62","prev":"345.21","change":"down"},"2023-10-27":{"close":"340.25","prev":"338.62","change":"up"},"2023-10-30":{"close":"344.08","prev":"340.25","change":"up"},"2023-10-31":{"close":"345.73","prev":"344.08","change":"up"},"2023-11-01":{"close":"351.73","prev":"345.73","change":"up"},"2023-11-02":{"close":"358.11","prev":"351.73","change":"up"},"2023-11-03":{"close":"362.32","prev":"358.11","change":"up"},"2023-11-06":{"close":"363.80","prev":"362.32","change":"up"},"2023-11-07":{"close":"367.24","prev":"363.80","change":"up"},"2023-11-08":{"close":"367.47","prev":"367.24","change":"up"},"2023-11-09":{"close":"364.65","prev":"367.47","change":"down"},"2023-11-10":{"close":"372.84","prev":"364.65","change":"up"},"2023-11-13":{"close":"371.68","prev":"372.84","change":"down"},"2023-11-14":{"close":"379.68","prev":"371.68","change":"up"},"2023-11-15":{"close":"379.97","prev":"379.68","change":"up"},"2023-11-16":{"close":"380.29","prev":"379.97","change":"up"},"2023-11-17":{"close":"380.38","prev":"380.29","change":"flat"},"2023-11-20":{"close":"385.01","prev":"380.38","change":"up"},"2023-11-21":{"close":"382.78","prev":"385.01","change":"down"},"2023-11-22":{"close":"384

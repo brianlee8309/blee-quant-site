@@ -1,0 +1,85 @@
+// ============================================================
+// Firestore Security Rules — BLEE Quant Analytics
+//
+// To deploy:
+//   firebase deploy --only firestore:rules
+//
+// What these rules enforce:
+//   • Anyone signed in can read/write their OWN user doc.
+//   • Admins (super-admin email OR tier=admin) can read/write ANY doc.
+//   • Managers (tier=manager) can read/write the users collection
+//     EXCEPT admin docs.
+//   • The promoCodes collection is publicly readable (so signup pages
+//     can resolve a referral code) but only writable by admin/manager.
+//   • Everything else is locked down.
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ────────────────────────────────────────────────────────
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // The super-admin email lives in firebase-config.js on the client.
+    // We hardcode it here too because Firestore rules can't read that file.
+    function isSuperAdmin() {
+      return signedIn() &&
+             request.auth.token.email != null &&
+             request.auth.token.email.lower() == 'brianlee1004@gmail.com';
+    }
+
+    function callerTier() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.tier
+        : 'none';
+    }
+
+    function isAdmin()   { return isSuperAdmin() || callerTier() == 'admin'; }
+    function isManager() { return callerTier() == 'manager'; }
+    function isStaff()   { return isAdmin() || isManager(); }
+
+    // ── users collection ───────────────────────────────────────────────
+    match /users/{uid} {
+      // Read: a user reads their own doc; staff reads everyone.
+      // Managers cannot read admin docs.
+      allow read: if isAdmin()
+                  || (isManager() && resource.data.tier != 'admin')
+                  || (signedIn() && request.auth.uid == uid);
+
+      // Create: a user creates their own doc on signup (with tier ≤ free
+      // unless they're staff). Staff can create any doc (e.g. invites).
+      allow create: if isAdmin()
+                    || (isManager() && request.resource.data.tier != 'admin')
+                    || (signedIn() && request.auth.uid == uid
+                        && request.resource.data.tier in ['none','free','basic','premium','marketer']);
+
+      // Update: user can update their own non-tier fields; staff can
+      // update everything except managers can't touch admin docs or
+      // promote anyone to admin.
+      allow update: if isAdmin()
+                    || (isManager() && resource.data.tier != 'admin'
+                        && request.resource.data.tier != 'admin')
+                    || (signedIn() && request.auth.uid == uid
+                        && request.resource.data.tier == resource.data.tier);
+
+      // Delete: admin only.
+      allow delete: if isAdmin();
+    }
+
+    // ── promoCodes collection ──────────────────────────────────────────
+    // Publicly readable so anonymous signup pages can validate a code.
+    // Only staff can create/modify codes.
+    match /promoCodes/{code} {
+      allow read:   if true;
+      allow write:  if isStaff();
+    }
+
+    // ── Catch-all: deny ────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

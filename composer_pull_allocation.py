@@ -1,0 +1,1009 @@
+#!/usr/bin/env python3
+"""
+Composer Trading - Daily Symphony ETF Allocation Puller
+
+Reads API credentials and Symphony ID from `composer_config.json` (located
+next to this script), calls the Composer Trader API, and appends today's
+ETF distribution to a CSV log.
+
+API reference:
+    Base URL : https://api.composer.trade
+    Docs     : https://api.composer.trade/docs/
+    Auth     : two headers
+                   x-api-key-id:   <your key id>
+                   authorization:  Bearer <your key secret>
+
+Config file (in the same folder as this script):
+    composer_config.json
+    {
+        "api_key":      "YOUR-COMPOSER-API-KEY-ID",
+        "api_secret":   "YOUR-COMPOSER-API-SECRET",
+        "symphony_id":  "<symphony id, e.g. yrsRTIwEWPQpoZOWArGm>",
+        "account_uuid": "<optional; auto-discovered if omitted>"
+    }
+
+Outputs (in the same folder as this script):
+    composer_allocations.csv          -- one row per ETF per day (cumulative)
+    composer_raw_<YYYY-MM-DD>.json    -- raw API response for that day
+    composer_run.log                  -- run log
+
+Run manually:
+    python3 composer_pull_allocation.py        (macOS / Linux)
+    python  composer_pull_allocation.py        (Windows)
+"""
+
+from __future__ import annotations
+
+import csv
+import datetime as dt
+import json
+import sys
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+# ---- Paths (script-relative so it works on any machine) --------------------
+SCRIPT_DIR  = Path(__file__).resolve().parent
+CONFIG_PATH = SCRIPT_DIR / "composer_config.json"
+LOG_PATH    = SCRIPT_DIR / "composer_run.log"
+# Per-symphony CSV / HTML paths are resolved at runtime from the config.
+
+# ---- Composer API -----------------------------------------------------------
+API_BASE = "https://api.composer.trade"
+
+
+def log(msg: str) -> None:
+    ts = dt.datetime.now().isoformat(timespec="seconds")
+    line = f"[{ts}] {msg}"
+    print(line)
+    with open(LOG_PATH, "a") as f:
+        f.write(line + "\n")
+
+
+def load_config() -> dict:
+    if not CONFIG_PATH.exists():
+        log(f"ERROR: config file not found at {CONFIG_PATH}")
+        sys.exit(1)
+    with open(CONFIG_PATH) as f:
+        cfg = json.load(f)
+    for k in ("api_key", "api_secret"):
+        if not cfg.get(k):
+            log(f"ERROR: '{k}' missing from config")
+            sys.exit(1)
+    if not cfg.get("symphonies") and not cfg.get("symphony_id"):
+        log("ERROR: config must have either 'symphonies' (list) or 'symphony_id' (legacy)")
+        sys.exit(1)
+    return cfg
+
+
+def _resolve_symphonies(cfg: dict) -> list[dict]:
+    """
+    Return a normalized list of {id, name, csv, html} dicts.
+    Supports the new `symphonies: [...]` format and the legacy single
+    `symphony_id` config.
+    """
+    out: list[dict] = []
+    if isinstance(cfg.get("symphonies"), list) and cfg["symphonies"]:
+        for entry in cfg["symphonies"]:
+            sid = entry.get("id") or entry.get("symphony_id")
+            if not sid:
+                continue
+            out.append({
+                "id":   sid,
+                "name": entry.get("name") or "",
+                "csv":  entry.get("csv")  or f"composer_allocations_{sid[:8]}.csv",
+                "html": entry.get("html") or f"index_{sid[:8]}.html",
+            })
+        return out
+    sid = cfg.get("symphony_id") or ""
+    if sid:
+        out.append({
+            "id":   sid,
+            "name": "",
+            "csv":  "composer_allocations.csv",
+            "html": "index.html",
+        })
+    return out
+
+
+def api_request(cfg: dict, method: str, path: str, body: dict | None = None) -> dict:
+    """
+    Call the Composer Trader API.
+    Auth: x-api-key-id + authorization: Bearer <secret>
+    """
+    body_str = json.dumps(body, separators=(",", ":")) if body else ""
+    headers = {
+        "x-api-key-id":  cfg["api_key"],
+        "authorization": f"Bearer {cfg['api_secret']}",
+        "Content-Type":  "application/json",
+        "Accept":        "application/json",
+    }
+    url = f"{API_BASE}{path}"
+    req = urllib.request.Request(
+        url,
+        method=method,
+        headers=headers,
+        data=body_str.encode("utf-8") if body_str else None,
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            raw = resp.read().decode("utf-8")
+            return json.loads(raw) if raw else {}
+    except urllib.error.HTTPError as e:
+        body_txt = e.read().decode("utf-8", errors="ignore")
+        log(f"HTTP {e.code} on {method} {path}: {body_txt[:500]}")
+        raise
+    except urllib.error.URLError as e:
+        log(f"Network error on {method} {path}: {e}")
+        raise
+
+
+# ---- Endpoints --------------------------------------------------------------
+def list_accounts(cfg: dict) -> list:
+    """GET /api/v0.1/accounts/list -> returns the user's brokerage accounts."""
+    resp = api_request(cfg, "GET", "/api/v0.1/accounts/list")
+    if isinstance(resp, dict):
+        for k in ("accounts", "data", "items"):
+            if isinstance(resp.get(k), list):
+                return resp[k]
+        # If the response is a dict but not wrapped, see if it itself looks like a list of accts
+        return [resp] if "account_uuid" in resp else []
+    return resp if isinstance(resp, list) else []
+
+
+def get_symphony_stats(cfg: dict, account_uuid: str) -> dict | None:
+    """
+    GET /api/v0.1/portfolio/accounts/{account-id}/symphony-stats-meta
+    "Get aggregate stats per symphony" — confirmed in api.composer.trade/docs.
+    Returns {"symphonies": [{id, position_id, holdings: [...], value, ...}]}.
+    Each holding is {ticker, price, allocation, amount, value,
+    last_percent_change}. We use this for per-symphony allocation/value, then
+    filter to the target symphony_id client-side.
+    Returns None if the request fails for any reason (we'll fall back).
+    """
+    p = f"/api/v0.1/portfolio/accounts/{account_uuid}/symphony-stats-meta"
+    try:
+        log(f"GET {p}")
+        resp = api_request(cfg, "GET", p)
+        if isinstance(resp, list):
+            resp = {"symphonies": resp}
+        if isinstance(resp, dict):
+            resp["_path"] = p
+            return resp
+    except urllib.error.HTTPError as exc:
+        if exc.code in (401, 403):
+            raise
+        log(f"  (symphony-stats-meta failed: HTTP {exc.code})")
+    except Exception as exc:  # pylint: disable=broad-except
+        log(f"  (symphony-stats-meta failed: {type(exc).__name__}: {exc})")
+    return None
+
+
+def get_account_holdings(cfg: dict, account_uuid: str) -> dict:
+    """
+    GET /api/v0.1/accounts/{uuid}/holdings -- confirmed working.
+    Returns a top-level JSON LIST of positions across the whole account,
+    each shaped like {"ticker": "...", "quantity": ..., "asset_class": "..."}.
+    Normalized into {"holdings": [...]}.
+    """
+    p = f"/api/v0.1/accounts/{account_uuid}/holdings"
+    log(f"GET {p}")
+    resp = api_request(cfg, "GET", p)
+    if isinstance(resp, list):
+        resp = {"holdings": resp}
+    if not isinstance(resp, dict):
+        raise RuntimeError(f"Unexpected response type {type(resp).__name__}")
+    resp["_path"] = p
+    return resp
+
+
+# ---- Yahoo Finance price enrichment ----------------------------------------
+def fetch_yahoo_price(ticker: str) -> float | None:
+    """
+    Fetch the latest market price for a ticker from Yahoo Finance.
+    Free, no auth required. Returns None on failure (logged).
+    """
+    url = (
+        "https://query1.finance.yahoo.com/v8/finance/chart/"
+        f"{urllib.parse.quote(ticker)}?range=1d&interval=1d"
+    )
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (composer-allocation-puller)"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read())
+        result = data.get("chart", {}).get("result")
+        if not result:
+            return None
+        meta = result[0].get("meta", {})
+        price = meta.get("regularMarketPrice") or meta.get("previousClose")
+        return float(price) if price is not None else None
+    except Exception as exc:  # pylint: disable=broad-except
+        log(f"  (price lookup failed for {ticker}: {type(exc).__name__}: {exc})")
+        return None
+
+
+def enrich_with_prices(positions: list[dict]) -> None:
+    """In-place: add 'market_value' and 'weight_pct' using Yahoo prices."""
+    log(f"Fetching prices for {len(positions)} tickers from Yahoo Finance...")
+    total_value = 0.0
+    for p in positions:
+        if not p.get("ticker") or p.get("market_value"):
+            continue
+        price = fetch_yahoo_price(p["ticker"])
+        qty = p.get("shares")
+        if price is not None and isinstance(qty, (int, float)):
+            mv = round(price * qty, 2)
+            p["market_value"] = mv
+            total_value += mv
+    log(f"Total computed market value: ${total_value:,.2f}")
+    if total_value > 0:
+        for p in positions:
+            mv = p.get("market_value")
+            if isinstance(mv, (int, float)):
+                p["weight_pct"] = round(100.0 * mv / total_value, 4)
+
+
+# ---- Parsing ----------------------------------------------------------------
+def _normalize_weight(weight) -> float | None:
+    """Convert a 0-1 fraction or 0-100 percentage to a percentage value."""
+    if not isinstance(weight, (int, float)):
+        return weight
+    return round(weight * 100, 4) if weight <= 1.0 else round(weight, 4)
+
+
+def _row_from_item(item: dict) -> dict:
+    """Pull a (ticker, weight, shares, market_value) row from a position-like dict."""
+    ticker = (
+        item.get("ticker")
+        or item.get("symbol")
+        or item.get("asset")
+    )
+    weight = (
+        item.get("weight")
+        or item.get("allocation")
+        or item.get("percent")
+        or item.get("target_weight")
+        or item.get("allocation_percent")
+        or item.get("pct")
+    )
+    return {
+        "ticker":       ticker,
+        "weight_pct":   _normalize_weight(weight),
+        "shares": (
+            item.get("quantity")
+            or item.get("shares")
+            or item.get("amount")  # symphony-stats-meta holdings use "amount"
+        ),
+        "market_value": (
+            item.get("market_value")
+            or item.get("value")
+            or item.get("notional")
+            or item.get("notional_value")
+        ),
+    }
+
+
+def extract_positions_from_symphony_stats(
+    stats_payload: dict, target_symphony_id: str
+) -> list[dict]:
+    """
+    Pull positions for the specific symphony out of a symphony-stats-meta
+    response. Per docs, the shape is:
+        { "symphonies": [
+            { "id": "<symphony_id>",
+              "holdings": [
+                  {"ticker": "...", "price": ..., "allocation": ...,
+                   "amount": ..., "value": ..., "last_percent_change": ...}
+              ],
+              "value": ..., "name": ..., ...  } ] }
+    We match the target by `id` and return its holdings.
+    """
+    # Find the list of symphonies in the payload
+    sym_list = None
+    for key in ("symphonies", "items", "data"):
+        v = stats_payload.get(key)
+        if isinstance(v, list):
+            sym_list = v
+            break
+    if sym_list is None and isinstance(stats_payload, list):
+        sym_list = stats_payload
+    if sym_list is None:
+        return []
+
+    # Find the target symphony entry
+    target = None
+    for s in sym_list:
+        if not isinstance(s, dict):
+            continue
+        sid = s.get("symphony_id") or s.get("id") or s.get("symphony")
+        if str(sid) == str(target_symphony_id):
+            target = s
+            break
+
+    if target is None:
+        return []
+
+    # Find the list of holdings within that symphony entry
+    holdings = None
+    for key in ("holdings", "positions", "allocations", "assets"):
+        v = target.get(key)
+        if isinstance(v, list):
+            holdings = v
+            break
+    if holdings is None:
+        holdings = []
+
+    rows = [_row_from_item(it) for it in holdings if isinstance(it, dict)]
+
+    # Include the symphony's idle cash as a $USD pseudo-position so the pie /
+    # weight totals always sum to 100%. Composer's symphony-stats-meta returns
+    # `cash` (a dollar amount) and `value` (total symphony value) at the
+    # symphony level, separate from `holdings`. If there's pending cash that
+    # hasn't been deployed yet, it shows up here.
+    cash = target.get("cash")
+    total_value = target.get("value")
+    if isinstance(cash, (int, float)) and cash > 0:
+        weight_pct = None
+        if isinstance(total_value, (int, float)) and total_value > 0:
+            weight_pct = round(100.0 * cash / total_value, 4)
+        rows.append({
+            "ticker":       "$USD",
+            "weight_pct":   weight_pct,
+            "shares":       round(cash, 2),  # 1 unit = $1
+            "market_value": round(cash, 2),
+        })
+
+    return rows
+
+
+def find_symphony_entry(stats_payload: dict, target_symphony_id: str) -> dict | None:
+    """Return the raw symphony entry (full dict) for the target id, or None."""
+    sym_list = None
+    for key in ("symphonies", "items", "data"):
+        v = stats_payload.get(key)
+        if isinstance(v, list):
+            sym_list = v
+            break
+    if sym_list is None and isinstance(stats_payload, list):
+        sym_list = stats_payload
+    if sym_list is None:
+        return None
+    for s in sym_list:
+        if not isinstance(s, dict):
+            continue
+        sid = s.get("symphony_id") or s.get("id") or s.get("symphony")
+        if str(sid) == str(target_symphony_id):
+            return s
+    return None
+
+
+def extract_positions_from_account_holdings(payload: dict) -> list[dict]:
+    """Extract positions from the whole-account /holdings response."""
+    items = payload.get("holdings") or payload.get("data") or []
+    if not isinstance(items, list):
+        return []
+    return [_row_from_item(it) for it in items if isinstance(it, dict)]
+
+
+# ---- Dashboard generator ---------------------------------------------------
+DASHBOARD_TEMPLATE_PATH = SCRIPT_DIR / "dashboard_template.html"
+
+
+def _safe_float(s) -> float:
+    try:
+        return float(s) if s not in (None, "") else 0.0
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def generate_dashboard(
+    csv_path: Path,
+    html_path: Path,
+    symphony_id: str,
+    symphony_name: str,
+    account_uuid: str | None,
+    password: str | None = None,
+    baseline_date: str | None = None,
+) -> None:
+    """
+    Read `csv_path` (this symphony's history) and write `html_path` with the
+    BLEE Stock Analysis dashboard for that symphony.
+
+    baseline_date (YYYY-MM-DD): if set, all return/growth metrics and the
+    value history chart are calculated from this date forward, ignoring
+    earlier history (e.g. after a fresh deposit resets the starting point).
+    The CSV itself is never trimmed.
+    """
+    if not csv_path.exists():
+        log(f"(no CSV yet at {csv_path.name}, skipping dashboard generation)")
+        return
+    if not DASHBOARD_TEMPLATE_PATH.exists():
+        log(f"(dashboard template missing at {DASHBOARD_TEMPLATE_PATH.name}, skipping)")
+        return
+
+    # Strip NUL bytes that Windows sometimes embeds in CSV files
+    import io as _io
+    raw_bytes = csv_path.read_bytes().replace(b"\x00", b"")
+    rows = list(csv.DictReader(_io.StringIO(raw_bytes.decode("utf-8"))))
+    if not rows:
+        log("(empty CSV, skipping dashboard generation)")
+        return
+
+    # Group by date, deduping (date, ticker) — keep the last row per ticker
+    # within each date so duplicate runs never double-count.
+    by_date_map: dict[str, dict[str, dict]] = {}
+    for r in rows:
+        d = r.get("date") or ""
+        t = r.get("ticker") or ""
+        if d and t:
+            by_date_map.setdefault(d, {})[t] = r
+    by_date: dict[str, list[dict]] = {
+        d: list(tmap.values()) for d, tmap in by_date_map.items()
+    }
+    if not by_date:
+        log("(no dated rows, skipping dashboard generation)")
+        return
+    dates_sorted = sorted(by_date.keys())
+
+    # Daily portfolio totals
+    value_history = []
+    for d in dates_sorted:
+        total = sum(_safe_float(r.get("market_value")) for r in by_date[d])
+        value_history.append({"date": d, "total": round(total, 2)})
+
+    # Today's allocation, sorted by market value desc
+    today = dates_sorted[-1]
+    today_alloc = sorted(
+        [
+            {
+                "ticker":       r.get("ticker", ""),
+                "weight_pct":   _safe_float(r.get("weight_pct")),
+                "shares":       _safe_float(r.get("shares")),
+                "market_value": _safe_float(r.get("market_value")),
+            }
+            for r in by_date[today] if r.get("ticker")
+        ],
+        key=lambda x: -x["market_value"],
+    )
+
+    total_value      = value_history[-1]["total"]
+    total_return_pct: float | None = None
+    annualized_pct:   float | None = None
+    day_change_pct:   float | None = None
+
+    # Apply baseline_date: trim value_history (and weight_history dates) so
+    # all return metrics start from the configured date, not inception.
+    # The CSV is never modified — only the dashboard view is affected.
+    if baseline_date:
+        value_history_view = [v for v in value_history if v["date"] >= baseline_date]
+        dates_view = [d for d in dates_sorted if d >= baseline_date]
+        if not value_history_view:
+            # Baseline is in the future or no data yet — fall back to full history
+            value_history_view = value_history
+            dates_view = dates_sorted
+    else:
+        value_history_view = value_history
+        dates_view = dates_sorted
+
+    if len(value_history_view) >= 2:
+        first = value_history_view[0]["total"]
+        last  = value_history_view[-1]["total"]
+        prev  = value_history_view[-2]["total"]
+        # Guard against corrupted first-day values (e.g. $82 when account
+        # started at $1,000). If the first entry is less than 25% of the
+        # second entry, it was recorded before the account was fully funded —
+        # treat $1,000 as the true starting value instead.
+        if len(value_history_view) >= 2 and first < value_history_view[1]["total"] * 0.25:
+            first = 1000.0
+        if first > 0:
+            total_return_pct = round((last / first - 1) * 100, 4)
+        if prev > 0:
+            day_change_pct = round((last / prev - 1) * 100, 4)
+        try:
+            d0 = dt.date.fromisoformat(value_history_view[0]["date"])
+            d1 = dt.date.fromisoformat(value_history_view[-1]["date"])
+            days = (d1 - d0).days
+            if days >= 14 and first > 0:
+                annualized_pct = round(((last / first) ** (365.0 / days) - 1) * 100, 4)
+        except (ValueError, ZeroDivisionError):
+            pass
+    elif len(value_history_view) == 1:
+        # Only one day at baseline — day change not yet available
+        day_change_pct = None
+
+    # Tickers history for stacked area (use baseline-filtered dates if set)
+    all_tickers = sorted({r.get("ticker") for r in rows if r.get("ticker")})
+    weight_history: dict[str, list[float]] = {t: [] for t in all_tickers}
+    for d in dates_view:
+        ticker_to_w = {
+            r.get("ticker"): _safe_float(r.get("weight_pct"))
+            for r in by_date[d]
+        }
+        for t in all_tickers:
+            weight_history[t].append(ticker_to_w.get(t, 0.0))
+
+    run_datetime = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p")
+    data = {
+        "symphony_id":           symphony_id,
+        "symphony_name":         symphony_name or "",
+        "csv_filename":          csv_path.name,
+        "account_uuid":          account_uuid or "",
+        "last_updated":          today,
+        "run_datetime":          run_datetime,
+        "total_value":           total_value,
+        "day_change_pct":        day_change_pct,
+        "total_return_pct":      total_return_pct,
+        "annualized_return_pct": annualized_pct,
+        "today_allocations":     today_alloc,
+        "value_history":         value_history_view,
+        "all_tickers":           all_tickers,
+        "weight_history":        weight_history,
+        "dates":                 dates_view,
+        "baseline_date":         baseline_date,
+    }
+
+    template = DASHBOARD_TEMPLATE_PATH.read_text(encoding="utf-8")
+    html = template.replace("/* __DATA_JSON__ */ {}", json.dumps(data))
+    html_path.write_text(html, encoding="utf-8")
+    log(f"Generated dashboard -> {html_path.name} "
+        f"(value=${total_value:,.2f}, days={len(dates_sorted)})")
+
+
+# ---- CSV write (idempotent) ------------------------------------------------
+CSV_HEADER = ["date", "symphony_id", "ticker",
+              "weight_pct", "shares", "market_value", "source"]
+
+
+def write_symphony_csv(
+    csv_path: Path, today: str, symphony_id: str,
+    positions: list[dict], source_used: str,
+) -> None:
+    """
+    Idempotent write: drop any existing rows for today's date, then rewrite
+    the whole file with prior-day rows + today's fresh rows. Safe to call
+    multiple times per day; self-heals duplicates.
+    """
+    existing_rows: list[list[str]] = []
+    if csv_path.exists():
+        with open(csv_path, newline="") as f:
+            reader = csv.reader(f)
+            try:
+                next(reader)  # skip header
+            except StopIteration:
+                pass
+            for row in reader:
+                if not row:
+                    continue
+                if row[0] != today:  # row[0] is date
+                    existing_rows.append(row)
+
+    with open(csv_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(CSV_HEADER)
+        for row in existing_rows:
+            writer.writerow(row)
+        for p in positions:
+            writer.writerow([
+                today, symphony_id,
+                p["ticker"], p["weight_pct"],
+                p["shares"], p["market_value"], source_used,
+            ])
+    log(f"  Wrote {len(positions)} rows for {today} to {csv_path.name} "
+        f"(kept {len(existing_rows)} prior rows, source={source_used})")
+
+
+# ---- Main -------------------------------------------------------------------
+def main() -> int:
+    log("=== Composer daily allocation pull ===")
+    cfg = load_config()
+    symphonies = _resolve_symphonies(cfg)
+    if not symphonies:
+        log("ERROR: no symphonies configured")
+        return 1
+    log(f"Configured symphonies: {[s['id'] for s in symphonies]}")
+
+    account_uuid = cfg.get("account_uuid")
+    if not account_uuid:
+        log("No account_uuid in config; discovering via /accounts/list...")
+        accts = list_accounts(cfg)
+        if not accts:
+            log("ERROR: no accounts returned from API")
+            return 1
+        account_uuid = (
+            accts[0].get("account_uuid")
+            or accts[0].get("uuid")
+            or accts[0].get("id")
+        )
+        log(f"Using first account: {account_uuid}")
+        log("(Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)")
+
+    today = dt.date.today().isoformat()
+
+    # Fetch symphony-stats-meta ONCE; share across all configured symphonies.
+    log("Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...")
+    stats_payload = get_symphony_stats(cfg, account_uuid)
+    if stats_payload is not None:
+        stats_path = SCRIPT_DIR / f"composer_symphony_stats_{today}.json"
+        with open(stats_path, "w") as f:
+            json.dump(stats_payload, f, indent=2, default=str)
+        log(f"Saved symphony-stats response to {stats_path.name}")
+
+    # For each configured symphony, extract its slice and write outputs.
+    symphony_watch_data: list[dict] = []  # collected for CurrentWatchSymphony.html
+    for sym in symphonies:
+        sid       = sym["id"]
+        sname     = sym["name"]
+        csv_path  = SCRIPT_DIR / sym["csv"]
+        html_path = SCRIPT_DIR / sym["html"]
+        password      = sym.get("password") or None
+        baseline_date = sym.get("baseline_date") or None
+        log(f"--- {sname or sid} ({sid}) ---")
+
+        positions: list[dict] = []
+        source_used = ""
+
+        if stats_payload is not None:
+            positions = extract_positions_from_symphony_stats(stats_payload, sid)
+            if positions:
+                source_used = "symphony-stats-meta"
+                log(f"  Got {len(positions)} positions from {source_used}")
+            else:
+                log(f"  WARN: symphony-stats-meta returned no positions for {sid} "
+                    f"(check {today} JSON to verify the id matches one in the response)")
+
+        # Fallback only makes sense if there's a single configured symphony,
+        # since /holdings can't tell us which symphony a position belongs to.
+        if not positions and len(symphonies) == 1:
+            log("  Falling back to /holdings + Yahoo prices (whole-account view)")
+            holdings_payload = get_account_holdings(cfg, account_uuid)
+            raw_path = SCRIPT_DIR / f"composer_raw_{today}.json"
+            with open(raw_path, "w") as f:
+                json.dump(holdings_payload, f, indent=2, default=str)
+            positions = extract_positions_from_account_holdings(holdings_payload)
+            source_used = "account-holdings+yahoo-prices"
+            needs_prices = any(
+                p.get("ticker") and not isinstance(p.get("market_value"), (int, float))
+                for p in positions
+            )
+            if needs_prices:
+                enrich_with_prices(positions)
+
+        if not positions:
+            log(f"  ERROR: no positions found for {sid}; skipping CSV/HTML for this symphony")
+            continue
+
+        # ── RSI Override DISABLED (2026-05-15) ───────────────────────────
+        # Previously redistributed VIXY/SPXU → TQQQ 65% / UPRO 35% when SPY
+        # RSI-14 > 76. Disabled because the symphony itself already handles
+        # bull/bear rotation (e.g. May 14 → May 15 went SQQQ/VIXY → TECL/SGOV
+        # via Composer's own logic). Manual redistribution was double-counting
+        # and producing wrong rows in Algorithm185History.html and the Market
+        # Forecast banner. Source-of-truth is now the official Composer 3-year
+        # CSV download (composer_allocations_185_3yr2.csv).
+        #
+        # To re-enable: restore the block from composer_pull_allocation.py.bak.*
+        # and verify rsi_tracker.check_rsi_override still matches your intent.
+        log(f"  RSI override: DISABLED (symphony handles its own rotation)")
+
+        # Save a per-symphony JSON snapshot of today's slice (handy for
+        # debugging). Includes the raw symphony entry from the API so you can
+        # inspect cash, value, and any other fields Composer returned.
+        raw_entry = (
+            find_symphony_entry(stats_payload, sid)
+            if stats_payload is not None else None
+        )
+        slice_path = SCRIPT_DIR / f"{csv_path.stem}_{today}.json"
+        with open(slice_path, "w") as f:
+            json.dump({
+                "date":            today,
+                "symphony_id":     sid,
+                "symphony_name":   sname,
+                "source":          source_used,
+                "positions":       positions,
+                "raw_api_entry":   raw_entry,
+            }, f, indent=2, default=str)
+        log(f"  Saved today's slice to {slice_path.name}")
+
+        # ── Stable copy for auto-rebalancer (schwab_rebalance.py) ────────────
+        # Maps symphony ID -> fixed filename so rebalance_config.json never
+        # needs to change as the date rolls over each day.
+        _STABLE_JSON_MAP = {
+            "7GJZdYouz3l3acrmUPOD": "composer_allocations_186main.json", # BLEE-186 main ($132K)
+            "jtQvlI5wINrxpOfxgmgl": "composer_allocations_186.json",   # BLEE-186 small copy
+            "qjmHJ3IR19kmaAlbgkNj": "composer_allocations_187.json",   # BLEE-187 SGOV Bond
+            "iPifD8uTozTr0sbu9qiB": "composer_allocations_187hi.json", # BLEE-187 Hi Interest
+            "ZGersOlsQFRHg7U2qnSw": "composer_allocations_185.json",   # BLEE-185
+            "g7WBkfIc6UWUWC6NiAdu": "composer_allocations_kei186.json",# BLEE A-186 Kei
+        }
+        if sid in _STABLE_JSON_MAP:
+            import shutil as _shutil
+            _stable_dst = SCRIPT_DIR / _STABLE_JSON_MAP[sid]
+            _shutil.copy(str(slice_path), str(_stable_dst))
+            log(f"  Updated stable file: {_stable_dst.name}")
+
+        # Collect data for CurrentWatchSymphony.html regeneration
+        try:
+            _sym_value     = raw_entry.get("value")   if raw_entry else None
+            _last_reb      = (raw_entry or {}).get("last_rebalanced_at") or                              (raw_entry or {}).get("last_rebalance") or                              (raw_entry or {}).get("rebalanced_at") or                              (raw_entry or {}).get("last_rebalanced")
+            if _last_reb and "T" in str(_last_reb):
+                _last_reb = str(_last_reb)[:10]
+            _ret_pct   = (raw_entry or {}).get("return_pct") or (raw_entry or {}).get("total_return")
+            _ann       = (raw_entry or {}).get("annualized_return") or (raw_entry or {}).get("annualized")
+            _watch_holdings = []
+            for _wp in positions:
+                if not _wp.get("ticker"):
+                    continue
+                _wv = float(_wp.get("market_value") or 0)
+                _ws = float(_wp.get("shares") or 0)
+                _wprice = round(_wv / _ws, 4) if _ws > 0 else None
+                _watch_holdings.append({
+                    "ticker": _wp["ticker"],
+                    "pct":    round(float(_wp.get("weight_pct") or 0), 2),
+                    "price":  _wprice,
+                    "shares": round(_ws, 4),
+                    "value":  round(_wv, 2),
+                })
+            symphony_watch_data.append({
+                "id":            sid,
+                "name":          sname,
+                "value":         round(float(_sym_value), 2) if isinstance(_sym_value, (int, float)) else None,
+                "last_rebalance": _last_reb,
+                "return_pct":    round(float(_ret_pct), 2) if isinstance(_ret_pct, (int, float)) else None,
+                "annualized":    round(float(_ann), 2) if isinstance(_ann, (int, float)) else None,
+                "holdings":      _watch_holdings,
+            })
+        except Exception as _we:
+            log(f"  (symphony-watch data collection failed for {sid}: {_we})")
+
+        # Write to per-symphony CSV (idempotent).
+        write_symphony_csv(csv_path, today, sid, positions, source_used)
+
+        # Regenerate this symphony's dashboard.
+        try:
+            generate_dashboard(csv_path, html_path, sid, sname, account_uuid, password, baseline_date)
+        except Exception as e:  # pylint: disable=broad-except
+            log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
+
+        # ── Update Algorithm185History.html ALLOC_DATA + source CSV ──────────
+        # Only runs for the Daily Signal symphony (qjmHJ3IR19kmaAlbgkNj)
+        # Source CSV: composer_allocations_185_3yr2.csv  (10 ticker cols, no SPXU/VIXY)
+        if sid == "qjmHJ3IR19kmaAlbgkNj":
+            try:
+                import re as _re185, csv as _csv185
+                _hist_path = SCRIPT_DIR / "Algorithm185History.html"
+                _csv185_path = SCRIPT_DIR / "composer_allocations_185_3yr2.csv"
+
+                # Column order matches the new CSV schema (no SPXU, no VIXY)
+                _COLS = ["UPRO", "GLDM", "$USD", "TECL",
+                         "TQQQ", "SGOV", "GLD", "UDOW", "SQQQ", "PSQ"]
+                _pos_map = {
+                    p["ticker"]: p.get("weight_pct", 0.0)
+                    for p in positions if p.get("ticker")
+                }
+
+                def _fmt_w185(ticker):
+                    w = _pos_map.get(ticker, 0.0)
+                    if w <= 0:
+                        return "-"
+                    # Match CSV style: integer % or one decimal
+                    v = round(w, 1)
+                    return f"{int(v)}%" if v == int(v) else f"{v}%"
+
+                # ── 1. Prepend/update row in composer_allocations_185_3yr2.csv ──
+                if _csv185_path.exists():
+                    _csv_text = _csv185_path.read_text(encoding="utf-8-sig")
+                    # Normalize line endings
+                    _csv_text = _csv_text.replace("\r\n", "\n").replace("\r", "\n")
+                    _csv_lines = _csv_text.splitlines()
+                    _header = _csv_lines[0] if _csv_lines else "Date,Day Traded," + ",".join(_COLS)
+                    # M/D/YYYY format for CSV
+                    _today_dt = dt.date.fromisoformat(today)
+                    _today_csv = f"{_today_dt.month}/{_today_dt.day}/{_today_dt.year}"
+                    _new_csv_vals = [_today_csv, "Yes"] + [_fmt_w185(t) for t in _COLS]
+                    _new_csv_row = ",".join(_new_csv_vals)
+                    # Check if date already in CSV (M/D/YYYY match)
+                    _data_lines = [l for l in _csv_lines[1:] if l.strip()]
+                    _existing_dates = [l.split(",")[0].strip() for l in _data_lines]
+                    if _today_csv in _existing_dates:
+                        _data_lines = [
+                            _new_csv_row if l.split(",")[0].strip() == _today_csv else l
+                            for l in _data_lines
+                        ]
+                        log(f"  Updated {today} row in composer_allocations_185_3yr2.csv")
+                    else:
+                        _data_lines = [_new_csv_row] + _data_lines
+                        log(f"  Prepended {today} row to composer_allocations_185_3yr2.csv")
+                    _csv185_path.write_text(
+                        _header + "\n" + "\n".join(_data_lines) + "\n",
+                        encoding="utf-8"
+                    )
+
+                # ── 2. Prepend/update row in Algorithm185History.html ALLOC_DATA ──
+                if _hist_path.exists():
+                    _new_row_vals = [f'"{today}"'] + [f'"{_fmt_w185(t)}"' for t in _COLS]
+                    _new_row_js   = f'  [{", ".join(_new_row_vals)}]'
+                    _hist_html = _hist_path.read_text(encoding="utf-8")
+
+                    if f'"{today}"' in _hist_html:
+                        # Replace existing row for today (single-line array)
+                        _start = _hist_html.find(f'"{today}"')
+                        _row_start = _hist_html.rfind("  [", 0, _start)
+                        _row_end   = _hist_html.find("]", _start) + 1
+                        _hist_html = _hist_html[:_row_start] + _new_row_js + _hist_html[_row_end:]
+                        log(f"  Updated today's row in Algorithm185History.html")
+                    else:
+                        _hist_html = _hist_html.replace(
+                            "const ALLOC_DATA = [\n",
+                            "const ALLOC_DATA = [\n" + _new_row_js + ",\n"
+                        )
+                        log(f"  Prepended {today} row to Algorithm185History.html ALLOC_DATA")
+
+                    _hist_path.write_text(_hist_html, encoding="utf-8")
+            except Exception as _e185:
+                log(f"  (Algorithm185History update failed: {type(_e185).__name__}: {_e185})")
+
+    # ---- Publish signal_latest.json for subscriber signal fetcher -----------
+    try:
+        _signal_path = SCRIPT_DIR / "signal_latest.json"
+        # Find the most recent composer_allocations_185_*.json
+        _alloc_files = sorted(
+            SCRIPT_DIR.glob("composer_allocations_185_*.json"),
+            reverse=True
+        )
+        if not _alloc_files:
+            # Fall back to any allocation file
+            _alloc_files = sorted(
+                SCRIPT_DIR.glob("composer_allocations_*.json"),
+                reverse=True
+            )
+        if _alloc_files:
+            with open(_alloc_files[0], encoding="utf-8") as _f:
+                _raw = json.load(_f)
+            # Build a clean, stable signal payload for subscribers
+            _positions = [
+                p for p in (_raw.get("positions") or [])
+                if p.get("ticker") and p["ticker"] not in ("$USD", "USD", "CASH")
+            ]
+            _signal = {
+                "date":          _raw.get("date", today),
+                "symphony_id":   _raw.get("symphony_id", ""),
+                "symphony_name": _raw.get("symphony_name", ""),
+                "source":        "blee-quant-site",
+                "published_at":  dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "positions": [
+                    {
+                        "ticker":     p["ticker"],
+                        "weight_pct": round(float(p.get("weight_pct", 0)), 4),
+                    }
+                    for p in _positions
+                ],
+            }
+            _signal_path.write_text(
+                json.dumps(_signal, indent=2), encoding="utf-8"
+            )
+            log(f"Published signal_latest.json ({len(_positions)} positions, "
+                f"date={_signal['date']})")
+        else:
+            log("WARNING: No allocation JSON found — signal_latest.json not updated.")
+    except Exception as _se:
+        log(f"  (signal_latest.json publish failed: {type(_se).__name__}: {_se})")
+
+    # ---- Regenerate CurrentWatchSymphony.html ------------------------------------
+    import re as _re_watch
+    _watch_path = SCRIPT_DIR / "CurrentWatchSymphony.html"
+    if symphony_watch_data and _watch_path.exists():
+        try:
+            _watch_html = _watch_path.read_text(encoding="utf-8")
+            # Replace SYMPHONIES data placeholder (may span many characters)
+            # Use json.JSONDecoder to find the true end of the nested array
+            # (regex \[.*?\] stops at the first ] inside holdings — corrupts the file)
+            import json as _json_watch
+            _sdm = "/* __SYMPHONY_DATA__ */ "
+            _si  = _watch_html.find(_sdm)
+            if _si >= 0:
+                _arr_s = _watch_html.index("[", _si + len(_sdm))
+                _, _arr_e = _json_watch.JSONDecoder().raw_decode(_watch_html, _arr_s)
+                _watch_html = (
+                    _watch_html[:_si + len(_sdm)]
+                    + _json_watch.dumps(symphony_watch_data, default=str)
+                    + _watch_html[_arr_e:]
+                )
+            # Replace GENERATED date placeholder
+            _watch_html = _re_watch.sub(
+                r'/\* __GENERATED__ \*/ "[^"]*"',
+                f'/* __GENERATED__ */ "{today}"',
+                _watch_html,
+            )
+            _watch_path.write_text(_watch_html, encoding="utf-8")
+            log(f"Regenerated CurrentWatchSymphony.html ({len(symphony_watch_data)} symphonies)")
+        except Exception as _cwe:
+            log(f"  (CurrentWatchSymphony.html regeneration failed: {type(_cwe).__name__}: {_cwe})")
+    elif not _watch_path.exists():
+        log("CurrentWatchSymphony.html not found — skipping regeneration")
+    else:
+        log("No symphony watch data collected — skipping CurrentWatchSymphony.html")
+
+    log("=== Done ===")
+
+    # ---- Stamp last-updated timestamp into static HTML pages -----------------
+    import re as _re
+    try:
+        import pytz as _pytz
+        _et = _pytz.timezone("America/New_York")
+        now_str = dt.datetime.now(_et).strftime("%m/%d/%Y %I:%M %p ET")
+    except ImportError:
+        now_str = dt.datetime.now().strftime("%m/%d/%Y %I:%M %p ET")
+
+    # Pages that use <span id="blee-updated"> (main landing + performance)
+    for page in ["index.html"]:
+        page_path = SCRIPT_DIR / page
+        if not page_path.exists():
+            continue
+        try:
+            content = page_path.read_text(encoding="utf-8")
+            updated = _re.sub(
+                r'<span id="blee-updated">[^<]*</span>',
+                f'<span id="blee-updated">{now_str}</span>',
+                content
+            )
+            if updated != content:
+                page_path.write_text(updated, encoding="utf-8")
+                log(f"Stamped last-updated ({now_str}) into {page}")
+        except Exception as e:
+            log(f"  (could not stamp timestamp into {page}: {e})")
+
+    # Pages that use <span id="page-last-updated"> (performance, backtest)
+    for page in ["performance1.html", "Algorithm185History.html"]:
+        page_path = SCRIPT_DIR / page
+        if not page_path.exists():
+            continue
+        try:
+            content = page_path.read_text(encoding="utf-8")
+            updated = _re.sub(
+                r'<span id="page-last-updated">[^<]*</span>',
+                f'<span id="page-last-updated">{now_str}</span>',
+                content
+            )
+            if updated != content:
+                page_path.write_text(updated, encoding="utf-8")
+                log(f"Stamped last-updated ({now_str}) into {page}")
+        except Exception as e:
+            log(f"  (could not stamp timestamp into {page}: {e})")
+
+    # ---- Push updated files to GitHub ----------------------------------------
+    log("--- Pushing updates to GitHub ---")
+    try:
+        import os
+        git_dir = str(SCRIPT_DIR)
+        def git(cmd: str) -> int:
+            full = f'git -C "{git_dir}" {cmd}'
+            log(f"  $ {full}")
+            rc = os.system(full)
+            if rc != 0:
+                log(f"  WARNING: command exited with code {rc}")
+            return rc
+
+        git("add .")
+        git(f'commit -m "daily auto update {today}"')
+        rc = git("push")
+        if rc == 0:
+            log("GitHub push successful.")
+        else:
+            log("GitHub push failed — check remote/auth settings.")
+    except Exception as e:  # pylint: disable=broad-except
+        log(f"  (GitHub push failed: {type(e).__name__}: {e})")
+
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except SystemExit:
+        raise
+    except Exception as e:  # pylint: disable=broad-except
+        log(f"FATAL: {type(e).__name__}: {e}")
+        sys.exit(1)

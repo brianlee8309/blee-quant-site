@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE Investment Analytics — Algorithmic Portfolio Intelligence</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JYD4LP56QM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JYD4LP56QM');
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- User status bar (shows signed-in email + sign out on every page) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<script src="user_bar.js"></script>
+<style>
+  :root {
+    --navy:    #0b1120;
+    --navy2:   #111827;
+    --navy3:   #1e2d45;
+    --card:    #111827;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #e2e8f0;
+    --muted:   #94a3b8;
+    --light:   #0b1120;
+    --accent:  #2563eb;
+    --gold:    #f59e0b;
+    --emerald: #10b981;
+    --red:     #ef4444;
+    --shadow:  0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 62px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo .icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+    letter-spacing: -1px;
+  }
+  .nav-logo .brand { color: #fff; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .nav-logo .brand span { color: var(--gold); }
+
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a {
+    color: rgba(255,255,255,0.70);
+    text-decoration: none; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px;
+    transition: all .18s;
+  }
+  .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .nav-links .btn-nav {
+    background: var(--gold); color: #000 !important;
+    padding: 7px 18px; border-radius: 7px; font-weight: 700;
+    margin-left: 8px;
+  }
+  .nav-links .btn-nav:hover { background: #fbbf24; }
+
+  @media (max-width: 780px) {
+    .nav-links a:not(.btn-nav) { display: none; }
+    .nav-links .btn-nav { display: none; }
+  }
+
+  /* ── HAMBURGER ── */
+  .nav-hamburger {
+    display: none; flex-direction: column; justify-content: center;
+    gap: 5px; cursor: pointer; padding: 8px; margin-left: 8px;
+    background: none; border: none;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: rgba(255,255,255,0.80); border-radius: 2px;
+    transition: all .25s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  @media (max-width: 780px) { .nav-hamburger { display: flex; } }
+
+  /* ── MOBILE MENU DROPDOWN ── */
+  .mobile-menu {
+    display: none; flex-direction: column;
+    position: absolute; top: 62px; left: 0; right: 0;
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 20px 18px; z-index: 99;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: rgba(255,255,255,0.80); text-decoration: none;
+    font-size: 16px; font-weight: 600;
+    padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    transition: color .15s;
+  }
+  .mobile-menu a:hover { color: #fff; }
+  .mobile-menu a.btn-nav-mob {
+    margin-top: 10px; background: var(--gold); color: #000;
+    padding: 12px 20px; border-radius: 8px; text-align: center;
+    font-weight: 700; border: none;
+  }
+  .mobile-menu .mob-lang {
+    display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+  }
+
+  /* ── LANGUAGE SWITCHER (desktop) ── */
+  .nav-translate {
+    display: flex; align-items: center; gap: 3px;
+    margin-left: 14px;
+    border-left: 1px solid rgba(255,255,255,0.12); padding-left: 14px;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.60); font-size: 11.5px; font-weight: 700;
+    padding: 4px 8px; border-radius: 5px; cursor: pointer;
+    transition: all .15s; white-space: nowrap; font-family: inherit;
+    letter-spacing: 0.03em;
+  }
+  .lang-btn:hover { background: rgba(255,255,255,0.10); color: #fff; border-color: rgba(255,255,255,0.35); }
+  .lang-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+  @media (max-width: 780px) { .nav-translate { display: none; } }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, var(--navy) 0%, #0f2044 55%, #0d1f3c 100%);
+    padding: 88px 32px 72px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(37,99,235,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(37,99,235,0.22);
+    border: 1px solid rgba(37,99,235,0.40);
+    color: #93c5fd; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 16px; border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 5vw, 62px);
+    font-weight: 800; color: #fff;
+    letter-spacing: -0.03em; line-height: 1.12;
+    max-width: 820px; margin: 0 auto 22px;
+  }
+  .hero h1 em { font-style: normal; color: var(--gold); }
+  .hero p.lead {
+    color: rgba(255,255,255,0.65);
+    font-size: clamp(16px, 2vw, 19px);
+    max-width: 620px; margin: 0 auto 40px;
+  }
+  .hero-btns {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--gold); color: #000;
+    padding: 14px 32px; border-radius: 9px;
+    font-size: 16px; font-weight: 700;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all .18s; display: inline-block;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+  }
+  .btn-primary:hover { background: #fbbf24; transform: translateY(-1px); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.10); color: #fff;
+    padding: 14px 32px; border-radius: 9px;
+    font-size: 16px; font-weight: 600;
+    text-decoration: none; border: 1px solid rgba(255,255,255,0.20);
+    transition: all .18s; display: inline-block;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.17); }
+
+  /* ── HERO STATS STRIP ── */
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    overflow: hidden;
+    max-width: 900px; margin: 52px auto 0;
+  }
+  @media (max-width: 700px) {
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  .hs {
+    background: rgba(255,255,255,0.04);
+    padding: 22px 20px; text-align: center;
+  }
+  .hs .num {
+    font-size: 32px; font-weight: 800; color: var(--emerald);
+    letter-spacing: -0.03em; line-height: 1;
+  }
+  .hs .num.gold { color: var(--gold); }
+  .hs .lbl {
+    font-size: 12px; color: rgba(255,255,255,0.50);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    font-weight: 600; margin-top: 7px;
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 72px 32px; }
+  section.light { background: var(--navy2); }
+  section.white { background: var(--navy2); }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent); margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 800; letter-spacing: -0.03em; color: var(--text);
+    margin-bottom: 14px; line-height: 1.2;
+  }
+  .section-sub {
+    color: var(--muted); font-size: 17px;
+    max-width: 600px; margin-bottom: 48px;
+  }
+
+  /* ── PERFORMANCE CHART ── */
+  .chart-card {
+    background: var(--navy2);
+    border-radius: 16px; padding: 32px;
+    box-shadow: var(--shadow);
+  }
+  .chart-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
+  }
+  .chart-header h3 { color: #fff; font-size: 18px; font-weight: 700; }
+  .chart-header p { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 4px; }
+  .chart-legend { display: flex; gap: 20px; align-items: center; }
+  .chart-legend span {
+    display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.70); font-size: 13px; font-weight: 600;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .dot.green { background: var(--emerald); }
+  .dot.pink { background: #f472b6; }
+  .chart-wrap { height: 340px; }
+
+  /* ── BEAR MARKET CALLOUT ── */
+  .bear-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; margin-top: 40px;
+  }
+  @media (max-width: 760px) { .bear-grid { grid-template-columns: 1fr; } }
+  .bear-card {
+    border-radius: 14px; padding: 32px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .bear-card.strategy { background: linear-gradient(135deg, #064e3b, #065f46); }
+  .bear-card.spy { background: linear-gradient(135deg, #4c0519, #7f1d1d); }
+  .bear-card .year { font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; opacity: 0.7; color: #fff; }
+  .bear-card .name { font-size: 18px; font-weight: 700; color: #fff; }
+  .bear-card .return {
+    font-size: 52px; font-weight: 900; letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .bear-card.strategy .return { color: #6ee7b7; }
+  .bear-card.spy .return { color: #fca5a5; }
+  .bear-card .desc { color: rgba(255,255,255,0.65); font-size: 14px; margin-top: 4px; }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-wrap {
+    overflow-x: auto; margin-top: 40px;
+    border-radius: 14px; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  th, td {
+    padding: 14px 20px; text-align: left; font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--muted);
+    background: #f9fafb;
+  }
+  tr:last-child td { border-bottom: 0; }
+  td.metric { font-weight: 600; color: var(--text); }
+  td.strategy-val { font-weight: 700; color: var(--emerald); font-size: 15px; }
+  td.spy-val { color: var(--muted); }
+  td.win { background: rgba(16,185,129,0.06); }
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px; margin-left: 8px;
+    background: rgba(16,185,129,0.15); color: #34d399;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* ── FOUNDER SECTION ── */
+  .founder-section {
+    background: linear-gradient(160deg, var(--navy) 0%, #0f2044 100%);
+    padding: 72px 32px;
+  }
+  .founder-grid {
+    display: grid; grid-template-columns: 1fr 420px; gap: 56px;
+    align-items: center; max-width: 1100px; margin: 0 auto;
+  }
+  @media (max-width: 860px) { .founder-grid { grid-template-columns: 1fr; gap: 40px; } }
+  .founder-tag {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .founder-title {
+    font-size: clamp(26px, 3vw, 38px); font-weight: 800; color: #fff;
+    letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 20px;
+  }
+  .founder-title em { font-style: normal; color: var(--emerald); }
+  .founder-body { color: rgba(255,255,255,0.65); font-size: 16px; line-height: 1.8; }
+  .founder-body p { margin-bottom: 14px; }
+  .founder-body strong { color: rgba(255,255,255,0.90); }
+  .founder-pills {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 600;
+    padding: 7px 15px; border-radius: 20px;
+  }
+  /* Live proof card */
+  .proof-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 36px 32px;
+  }
+  .proof-card .pc-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--gold); margin-bottom: 6px;
+  }
+  .proof-card .pc-title {
+    font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 24px;
+  }
+  .proof-row {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .proof-stat {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+  }
+  .proof-stat .ps-label { font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 500; }
+  .proof-stat .ps-value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .proof-stat .ps-value.g { color: var(--emerald); }
+  .proof-stat .ps-value.gold { color: var(--gold); }
+  .proof-stat .ps-value.w { color: #fff; }
+  .proof-card .pc-note {
+    font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 18px; line-height: 1.6;
+  }
+
+  /* ── START HERE BANNER ── */
+  .start-banner {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    border-radius: 16px; padding: 28px 32px;
+    display: flex; align-items: center; gap: 24px;
+    margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .start-banner .sb-icon { font-size: 36px; flex-shrink: 0; }
+  .start-banner .sb-text { flex: 1; min-width: 220px; }
+  .start-banner .sb-text h4 {
+    font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 6px;
+  }
+  .start-banner .sb-text p {
+    color: rgba(255,255,255,0.70); font-size: 14px; line-height: 1.6; margin: 0;
+  }
+  .start-banner .sb-text p strong { color: #6ee7b7; }
+  .start-banner a {
+    background: var(--card); color: #34d399;
+    padding: 12px 24px; border-radius: 9px; font-weight: 800; font-size: 15px;
+    text-decoration: none; flex-shrink: 0; white-space: nowrap;
+    transition: all .18s;
+  }
+  .start-banner a:hover { background: #f0fdf4; }
+
+  /* ── INVESTMENT COMPARISON STRIP ── */
+  .compare-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border); margin-bottom: 36px;
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 780px) {
+    .compare-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .compare-strip { grid-template-columns: 1fr; }
+  }
+  .cs-item {
+    padding: 26px 22px; background: var(--card);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .cs-item:last-child { border-right: 0; }
+  .cs-item.highlight {
+    background: linear-gradient(160deg, #f0fdf4, #dcfce7);
+    border-right: 0;
+  }
+  .cs-icon { font-size: 26px; }
+  .cs-name { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .cs-return {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.03em; line-height: 1;
+  }
+  .cs-return.low { color: var(--muted); }
+  .cs-return.mid { color: #f59e0b; }
+  .cs-return.high { color: #ef4444; }
+  .cs-return.best { color: var(--emerald); }
+  .cs-risk { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .cs-risk.danger { color: #dc2626; }
+  .cs-risk.ok { color: #f59e0b; }
+  .cs-risk.safe { color: var(--emerald); }
+  .cs-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+  .cs-badge {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 4px; margin-top: 6px;
+    background: rgba(16,185,129,0.15); color: #34d399; align-self: flex-start;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { background: var(--navy2); }
+  .layer-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 20px; margin-top: 40px;
+  }
+  @media (max-width: 820px) { .layer-grid { grid-template-columns: 1fr; } }
+  .layer-card {
+    border-radius: 14px; padding: 28px 24px;
+    border: 1px solid var(--border); position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content: attr(data-num);
+    position: absolute; top: -10px; right: 14px;
+    font-size: 72px; font-weight: 900; opacity: 0.06;
+    line-height: 1; color: var(--text);
+  }
+  .layer-card.l1 { background: #f0f9ff; border-color: #bae6fd; }
+  .layer-card.l2 { background: #fdf4ff; border-color: #e9d5ff; }
+  .layer-card.l3 { background: #f0fdf4; border-color: #bbf7d0; }
+  .layer-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 10px; display: block;
+  }
+  .l1 .layer-label { color: #0369a1; }
+  .l2 .layer-label { color: #7e22ce; }
+  .l3 .layer-label { color: #15803d; }
+  .layer-card h4 { font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+  .l1 h4 { color: #0c4a6e; }
+  .l2 h4 { color: #581c87; }
+  .l3 h4 { color: #14532d; }
+  .layer-card p { font-size: 14px; line-height: 1.7; }
+  .l1 p { color: #0369a1; }
+  .l2 p { color: #6b21a8; }
+  .l3 p { color: #166534; }
+  .surge-callout {
+    margin-top: 32px; background: var(--navy2);
+    border-radius: 16px; padding: 32px 36px;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 28px; align-items: center;
+  }
+  @media (max-width: 680px) { .surge-callout { grid-template-columns: 1fr; } }
+  .surge-callout h4 { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+  .surge-callout p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.75; }
+  .surge-callout p strong { color: rgba(255,255,255,0.90); }
+  .surge-stat {
+    text-align: center; flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 20px 28px;
+  }
+  .surge-stat .ss-num { font-size: 38px; font-weight: 900; color: var(--emerald); letter-spacing: -0.04em; line-height: 1; }
+  .surge-stat .ss-lbl { font-size: 12px; color: rgba(255,255,255,0.50); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 6px; }
+
+  /* ── WHO IS IT FOR ── */
+  .for-whom {
+    background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+    border: 1px solid #bfdbfe; border-radius: 14px;
+    padding: 28px 28px 24px; margin-top: 22px;
+  }
+  .for-whom h4 {
+    font-size: 15px; font-weight: 800; color: #1e40af; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .for-whom ul {
+    list-style: none; display: flex; flex-direction: column; gap: 9px;
+  }
+  .for-whom ul li {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 13.5px; color: #1e3a8a; line-height: 1.5;
+  }
+  .for-whom ul li::before { content: "✓"; font-weight: 800; color: var(--emerald); flex-shrink: 0; margin-top: 1px; }
+
+  /* ── STRATEGIES ── */
+  .strat-grid {
+    display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px;
+    max-width: 780px; margin-left: auto; margin-right: auto;
+  }
+  .strat-card {
+    border-radius: 16px; border: 1px solid var(--border);
+    background: var(--card); padding: 32px;
+    box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 20px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .strat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(0,0,0,0.12); }
+  .strat-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .strat-icon.blue { background: rgba(37,99,235,0.10); }
+  .strat-icon.gold { background: rgba(245,158,11,0.12); }
+  .strat-card h3 { font-size: 20px; font-weight: 800; color: var(--text); margin: 0; }
+  .strat-card .tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+    letter-spacing: 0.07em; margin-top: 6px;
+  }
+  .tag.low-risk { background: rgba(16,185,129,0.15); color: #34d399; }
+  .tag.high-risk { background: rgba(245,158,11,0.12); color: #92400e; }
+  .strat-card p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .strat-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ss {
+    background: var(--navy3); border-radius: 10px; padding: 14px 16px;
+  }
+  .ss .sv { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .ss .sv.g { color: var(--emerald); }
+  .ss .sv.b { color: var(--accent); }
+  .ss .sk { font-size: 11px; color: var(--muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .strat-card a.btn-strat {
+    display: block; text-align: center;
+    padding: 13px; border-radius: 9px; font-weight: 700; font-size: 15px;
+    text-decoration: none; transition: all .18s;
+  }
+  a.btn-strat.blue { background: var(--accent); color: #fff; }
+  a.btn-strat.blue:hover { background: #1d4ed8; }
+  a.btn-strat.gold { background: var(--gold); color: #000; }
+  a.btn-strat.gold:hover { background: #fbbf24; }
+
+  /* ── WHY ── */
+  .why-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 20px; margin-top: 40px;
+  }
+  @media (max-width: 800px) {
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .why-grid { grid-template-columns: 1fr; }
+  }
+  .why-item {
+    background: var(--card); border-radius: 14px; padding: 28px 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .why-icon {
+    font-size: 28px; margin-bottom: 14px; display: block;
+  }
+  .why-item h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .why-item p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px; margin-top: 48px; align-items: start;
+    max-width: 1400px; margin-left: auto; margin-right: auto;
+  }
+  @media (max-width: 1100px) {
+    .pricing-grid { grid-template-columns: repeat(2, 1fr); max-width: 860px; }
+  }
+  @media (max-width: 560px) {
+    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+  }
+  .plan {
+    border-radius: 18px; padding: 36px 32px;
+    border: 1px solid var(--border); background: var(--card);
+    box-shadow: var(--shadow);
+  }
+  .plan.featured {
+    background: var(--navy2); border-color: transparent;
+    box-shadow: 0 12px 48px rgba(37,99,235,0.28);
+    transform: scale(1.03);
+  }
+  .plan.green-featured {
+    background: linear-gradient(160deg,#0a0f1e 0%,#111827 100%);
+    border: 1.5px solid #16a34a;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.45), 0 0 0 1px rgba(74,222,128,0.15);
+    transform: scale(1.03);
+    position: relative;
+  }
+  .plan.green-featured h3 { color: #fff; font-size: 22px; font-weight: 900; }
+  .plan.green-featured .plan-price .amount,
+  .plan.green-featured .plan-price .dollar { color: #4ade80; }
+  .plan.green-featured .plan-price .per { color: rgba(255,255,255,0.5); }
+  .plan.green-featured .plan-desc { color: rgba(255,255,255,0.60); }
+  .plan.green-featured ul li { color: rgba(255,255,255,0.88); font-weight:500; }
+  .plan.green-featured ul li::before { color: #4ade80; }
+  .plan.green-featured ul li.muted::before { content:"—"; color: rgba(255,255,255,0.18); }
+  .plan.green-featured ul li.muted { color: rgba(255,255,255,0.30); }
+  .plan.green-featured .plan-fine { color: rgba(255,255,255,0.35); }
+  .plan-badge {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
+    background: rgba(245,158,11,0.15); color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .plan.green-featured .plan-badge { background: rgba(74,222,128,0.15); color: #4ade80; }
+  .plan h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .plan.featured h3 { color: #fff; }
+  .plan-price {
+    display: flex; align-items: baseline; gap: 4px;
+    margin: 20px 0 8px;
+  }
+  .plan-price .dollar { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .plan-price .amount {
+    font-size: 52px; font-weight: 900; letter-spacing: -0.04em; line-height: 1;
+    color: var(--text);
+  }
+  .plan.featured .plan-price .amount,
+  .plan.featured .plan-price .dollar { color: #fff; }
+  .plan-price .per { font-size: 14px; color: var(--muted); }
+  .plan.featured .plan-price .per { color: rgba(255,255,255,0.5); }
+  .plan-desc { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .plan.featured .plan-desc { color: rgba(255,255,255,0.55); }
+  .plan ul { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .plan ul li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: var(--text);
+  }
+  .plan.featured ul li { color: rgba(255,255,255,0.80); }
+  .plan ul li::before { content: "✓"; font-weight: 800; color: var(--emerald); flex-shrink: 0; }
+  .plan ul li.muted::before { content: "—"; color: var(--border); }
+  .plan ul li.muted { color: var(--muted); }
+  .btn-plan {
+    display: block; text-align: center;
+    padding: 14px; border-radius: 9px; font-weight: 700; font-size: 16px;
+    text-decoration: none; cursor: pointer; border: none; width: 100%;
+    transition: all .18s;
+  }
+  .btn-plan.outline {
+    border: 2px solid var(--border); color: var(--text); background: transparent;
+  }
+  .btn-plan.outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-plan.solid { background: var(--accent); color: #fff; box-shadow: 0 4px 16px rgba(37,99,235,0.35); }
+  .btn-plan.solid:hover { background: #1d4ed8; }
+  .btn-plan.gold-btn { background: var(--gold); color: #000; }
+  .btn-plan.gold-btn:hover { background: #fbbf24; }
+
+  /* ── LEGAL NOTICE BAR ── */
+  .legal-bar {
+    background: #fefce8; border-bottom: 2px solid #fde047;
+    padding: 11px 32px; display: flex; align-items: center;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .legal-bar .lb-icon { font-size: 18px; flex-shrink: 0; }
+  .legal-bar p {
+    font-size: 12.5px; color: #713f12; line-height: 1.5; margin: 0; flex: 1;
+  }
+  .legal-bar strong { color: #92400e; }
+  .legal-bar a { color: #92400e; font-weight: 700; text-decoration: underline; }
+
+  /* ── DATA SOURCE TAGS ── */
+  .ds-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 4px; margin-left: 8px;
+    vertical-align: middle;
+  }
+  .ds-tag.sim { background: rgba(99,102,241,0.12); color: #4338ca; }
+  .ds-tag.live { background: rgba(16,185,129,0.15); color: #34d399; }
+
+  /* ── RISK CALLOUT (Analysis 2) ── */
+  .risk-callout {
+    background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 10px; padding: 16px 20px;
+    margin-top: 16px; font-size: 13px; color: #7c2d12; line-height: 1.6;
+  }
+  .risk-callout strong { color: #9a3412; }
+
+  /* ── PLAN DISCLAIMER ── */
+  .plan-fine {
+    font-size: 11px; color: var(--muted); margin-top: 10px;
+    line-height: 1.6; text-align: center;
+  }
+  .plan.featured .plan-fine { color: rgba(255,255,255,0.40); }
+
+  /* ── ANNUAL HIGHLIGHT ── */
+  .annual-saving {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    color: #fff; border-radius: 10px; padding: 12px 16px;
+    margin: 16px 0; text-align: center;
+  }
+  .annual-saving .as-num { font-size: 26px; font-weight: 900; color: #6ee7b7; }
+  .annual-saving .as-lbl { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+  /* ── LANDING HERO (image) ── */
+  .landing-hero {
+    position: relative;
+    min-height: 620px;
+    background-image: url('HomeLandingImage1.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #07111f;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .landing-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right,
+      rgba(5,15,35,0.97) 0%,
+      rgba(5,15,35,0.92) 38%,
+      rgba(5,15,35,0.65) 62%,
+      rgba(5,15,35,0.25) 82%,
+      rgba(5,15,35,0.05) 100%);
+    z-index: 0;
+  }
+  .landing-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+      rgba(7,17,31,0.00) 0%,
+      rgba(7,17,31,0.00) 40%,
+      rgba(7,17,31,0.60) 75%,
+      rgba(7,17,31,0.95) 100%);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .landing-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px 28px 60px;
+    width: 100%;
+  }
+  .landing-pre {
+    font-size: 18px;
+    color: rgba(255,255,255,0.80);
+    font-weight: 400;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .landing-hero h1 {
+    font-size: clamp(38px, 6vw, 70px);
+    font-weight: 900;
+    line-height: 1.06;
+    color: var(--gold);
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .landing-hero h1 .h1-gold {
+    color: #fff;
+    display: block;
+    text-align: center;
+  }
+  .landing-tagline {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 18px 0 22px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .landing-tagline span { display: flex; align-items: center; gap: 6px; }
+  .landing-hero-body {
+    max-width: 540px;
+    color: rgba(255,255,255,0.82);
+    font-size: 16px;
+    line-height: 1.72;
+    margin-bottom: 0;
+  }
+  .landing-features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 44px;
+    max-width: 100%;
+  }
+  .landing-feat {
+    background: rgba(15,23,42,0.78);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 12px;
+    padding: 18px 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .landing-feat .fi { font-size: 26px; margin-bottom: 10px; }
+  .landing-feat h4 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .landing-feat p {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.5;
+    margin: 0;
+  }
+  /* ── HERO PAIN POINTS ── */
+  .hero-pain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 32px 0 28px;
+    max-width: 100%;
+  }
+  .hero-pain-card {
+    background: rgba(15,23,42,0.72);
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: border-color .2s;
+  }
+  .hero-pain-card:hover { border-color: rgba(245,158,11,0.35); }
+  .pain-icon { font-size: 26px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .hero-pain-card p {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .hero-pain-card p strong { color: #fff; }
+  .hero-conclusion {
+    max-width: 820px;
+    margin: 0 auto 12px;
+    text-align: center;
+  }
+  .hero-if-you {
+    font-size: 17px;
+    color: rgba(255,255,255,0.70);
+    margin: 0 0 18px;
+    line-height: 1.65;
+  }
+  .hero-if-you strong { color: #fff; }
+  .hero-mission-stmt {
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.7;
+    border-top: 2px solid rgba(245,158,11,0.45);
+    border-bottom: 2px solid rgba(245,158,11,0.45);
+    padding: 18px 0;
+    margin: 0;
+  }
+  .hero-mission-stmt strong { color: var(--gold); }
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    justify-content: center;
+  }
+  .hero-cta-gold {
+    background: var(--gold);
+    color: #000;
+    font-weight: 800;
+    padding: 13px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .hero-cta-gold:hover { opacity: .88; }
+  .hero-cta-outline {
+    background: transparent;
+    color: #fff;
+    font-weight: 700;
+    padding: 13px 28px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.28);
+    text-decoration: none;
+    font-size: 15px;
+    transition: border-color .15s;
+    white-space: nowrap;
+  }
+  .hero-cta-outline:hover { border-color: rgba(255,255,255,0.65); }
+  @media (max-width: 680px) {
+    .hero-pain-grid { grid-template-columns: 1fr; }
+    .hero-mission-stmt { font-size: 15px; }
+  }
+  /* ── CTA BAND ── */
+  .cta-band {
+    position: relative;
+    z-index: 3;
+    background: #07111f;
+    border-top: 1px solid rgba(245,158,11,0.25);
+    padding: 36px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .cta-band-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex: 1;
+    min-width: 260px;
+  }
+  .cta-crown {
+    width: 66px; height: 66px;
+    background: rgba(245,158,11,0.12);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+  }
+  .cta-band-title {
+    font-size: clamp(16px, 2.2vw, 22px);
+    font-weight: 900;
+    color: var(--gold);
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .cta-band-title-line2 {
+    display: block;
+    color: #fff;
+    font-size: clamp(14px, 1.9vw, 19px);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .cta-band-sub {
+    color: rgba(255,255,255,0.72);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .cta-band-sub strong { color: var(--gold); }
+  .cta-band-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .cta-btn-gold {
+    background: var(--gold);
+    color: #000;
+    font-weight: 800;
+    padding: 14px 26px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.3;
+    transition: opacity .15s;
+  }
+  .cta-btn-gold:hover { opacity: .88; }
+  .cta-btn-gold .cta-sub { font-size: 11px; font-weight: 500; display: block; opacity: .75; }
+  .cta-btn-outline {
+    background: transparent;
+    color: #fff;
+    font-weight: 800;
+    padding: 14px 26px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.30);
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.3;
+    transition: border-color .15s;
+  }
+  .cta-btn-outline:hover { border-color: rgba(255,255,255,0.70); }
+  .cta-btn-outline .cta-sub { font-size: 11px; font-weight: 500; display: block; opacity: .65; }
+  @media (max-width: 860px) {
+    .landing-features { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .landing-hero-inner { padding: 52px 24px 32px; }
+    .cta-band { flex-direction: column; text-align: center; padding: 32px 24px; }
+    .cta-band-left { flex-direction: column; text-align: center; }
+    .cta-band-btns { justify-content: center; }
+  }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    background: #f0f2f5; border-top: 1px solid var(--border);
+    padding: 24px 32px; text-align: center;
+  }
+  .disclaimer p { font-size: 12px; color: var(--muted); max-width: 820px; margin: 0 auto 6px; line-height: 1.7; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    padding: 40px 32px; text-align: center;
+  }
+  footer .footer-logo { color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 10px; }
+  footer .footer-logo span { color: var(--gold); }
+  footer p { color: rgba(255,255,255,0.35); font-size: 13px; }
+  footer .footer-links {
+    display: flex; gap: 24px; justify-content: center;
+    margin: 18px 0; flex-wrap: wrap;
+  }
+  footer .footer-links a {
+    color: rgba(255,255,255,0.50); text-decoration: none; font-size: 13px;
+    transition: color .15s;
+  }
+  footer .footer-links a:hover { color: rgba(255,255,255,0.90); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ LEGAL BAR ══ -->
+<div class="legal-bar">
+  <span class="lb-icon">⚖️</span>
+  <p>
+    <strong>Important Legal Notice:</strong>
+    BLEE Quant Analytics publishes general market research and algorithm model outputs for informational purposes only.
+    This is <strong>not personalized investment advice</strong> and does not constitute a recommendation to buy or sell any security.
+    Backtest figures are simulated historical results — <strong>not actual trading returns</strong> — and past performance does not guarantee future results.
+    Investing involves risk, including possible loss of principal. Individual results will vary.
+    BLEE does not manage client assets, custody funds, or place trades on behalf of subscribers.
+    Please read our full disclaimer and consult a qualified financial advisor before making any investment decisions.
+    <strong>Build Wealth That Lasts.</strong>
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════ LANDING HERO ══ -->
+<div class="landing-hero">
+  <div class="landing-hero-inner">
+
+    <div class="landing-pre">For Every Investor Who Has Been Hurt Before</div>
+
+    <h1>
+      Financial Freedom Is a Right,
+      <span class="h1-gold">Not a Privilege.</span>
+    </h1>
+
+    <div class="hero-pain-grid">
+      <div class="hero-pain-card">
+        <div class="pain-icon">🕰️</div>
+        <p>Are you <strong>approaching retirement — or already in it</strong> — with savings you worked a lifetime to build, yet lying awake at night wondering how long they will last as monthly expenses quietly chip away at what you have left?</p>
+      </div>
+      <div class="hero-pain-card">
+        <div class="pain-icon">🧭</div>
+        <p>Are you <strong>fresh out of college and unsure how to start building wealth early</strong> — or deep into your 30s, working hard every month but unable to see a clear path to retirement, FIRE, or financial independence?</p>
+      </div>
+      <div class="hero-pain-card">
+        <div class="pain-icon">📉</div>
+        <p>Did you <strong>follow a stock tip from a friend, guru, or influencer</strong> — only to watch it go south while they moved on to the next recommendation?</p>
+      </div>
+      <div class="hero-pain-card">
+        <div class="pain-icon">😰</div>
+        <p>Did you put your hard-earned savings into an <strong>S&amp;P 500 index ETF</strong> thinking it was the safest heaven — then watch it drop 15%+ and spend sleepless nights wondering when it would recover?</p>
+      </div>
+      <div class="hero-pain-card">
+        <div class="pain-icon">🏦</div>
+        <p>Did you park your money in <strong>CDs or bonds</strong> for "safety" — only to see inflation quietly erase your real purchasing power year after year, leaving you further behind despite doing everything right?</p>
+      </div>
+      <div class="hero-pain-card">
+        <div class="pain-icon">💔</div>
+        <p>Or were you the target of a <strong>romance scam</strong> — someone who built your trust, directed you to a convincing fake investment platform, and vanished with every dollar you worked years to save?</p>
+      </div>
+    </div>
+
+    <div class="hero-conclusion">
+      <p class="hero-if-you">If any of this sounds familiar — <strong>you are not alone, and it was not your fault.</strong> The financial system was not designed with you in mind. We are here to change that.</p>
+      <p class="hero-mission-stmt">We built BLEE Quant to give every person — young savers, near-retirees, and the financially independent — equal access to the same <strong>disciplined algorithmic strategies</strong> once reserved for institutions and the wealthy.</p>
+    </div>
+
+
+  </div><!-- /landing-hero-inner -->
+</div>
+
+<!-- ══════════════════════════════════════ CTA BAND ══ -->
+<div class="cta-band">
+  <div class="cta-band-left">
+    <div class="cta-crown">👑</div>
+    <div>
+      <div class="cta-band-title">Protect What You Built.<br><span class="cta-band-title-line2">Grow What Comes Next.</span></div>
+      <div class="cta-band-sub">
+        Use daily ETF allocation intelligence to pursue long-term compounding, retirement resilience, FIRE independence, Roth IRA growth, and future education funding.
+      </div>
+    </div>
+  </div>
+  <div class="cta-band-btns">
+    <a href="retirement_calculator.html" class="cta-btn-gold">
+      <strong>✨ Try Freedom Calculator</strong>
+      <span class="cta-sub">Plan your retirement</span>
+    </a>
+    <a href="mission.html" class="cta-btn-outline">
+      <strong>🎯 See Our Mission</strong>
+      <span class="cta-sub">Our plan for your freedom</span>
+    </a>
+    <a href="https://www.youtube.com/watch?v=ITP2e1l5i6k" target="_blank" rel="noopener" class="cta-btn-outline">
+      <strong>▶ Watch Video</strong>
+      <span class="cta-sub">See how it works</span>
+    </a>
+    <a href="performance1.html" class="cta-btn-outline">
+      <strong>See the Track Record</strong>
+      <span class="cta-sub">Backtest and risk history</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ PERFORMANCE ══ -->
+<section class="light" id="performance">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="perf.label">Historical Backtest</div>
+    <h2 class="section-title" data-i18n="perf.title">6 Years of Data. Outperforms S&amp;P 500 in Both Return and Risk.</h2>
+    <p class="section-sub" data-i18n="perf.sub" style="color:#fff;font-weight:700;font-size:17px;line-height:1.7;">
+      Simulated returns from May 2020 to May 2026, compared against the S&amp;P 500 (SPY).
+      Calm Growth Model returned +177% vs SPY's +155% — outperforming with significantly lower drawdowns throughout.
+    </p>
+    <div style="
+      background:rgba(245,158,11,0.08);
+      border:1px solid rgba(245,158,11,0.30);
+      border-left:4px solid #f59e0b;
+      border-radius:10px;
+      padding:16px 22px;
+      margin:0 0 32px;
+      max-width:740px;
+      font-size:14.5px;
+      color:rgba(255,255,255,0.88);
+      line-height:1.7;
+    ">
+      💡 <strong style="color:#f59e0b;">Real-world example — 2022 market crash:</strong>
+      If you had $10,000 in the S&amp;P 500, you could have lost <strong style="color:#ef4444;">over $2,000</strong> at the worst point of that year.
+      With our model, the maximum loss at any single point was under <strong style="color:#10b981;">$500</strong> —
+      a fraction of the benchmark's drawdown, protecting your capital when it mattered most.
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3>Portfolio Growth — $10,000 Starting Investment</h3>
+          <p>May 2020 → May 2026 &nbsp;·&nbsp; Includes fees &amp; 1bps slippage &nbsp;·&nbsp; <span style="color:rgba(255,255,255,0.45);font-size:11px;">BLEE: +172% (~$27,197) &nbsp;|&nbsp; SPY: ~+166.5% ($26,650) — BLEE outperforms on risk-adjusted basis</span></p>
+        </div>
+        <div class="chart-legend">
+          <span><span class="dot green"></span>BLEE Strategy</span>
+          <span><span class="dot pink"></span>S&amp;P 500 (SPY)</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="perfChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 2022 Bear Market -->
+    <div style="margin-top:48px;">
+      <div class="section-label" data-i18n="bear.label">Bear Market Resilience</div>
+      <h2 class="section-title" style="margin-bottom:0" data-i18n="bear.title">When S&amp;P Fell 18.6%, We Gained 11.2%</h2>
+      <p class="section-sub" style="margin-top:10px" data-i18n="bear.sub">
+        The 2022 bear market (Jan–Dec 2022) saw the worst S&amp;P 500 performance in over a decade.
+        BLEE's bond-rotation logic stepped in and generated positive returns throughout the selloff.
+      </p>
+    </div>
+
+    <div class="bear-grid">
+      <div class="bear-card strategy">
+        <div class="year">2022 Full Year</div>
+        <div class="name">BLEE Quant Calm Growth Model</div>
+        <div class="return">+11.2%</div>
+        <div class="desc">Protective rotation into SGOV and bonds shielded the portfolio from equity market volatility. Capital preserved and compounded.</div>
+      </div>
+      <div class="bear-card spy">
+        <div class="year">2022 Full Year</div>
+        <div class="name">S&amp;P 500 (SPY)</div>
+        <div class="return">−18.6%</div>
+        <div class="desc">The benchmark suffered its worst calendar year since 2008. A $100,000 portfolio would have lost over $18,000 in value.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ COMPARISON TABLE ══ -->
+<section class="white">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="cmp.label">Risk-Adjusted Performance</div>
+    <h2 class="section-title" data-i18n="cmp.title">The Numbers Don't Lie</h2>
+    <p class="section-sub" data-i18n="cmp.sub">3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.</p>
+
+    <div class="compare-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="th.metric">Metric</th>
+            <th data-i18n="th.blee">BLEE Strategy</th>
+            <th data-i18n="th.spy">S&amp;P 500 (SPY)</th>
+            <th data-i18n="th.edge">Edge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric" data-i18n="row1">Cumulative Return (3yr)</td>
+            <td class="strategy-val win" data-perf="blee_cum_3yr">+121.91%</td>
+            <td class="spy-val" data-perf="spy_cum_3yr">+87.61%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+34.3pp ahead</span></td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row2">Annualized Return</td>
+            <td class="strategy-val win" data-perf="blee_ann_3yr">+30.30%</td>
+            <td class="spy-val" data-perf="spy_ann_3yr">+23.27%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+7.0pp</span></td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row3">Max Drawdown</td>
+            <td class="strategy-val win" data-perf="blee_dd_3yr">−4.75%</td>
+            <td class="spy-val" style="color:#ef4444" data-perf="spy_dd_3yr">−18.76%</td>
+            <td><span class="badge" data-perf="edge_dd_3yr">3.9× safer</span></td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row4">Calmar Ratio</td>
+            <td class="strategy-val win">5.6</td>
+            <td class="spy-val">1.23</td>
+            <td><span class="badge">5.5× better</span></td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row5">Sharpe Ratio</td>
+            <td class="strategy-val">1.26</td>
+            <td class="spy-val">1.45</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row6">Beta (Market Sensitivity)</td>
+            <td class="strategy-val win">0.55</td>
+            <td class="spy-val">1.00</td>
+            <td><span class="badge">Low correlation</span></td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row7">Trailing 3-Month Return</td>
+            <td class="strategy-val win">+14.1%</td>
+            <td class="spy-val">+6.6%</td>
+            <td><span class="badge">+5.3pp</span></td>
+          </tr>
+          <tr>
+            <td class="metric" data-i18n="row8">Alpha (vs SPY)</td>
+            <td class="strategy-val win">+0.13</td>
+            <td class="spy-val">0.00</td>
+            <td><span class="badge">Consistent alpha</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:12px;">
+      * Past simulated performance is not indicative of future results. All data generated using full historical backtesting of proprietary algorithm models.
+      Live values for Cumulative Return, Annualized Return, and Max Drawdown above are auto-refreshed daily from the
+      <a href="Algorithm185History.html" style="color:#60a5fa;text-decoration:underline;">Backtest page</a>
+      after market close. Calmar, Sharpe, Beta, Trailing 3-Month, and Alpha are static reference values from the most recent full backtest.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ FOUNDER ══ -->
+<section class="founder-section">
+  <div class="founder-grid">
+    <div>
+      <div class="founder-tag" data-i18n="founder.tag">👤 About the Creator</div>
+      <h2 class="founder-title" data-i18n="founder.title">Built From <em>Real Experience</em> — and Used in Real Trading</h2>
+      <div class="founder-body">
+        <p>
+          Every algorithm model on this site was developed from scratch by a single independent analyst
+          combining three rare disciplines: <strong>30+ years of professional software engineering</strong>,
+          <strong>20+ years of hands-on market observation and investments</strong> across equities, bonds, and gold,
+          and <strong>several years of rigorous backtesting and algorithmic fine-tuning</strong> to optimize
+          both performance and risk management across every market cycle.
+        </p>
+        <p>
+          The signals are not gut feelings dressed up as code. Each Algorithm model is a fully automated,
+          rules-based rebalancing algorithm that ingests daily market data, evaluates momentum and
+          relative-strength conditions across 10+ ETFs, and outputs precise allocation weights —
+          removing emotion and human delay from every decision. The software engineering
+          expertise behind the engine means the logic is rigorous, reproducible, and continuously
+          refined as market conditions evolve.
+        </p>
+        <p>
+          Most importantly: <strong>these are the exact same signals used to manage a personal Roth IRA.</strong>
+          Every daily distribution published here is the same rebalancing instruction acted upon
+          with real money — no lag, no filter, no conflict of interest.
+          The result: a live account generating <strong>consistent positive returns</strong> across 3 years and 5 months
+          of real trading — validating that the algorithm performs beyond what the backtest alone shows.
+        </p>
+      </div>
+      <div class="founder-pills">
+        <span class="pill">🖥️ 30+ Yrs of Software Engineering</span>
+        <span class="pill">📅 20+ Yrs Market Observation</span>
+        <span class="pill">🔬 Multi-Year Backtesting &amp; Tuning</span>
+        <span class="pill">🤖 Fully Automated Daily Signals</span>
+        <span class="pill">💰 Personal Capital Invested</span>
+        <span class="pill">🏦 Roth IRA — Live Account</span>
+        <span class="pill">📊 Stocks · Bonds · Gold</span>
+      </div>
+    </div>
+    <div class="proof-card">
+      <div class="pc-label">🔴 Live Account · Real Money <span class="ds-tag live" style="font-size:9px;margin-left:4px;">Actual</span></div>
+      <div class="pc-title">Personal Roth IRA Performance</div>
+      <div class="proof-row">
+        <div class="proof-stat">
+          <span class="ps-label">Avg. Annual Return</span>
+          <span class="ps-value g">Over 35% / yr</span>
+        </div>
+        <div class="proof-stat">
+          <span class="ps-label">Live Trading Period</span>
+          <span class="ps-value w">2 Yrs 5 Mo</span>
+        </div>
+        <div class="proof-stat">
+          <span class="ps-label">Signal Source</span>
+          <span class="ps-value gold">Proprietary Algorithm Models</span>
+        </div>
+        <div class="proof-stat">
+          <span class="ps-label">Signal Lag vs. Published</span>
+          <span class="ps-value g">None — Identical</span>
+        </div>
+      </div>
+      <p class="pc-note">
+        Roth IRA figures represent actual account performance, not a backtest.
+        Individual results will vary based on execution timing and account size.
+        Past performance does not guarantee future results.
+      </p>
+      <div style="text-align:center;margin-top:14px;">
+        <a href="RothIRA_Report.html"
+           style="display:inline-flex;align-items:center;gap:6px;
+                  color:#f5a623;font-size:13px;font-weight:600;
+                  text-decoration:none;border:1px solid rgba(245,166,35,0.35);
+                  border-radius:6px;padding:6px 16px;
+                  background:rgba(245,166,35,0.07);
+                  transition:background .18s;">
+          📄 See details &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ HOW IT WORKS ══ -->
+<section class="how-section" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="how.label">Under the Hood</div>
+    <h2 class="section-title" data-i18n="how.title">Why Calm Growth Model Surges Periodically — and Why That's By Design</h2>
+    <p class="section-sub" data-i18n="how.sub">
+      If you look at the performance charts, you'll notice Calm Growth Model doesn't grow in a perfectly smooth line.
+      There are calm steady periods, and then sudden upward surges. This is intentional — and it's the core of what makes the algorithm powerful.
+    </p>
+
+    <div class="layer-grid">
+      <div class="layer-card l1" data-num="1">
+        <span class="layer-label" data-i18n="l1.label">Layer 1 · Daily Foundation</span>
+        <h4 data-i18n="l1.title">🔄 Rotation Across Asset Classes</h4>
+        <p data-i18n="l1.body">Every trading day, the algorithm evaluates momentum signals across a universe of 10+ ETFs spanning equity indexes, short-term Treasury bonds (SGOV), and gold. It rotates into whichever assets show the strongest relative strength — and rotates out of weakness. This is the base layer that keeps the portfolio aligned with prevailing market conditions at all times.</p>
+      </div>
+      <div class="layer-card l2" data-num="2">
+        <span class="layer-label" data-i18n="l2.label">Layer 2 · Market Condition Monitoring</span>
+        <h4 data-i18n="l2.title">📡 Oversold &amp; Overbought Detection</h4>
+        <p data-i18n="l2.body">On top of the rotation logic, the algorithm continuously monitors market-wide condition indicators — identifying when key assets become significantly oversold or overbought. These signals go beyond simple momentum; they detect when price dislocations have created a statistically favorable setup that has historically resolved in a predictable direction, validated through years of backtesting across multiple market cycles.</p>
+      </div>
+      <div class="layer-card l3" data-num="3">
+        <span class="layer-label" data-i18n="l3.label">Layer 3 · Periodic Opportunity Capture</span>
+        <h4 data-i18n="l3.title">⚡ Calculated Aggressive Moves — A Few Times a Year</h4>
+        <p>When both Layer 1 and Layer 2 align — strong directional signal <em>plus</em> confirmed market condition setup — the algorithm concentrates into a high-conviction position. These opportunities arise roughly <strong>several times per year</strong>. Each type of move has been exhaustively backtested to confirm positive expected value and acceptable maximum loss before it was ever included in the live strategy. The result: the periodic performance surges visible in the charts.</p>
+      </div>
+    </div>
+
+    <div class="surge-callout">
+      <div>
+        <h4 data-i18n="surge.title">⚡ The Surges You See in the Charts Are Not Luck</h4>
+        <p>
+          Each sudden jump in the Calm Growth Model performance line corresponds to one of these <strong>few times a year high-conviction moves</strong> — a deliberate, backtested, rules-based action triggered only when specific market conditions are confirmed.
+          The rest of the time, the algorithm runs quietly in rotation mode, protecting capital and compounding steadily.
+          This two-speed design — <strong>patient most of the time, aggressive when conditions are right</strong> — is what produces both the low maximum drawdown (about −6.7% over the full period) and the outsized annual returns.
+          It is not active trading noise; it is disciplined opportunity capture built on 20+ years of market observation and 30+ years of programming discipline.
+        </p>
+      </div>
+      <div class="surge-stat">
+        <div class="ss-num">Several×</div>
+        <div class="ss-lbl" data-i18n="surge.stat.lbl">High-conviction moves per year</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ STRATEGIES ══ -->
+<section class="light" id="strategies">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="strat.label">Our Strategies</div>
+    <h2 class="section-title" data-i18n="strat.title">One Algorithm. One Goal: Long-Term Wealth.</h2>
+    <p class="section-sub">
+      A single, focused strategy — algorithmically managed and published daily around
+      <strong>3:55 PM ET</strong>. Rebalance anytime after 3:55 PM ET — before close or after hours, up until 8 pm ET — for a consistent, disciplined strategy with no day-trading concerns.
+    </p>
+
+    <!-- INVESTMENT COMPARISON STRIP -->
+    <div class="compare-strip">
+      <div class="cs-item">
+        <span class="cs-icon">🏦</span>
+        <div class="cs-name" data-i18n="cs1.name">Bank Savings / CDs</div>
+        <div class="cs-return low">~4%<span style="font-size:14px;font-weight:600">/yr</span></div>
+        <div class="cs-risk ok">Near-zero downside risk</div>
+        <div class="cs-desc">Safe, but loses ground to inflation over time. After taxes, real gains are minimal.</div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-icon">💰</span>
+        <div class="cs-name" data-i18n="cs2.name">Dividend Stocks</div>
+        <div class="cs-return mid">~8%<span style="font-size:14px;font-weight:600">/yr</span></div>
+        <div class="cs-risk danger">Market roller coaster</div>
+        <div class="cs-desc">Better yield, but share prices swing with the market. A bear market can erase years of dividends overnight.</div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-icon">📊</span>
+        <div class="cs-name" data-i18n="cs3.name">S&amp;P 500 Index</div>
+        <div class="cs-return high">~10–23%<span style="font-size:14px;font-weight:600">/yr</span></div>
+        <div class="cs-risk danger">Up to −27% in downturns</div>
+        <div class="cs-desc">Strong long-term average, but brutal drawdowns. In 2022 alone, the S&amp;P fell nearly 19% — costing real-money investors months of sleep.</div>
+      </div>
+      <div class="cs-item highlight">
+        <span class="cs-icon">🛡️</span>
+        <div class="cs-name" data-i18n="cs4.name">Calm Growth Model (Backtest)</div>
+        <div class="cs-return best">~27%<span style="font-size:14px;font-weight:600">/yr (3yr)</span></div>
+        <div class="cs-risk safe">Max drawdown about −4.9% (3yr)</div>
+        <div class="cs-desc">Designed to outperform while keeping losses contained. In 2022, it gained +11.2% while the S&amp;P fell. Long-term growth — without the sleepless nights.</div>
+        <span class="cs-badge">Recommended Start</span>
+      </div>
+    </div>
+
+    <!-- START HERE BANNER -->
+    <div class="start-banner">
+      <div class="sb-icon">🚀</div>
+      <div class="sb-text">
+        <h4>Want more than 4% in savings — without the S&amp;P roller coaster? Start here.</h4>
+        <p>
+          <strong>Calm Growth Model</strong> is built for long-term, disciplined growth.
+          Combining rule-based ETF rotation with defensive risk management, it aims to outperform
+          traditional savings and dividend-oriented strategies while seeking lower drawdowns during
+          difficult market conditions.
+          Signals publish around <strong>3:55 PM ET</strong> across just <strong>2–3 ETF positions</strong>.
+          Rebalance anytime after 3:55 PM — before close or after hours, up until 8 pm ET. Simple to follow. No sleepless nights.
+        </p>
+      </div>
+      <a href="index2.html">Start with Calm Growth Model →</a>
+    </div>
+
+    <div class="strat-grid">
+      <!-- Strategy 1 -->
+      <div class="strat-card">
+        <div>
+          <div class="strat-icon blue">🛡️</div>
+          <h3 data-i18n="sc.title">Calm Growth Model</h3>
+          <div>
+            <span class="tag low-risk">Moderate Gain · Low Risk</span>
+          </div>
+        </div>
+        <p>
+          A rules-based algorithm monitoring 10+ ETFs across equities, bonds, and gold,
+          yet typically signaling rebalances across just <strong>2–3 positions per day</strong> —
+          simple enough to execute in minutes. Designed to capture steady upside while rotating
+          defensively during market stress.
+        </p>
+        <div class="for-whom">
+          <h4 data-i18n="sc.for">🎯 Who is Calm Growth Model for?</h4>
+          <ul>
+            <li>Investors tired of bank savings at ~4% or CD rates that barely beat inflation</li>
+            <li>Those holding dividend stocks (~8%/yr) but sick of watching their portfolio swing with every market headline</li>
+            <li>Anyone who wants to potentially beat the S&amp;P 500 — but <em>without</em> stomach-dropping −20% to −27% drawdowns during market downturns</li>
+            <li>Investors approaching or in retirement who need steady growth without the risk of a large loss wiping out years of savings</li>
+            <li>Long-term, patient investors looking for <strong>peace of mind</strong> — a strategy you can follow without losing sleep over daily market swings</li>
+            <li>People who want a simple daily signal (2–3 ETFs, ~3:55 PM ET) — rebalance anytime after 3:55 PM ET, before close or after hours, up until 8 pm ET. No day-trading concerns regardless of which window you use</li>
+            <li>Investors of <strong>any account size</strong> — no minimum balance required. Because rebalances always execute the following trading day (not intraday), this model does not trigger <strong>Pattern Day Trader (PDT)</strong> rules and does not require the $25,000 minimum account balance that PDT-flagged accounts must maintain</li>
+          </ul>
+        </div>
+        <div class="pdt-note" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:18px 20px;margin-top:16px;display:flex;gap:14px;align-items:flex-start;">
+          <span style="font-size:20px;flex-shrink:0;">✅</span>
+          <div>
+            <h4 style="font-size:14px;font-weight:700;color:#1e40af;margin-bottom:6px;">No Day Trading. No PDT Concerns. No $25K Requirement.</h4>
+            <p style="font-size:13px;color:#1e3a5f;line-height:1.6;">The signal updates around <strong>3:55 PM ET</strong>. You can rebalance anytime after that — before market close <em>or</em> during after-hours trading, any time up until 8 pm ET. Buying after 4:00 PM and selling the next trading day does not trigger a day trade. Because all rebalances execute on the <em>following</em> trading day, this strategy is generally designed to avoid Pattern Day Trader (PDT) classification and can be followed with accounts of any size — whether starting with $1,000 or $1,000,000.</p>
+          </div>
+        </div>
+        <div class="strat-stats">
+          <div class="ss">
+            <div class="sv g">−4.9%</div>
+            <div class="sk">Max Drawdown (3yr)</div>
+          </div>
+          <div class="ss">
+            <div class="sv g">27%</div>
+            <div class="sk">Avg Annual Return (3yr)</div>
+          </div>
+          <div class="ss">
+            <div class="sv b">5.6</div>
+            <div class="sk">Calmar Ratio</div>
+          </div>
+          <div class="ss">
+            <div class="sv b">0.55</div>
+            <div class="sk">Beta</div>
+          </div>
+        </div>
+        <a href="index2.html" class="btn-strat gold">View Daily Analysis →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ WHY ══ -->
+<section class="white">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="why.label">Why BLEE Quant Analytics</div>
+    <h2 class="section-title" data-i18n="why.title">Built for Serious Long-Term Investors</h2>
+    <p class="section-sub" data-i18n="why.sub">
+      We do the research. You make the decisions. Every day, fresh algorithmic signals so you're never flying blind.
+    </p>
+
+    <div class="why-grid">
+      <div class="why-item">
+        <span class="why-icon">🕓</span>
+        <h4>Signal Updates Around 3:55 PM ET</h4>
+        <p>Distributions update daily around <strong>3:55 PM Eastern Time</strong>. Rebalance anytime after that — before market close, or after hours up until 8 pm ET. Buying after 4:00 PM and selling the next day does not trigger a day trade, so there are no PDT concerns regardless of which window you choose.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">🛡️</span>
+        <h4>Proven Downside Protection</h4>
+        <p>Maximum drawdown of about −4.9% over the past three years — including the brutal 2022 bear market where the S&amp;P fell nearly 19% and broad market investors saw years of gains erased overnight.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">🔬</span>
+        <h4>Years of Backtesting &amp; Fine-Tuning</h4>
+        <p>The algorithms were not rushed to market. Multiple years of backtesting across bull, bear, and sideways markets shaped every parameter — optimizing for both return and risk management simultaneously.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">🤖</span>
+        <h4>Engineering-Grade Automation</h4>
+        <p>Built by a professional with 30+ years of software engineering expertise. Fully automated daily signal generation — rules-based rotation that follows market data, not headlines or emotions.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">🤝</span>
+        <h4>Real Skin in the Game</h4>
+        <p>The creator actively trades these ETFs in a personal Roth IRA. Every signal published here is the same one being acted on with real money — not a theoretical model sold by someone on the sideline.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">⚡</span>
+        <h4>Simple Daily Action</h4>
+        <p>Calm Growth Model tracks 10+ ETFs but typically signals just 2–3 rebalances per day. No complex order books, no options — just ETF redistributions you can execute in any brokerage account in minutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ PRICING ══ -->
+<section class="light" id="pricing">
+  <div class="section-inner" style="text-align:center;">
+    <div class="section-label" data-i18n="price.label">Subscription Plans</div>
+    <h2 class="section-title" data-i18n="price.title">Invest in Your Edge</h2>
+    <p class="section-sub" style="margin:0 auto 52px;" data-i18n="price.sub">
+      Self-directed ETF allocation intelligence for investors who want daily structure, market context, and disciplined rebalancing guidance.
+    </p>
+
+    <div class="pricing-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto;">
+      <!-- FREE / NEWSLETTER -->
+      <div class="plan" style="position:relative;background:linear-gradient(160deg,#0a0f1e 0%,#111827 100%);border-color:rgba(255,255,255,0.12);box-shadow:0 12px 40px rgba(0,0,0,0.5);"
+           data-dark="true">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:#16a34a;color:#fff;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
+                    box-shadow:0 2px 8px rgba(22,163,74,0.4);">
+          ✅ START HERE — FREE
+        </div>
+        <span class="plan-badge" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);">📧 Free</span>
+        <h3 style="color:#fff;">Newsletter &amp; Market Forecast</h3>
+        <div class="plan-price">
+          <span class="dollar" style="color:rgba(255,255,255,0.5);">$</span>
+          <span class="amount" style="color:#fff;">0</span>
+          <span class="per" style="color:rgba(255,255,255,0.4);">/month</span>
+        </div>
+        <p class="plan-desc" style="color:rgba(255,255,255,0.55);">Free access — register once and unlock the Market Forecast, Backtest history, and weekly newsletter</p>
+        <ul style="color:rgba(255,255,255,0.82);">
+          <li style="color:rgba(255,255,255,0.82);">📊 Daily Market Forecast — by our Quant Analytics Research Engine</li>
+          <li style="color:rgba(255,255,255,0.82);">Backtest section access</li>
+          <li style="color:rgba(255,255,255,0.82);">Weekly market newsletter</li>
+          <li style="color:rgba(255,255,255,0.82);">BLEE research updates</li>
+          <li class="muted">Daily signal page</li>
+          <li class="muted">Email &amp; SMS alerts</li>
+          <li class="muted">Auto-trade tools</li>
+        </ul>
+        <div style="margin:16px -24px -4px;border-top:1px solid rgba(255,255,255,0.07);overflow:hidden;border-radius:0 0 14px 14px;">
+          <img src="images/plan_free.png" alt="Free plan" style="width:100%;display:block;height:180px;object-fit:cover;object-position:center;">
+        </div>
+        <a href="subscribe.html?plan=free" class="btn-plan outline" style="border-color:rgba(255,255,255,0.25);color:#fff;margin-top:16px;">Join Free — No Credit Card</a>
+        <p class="plan-fine" style="color:rgba(255,255,255,0.35);">Instant access · No credit card</p>
+      </div>
+
+      <!-- STARTER — Coming Soon -->
+      <div class="plan featured" style="position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:#b45309;color:#fef3c7;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;
+                    box-shadow:0 2px 8px rgba(180,83,9,0.4);">
+          🔜 COMING SOON
+        </div>
+        <span class="plan-badge">⭐ Starter</span>
+        <h3>Daily Signals</h3>
+        <div class="plan-price">
+          <span class="dollar">$</span>
+          <span class="amount">19</span>
+          <span class="per">/month</span>
+        </div>
+        <p class="plan-desc">Daily signals to guide your manual trades</p>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Daily ETF allocation signal</li>
+          <li>Portfolio performance tracker</li>
+          <li>Historical backtest data (6 yr)</li>
+          <li class="muted">Email &amp; SMS alerts</li>
+          <li class="muted">BLEETrader desktop app</li>
+          <li class="muted">Auto-trade (Schwab/IBKR)</li>
+        </ul>
+        <div style="margin:16px -24px -4px;border-top:1px solid rgba(255,255,255,0.07);overflow:hidden;border-radius:0 0 14px 14px;">
+          <img src="images/plan_starter.png" alt="Starter plan" style="width:100%;display:block;height:180px;object-fit:cover;object-position:center;">
+        </div>
+        <button class="btn-plan gold-btn" disabled style="cursor:not-allowed;margin-top:16px;">🔜 Coming Soon</button>
+        <p class="plan-fine">Want to be notified? <a href="contact.html" style="color:var(--gold);">Contact us →</a></p>
+      </div>
+
+      <!-- PRO — Coming Soon -->
+      <div class="plan" style="opacity:0.55;pointer-events:none;position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+                    background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
+                    padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;">
+          🔜 COMING SOON
+        </div>
+        <span class="plan-badge">🚀 Pro</span>
+        <h3>Brokerage Integration</h3>
+        <div class="plan-price">
+          <span class="dollar">$</span>
+          <span class="amount">49</span>
+          <span class="per">/month</span>
+        </div>
+        <p class="plan-desc">Daily signals + BLEETrader app with 1 auto-trade investment model</p>
+        <ul>
+          <li>Everything in Starter</li>
+          <li>Daily email signal alert</li>
+          <li>Daily SMS signal alert</li>
+          <li>BLEETrader desktop app (Win/Mac)</li>
+          <li>1 auto-trade investment model (Schwab/IBKR)</li>
+          <li>You stay in full control</li>
+          <li>Priority email support</li>
+        </ul>
+        <div style="margin:16px -24px -4px;border-top:1px solid rgba(255,255,255,0.07);overflow:hidden;border-radius:0 0 14px 14px;">
+          <img src="images/plan_pro.png" alt="Pro plan" style="width:100%;display:block;height:180px;object-fit:cover;object-position:center;">
+        </div>
+        <button class="btn-plan outline" disabled style="cursor:not-allowed;opacity:0.6;margin-top:16px;">Coming Soon</button>
+        <p class="plan-fine">We'll notify you when Pro launches</p>
+      </div>
+
+    </div><!-- /pricing-grid 3-col -->
+
+    <!-- ULTIMATE — Full width row -->
+    <div style="max-width:1100px;margin:28px auto 0;position:relative;opacity:0.6;pointer-events:none;">
+      <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:2;
+                  background:#374151;color:#9ca3af;font-size:11px;font-weight:800;
+                  padding:3px 14px;border-radius:20px;letter-spacing:.08em;white-space:nowrap;">
+        🔜 COMING SOON
+      </div>
+      <div style="background:linear-gradient(135deg,#0f0a2e 0%,#1a0a45 50%,#0f0a2e 100%);
+                  border:1px solid #7e22ce;border-radius:16px;overflow:hidden;
+                  display:grid;grid-template-columns:1fr 1.6fr;gap:0;">
+        <!-- left: plan info -->
+        <div style="padding:36px 32px;">
+          <span class="plan-badge" style="background:rgba(192,132,252,0.15);color:#c084fc;">💎 Ultimate</span>
+          <h3 style="color:#c084fc;font-size:1.7rem;margin:10px 0 6px;">Full Quant Intelligence Suite</h3>
+          <div class="plan-price" style="margin-bottom:12px;">
+            <span class="dollar" style="color:#c084fc;">$</span>
+            <span class="amount" style="color:#c084fc;">99</span>
+            <span class="per">/month</span>
+          </div>
+          <p class="plan-desc" style="margin-bottom:16px;">Everything in Pro — plus our full BLEE Quant investment model suite</p>
+          <ul style="margin-bottom:20px;">
+            <li>Everything in Pro</li>
+            <li>2 auto-trade investment models (full BLEE suite)</li>
+            <li>SGOV Bond Min Dual Reversal strategy</li>
+            <li>Possible 40%+ annual returns with same Pro model low risk</li>
+            <li>You stay in full control</li>
+            <li>Priority support &amp; early access to new models</li>
+          </ul>
+          <button class="btn-plan" style="background:#7e22ce;color:#fff;cursor:not-allowed;opacity:0.7;border:0;width:100%;" disabled>Coming Soon</button>
+          <p class="plan-fine" style="margin-top:8px;">We'll notify you when Ultimate launches</p>
+        </div>
+        <!-- right: image -->
+        <div style="overflow:hidden;">
+          <img src="images/plan_ultimate.png" alt="Ultimate plan - Goal Achieved"
+               style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ DISCLAIMER ══ -->
+<div class="disclaimer">
+  <p>
+    <strong>Important Disclosure — Please Read:</strong>
+    BLEE Quant Analytics publishes proprietary algorithm model outputs for <strong>informational and educational purposes only</strong>.
+    Nothing on this website constitutes personalized investment advice, a solicitation to buy or sell securities,
+    or a recommendation tailored to any individual's financial situation.
+    Subscribers are solely responsible for their own investment decisions.
+  </p>
+  <p style="margin-top:8px;">
+    <strong>Backtest vs. Live Performance:</strong>
+    Performance figures labeled <em>"Backtest"</em> or <em>"Simulated"</em> are hypothetical results produced by applying
+    algorithm logic to historical market data. They were created with the benefit of hindsight and do not reflect
+    actual trading. Figures labeled <em>"Live Account"</em> reflect the creator's personal Roth IRA account returns,
+    which are real but individual — your results may differ materially based on execution timing, account size,
+    fees, and other factors. <strong>Past performance, whether simulated or actual, does not guarantee future results.</strong>
+    Investing involves risk, including the possible loss of all invested principal.
+  </p>
+  <p style="margin-top:8px;">
+    BLEE Quant Analytics is an independent research service operated by a private individual.
+    It is not a registered investment adviser under the Investment Advisers Act of 1940 or any state law.
+    It is not affiliated with, endorsed by, or sponsored by any brokerage, ETF issuer, or financial institution.
+    Please consult a qualified, licensed financial adviser before making any investment decisions.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════ FOOTER ══ -->
+<footer>
+  <p style="color:rgba(255,255,255,0.55);font-size:12px;max-width:760px;margin:0 auto 18px;line-height:1.7;">Members remain fully responsible for all investment decisions and trade execution.</p>
+  <div class="footer-logo">BLEE <span>Quant Analytics</span></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="marketDailySummary.html">Market Forecast</a>
+    <a href="index2.html">Daily Signal</a>
+    <a href="Algorithm185History.html">Backtest</a>
+    <a href="performance1.html">Performance</a>
+    <a href="#pricing">Subscribe</a>
+    <a href="admin.html">Admin</a>
+  </div>
+  <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
+  <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
+  <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/25/2026 04:17 PM ET</span>
+  </p>
+</footer>
+
+<!-- ══════════════════════════════════════ CHART ══ -->
+<script>
+(function () {
+  const labels = [
+    'May 2020','Aug 2020','Nov 2020','Feb 2021','May 2021',
+    'Aug 2021','Nov 2021','Feb 2022','May 2022','Aug 2022',
+    'Nov 2022','Feb 2023','May 2023','Aug 2023','Nov 2023',
+    'Feb 2024','May 2024','Aug 2024','Nov 2024','Feb 2025',
+    'May 2025','Aug 2025','Nov 2025','Feb 2026','May 2026'
+  ];
+
+  // BLEE Strategy — full period backtest (May 2020→May 2026): +172% = ~$27,197 (18.3% annualized, -5.9% max DD)
+  const strategy = [
+    10000, 10300, 11000, 12000, 12500,
+    13000, 13700, 14000, 15200, 15700,
+    16400, 16700, 17000, 17800, 18500,
+    19400, 20700, 21500, 22900, 22200,
+    23800, 24800, 24400, 25500, 27197
+  ];
+
+  // SPY — ~+166.5% = ~$26,650 over same period (BLEE outperforms in risk-adjusted terms)
+  const spy = [
+    10000, 11400, 13100, 14500, 15800,
+    17400, 18900, 17200, 13600, 14200,
+    15100, 16000, 16600, 17600, 18500,
+    20200, 21800, 22500, 24600, 22400,
+    24200, 25800, 25000, 24200, 26650
+  ];
+
+  const ctx = document.getElementById('perfChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'BLEE Strategy',
+          data: strategy,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,0.10)',
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: '#10b981',
+        },
+        {
+          label: 'S&P 500 (SPY)',
+          data: spy,
+          borderColor: '#f472b6',
+          backgroundColor: 'rgba(244,114,182,0.06)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: '#f472b6',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: 'rgba(255,255,255,0.70)',
+          bodyColor: '#fff',
+          borderColor: 'rgba(255,255,255,0.10)',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: (ctx) => {
+              const val = ctx.raw;
+              const pct = ((val - 10000) / 10000 * 100).toFixed(1);
+              return ` ${ctx.dataset.label}: $${val.toLocaleString()}  (${pct > 0 ? '+' : ''}${pct}%)`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.06)' },
+          ticks: {
+            color: 'rgba(255,255,255,0.35)',
+            font: { size: 11 },
+            maxTicksLimit: 8,
+          }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.06)' },
+          ticks: {
+            color: 'rgba(255,255,255,0.35)',
+            font: { size: 11 },
+            callback: (v) => '$' + v.toLocaleString()
+          }
+        }
+      }
+    }
+  });
+})();
+</script>
+
+
+<!-- ══════════════════════════════════════ GOOGLE TRANSLATE + LANGUAGE SWITCHER ══ -->
+<!-- Hidden Google Translate element — translation is driven by the flag buttons -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+/* ── Google Translate init ── */
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,ja,vi,ko',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+/* ── Flag-button driver ── */
+(function () {
+  function setLang(lang) {
+    // Update active button state
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === lang)
+    );
+    localStorage.setItem('blee-lang', lang);
+
+    if (lang === 'en') {
+      // Reset to English via cookie + reload
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+      location.reload();
+      return;
+    }
+
+    // First try the live Google Translate select element (works after widget loads)
+    var sel = document.querySelector('.goog-te-combo');
+    if (sel) {
+      sel.value = lang;
+      sel.dispatchEvent(new Event('change'));
+      return;
+    }
+
+    // Fallback: set googtrans cookie + reload (works on GitHub Pages)
+    document.cookie = 'googtrans=/en/' + lang + '; path=/';
+    document.cookie = 'googtrans=/en/' + lang + '; path=/; domain=' + location.hostname;
+    location.reload();
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  });
+
+  // Restore saved language after Google Translate widget loads
+  var saved = localStorage.getItem('blee-lang');
+  if (saved && saved !== 'en') {
+    setTimeout(function trySwitch(attempts) {
+      var sel = document.querySelector('.goog-te-combo');
+      if (sel) {
+        sel.value = saved;
+        sel.dispatchEvent(new Event('change'));
+        document.querySelectorAll('.lang-btn').forEach(b =>
+          b.classList.toggle('active', b.dataset.lang === saved)
+        );
+      } else if (attempts > 0) {
+        setTimeout(() => trySwitch(attempts - 1), 300);
+      }
+    }, 10);
+  }
+})();
+
+/* ── Hide Google Translate toolbar banner ── */
+(function hideBanner() {
+  var style = document.createElement('style');
+  style.textContent = '.goog-te-banner-frame{display:none!important;}body{top:0!important;}';
+  document.head.appendChild(style);
+})();
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
+<script>
+/* keep data-i18n attributes in place — unused when Google Translate is active */
+(function () {
+  const i18n = {
+    en: {
+      'nav.home':'Home','nav.profile':'Market Forecast','nav.signal':'Daily Signal','nav.backtest':'Backtest','nav.performance':'Performance','nav.subscribe':'Subscribe',
+      'hero.tag':'📊 Built by an Investor Who Uses These Signals Every Day',
+      'hero.h1':'Disciplined ETF Rotation Models<br><em>Built for Long-Term Growth.</em>',
+      'btn.strategies':'View Strategies','btn.trackrecord':'See the Track Record',
+      'hs1.lbl':'Full-Period Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs2.lbl':'Past 3-Year Avg Annual Return <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs3.lbl':'Max Drawdown (3yr, vs −18.8% S&P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs4.lbl':'Gained in 2022 Bear Market <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'perf.label':'Historical Backtest',
+      'perf.title':'6 Years of Data. Outperforms S&amp;P 500 in Both Return and Risk.',
+      'perf.sub':'Simulated returns from May 2020 to May 2026, compared against the S&amp;P 500 (SPY). Calm Growth Model returned +177% vs SPY\'s +155% — outperforming with significantly lower drawdowns throughout.',
+      'bear.label':'Bear Market Resilience','bear.title':'When S&amp;P Fell 18.6%, We Gained 11.2%',
+      'bear.sub':'The 2022 bear market (Jan–Dec 2022) saw the worst S&amp;P 500 performance in over a decade. BLEE\'s bond-rotation logic stepped in and generated positive returns throughout the selloff.',
+      'cmp.label':'Risk-Adjusted Performance','cmp.title':'The Numbers Don\'t Lie',
+      'cmp.sub':'3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.',
+      'th.metric':'Metric','th.blee':'BLEE Strategy','th.spy':'S&amp;P 500 (SPY)','th.edge':'Edge',
+      'row1':'Cumulative Return (3yr)','row2':'Annualized Return','row3':'Max Drawdown','row4':'Calmar Ratio',
+      'row5':'Sharpe Ratio','row6':'Beta (Market Sensitivity)','row7':'Trailing 3-Month Return','row8':'Alpha (vs SPY)',
+      'founder.tag':'👤 About the Creator',
+      'founder.title':'Built From <em>Real Experience</em> — and Used in Real Trading',
+      'how.label':'Under the Hood',
+      'how.title':'Why Calm Growth Model Surges Periodically — and Why That\'s By Design',
+      'how.sub':'If you look at the performance charts, you\'ll notice Calm Growth Model doesn\'t grow in a perfectly smooth line. There are calm steady periods, and then sudden upward surges. This is intentional — and it\'s the core of what makes the algorithm powerful.',
+      'l1.label':'Layer 1 · Daily Foundation','l1.title':'🔄 Rotation Across Asset Classes',
+      'l2.label':'Layer 2 · Market Condition Monitoring','l2.title':'📡 Oversold &amp; Overbought Detection',
+      'l3.label':'Layer 3 · Periodic Opportunity Capture','l3.title':'⚡ Calculated Aggressive Moves — A Few Times a Year',
+      'surge.title':'⚡ The Surges You See in the Charts Are Not Luck','surge.stat.lbl':'High-conviction moves per year',
+      'strat.label':'Our Strategies','strat.title':'One Algorithm. One Goal: Long-Term Wealth.',
+      'cs1.name':'Bank Savings / CDs','cs2.name':'Dividend Stocks','cs3.name':'S&amp;P 500 Index','cs4.name':'Calm Growth Model (Backtest)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Who is Calm Growth Model for?',
+      'why.label':'Why BLEE Quant Analytics','why.title':'Built for Serious Long-Term Investors',
+      'why.sub':'We do the research. You make the decisions. Every day, fresh algorithmic signals so you\'re never flying blind.',
+      'price.label':'Subscription Plans','price.title':'Invest in Your Edge',
+      'price.sub':'Affordable access to institutional-grade algorithmic analysis. Cancel anytime.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. All rights reserved.',
+      'footer.disclaimer':'Simulated performance data only. Not investment advice.',
+      'lastupdated':'Last Updated:',
+    },
+    ja: {
+      'nav.home':'ホーム','nav.profile':'マーケット予報','nav.signal':'デイリーシグナル','nav.backtest':'バックテスト','nav.performance':'パフォーマンス','nav.subscribe':'購読する',
+      'hero.tag':'📊 毎日このシグナルを実際に活用する投資家が構築',
+      'hero.h1':'規律あるETFローテーションモデル<br><em>長期成長のために設計</em>',
+      'btn.strategies':'戦略を見る','btn.trackrecord':'実績を確認する',
+      'hs1.lbl':'全期間平均年率リターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs2.lbl':'過去3年平均年率リターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs3.lbl':'最大ドローダウン（3年、S&P −18.8%比） <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs4.lbl':'2022年弱気市場でのリターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'perf.label':'過去のバックテスト',
+      'perf.title':'約6年のデータ。リターンとリスク両面でS&amp;P 500を上回る。',
+      'perf.sub':'2020年5月〜2026年5月のシミュレーション結果、S&amp;P 500（SPY）との比較。Calm Growth Modelは+177%（SPYの+155%を上回り、ドローダウンも大幅に低い）。',
+      'bear.label':'弱気市場での強さ','bear.title':'S&amp;Pが18.6%下落した時、我々は11.2%の利益を獲得',
+      'bear.sub':'2022年の弱気市場（1月〜12月）は10年以上で最悪のS&amp;P 500パフォーマンスとなりました。BLEEの債券ローテーションロジックが機能し、下落局面でもプラスのリターンを実現しました。',
+      'cmp.label':'リスク調整後パフォーマンス','cmp.title':'数字は嘘をつかない',
+      'cmp.sub':'3年バックテスト（2023年5月〜2026年5月）。BLEE戦略 vs. SPYベンチマーク。',
+      'th.metric':'指標','th.blee':'BLEE戦略','th.spy':'S&amp;P 500（SPY）','th.edge':'優位性',
+      'row1':'累積リターン（3年）','row2':'年率リターン','row3':'最大ドローダウン','row4':'カルマーレシオ',
+      'row5':'シャープレシオ','row6':'ベータ（市場感応度）','row7':'直近3ヶ月リターン','row8':'アルファ（SPY比）',
+      'founder.tag':'👤 創設者について',
+      'founder.title':'<em>実際の経験</em>から構築 — 実際の取引で活用中',
+      'how.label':'仕組みの解説',
+      'how.title':'Calm Growth Modelが定期的に急上昇する理由 — それは設計によるもの',
+      'how.sub':'パフォーマンスチャートを見ると、Calm Growth Modelが完全に滑らかには成長しないことに気づくでしょう。穏やかな安定期があり、その後に突然の上昇局面があります。これは意図的なものであり、アルゴリズムを強力にする核心です。',
+      'l1.label':'レイヤー1・日次基盤','l1.title':'🔄 資産クラス間のローテーション',
+      'l2.label':'レイヤー2・市場環境監視','l2.title':'📡 売られすぎ・買われすぎの検出',
+      'l3.label':'レイヤー3・定期的な機会捕捉','l3.title':'⚡ 計算された積極的ポジション — 年1〜2回',
+      'surge.title':'⚡ チャートに見られる急上昇は運ではない','surge.stat.lbl':'年間の高確信度ポジション',
+      'strat.label':'当社の戦略','strat.title':'1つのアルゴリズム。1つの目標：長期的な資産形成。',
+      'cs1.name':'銀行預金・CD','cs2.name':'配当株','cs3.name':'S&amp;P 500インデックス','cs4.name':'Calm Growth Model（バックテスト）',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Modelは誰に向いているか？',
+      'why.label':'なぜBLEE Quant Analytics','why.title':'真剣な長期投資家のために構築',
+      'why.sub':'我々がリサーチする。あなたが意思決定する。毎日新鮮なアルゴリズムシグナルで、常に把握。',
+      'price.label':'サブスクリプションプラン','price.title':'優位性に投資しよう',
+      'price.sub':'機関投資家グレードのアルゴリズム分析に手頃にアクセス。いつでもキャンセル可能。',
+      'footer.rights':'© 2026 BLEE Quant Analytics. 全著作権所有。',
+      'footer.disclaimer':'シミュレーションパフォーマンスデータのみ。投資アドバイスではありません。',
+      'lastupdated':'最終更新:',
+    },
+    vi: {
+      'nav.home':'Trang chủ','nav.profile':'Dự báo thị trường','nav.signal':'Tín hiệu hàng ngày','nav.backtest':'Kiểm tra lịch sử','nav.performance':'Hiệu suất','nav.subscribe':'Đăng ký',
+      'hero.tag':'📊 Được xây dựng bởi nhà đầu tư sử dụng tín hiệu này mỗi ngày',
+      'hero.h1':'Mô hình luân chuyển ETF kỷ luật<br><em>được xây dựng cho tăng trưởng dài hạn.</em>',
+      'btn.strategies':'Xem chiến lược','btn.trackrecord':'Xem lịch sử hiệu suất',
+      'hs1.lbl':'Lợi nhuận bình quân hàng năm toàn kỳ <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs2.lbl':'Lợi nhuận bình quân 3 năm gần nhất <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs3.lbl':'Sụt giảm tối đa (3 năm, so với −18.8% S&P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs4.lbl':'Lợi nhuận trong thị trường giảm 2022 <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'perf.label':'Kiểm tra lịch sử',
+      'perf.title':'~6 năm dữ liệu. Vượt trội S&amp;P 500 về cả lợi nhuận và rủi ro.',
+      'p

@@ -1,0 +1,124 @@
+{
+  "date": "2026-05-10",
+  "symphony_id": "ZGersOlsQFRHg7U2qnSw",
+  "symphony_name": "BLEE - 185 2026 SGOV Bond and min Dual Reversal",
+  "source": "symphony-stats-meta",
+  "positions": [
+    {
+      "ticker": "GLDM",
+      "weight_pct": 9.3751,
+      "shares": 0.08263,
+      "market_value": 7.7250787
+    },
+    {
+      "ticker": "SGOV",
+      "weight_pct": 85.4824,
+      "shares": 0.70101,
+      "market_value": 70.4374848
+    },
+    {
+      "ticker": "$USD",
+      "weight_pct": 5.1456,
+      "shares": 4.24,
+      "market_value": 4.24
+    }
+  ],
+  "raw_api_entry": {
+    "description": "",
+    "community_review_status": null,
+    "tags": [],
+    "last_rebalance_on": "2026-04-16",
+    "annualized_rate_of_return": 0.6465,
+    "last_semantic_update_at": "2026-05-10T02:21:27.363014Z",
+    "color": "#F274E9",
+    "rebalance_frequency": "daily",
+    "last_rebalance_attempted_on": "2026-05-08",
+    "name": "BLEE - 185 2026 SGOV and Dual Reversal with Annual 16% perfomance",
+    "value": 82.4,
+    "sharpe_ratio": 4.0252,
+    "time_weighted_return": 0.1214,
+    "asset_class": "EQUITIES",
+    "may_rebalance_today": false,
+    "invested_since": "2026-02-17",
+    "cash": 4.24,
+    "deposit_adjusted_value": 19960.85,
+    "last_dollar_change": 0.054824,
+    "skip_rebalance_today": false,
+    "tickers": [
+      {
+        "symbol": "EQUITIES::UPRO//USD",
+        "name": "ProShares Trust - ProShares UltraPro S&P 500 ETF 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::GLDM//USD",
+        "name": "World Gold Trust - SPDR Gold MiniShares Trust"
+      },
+      {
+        "symbol": "EQUITIES::TECL//USD",
+        "name": "Direxion Shares ETF Trust - Direxion Daily Technology Bull 3X ETF"
+      },
+      {
+        "symbol": "EQUITIES::TQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro QQQ 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::SPY//USD",
+        "name": "SPDR S&P 500 ETF TRUST - SPDR S&P 500 ETF Trust"
+      },
+      {
+        "symbol": "EQUITIES::SGOV//USD",
+        "name": "iShares Trust - iShares 0-3 Month Treasury Bond ETF"
+      },
+      {
+        "symbol": "EQUITIES::SQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::UDOW//USD",
+        "name": "ProShares Trust - ProShares UltraPro Dow30 3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::SQQQ//USD",
+        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
+      },
+      {
+        "symbol": "EQUITIES::GLD//USD",
+        "name": "SPDR Gold Trust - SPDR Gold Shares"
+      },
+      {
+        "symbol": "EQUITIES::PSQ//USD",
+        "name": "ProShares Trust - ProShares Short QQQ -1x Shares"
+      }
+    ],
+    "max_drawdown": 0.0193,
+    "id": "ZGersOlsQFRHg7U2qnSw",
+    "net_deposits": -800.0,
+    "position_id": "fdddac09-10f5-49d2-aa22-229f046a250f",
+    "holdings": [
+      {
+        "ticker": "GLDM",
+        "allocation": 0.093750955,
+        "price": 93.49,
+        "amount": 0.08263,
+        "value": 7.7250787,
+        "last_percent_change": 0.004728641
+      },
+      {
+        "ticker": "SGOV",
+        "allocation": 0.854823845,
+        "price": 100.48,
+        "amount": 0.70101,
+        "value": 70.4374848,
+        "last_percent_change": 0.000298656
+      }
+    ],
+    "last_percent_change": 0.0007,
+    "simple_return": 0.0,
+    "is_shared": true,
+    "as_of": "2026-05-08",
+    "asset_classes": [
+      "EQUITIES"
+    ],
+    "next_rebalance_on": "2026-05-09"
+  }
+}

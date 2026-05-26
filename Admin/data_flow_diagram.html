@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLEE Analytics — Full System Data Flow</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 24px 24px 40px;
+    min-height: 100vh;
+  }
+  .page-header { text-align: center; margin-bottom: 22px; }
+  .page-header h1 { font-size: 20px; font-weight: 700; color: #e6edf3; margin-bottom: 4px; }
+  .page-header p { font-size: 12px; color: #8b949e; margin-bottom: 2px; }
+  .version { font-size: 10px; color: #6e7681; }
+
+  /* Legend */
+  .legend { display: flex; gap: 18px; justify-content: center; margin-bottom: 22px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #8b949e; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── DIAGRAM ── */
+  #diagram {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  /* SVG arrow overlay */
+  #arrows {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 10;
+  }
+
+  /* Rows */
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 32px; /* gap between rows where arrows will live */
+  }
+  .row-label {
+    width: 84px;
+    min-width: 84px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #e6edf3;
+    text-align: right;
+    padding-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .row-content {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  /* Group boxes */
+  .group-box {
+    border: 1px dashed #30363d;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+    flex: 1;
+  }
+  .group-label {
+    position: absolute;
+    top: -9px; left: 10px;
+    background: #0d1117;
+    font-size: 9px;
+    color: #6e7681;
+    padding: 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .group-inner { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Nodes */
+  .node {
+    border-radius: 8px;
+    padding: 9px 13px;
+    min-width: 108px;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .node:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,0.45); }
+  .node-title { font-size: 12px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; }
+  .node-sub   { font-size: 10px; opacity: 0.72; line-height: 1.4; }
+  .node-badge {
+    display: inline-block; font-size: 9px; padding: 1px 6px;
+    border-radius: 10px; margin-top: 4px; font-weight: 600;
+  }
+
+  /* Color schemes */
+  .c-blue   { background:#0d2440; border:1.5px solid #1f6feb; }
+  .c-blue   .node-title { color:#79c0ff; }
+  .c-blue   .node-badge { background:#1f6feb; color:#fff; }
+
+  .c-teal   { background:#0d2424; border:1.5px solid #1b7a6f; }
+  .c-teal   .node-title { color:#39d5c3; }
+  .c-teal   .node-badge { background:#1b7a6f; color:#fff; }
+
+  .c-orange { background:#2b1800; border:1.5px solid #d1740a; }
+  .c-orange .node-title { color:#ffa657; }
+  .c-orange .node-badge { background:#d1740a; color:#fff; }
+
+  .c-green  { background:#0d2b1a; border:1.5px solid #2ea043; }
+  .c-green  .node-title { color:#56d364; }
+  .c-green  .node-badge { background:#2ea043; color:#fff; }
+
+  .c-purple { background:#1a0d2e; border:1.5px solid #8957e5; }
+  .c-purple .node-title { color:#d2a8ff; }
+  .c-purple .node-badge { background:#8957e5; color:#fff; }
+
+  .c-red    { background:#2b0d0d; border:1.5px solid #da3633; }
+  .c-red    .node-title { color:#ff7b72; }
+  .c-red    .node-badge { background:#da3633; color:#fff; }
+
+  .c-gray   { background:#161b22; border:1.5px solid #30363d; }
+  .c-gray   .node-title { color:#c9d1d9; }
+  .c-gray   .node-badge { background:#30363d; color:#c9d1d9; }
+
+  /* Section dividers */
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 4px 0 22px 0;
+  }
+  .divider-line { flex:1; height:1px; background:#21262d; }
+  .divider-label {
+    font-size: 10px; font-weight: 700; color: #e6edf3;
+    text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap;
+  }
+
+  .wide  { min-width: 150px; }
+  .xwide { min-width: 190px; }
+
+  /* Changelog */
+  .changelog {
+    max-width: 1080px; margin: 30px auto 0;
+    background:#161b22; border:1px solid #21262d; border-radius:10px; padding:18px 22px;
+  }
+  .changelog h2 {
+    font-size:11px; color:#6e7681; text-transform:uppercase;
+    letter-spacing:.08em; margin-bottom:10px;
+  }
+  .changelog table { width:100%; border-collapse:collapse; font-size:11px; }
+  .changelog th {
+    text-align:left; color:#6e7681; font-weight:600;
+    padding:4px 10px 8px 0; border-bottom:1px solid #21262d;
+  }
+  .changelog td {
+    padding:6px 10px 6px 0; vertical-align:top;
+    color:#8b949e; border-bottom:1px solid #21262d;
+  }
+  .changelog td:first-child { color:#6e7681; white-space:nowrap; width:86px; }
+  .badge {
+    display:inline-block; font-size:9px; padding:2px 7px;
+    border-radius:10px; font-weight:600; background:#2ea043; color:#fff;
+  }
+  .badge.orange { background:#d1740a; }
+  .badge.gray   { background:#30363d; color:#8b949e; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>📊 BLEE Analytics — Full System Data Flow</h1>
+  <p>Composer signal → PC Automation → GitHub Pages → Auth/Payments → Trading → Users</p>
+  <div class="version">v1.2 · Last updated 2026-05-17 · C:\Kei\ComposerInvest\Admin\data_flow_diagram.html</div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#1f6feb"></div> Signal / Data</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1b7a6f"></div> Market Data</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d1740a"></div> PC Automation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2ea043"></div> Web / GitHub</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8957e5"></div> Auth / Payments</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#da3633"></div> Brokerage / Trade</div>
+</div>
+
+<div id="diagram">
+<svg id="arrows"></svg>
+
+<!-- ── ROW 1: External Sources ──────────────────── -->
+<div class="row">
+  <div class="row-label">External<br>Sources</div>
+  <div class="row-content">
+    <div class="node c-blue wide" id="n-composer">
+      <div class="node-title">🎼 Composer.trade</div>
+      <div class="node-sub">Symphony API<br>BLEE-187 · BLEE-186 · BLEE-185</div>
+      <span class="node-badge">3:50 PM ET daily</span>
+    </div>
+    <div class="node c-teal" id="n-yfinance">
+      <div class="node-title">📈 yfinance</div>
+      <div class="node-sub">QQQ / SPY / DIA<br>daily OHLCV</div>
+      <span class="node-badge">free API</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 2: PC Automation ──────────────────────── -->
+<div class="row">
+  <div class="row-label">My PC<br>Automation</div>
+  <div class="row-content">
+    <div class="group-box">
+      <div class="group-label">⏰ Windows Task Scheduler</div>
+      <div class="group-inner">
+        <div class="node c-orange" id="n-pull">
+          <div class="node-title">composer_pull<br>_allocation.py</div>
+          <div class="node-sub">Pulls Composer API<br>Writes DATA → index2.html<br>composer_config.json</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-orange" id="n-acc">
+          <div class="node-title">update_accuracy.py</div>
+          <div class="node-sub">Injects PRICE_DATA<br>→ Algorithm185History.html</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-orange" id="n-upd">
+          <div class="node-title">update_performance.py</div>
+          <div class="node-sub">Injects PERFORMANCE_DATA<br>→ Algorithm185History.html</div>
+          <span class="node-badge">3:51 PM</span>
+        </div>
+        <div class="node c-red" id="n-ibkrpy">
+          <div class="node-title">ibkr_trader.py</div>
+          <div class="node-sub">Reads index2.html<br>Auto-trades via IBKR TWS</div>
+          <span class="node-badge">3:55 PM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 3: GitHub Pages ───────────────────────── -->
+<div class="row">
+  <div class="row-label">GitHub<br>Pages</div>
+  <div class="row-content">
+    <div class="group-box">
+      <div class="group-label">🌐 bleeanalytics.com (GitHub Pages)</div>
+      <div class="group-inner">
+        <div class="node c-green" id="n-idx">
+          <div class="node-title">index.html</div>
+          <div class="node-sub">Home / Landing<br>Public</div>
+        </div>
+        <div class="node c-green" id="n-idx2">
+          <div class="node-title">⭐ index2.html</div>
+          <div class="node-sub">Daily Signal Page<br>BLEE-187 · Member only</div>
+          <span class="node-badge">Premium</span>
+        </div>
+        <div class="node c-green" id="n-algo">
+          <div class="node-title">Algorithm185<br>History.html</div>
+          <div class="node-sub">3-yr Backtest<br>Accuracy Stats · Public</div>
+          <span class="node-badge">Public</span>
+        </div>
+        <div class="node c-green" id="n-mds">
+          <div class="node-title">marketDaily<br>Summary.html</div>
+          <div class="node-sub">Market Overview<br>Daily Digest</div>
+        </div>
+        <div class="node c-green" id="n-perf1">
+          <div class="node-title">performance1.html</div>
+          <div class="node-sub">Portfolio Returns<br>Chart View</div>
+        </div>
+        <div class="node c-green" id="n-authpages">
+          <div class="node-title">login.html<br>subscribe.html<br>admin.html</div>
+          <div class="node-sub">Auth · Stripe · Admin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 4: Auth & Payments ────────────────────── -->
+<div class="row">
+  <div class="row-label">Auth &<br>Payments</div>
+  <div class="row-content">
+    <div class="node c-purple xwide" id="n-firebase">
+      <div class="node-title">🔥 Firebase Auth</div>
+      <div class="node-sub">Email/Password + Google OAuth<br>Firestore: user tier tracking</div>
+      <span class="node-badge">none / basic / premium / admin</span>
+    </div>
+    <div class="node c-purple wide" id="n-stripe">
+      <div class="node-title">💳 Stripe</div>
+      <div class="node-sub">Basic $19/mo · Premium $49/mo<br>billing portal</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-label">Local Trading Apps — PC / Mac</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ── ROW 5: Local Trading ──────────────────────── -->
+<div class="row">
+  <div class="row-label">Local<br>Trading</div>
+  <div class="row-content">
+    <div class="group-box">
+      <div class="group-label">🖥️ IBKR Auto-Trade (Windows)</div>
+      <div class="group-inner">
+        <div class="node c-red" id="n-tws">
+          <div class="node-title">TWS Desktop App</div>
+          <div class="node-sub">Port 7496<br>Account U25734106<br>run_ibkr.bat</div>
+          <span class="node-badge">3:55 PM ET</span>
+        </div>
+      </div>
+    </div>
+    <div class="group-box">
+      <div class="group-label">💻 Schwab Trader Web App (PC/Mac)</div>
+      <div class="group-inner">
+        <div class="node c-red" id="n-trader">
+          <div class="node-title">trader_ui.py</div>
+          <div class="node-sub">Flask app<br>http://127.0.0.1:5050<br>trader_ui.bat</div>
+        </div>
+        <div class="node c-red" id="n-schwab-api">
+          <div class="node-title">Schwab API</div>
+          <div class="node-sub">OAuth<br>Account + Holdings<br>Buy/Sell orders</div>
+        </div>
+        <div class="node c-red" id="n-import" style="border-style:dashed;opacity:0.8">
+          <div class="node-title">Import from<br>Composer</div>
+          <div class="node-sub">Reads index2.html<br>Computes target shares<br>Pre-fills trades</div>
+          <span class="node-badge" style="background:#30363d;color:#8b949e">⚠️ planned</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 6: Brokerages ─────────────────────────── -->
+<div class="row">
+  <div class="row-label">Brokerages</div>
+  <div class="row-content">
+    <div class="node c-red wide" id="n-ibkr-broker">
+      <div class="node-title">🏦 Interactive Brokers</div>
+      <div class="node-sub">Account U25734106<br>Auto-executed at 3:55 PM</div>
+      <span class="node-badge">auto</span>
+    </div>
+    <div style="flex:1"></div>
+    <div class="node c-red wide" id="n-sch-broker">
+      <div class="node-title">🏦 Charles Schwab</div>
+      <div class="node-sub">Manual + Semi-Auto<br>via Import from Composer</div>
+      <span class="node-badge">manual</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROW 7: Users ──────────────────────────────── -->
+<div class="row">
+  <div class="row-label">Users</div>
+  <div class="row-content" id="n-users-row">
+    <div class="node c-gray" id="n-free">
+      <div class="node-title">👤 Free Visitors</div>
+      <div class="node-sub">Public pages<br>History · Market Summary</div>
+    </div>
+    <div class="node c-gray" id="n-basic">
+      <div class="node-title">⭐ Basic Members</div>
+      <div class="node-sub">$19/mo<br>Signal pages</div>
+      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Basic</span>
+    </div>
+    <div class="node c-gray" id="n-premium">
+      <div class="node-title">🚀 Premium Members</div>
+      <div class="node-sub">$49/mo<br>Full access + alerts</div>
+      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Premium</span>
+    </div>
+    <div class="node c-gray" id="n-admin">
+      <div class="node-title">🔑 Admin — Kei</div>
+      <div class="node-sub">admin.html<br>Manage users & tiers</div>
+      <span class="node-badge" style="background:#30363d;color:#c9d1d9">Admin</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:10px;color:#6e7681;margin-top:4px;padding-bottom:6px">
+  Auto-updates 3:51 PM ET daily · bleeanalytics.com · All times Eastern
+</div>
+
+</div><!-- #diagram -->
+
+<!-- Changelog -->
+<div class="changelog">
+  <h2>📋 Changelog — Update as features are added</h2>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Ver</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge">v1.0</span></td>
+        <td>Initial diagram. Composer API → PC automation (4 scripts) → GitHub Pages (6 pages) → Firebase/Stripe → IBKR auto-trade → Schwab Trader → brokerages → users.</td>
+      </tr>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge orange">v1.1</span></td>
+        <td>Rebuilt with Mermaid.js for arrow alignment (result was too cramped).</td>
+      </tr>
+      <tr>
+        <td>2026-05-17</td>
+        <td><span class="badge">v1.2</span></td>
+        <td>Restored v1 row layout. Replaced manual arrow divs with JS-computed SVG arrows that draw precisely from box edge to box edge. All arrows now correctly connected.</td>
+      </tr>
+      <!-- Add new entries:
+      <tr>
+        <td>YYYY-MM-DD</td>
+        <td><span class="badge orange">vX.X</span></td>
+        <td>What changed.</td>
+      </tr>
+      -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+// ── Arrow drawing ────────────────────────────────────────────────────────────
+const COLORS = {
+  blue:   '#1f6feb',
+  teal:   '#1b7a6f',
+  green:  '#2ea043',
+  purple: '#8957e5',
+  red:    '#da3633',
+  gray:   '#484f58'
+};
+
+// Get bounding rect relative to #diagram
+function rel(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const er = el.getBoundingClientRect();
+  const dr = document.getElementById('diagram').getBoundingClientRect();
+  return {
+    top:    er.top    - dr.top,
+    bottom: er.bottom - dr.top,
+    left:   er.left   - dr.left,
+    right:  er.right  - dr.left,
+    cx:     er.left   - dr.left + er.width  / 2,
+    cy:     er.top    - dr.top  + er.height / 2,
+    w:      er.width,
+    h:      er.height
+  };
+}
+
+// One arrowhead marker per color (defined once in <defs>)
+function ensureMarker(svg, defs, colorKey) {
+  const id = 'arrowhead-' + colorKey;
+  if (defs.querySelector('#' + id)) return id;
+  const m = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+  m.setAttribute('id', id);
+  m.setAttribute('markerWidth',  '7');
+  m.setAttribute('markerHeight', '7');
+  m.setAttribute('refX', '5');
+  m.setAttribute('refY', '3.5');
+  m.setAttribute('orient', 'auto');
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  p.setAttribute('points', '0 0, 6 3.5, 0 7');
+  p.setAttribute('fill', COLORS[colorKey]);
+  m.appendChild(p);
+  defs.appendChild(m);
+  return id;
+}
+
+// Draw one arrow: from point (x1,y1) to (x2,y2)
+function drawArrow(svg, defs, x1, y1, x2, y2, colorKey, label, dashed) {
+  const mkId = ensureMarker(svg, defs, colorKey);
+  const color = COLORS[colorKey];
+
+  // Cubic bezier: control points bend 60% of the vertical distance
+  const dy = Math.abs(y2 - y1);
+  const bend = Math.min(dy * 0.55, 60);
+  const d = `M ${x1} ${y1} C ${x1} ${y1 + bend}, ${x2} ${y2 - bend}, ${x2} ${y2}`;
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width', '1.5');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('marker-end', `url(#${mkId})`);
+  if (dashed) path.setAttribute('stroke-dasharray', '5 3');
+  svg.appendChild(path);
+
+  if (label) {
+    const lx = (x1 + x2) / 2;
+    const ly = (y1 + y2) / 2;
+    // background rect
+    const tw = label.length * 5.5 + 6;
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x',      lx - tw / 2);
+    bg.setAttribute('y',      ly - 8);
+    bg.setAttribute('width',  tw);
+    bg.setAttribute('height', 12);
+    bg.setAttribute('rx', '3');
+    bg.setAttribute('fill', '#0d1117');
+    svg.appendChild(bg);
+
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', lx);
+    t.setAttribute('y', ly + 2);
+    t.setAttribute('fill', '#6e7681');
+    t.setAttribute('font-size', '9');
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, sans-serif');
+    t.textContent = label;
+    svg.appendChild(t);
+  }
+}
+
+// Connect bottom-center of A to top-center of B
+function connect(svg, defs, fromId, toId, colorKey, label, dashed, fromOffsetX, toOffsetX) {
+  const f = rel(fromId), t = rel(toId);
+  if (!f || !t) return;
+  const x1 = f.cx + (fromOffsetX || 0);
+  const y1 = f.bottom;
+  const x2 = t.cx + (toOffsetX  || 0);
+  const y2 = t.top;
+  drawArrow(svg, defs, x1, y1, x2, y2, colorKey, label, dashed || false);
+}
+
+// Connect right-center of A to left-center of B (horizontal)
+function connectH(svg, defs, fromId, toId, colorKey, label, dashed) {
+  const f = rel(fromId), t = rel(toId);
+  if (!f || !t) return;
+  drawArrow(svg, defs, f.right, f.cy, t.left, t.cy, colorKey, label, dashed || false);
+}
+
+function renderArrows() {
+  const svg   = document.getElementById('arrows');
+  const diag  = document.getElementById('diagram');
+
+  // Clear
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.setAttribute('width',  diag.offsetWidth);
+  svg.setAttribute('height', diag.offsetHeight);
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  svg.appendChild(defs);
+
+  // ── External Sources → PC Automation ──────────────────────────────
+  // Composer → composer_pull_allocation
+  connect(svg, defs, 'n-composer', 'n-pull',   'blue', 'alloc weights + value history');
+  // Composer → ibkr_trader (diagonal right)
+  connect(svg, defs, 'n-composer', 'n-ibkrpy', 'blue', 'daily signal', false, +30, 0);
+  // yfinance → update_accuracy
+  connect(svg, defs, 'n-yfinance', 'n-acc',    'teal', 'price data');
+  // yfinance → update_performance (slight offset so arrows don't overlap)
+  connect(svg, defs, 'n-yfinance', 'n-upd',    'teal', '', false, +10, 0);
+
+  // ── PC Automation → GitHub Pages ──────────────────────────────────
+  connect(svg, defs, 'n-pull',   'n-idx2', 'green', 'git push');
+  connect(svg, defs, 'n-acc',    'n-algo', 'green', 'git push');
+  connect(svg, defs, 'n-upd',    'n-algo', 'green', '',         false, -10, +10);
+  // ibkr_trader goes DOWN to TWS (skips GitHub row — draw to n-tws)
+  connect(svg, defs, 'n-ibkrpy', 'n-tws',  'red',  'TWS port 7496');
+
+  // ── GitHub Pages → Auth & Payments ────────────────────────────────
+  connect(svg, defs, 'n-idx2',      'n-firebase', 'purple', 'auth check', false, 0, -20);
+  connect(svg, defs, 'n-authpages', 'n-firebase', 'purple', 'sign-in',    false, -20, +20);
+  connect(svg, defs, 'n-authpages', 'n-stripe',   'purple', 'subscribe');
+
+  // ── Schwab App: trader → schwab API ───────────────────────────────
+  connect(svg, defs, 'n-trader', 'n-schwab-api', 'red', '');
+
+  // ── index2 → Import from Composer (horizontal, dashed/planned) ────
+  connectH(svg, defs, 'n-idx2', 'n-import', 'red', 'reads signal (planned)', true);
+
+  // ── Brokerages ────────────────────────────────────────────────────
+  connect(svg, defs, 'n-tws',        'n-ibkr-broker', 'red', 'live orders');
+  connect(svg, defs, 'n-schwab-api', 'n-sch-broker',  'red', 'live orders');
+
+  // ── GitHub → Users (overall browser access) ───────────────────────
+  connect(svg, defs, 'n-idx2',    'n-basic',   'gray', 'browser access', false, 0, 0);
+  connect(svg, defs, 'n-authpages','n-admin',  'gray', '', false, 0, 0);
+
+  // ── Firebase tier gate → idx2 (left-side upward loop) ─────────────
+  // Shown as a sideways note from firebase back up to GitHub pages
+  const fb = rel('n-firebase'), i2 = rel('n-idx2');
+  if (fb && i2) {
+    // Go left from firebase, up, then right to idx2 bottom
+    const lx = Math.min(fb.left, i2.left) - 28;
+    const d = `M ${fb.left} ${fb.cy}
+               L ${lx}      ${fb.cy}
+               L ${lx}      ${i2.bottom + 4}
+               L ${i2.left} ${i2.bottom + 4}`;
+    const mkId = ensureMarker(svg, defs, 'purple');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('stroke', COLORS.purple);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('marker-end', `url(#${mkId})`);
+    svg.appendChild(path);
+
+    // label
+    const lbx = lx - 2, lby = (fb.cy + i2.bottom) / 2;
+    const lbl = 'tier gate';
+    const tw = lbl.length * 5.5 + 6;
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x', lbx - tw / 2); bg.setAttribute('y', lby - 8);
+    bg.setAttribute('width', tw); bg.setAttribute('height', 12);
+    bg.setAttribute('rx', '3'); bg.setAttribute('fill', '#0d1117');
+    svg.appendChild(bg);
+    const tx = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    tx.setAttribute('x', lbx); tx.setAttribute('y', lby + 2);
+    tx.setAttribute('fill', '#8957e5'); tx.setAttribute('font-size', '9');
+    tx.setAttribute('text-anchor', 'middle');
+    tx.setAttribute('font-family', '-apple-system,sans-serif');
+    tx.textContent = lbl;
+    svg.appendChild(tx);
+  }
+}
+
+// Draw on load and on resize
+window.addEventListener('load',   renderArrows);
+window.addEventListener('resize', renderArrows);
+</script>
+</body>
+</html>
