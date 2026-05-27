@@ -96,7 +96,7 @@
 
     // Mobile dropdown menu
     "#blee-mobile-menu{",
-      "display:none;position:fixed;top:60px;left:0;right:0;z-index:9999;",
+      "display:none;position:fixed;top:98px;left:0;right:0;z-index:9999;",
       "background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.1);",
       "padding:12px 0;flex-direction:column;",
       "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;",
@@ -230,8 +230,156 @@
   // Run immediately if body is ready, otherwise wait for DOM
   if (document.body) {
     inject();
+    initTicker();
   } else {
-    document.addEventListener("DOMContentLoaded", inject);
+    document.addEventListener("DOMContentLoaded", function() { inject(); initTicker(); });
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MARKET TICKER BAR  —  DOW / S&P 500 / NASDAQ
+  // ═══════════════════════════════════════════════════════════════════════════
+  var _TICKERS = [
+    { id: "bt-dji", sym: "^DJI",  label: "DOW"     },
+    { id: "bt-spx", sym: "^GSPC", label: "S&P 500" },
+    { id: "bt-ndx", sym: "^IXIC", label: "NASDAQ"  },
+  ];
+  var _tickerTimer = null;
+
+  var TICKER_CSS = [
+    "#blee-ticker-bar{",
+      "position:sticky;top:60px;z-index:9998;",
+      "background:#050d1a;",
+      "border-bottom:1px solid rgba(255,255,255,0.07);",
+      "padding:0 28px;height:38px;",
+      "display:flex;align-items:center;gap:24px;overflow:hidden;",
+      "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;",
+      "box-sizing:border-box;",
+    "}",
+    ".bt-item{display:flex;align-items:center;gap:6px;white-space:nowrap;}",
+    ".bt-name{color:rgba(255,255,255,0.42);font-size:10px;font-weight:700;",
+              "text-transform:uppercase;letter-spacing:.06em;}",
+    ".bt-price{color:#e2e8f0;font-size:12.5px;font-weight:600;}",
+    ".bt-chg{font-size:11.5px;font-weight:500;}",
+    ".bt-chg.up{color:#4ade80;}.bt-chg.down{color:#f87171;}.bt-chg.flat{color:rgba(255,255,255,0.35);}",
+    ".bt-sep{color:rgba(255,255,255,0.18);font-size:11px;margin:0 2px;}",
+    ".bt-ext{font-size:11px;font-weight:500;}",
+    ".bt-ext.up{color:#86efac;}.bt-ext.down{color:#fca5a5;}.bt-ext.flat{color:rgba(255,255,255,0.3);}",
+    ".bt-state{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700;letter-spacing:.05em;}",
+    ".bt-state.open{background:#15803d;color:#fff;}",
+    ".bt-state.pre{background:#1e40af;color:#fff;}",
+    ".bt-state.post{background:#6d28d9;color:#fff;}",
+    ".bt-state.closed{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);}",
+    ".bt-div{width:1px;height:20px;background:rgba(255,255,255,0.09);flex-shrink:0;}",
+    "#bt-time{margin-left:auto;font-size:10px;color:rgba(255,255,255,0.22);white-space:nowrap;}",
+    "@media(max-width:780px){#blee-ticker-bar{gap:14px;padding:0 14px;}#bt-time{display:none;}}",
+    "@media(max-width:520px){.bt-div,.bt-ext,.bt-sep{display:none;}}",
+  ].join("");
+
+  function _fmtN(n, dec) {
+    if (n == null || isNaN(n)) return "—";
+    dec = dec == null ? 2 : dec;
+    return n >= 1000
+      ? n.toLocaleString("en-US", {minimumFractionDigits: dec, maximumFractionDigits: dec})
+      : n.toFixed(dec);
+  }
+
+  function _renderItem(elId, name, price, chg, pct, state, extPrice, extChg, extPct) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    var dir   = chg  >  0 ? "up"   : chg  < 0 ? "down"  : "flat";
+    var sign  = chg  >= 0 ? "+"    : "";
+    var sLbl  = { REGULAR:"OPEN", PRE:"PRE", POST:"POST" }[state] || "CLOSED";
+    var sCls  = { REGULAR:"open", PRE:"pre",  POST:"post" }[state] || "closed";
+
+    var extHTML = "";
+    if (state !== "REGULAR" && extPrice != null) {
+      var ed   = extChg > 0 ? "up" : extChg < 0 ? "down" : "flat";
+      var es   = extChg >= 0 ? "+" : "";
+      extHTML  = '<span class="bt-sep">▸</span>'
+               + '<span class="bt-ext ' + ed + '">'
+               + _fmtN(extPrice) + " " + es + _fmtN(extPct) + "%"
+               + "</span>";
+    }
+
+    el.innerHTML =
+      '<span class="bt-name">' + name + "</span>"
+    + '<span class="bt-price">' + _fmtN(price) + "</span>"
+    + '<span class="bt-chg ' + dir + '">'
+        + sign + _fmtN(Math.abs(chg)) + " (" + sign + _fmtN(pct) + "%)"
+      + "</span>"
+    + extHTML
+    + '<span class="bt-state ' + sCls + '">' + sLbl + "</span>";
+  }
+
+  function _fetchTicker() {
+    var syms = _TICKERS.map(function(t) { return encodeURIComponent(t.sym); }).join(",");
+    var url  = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + syms
+             + "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent"
+             + ",preMarketPrice,preMarketChange,preMarketChangePercent"
+             + ",postMarketPrice,postMarketChange,postMarketChangePercent,marketState";
+    fetch(url, { headers: { Accept: "application/json" } })
+      .then(function(r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        var results = ((data.quoteResponse || {}).result) || [];
+        results.forEach(function(q, i) {
+          var t = _TICKERS[i]; if (!t) return;
+          var st   = q.marketState || "CLOSED";
+          var extP = null, extC = null, extPt = null;
+          if      (st === "PRE"  && q.preMarketPrice)  { extP = q.preMarketPrice;  extC = q.preMarketChange;  extPt = q.preMarketChangePercent;  }
+          else if (st === "POST" && q.postMarketPrice) { extP = q.postMarketPrice; extC = q.postMarketChange; extPt = q.postMarketChangePercent; }
+          _renderItem(t.id, t.label,
+            q.regularMarketPrice, q.regularMarketChange, q.regularMarketChangePercent,
+            st, extP, extC, extPt);
+        });
+        var timeEl = document.getElementById("bt-time");
+        if (timeEl) {
+          timeEl.textContent = new Date().toLocaleTimeString("en-US",
+            { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+        }
+        // Refresh rate: 30s during market, 2min extended, 5min closed
+        var st0   = results.length ? (results[0].marketState || "CLOSED") : "CLOSED";
+        var delay = st0 === "REGULAR" ? 30000 : (st0 === "PRE" || st0 === "POST") ? 120000 : 300000;
+        if (_tickerTimer) clearTimeout(_tickerTimer);
+        _tickerTimer = setTimeout(_fetchTicker, delay);
+      })
+      .catch(function(e) {
+        console.warn("[BLEE ticker]", e.message);
+        if (_tickerTimer) clearTimeout(_tickerTimer);
+        _tickerTimer = setTimeout(_fetchTicker, 120000); // retry in 2 min
+      });
+  }
+
+  function initTicker() {
+    // Inject CSS
+    var s = document.createElement("style");
+    s.id  = "blee-ticker-styles";
+    s.textContent = TICKER_CSS;
+    document.head.appendChild(s);
+
+    // Build placeholder HTML for the three indices
+    var items = _TICKERS.map(function(t, i) {
+      return (i > 0 ? '<div class="bt-div"></div>' : "")
+           + '<div class="bt-item" id="' + t.id + '">'
+           + '<span class="bt-name">' + t.label + '</span>'
+           + '<span class="bt-price">…</span>'
+           + "</div>";
+    }).join("");
+    var barHTML = '<div id="blee-ticker-bar">' + items + '<span id="bt-time"></span></div>';
+
+    // Insert right after #blee-site-nav
+    var nav = document.getElementById("blee-site-nav");
+    if (nav && nav.parentNode) {
+      var wrap = document.createElement("div");
+      wrap.innerHTML = barHTML;
+      nav.parentNode.insertBefore(wrap.firstChild, nav.nextSibling);
+    }
+
+    // Fetch live data
+    _fetchTicker();
   }
 
   // ── Sign In link toggle (Firebase auth state) ─────────────────────────────
