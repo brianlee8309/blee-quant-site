@@ -252,7 +252,7 @@
       "background:#050d1a;",
       "border-bottom:1px solid rgba(255,255,255,0.07);",
       "padding:0 28px;height:38px;",
-      "display:flex;align-items:center;gap:24px;overflow:hidden;",
+      "display:flex;align-items:center;justify-content:center;gap:32px;overflow:hidden;",
       "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;",
       "box-sizing:border-box;",
     "}",
@@ -312,44 +312,62 @@
     + '<span class="bt-state ' + sCls + '">' + sLbl + "</span>";
   }
 
+  function _processQuotes(data) {
+    var results = ((data.quoteResponse || {}).result) || [];
+    if (!results.length) throw new Error("empty results");
+    results.forEach(function(q, i) {
+      var t = _TICKERS[i]; if (!t) return;
+      var st   = q.marketState || "CLOSED";
+      var extP = null, extC = null, extPt = null;
+      if      (st === "PRE"  && q.preMarketPrice)  { extP = q.preMarketPrice;  extC = q.preMarketChange;  extPt = q.preMarketChangePercent;  }
+      else if (st === "POST" && q.postMarketPrice) { extP = q.postMarketPrice; extC = q.postMarketChange; extPt = q.postMarketChangePercent; }
+      _renderItem(t.id, t.label,
+        q.regularMarketPrice, q.regularMarketChange, q.regularMarketChangePercent,
+        st, extP, extC, extPt);
+    });
+    var timeEl = document.getElementById("bt-time");
+    if (timeEl) {
+      timeEl.textContent = new Date().toLocaleTimeString("en-US",
+        { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+    }
+    var st0   = results.length ? (results[0].marketState || "CLOSED") : "CLOSED";
+    var delay = st0 === "REGULAR" ? 30000 : (st0 === "PRE" || st0 === "POST") ? 120000 : 300000;
+    if (_tickerTimer) clearTimeout(_tickerTimer);
+    _tickerTimer = setTimeout(_fetchTicker, delay);
+  }
+
   function _fetchTicker() {
-    var syms = _TICKERS.map(function(t) { return encodeURIComponent(t.sym); }).join(",");
-    var url  = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + syms
-             + "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent"
-             + ",preMarketPrice,preMarketChange,preMarketChangePercent"
-             + ",postMarketPrice,postMarketChange,postMarketChangePercent,marketState";
-    fetch(url, { headers: { Accept: "application/json" } })
+    var syms   = _TICKERS.map(function(t) { return encodeURIComponent(t.sym); }).join(",");
+    var yahooQ = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + syms
+               + "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent"
+               + ",preMarketPrice,preMarketChange,preMarketChangePercent"
+               + ",postMarketPrice,postMarketChange,postMarketChangePercent,marketState";
+
+    // Try direct fetch first; fall back to allorigins CORS proxy
+    fetch(yahooQ, { headers: { Accept: "application/json" } })
       .then(function(r) {
-        if (!r.ok) throw new Error("HTTP " + r.status);
+        if (!r.ok) throw new Error("direct HTTP " + r.status);
         return r.json();
       })
-      .then(function(data) {
-        var results = ((data.quoteResponse || {}).result) || [];
-        results.forEach(function(q, i) {
-          var t = _TICKERS[i]; if (!t) return;
-          var st   = q.marketState || "CLOSED";
-          var extP = null, extC = null, extPt = null;
-          if      (st === "PRE"  && q.preMarketPrice)  { extP = q.preMarketPrice;  extC = q.preMarketChange;  extPt = q.preMarketChangePercent;  }
-          else if (st === "POST" && q.postMarketPrice) { extP = q.postMarketPrice; extC = q.postMarketChange; extPt = q.postMarketChangePercent; }
-          _renderItem(t.id, t.label,
-            q.regularMarketPrice, q.regularMarketChange, q.regularMarketChangePercent,
-            st, extP, extC, extPt);
-        });
-        var timeEl = document.getElementById("bt-time");
-        if (timeEl) {
-          timeEl.textContent = new Date().toLocaleTimeString("en-US",
-            { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
-        }
-        // Refresh rate: 30s during market, 2min extended, 5min closed
-        var st0   = results.length ? (results[0].marketState || "CLOSED") : "CLOSED";
-        var delay = st0 === "REGULAR" ? 30000 : (st0 === "PRE" || st0 === "POST") ? 120000 : 300000;
-        if (_tickerTimer) clearTimeout(_tickerTimer);
-        _tickerTimer = setTimeout(_fetchTicker, delay);
-      })
-      .catch(function(e) {
-        console.warn("[BLEE ticker]", e.message);
-        if (_tickerTimer) clearTimeout(_tickerTimer);
-        _tickerTimer = setTimeout(_fetchTicker, 120000); // retry in 2 min
+      .then(_processQuotes)
+      .catch(function() {
+        // Direct blocked by CORS — route through allorigins proxy
+        var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(yahooQ);
+        return fetch(proxyUrl)
+          .then(function(r) {
+            if (!r.ok) throw new Error("proxy HTTP " + r.status);
+            return r.json();
+          })
+          .then(function(wrapper) {
+            // allorigins returns { contents: "<json string>", status: {...} }
+            var data = JSON.parse(wrapper.contents);
+            _processQuotes(data);
+          })
+          .catch(function(e) {
+            console.warn("[BLEE ticker] proxy failed:", e.message);
+            if (_tickerTimer) clearTimeout(_tickerTimer);
+            _tickerTimer = setTimeout(_fetchTicker, 120000);
+          });
       });
   }
 
