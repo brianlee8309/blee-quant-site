@@ -96,7 +96,7 @@
 
     // Mobile dropdown menu
     "#blee-mobile-menu{",
-      "display:none;position:fixed;top:106px;left:0;right:0;z-index:9999;",
+      "display:none;position:fixed;top:112px;left:0;right:0;z-index:9999;",
       "background:#0d1829;border-bottom:1px solid rgba(255,255,255,0.1);",
       "padding:12px 0;flex-direction:column;",
       "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;",
@@ -249,16 +249,16 @@
         "position:sticky;top:60px;z-index:9998;",
         "background:#050d1a;",
         "border-bottom:1px solid rgba(255,255,255,0.07);",
-        "height:46px;overflow:hidden;",
+        "height:52px;overflow:hidden;",
         "box-sizing:border-box;",
       "}",
       // Force the TradingView iframe to fill the bar and be transparent
-      "#blee-ticker-bar iframe{height:46px!important;border:none!important;}",
+      "#blee-ticker-bar iframe{height:52px!important;border:none!important;}",
       "#blee-ticker-bar .tradingview-widget-container,",
       "#blee-ticker-bar .tradingview-widget-container__widget{",
-        "height:46px!important;",
+        "height:52px!important;",
       "}",
-      "@media(max-width:520px){#blee-ticker-bar{height:46px;}}",
+      "@media(max-width:520px){#blee-ticker-bar{height:52px;}}",
     ].join("");
     document.head.appendChild(s);
 
@@ -271,7 +271,7 @@
 
     var tvContainer = document.createElement("div");
     tvContainer.className = "tradingview-widget-container";
-    tvContainer.style.cssText = "height:46px;";
+    tvContainer.style.cssText = "height:52px;";
 
     var tvWidget = document.createElement("div");
     tvWidget.className = "tradingview-widget-container__widget";
@@ -285,9 +285,9 @@
     // displayMode "adaptive" shows all 3 items centred without scrolling
     script.text  = JSON.stringify({
       "symbols": [
-        {"description": "DOW",     "proName": "DJ:DJI"       },
-        {"description": "S&P 500", "proName": "SP:SPX"       },
-        {"description": "NASDAQ",  "proName": "NASDAQ:IXIC"  }
+        {"description": "DOW 30",   "proName": "FOREXCOM:DJI30"  },
+        {"description": "S&P 500",  "proName": "FOREXCOM:SPXUSD" },
+        {"description": "NASDAQ",   "proName": "FOREXCOM:NSXUSD" }
       ],
       "showSymbolLogo":  false,
       "isTransparent":   true,
