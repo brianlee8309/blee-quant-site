@@ -121,11 +121,11 @@
       <div class="label">Day Change</div>
       <div class="value" id="stat-day"></div>
     </div>
-    <div class="stat">
+    <div class="stat" style="display:none">
       <div class="label" id="label-total">Total Return</div>
       <div class="value" id="stat-total"></div>
     </div>
-    <div class="stat">
+    <div class="stat" style="display:none">
       <div class="label">Annualized Return</div>
       <div class="value" id="stat-annual"></div>
     </div>
@@ -761,11 +761,4 @@ document.addEventListener("DOMContentLoaded", function() {
       banner.style.display = "flex";
       const detailEl = document.getElementById("rsi-override-detail");
       if (detailEl && DATA.rsi14_override_why) {
-        detailEl.textContent = " — " + DATA.rsi14_override_why;
-      }
-    }
-  }
-})();
-</script>
-</body>
-</html>
+       

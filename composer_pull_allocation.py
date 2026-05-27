@@ -719,10 +719,26 @@ def main() -> int:
             "g7WBkfIc6UWUWC6NiAdu": "composer_allocations_kei186.json",# BLEE A-186 Kei
         }
         if sid in _STABLE_JSON_MAP:
-            import shutil as _shutil
             _stable_dst = SCRIPT_DIR / _STABLE_JSON_MAP[sid]
-            _shutil.copy(str(slice_path), str(_stable_dst))
-            log(f"  Updated stable file: {_stable_dst.name}")
+            # Write a SLIM stable file (no raw_api_entry) so it stays small
+            # and always parses cleanly.  The full slice (with raw_api_entry)
+            # is kept in the dated file for debugging.
+            _slim = {
+                "date":          today,
+                "symphony_id":   sid,
+                "symphony_name": sname,
+                "source":        source_used,
+                "positions":     positions,
+            }
+            with open(_stable_dst, "w", encoding="utf-8") as _sf:
+                json.dump(_slim, _sf, indent=2, default=str)
+            # Validate before claiming success
+            try:
+                with open(_stable_dst, encoding="utf-8") as _vf:
+                    json.load(_vf)
+                log(f"  Updated stable file: {_stable_dst.name}")
+            except Exception as _ve:
+                log(f"  ERROR: stable file write failed validation: {_ve}")
 
         # Collect data for CurrentWatchSymphony.html regeneration
         try:

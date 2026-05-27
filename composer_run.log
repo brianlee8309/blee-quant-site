@@ -2323,3 +2323,47 @@
 [2026-05-26T15:51:12] Stamped last-updated (05/26/2026 03:51 PM ET) into Algorithm185History.html
 [2026-05-26T15:51:12] --- Pushing updates to GitHub ---
 [2026-05-26T15:51:12]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-05-26T15:52:01]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-05-26"
+[2026-05-26T15:52:03]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-05-26T15:52:12] GitHub push successful.
+[2026-05-26T15:53:02] market_report: === Market report generation started ===
+[2026-05-26T15:53:02] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-26T15:53:02] market_report: Loaded 16 ETF allocations from index_50.html
+[2026-05-26T15:53:06] market_report:   RSI-14 fetched: 75.88 (SPY close=750.7593)
+[2026-05-26T15:53:06] market_report:   RSI signal: Overbought — moderate bear lean (10d avg=71.57, adj=-10, new score=+37.68)
+[2026-05-26T15:53:06] market_report:   RSI override not triggered: Today RSI 75.9 ≤ 76.0 — override not triggered
+[2026-05-26T15:53:06] market_report: Composite score: +37.68 -> Sunny Sky
+[2026-05-26T15:53:07] market_report:   RSS WSJ: 20 items fetched
+[2026-05-26T15:53:07] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-05-26T15:53:08] market_report:   RSS Yahoo Finance: 46 items fetched
+[2026-05-26T15:53:08] market_report:   Selected [Yahoo Finance] topic=OTHER: BJ’s Wholesale plans major store changes as customers pull back
+[2026-05-26T15:53:09] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-05-26T15:53:09] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-26T15:53:09] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-26T15:53:09] market_report: Fetched 3 news items
+[2026-05-26T15:53:09] market_report: Updated marketDailySummary.html with score=+37.68 (Sunny Sky)
+[2026-05-26T15:53:10] market_report: Stamped last-updated (05/26/2026 03:53 PM ET) into index.html
+[2026-05-26T15:53:10] market_report: Stamped last-updated (05/26/2026 03:53 PM ET) into performance1.html
+[2026-05-26T15:53:10] market_report: Stamped last-updated (05/26/2026 03:53 PM ET) into Algorithm185History.html
+[2026-05-26T15:53:10] market_report: === Market report generation complete ===
+[2026-05-26T20:18:44] market_report: === Market report generation started ===
+[2026-05-26T20:18:44] market_report: Loaded 15 ETF points from Index_50_point.csv
+[2026-05-26T20:18:44] market_report: Loaded 16 ETF allocations from index_50.html
+[2026-05-26T20:18:44] market_report:   RSI signal: Overbought — moderate bear lean (10d avg=71.64, adj=-10, new score=+37.68)
+[2026-05-26T20:18:44] market_report:   RSI override not triggered: Today RSI 69.4 ≤ 76.0 — override not triggered
+[2026-05-26T20:18:44] market_report: Composite score: +37.68 -> Sunny Sky
+[2026-05-26T20:18:44] market_report:   RSS fetch failed (WSJ): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-26T20:18:44] market_report:   WSJ: RSS unavailable, using hardcoded fallback
+[2026-05-26T20:18:44] market_report:   Selected [WSJ] topic=FED: Fed Signals Patience as Rate Path Stays Data-Dependent
+[2026-05-26T20:18:44] market_report:   RSS fetch failed (Yahoo Finance): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-26T20:18:44] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-05-26T20:18:44] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-05-26T20:18:44] market_report:   RSS fetch failed (Barron's): <urlopen error Tunnel connection failed: 403 Forbidden>
+[2026-05-26T20:18:44] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-05-26T20:18:44] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-05-26T20:18:44] market_report: Fetched 3 news items
+[2026-05-26T20:18:44] market_report: Updated marketDailySummary.html with score=+37.68 (Sunny Sky)
+[2026-05-26T20:18:45] market_report: Stamped last-updated (05/26/2026 04:18 PM ET) into index.html
+[2026-05-26T20:18:45] market_report: Stamped last-updated (05/26/2026 04:18 PM ET) into performance1.html
+[2026-05-26T20:18:45] market_report: Stamped last-updated (05/26/2026 04:18 PM ET) into Algorithm185History.html
+[2026-05-26T20:18:45] market_report: === Market report generation complete ===
