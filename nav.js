@@ -270,6 +270,7 @@
     ".bt-state.pre{background:#1e40af;color:#fff;}",
     ".bt-state.post{background:#6d28d9;color:#fff;}",
     ".bt-state.closed{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);}",
+    ".bt-state.fut{background:#92400e;color:#fde68a;}",
     ".bt-div{width:1px;height:20px;background:rgba(255,255,255,0.09);flex-shrink:0;}",
     "#bt-time{margin-left:auto;font-size:10px;color:rgba(255,255,255,0.22);white-space:nowrap;}",
     "@media(max-width:780px){#blee-ticker-bar{gap:14px;padding:0 14px;}#bt-time{display:none;}}",
@@ -284,90 +285,110 @@
       : n.toFixed(dec);
   }
 
-  function _renderItem(elId, name, price, chg, pct, state, extPrice, extChg, extPct) {
+  function _renderItem(elId, name, price, chg, pct, state, extPrice, extChg, extPct, extLbl) {
     var el = document.getElementById(elId);
     if (!el) return;
-    var dir   = chg  >  0 ? "up"   : chg  < 0 ? "down"  : "flat";
-    var sign  = chg  >= 0 ? "+"    : "";
-    var sLbl  = { REGULAR:"OPEN", PRE:"PRE", POST:"POST" }[state] || "CLOSED";
-    var sCls  = { REGULAR:"open", PRE:"pre",  POST:"post" }[state] || "closed";
+    var dir  = chg > 0 ? "up" : chg < 0 ? "down" : "flat";
+    var sign = chg >= 0 ? "+" : "";
+    var sLbl = { REGULAR:"OPEN", PRE:"PRE", POST:"POST" }[state] || "CLOSED";
+    var sCls = { REGULAR:"open", PRE:"pre",  POST:"post" }[state] || "closed";
 
     var extHTML = "";
-    if (state !== "REGULAR" && extPrice != null) {
-      var ed   = extChg > 0 ? "up" : extChg < 0 ? "down" : "flat";
-      var es   = extChg >= 0 ? "+" : "";
-      extHTML  = '<span class="bt-sep">▸</span>'
-               + '<span class="bt-ext ' + ed + '">'
-               + _fmtN(extPrice) + " " + es + _fmtN(extPct) + "%"
-               + "</span>";
+    if (extPrice != null && state !== "REGULAR") {
+      var ed  = extChg > 0 ? "up" : extChg < 0 ? "down" : "flat";
+      var es  = extChg >= 0 ? "+" : "";
+      var eCls = extLbl === "FUT" ? "fut" : (extLbl ? extLbl.toLowerCase() : "");
+      var eBadge = extLbl
+        ? '<span class="bt-state ' + eCls + '">' + extLbl + '</span>'
+        : "";
+      extHTML = '<span class="bt-sep">&#9656;</span>'
+              + eBadge
+              + '<span class="bt-ext ' + ed + '">' + _fmtN(extPrice)
+              + ' ' + es + _fmtN(extPct) + '%</span>';
     }
 
     el.innerHTML =
-      '<span class="bt-name">' + name + "</span>"
-    + '<span class="bt-price">' + _fmtN(price) + "</span>"
-    + '<span class="bt-chg ' + dir + '">'
-        + sign + _fmtN(Math.abs(chg)) + " (" + sign + _fmtN(pct) + "%)"
-      + "</span>"
-    + extHTML
-    + '<span class="bt-state ' + sCls + '">' + sLbl + "</span>";
+        '<span class="bt-name">' + name + "</span>"
+      + '<span class="bt-price">' + _fmtN(price) + "</span>"
+      + '<span class="bt-chg ' + dir + '">' + sign + _fmtN(Math.abs(chg))
+      + " (" + sign + _fmtN(pct) + "%)</span>"
+      + extHTML
+      + '<span class="bt-state ' + sCls + '">' + sLbl + "</span>";
   }
 
-  function _processQuotes(data) {
-    var results = ((data.quoteResponse || {}).result) || [];
-    if (!results.length) throw new Error("empty results");
-    results.forEach(function(q, i) {
-      var t = _TICKERS[i]; if (!t) return;
-      var st   = q.marketState || "CLOSED";
-      var extP = null, extC = null, extPt = null;
-      if      (st === "PRE"  && q.preMarketPrice)  { extP = q.preMarketPrice;  extC = q.preMarketChange;  extPt = q.preMarketChangePercent;  }
-      else if (st === "POST" && q.postMarketPrice) { extP = q.postMarketPrice; extC = q.postMarketChange; extPt = q.postMarketChangePercent; }
+  // Build Yahoo Finance quote URL — raw symbols (no pre-encoding)
+  function _yahooUrl(rawSyms) {
+    return "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + rawSyms
+         + "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent"
+         + ",preMarketPrice,preMarketChange,preMarketChangePercent"
+         + ",postMarketPrice,postMarketChange,postMarketChangePercent,marketState";
+  }
+
+  // Fetch with direct → allorigins → corsproxy.io fallback chain
+  function _fetchUrl(url) {
+    return fetch(url)
+      .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .catch(function() {
+        var p1 = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
+        return fetch(p1)
+          .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function(w) { return JSON.parse(w.contents); })
+          .catch(function() {
+            var p2 = "https://corsproxy.io/?" + encodeURIComponent(url);
+            return fetch(p2)
+              .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+          });
+      });
+  }
+
+  function _applyQuotes(spotResults, futResults) {
+    var futMap = {};
+    (futResults || []).forEach(function(q) { futMap[q.symbol] = q; });
+    var st0 = "CLOSED";
+    spotResults.forEach(function(q, i) {
+      var t  = _TICKERS[i]; if (!t) return;
+      var st = q.marketState || "CLOSED";
+      if (i === 0) st0 = st;
+      var extP = null, extC = null, extPt = null, extLbl = null;
+      if (st === "PRE" && q.preMarketPrice) {
+        extP = q.preMarketPrice; extC = q.preMarketChange; extPt = q.preMarketChangePercent; extLbl = "PRE";
+      } else if (st === "POST" && q.postMarketPrice) {
+        extP = q.postMarketPrice; extC = q.postMarketChange; extPt = q.postMarketChangePercent; extLbl = "POST";
+      } else if (st === "CLOSED") {
+        var fq = futMap[t.fut];
+        if (fq && fq.regularMarketPrice) {
+          extP = fq.regularMarketPrice; extC = fq.regularMarketChange;
+          extPt = fq.regularMarketChangePercent; extLbl = "FUT";
+        }
+      }
       _renderItem(t.id, t.label,
         q.regularMarketPrice, q.regularMarketChange, q.regularMarketChangePercent,
-        st, extP, extC, extPt);
+        st, extP, extC, extPt, extLbl);
     });
     var timeEl = document.getElementById("bt-time");
     if (timeEl) {
       timeEl.textContent = new Date().toLocaleTimeString("en-US",
-        { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+        {hour:"2-digit", minute:"2-digit", timeZoneName:"short"});
     }
-    var st0   = results.length ? (results[0].marketState || "CLOSED") : "CLOSED";
     var delay = st0 === "REGULAR" ? 30000 : (st0 === "PRE" || st0 === "POST") ? 120000 : 300000;
     if (_tickerTimer) clearTimeout(_tickerTimer);
     _tickerTimer = setTimeout(_fetchTicker, delay);
   }
 
   function _fetchTicker() {
-    var syms   = _TICKERS.map(function(t) { return encodeURIComponent(t.sym); }).join(",");
-    var yahooQ = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + syms
-               + "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent"
-               + ",preMarketPrice,preMarketChange,preMarketChangePercent"
-               + ",postMarketPrice,postMarketChange,postMarketChangePercent,marketState";
-
-    // Try direct fetch first; fall back to allorigins CORS proxy
-    fetch(yahooQ, { headers: { Accept: "application/json" } })
-      .then(function(r) {
-        if (!r.ok) throw new Error("direct HTTP " + r.status);
-        return r.json();
+    var spotSyms = _TICKERS.map(function(t) { return t.sym; }).join(",");
+    var futSyms  = _TICKERS.map(function(t) { return t.fut; }).join(",");
+    Promise.all([_fetchUrl(_yahooUrl(spotSyms)), _fetchUrl(_yahooUrl(futSyms))])
+      .then(function(res) {
+        var spotRes = ((res[0].quoteResponse || {}).result) || [];
+        var futRes  = ((res[1].quoteResponse || {}).result) || [];
+        if (!spotRes.length) throw new Error("no data");
+        _applyQuotes(spotRes, futRes);
       })
-      .then(_processQuotes)
-      .catch(function() {
-        // Direct blocked by CORS — route through allorigins proxy
-        var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(yahooQ);
-        return fetch(proxyUrl)
-          .then(function(r) {
-            if (!r.ok) throw new Error("proxy HTTP " + r.status);
-            return r.json();
-          })
-          .then(function(wrapper) {
-            // allorigins returns { contents: "<json string>", status: {...} }
-            var data = JSON.parse(wrapper.contents);
-            _processQuotes(data);
-          })
-          .catch(function(e) {
-            console.warn("[BLEE ticker] proxy failed:", e.message);
-            if (_tickerTimer) clearTimeout(_tickerTimer);
-            _tickerTimer = setTimeout(_fetchTicker, 120000);
-          });
+      .catch(function(e) {
+        console.warn("[BLEE ticker]", e.message);
+        if (_tickerTimer) clearTimeout(_tickerTimer);
+        _tickerTimer = setTimeout(_fetchTicker, 120000);
       });
   }
 
