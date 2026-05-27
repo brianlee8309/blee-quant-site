@@ -323,7 +323,7 @@ if (DATA.annualized_return_pct == null) {
 
 // ---- Pie chart -------------------------------------------------------------
 const today = (DATA.today_allocations || []).filter(a => a.weight_pct > 0.01);
-new Chart(document.getElementById("pie"), {
+try { new Chart(document.getElementById("pie"), {
   type: "doughnut",
   data: {
     labels: today.map(a => a.ticker),
@@ -349,11 +349,11 @@ new Chart(document.getElementById("pie"), {
       }
     }
   }
-});
+}); } catch(e) { console.warn("Pie chart init failed:", e); }
 
 // ---- Portfolio value line --------------------------------------------------
 const hist = DATA.value_history || [];
-new Chart(document.getElementById("value-line"), {
+try { new Chart(document.getElementById("value-line"), {
   type: "line",
   data: {
     labels: hist.map(p => p.date),
@@ -380,7 +380,7 @@ new Chart(document.getElementById("value-line"), {
       y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
     }
   }
-});
+}); } catch(e) { console.warn("Value line chart init failed:", e); }
 
 // ---- Holdings table --------------------------------------------------------
 const tbl = document.getElementById("holdings");
@@ -422,7 +422,7 @@ const datasets = tickers.map((t, i) => ({
   borderColor: colorFor(i),
   borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
 }));
-new Chart(document.getElementById("weights-stack"), {
+try { new Chart(document.getElementById("weights-stack"), {
   type: "line",
   data: { labels: dates, datasets },
   options: {
@@ -441,7 +441,7 @@ new Chart(document.getElementById("weights-stack"), {
       x: { stacked: true, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } }
     }
   }
-});
+}); } catch(e) { console.warn("Weights chart init failed:", e); }
 
 // ── Allocation Status vs. Yesterday ─────────────────────────────────────────
 (function renderAllocStatus() {
