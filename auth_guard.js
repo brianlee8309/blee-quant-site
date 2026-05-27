@@ -33,9 +33,13 @@
       '<span style="color:#555;">Local mode</span>' +
       '<span style="color:#f5a623;font-weight:700;">Admin (local)</span>' +
       '<a href="admin.html" style="color:#f5a623;text-decoration:none;">Admin</a>';
-    document.body.style.paddingTop =
-      (parseInt(document.body.style.paddingTop || "0") + 34) + "px";
-    document.addEventListener("DOMContentLoaded", function () { document.body.prepend(badge); });
+    if (document.body) {
+      document.body.style.paddingTop =
+        (parseInt(document.body.style.paddingTop || "0") + 34) + "px";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+      if (document.body) document.body.prepend(badge);
+    });
     return;
   }
 

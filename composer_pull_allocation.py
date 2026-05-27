@@ -547,6 +547,19 @@ def generate_dashboard(
 
     template = DASHBOARD_TEMPLATE_PATH.read_text(encoding="utf-8")
     html = template.replace("/* __DATA_JSON__ */ {}", json.dumps(data))
+    # Pre-render Portfolio Value and Day Change directly into the HTML so they
+    # are visible immediately even if JavaScript is slow or blocked (e.g. when
+    # opening the file locally while CDN scripts haven't loaded yet).
+    _val_str = f"${total_value:,.2f}"
+    html = html.replace('id="stat-value"></div>', f'id="stat-value">{_val_str}</div>')
+    if day_change_pct is not None:
+        _sign = "+" if day_change_pct >= 0 else ""
+        _chg_str = f"{_sign}{day_change_pct:.2f}%"
+        _chg_class = "pos" if day_change_pct >= 0 else "neg"
+        html = html.replace(
+            'id="stat-day"></div>',
+            f'id="stat-day" class="{_chg_class}">{_chg_str}</div>'
+        )
     html_path.write_text(html, encoding="utf-8")
     log(f"Generated dashboard -> {html_path.name} "
         f"(value=${total_value:,.2f}, days={len(dates_sorted)})")
