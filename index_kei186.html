@@ -115,17 +115,17 @@
   <div class="stats">
     <div class="stat">
       <div class="label">Portfolio Value</div>
-      <div class="value" id="stat-value"></div>
+      <div class="value" id="stat-value">$6,142.56</div>
     </div>
     <div class="stat">
       <div class="label">Day Change</div>
-      <div class="value" id="stat-day"></div>
+      <div class="value" id="stat-day" class="neg">-1.72%</div>
     </div>
-    <div class="stat">
+    <div class="stat" style="display:none">
       <div class="label" id="label-total">Total Return</div>
       <div class="value" id="stat-total"></div>
     </div>
-    <div class="stat">
+    <div class="stat" style="display:none">
       <div class="label">Annualized Return</div>
       <div class="value" id="stat-annual"></div>
     </div>
@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "g7WBkfIc6UWUWC6NiAdu", "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA", "csv_filename": "composer_allocations_kei186.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-26", "run_datetime": "05/26/2026 03:51 PM", "total_value": 6250.11, "day_change_pct": 3.9144, "total_return_pct": 3.8878, "annualized_return_pct": null, "today_allocations": [{"ticker": "TQQQ", "weight_pct": 33.232, "shares": 25.32819, "market_value": 2077.03822095}, {"ticker": "TECL", "weight_pct": 24.6495, "shares": 6.8536, "market_value": 1540.62005864}, {"ticker": "GLD", "weight_pct": 19.1974, "shares": 2.89975, "market_value": 1199.858555}, {"ticker": "VGT", "weight_pct": 7.053, "shares": 3.73305, "market_value": 440.81720925}, {"ticker": "SHV", "weight_pct": 6.1855, "shares": 3.50419, "market_value": 386.59976175}, {"ticker": "SVXY", "weight_pct": 3.5494, "shares": 4.13809, "market_value": 221.8430049}, {"ticker": "UPRO", "weight_pct": 3.2669, "shares": 1.40016, "market_value": 204.1853328}, {"ticker": "TMV", "weight_pct": 1.9974, "shares": 3.17935, "market_value": 124.83717775}, {"ticker": "VIXM", "weight_pct": 0.5428, "shares": 2.18176, "market_value": 33.925495296}, {"ticker": "$USD", "weight_pct": 0.3262, "shares": 20.39, "market_value": 20.39}], "value_history": [{"date": "2026-05-22", "total": 6016.21}, {"date": "2026-05-24", "total": 6014.67}, {"date": "2026-05-25", "total": 6014.67}, {"date": "2026-05-26", "total": 6250.11}], "all_tickers": ["$USD", "GLD", "SHV", "SVXY", "TECL", "TMV", "TQQQ", "UPRO", "VGT", "VIXM"], "weight_history": {"$USD": [0.1847, 0.339, 0.339, 0.3262], "GLD": [19.613, 19.9508, 19.9508, 19.1974], "SHV": [6.4254, 6.4267, 6.4267, 6.1855], "SVXY": [3.6365, 3.6306, 3.6306, 3.5494], "TECL": [24.1692, 23.6841, 23.6841, 24.6495], "TMV": [2.1138, 2.1044, 2.1044, 1.9974], "TQQQ": [32.779, 32.779, 32.779, 33.232], "UPRO": [3.3302, 3.3308, 3.3308, 3.2669], "VGT": [7.1792, 7.1841, 7.1841, 7.053], "VIXM": [0.5689, 0.5706, 0.5706, 0.5428]}, "dates": ["2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26"], "baseline_date": null};
+const DATA = {"symphony_id": "g7WBkfIc6UWUWC6NiAdu", "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA", "csv_filename": "composer_allocations_kei186.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-27", "run_datetime": "05/27/2026 03:51 PM", "total_value": 6142.56, "day_change_pct": -1.7208, "total_return_pct": 2.1002, "annualized_return_pct": null, "today_allocations": [{"ticker": "$USD", "weight_pct": 100.0, "shares": 6142.56, "market_value": 6142.56}], "value_history": [{"date": "2026-05-22", "total": 6016.21}, {"date": "2026-05-24", "total": 6014.67}, {"date": "2026-05-25", "total": 6014.67}, {"date": "2026-05-26", "total": 6250.11}, {"date": "2026-05-27", "total": 6142.56}], "all_tickers": ["$USD", "GLD", "SHV", "SVXY", "TECL", "TMV", "TQQQ", "UPRO", "VGT", "VIXM"], "weight_history": {"$USD": [0.1847, 0.339, 0.339, 0.3262, 100.0], "GLD": [19.613, 19.9508, 19.9508, 19.1974, 0.0], "SHV": [6.4254, 6.4267, 6.4267, 6.1855, 0.0], "SVXY": [3.6365, 3.6306, 3.6306, 3.5494, 0.0], "TECL": [24.1692, 23.6841, 23.6841, 24.6495, 0.0], "TMV": [2.1138, 2.1044, 2.1044, 1.9974, 0.0], "TQQQ": [32.779, 32.779, 32.779, 33.232, 0.0], "UPRO": [3.3302, 3.3308, 3.3308, 3.2669, 0.0], "VGT": [7.1792, 7.1841, 7.1841, 7.053, 0.0], "VIXM": [0.5689, 0.5706, 0.5706, 0.5428, 0.0]}, "dates": ["2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -323,7 +323,7 @@ if (DATA.annualized_return_pct == null) {
 
 // ---- Pie chart -------------------------------------------------------------
 const today = (DATA.today_allocations || []).filter(a => a.weight_pct > 0.01);
-new Chart(document.getElementById("pie"), {
+try { new Chart(document.getElementById("pie"), {
   type: "doughnut",
   data: {
     labels: today.map(a => a.ticker),
@@ -349,11 +349,11 @@ new Chart(document.getElementById("pie"), {
       }
     }
   }
-});
+}); } catch(e) { console.warn("Pie chart init failed:", e); }
 
 // ---- Portfolio value line --------------------------------------------------
 const hist = DATA.value_history || [];
-new Chart(document.getElementById("value-line"), {
+try { new Chart(document.getElementById("value-line"), {
   type: "line",
   data: {
     labels: hist.map(p => p.date),
@@ -380,7 +380,7 @@ new Chart(document.getElementById("value-line"), {
       y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
     }
   }
-});
+}); } catch(e) { console.warn("Value line chart init failed:", e); }
 
 // ---- Holdings table --------------------------------------------------------
 const tbl = document.getElementById("holdings");
@@ -422,7 +422,7 @@ const datasets = tickers.map((t, i) => ({
   borderColor: colorFor(i),
   borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
 }));
-new Chart(document.getElementById("weights-stack"), {
+try { new Chart(document.getElementById("weights-stack"), {
   type: "line",
   data: { labels: dates, datasets },
   options: {
@@ -441,7 +441,7 @@ new Chart(document.getElementById("weights-stack"), {
       x: { stacked: true, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } }
     }
   }
-});
+}); } catch(e) { console.warn("Weights chart init failed:", e); }
 
 // ── Allocation Status vs. Yesterday ─────────────────────────────────────────
 (function renderAllocStatus() {

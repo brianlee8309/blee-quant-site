@@ -115,17 +115,17 @@
   <div class="stats">
     <div class="stat">
       <div class="label">Portfolio Value</div>
-      <div class="value" id="stat-value"></div>
+      <div class="value" id="stat-value">$5,220.86</div>
     </div>
     <div class="stat">
       <div class="label">Day Change</div>
-      <div class="value" id="stat-day"></div>
+      <div class="value" id="stat-day" class="neg">-0.52%</div>
     </div>
-    <div class="stat">
+    <div class="stat" style="display:none">
       <div class="label" id="label-total">Total Return</div>
       <div class="value" id="stat-total"></div>
     </div>
-    <div class="stat">
+    <div class="stat" style="display:none">
       <div class="label">Annualized Return</div>
       <div class="value" id="stat-annual"></div>
     </div>
@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "iPifD8uTozTr0sbu9qiB", "symphony_name": "BLEE - 187 2026 ALL in One For High Interest Period", "csv_filename": "composer_allocations_187hi.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-26", "run_datetime": "05/26/2026 03:51 PM", "total_value": 5248.31, "day_change_pct": 1.965, "total_return_pct": -82.5943, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 35.2713, "shares": 18.39497, "market_value": 1851.146534501}, {"ticker": "GLD", "weight_pct": 17.3057, "shares": 2.19502, "market_value": 908.2553756}, {"ticker": "TQQQ", "weight_pct": 14.8488, "shares": 9.50319, "market_value": 779.30909595}, {"ticker": "TECL", "weight_pct": 14.3597, "shares": 3.35265, "market_value": 753.641858235}, {"ticker": "SHV", "weight_pct": 3.9449, "shares": 1.87666, "market_value": 207.0425145}, {"ticker": "USMV", "weight_pct": 3.6653, "shares": 1.99098, "market_value": 192.3684876}, {"ticker": "SDOW", "weight_pct": 2.8769, "shares": 5.55319, "market_value": 150.9912361}, {"ticker": "VGT", "weight_pct": 2.5197, "shares": 1.11988, "market_value": 132.2410298}, {"ticker": "SVXY", "weight_pct": 2.2652, "shares": 2.21754, "market_value": 118.8823194}, {"ticker": "TMV", "weight_pct": 1.2921, "shares": 1.72709, "market_value": 67.81418885}, {"ticker": "UPRO", "weight_pct": 1.1662, "shares": 0.4197, "market_value": 61.204851}, {"ticker": "VIXM", "weight_pct": 0.3909, "shares": 1.31929, "market_value": 20.514431784}, {"ticker": "$USD", "weight_pct": 0.0934, "shares": 4.9, "market_value": 4.9}], "value_history": [{"date": "2026-05-22", "total": 30152.84}, {"date": "2026-05-24", "total": 5147.17}, {"date": "2026-05-25", "total": 5147.17}, {"date": "2026-05-26", "total": 5248.31}], "all_tickers": ["$USD", "GLD", "SDOW", "SGOV", "SHV", "SVXY", "TECL", "TMV", "TQQQ", "UPRO", "USMV", "VGT", "VIXM"], "weight_history": {"$USD": [0.0997, 0.0952, 0.0952, 0.0934], "GLD": [17.4332, 17.6474, 17.6474, 17.3057], "SDOW": [2.8462, 2.9173, 2.9173, 2.8769], "SGOV": [35.796, 35.9632, 35.9632, 35.2713], "SHV": [4.0029, 4.0219, 4.0219, 3.9449], "SVXY": [2.2653, 2.2735, 2.2735, 2.2652], "TECL": [13.8946, 13.5385, 13.5385, 14.3597], "TMV": [1.3169, 1.3358, 1.3358, 1.2921], "TQQQ": [14.4781, 14.3716, 14.3716, 14.8488], "UPRO": [1.1729, 1.1667, 1.1667, 1.1662], "USMV": [3.7611, 3.7474, 3.7474, 3.6653], "VGT": [2.5317, 2.5184, 2.5184, 2.5197], "VIXM": [0.4012, 0.4032, 0.4032, 0.3909]}, "dates": ["2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26"], "baseline_date": null};
+const DATA = {"symphony_id": "iPifD8uTozTr0sbu9qiB", "symphony_name": "BLEE - 187 2026 ALL in One For High Interest Period", "csv_filename": "composer_allocations_187hi.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-05-27", "run_datetime": "05/27/2026 03:51 PM", "total_value": 5220.86, "day_change_pct": -0.523, "total_return_pct": -82.6853, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 35.4594, "shares": 18.39497, "market_value": 1851.286336273}, {"ticker": "GLD", "weight_pct": 17.1822, "shares": 2.19502, "market_value": 897.0607736}, {"ticker": "TQQQ", "weight_pct": 14.8768, "shares": 9.50319, "market_value": 776.6957187}, {"ticker": "TECL", "weight_pct": 14.2214, "shares": 3.35265, "market_value": 742.477869}, {"ticker": "SHV", "weight_pct": 3.9662, "shares": 1.87666, "market_value": 207.071227398}, {"ticker": "USMV", "weight_pct": 3.6659, "shares": 1.99098, "market_value": 191.3929074}, {"ticker": "SDOW", "weight_pct": 2.8655, "shares": 5.55319, "market_value": 149.6029386}, {"ticker": "VGT", "weight_pct": 2.5192, "shares": 1.11988, "market_value": 131.5243066}, {"ticker": "SVXY", "weight_pct": 2.2987, "shares": 2.21754, "market_value": 120.0132648}, {"ticker": "TMV", "weight_pct": 1.288, "shares": 1.72709, "market_value": 67.24424915}, {"ticker": "UPRO", "weight_pct": 1.1723, "shares": 0.4197, "market_value": 61.204851}, {"ticker": "VIXM", "weight_pct": 0.3905, "shares": 1.31929, "market_value": 20.38962695}, {"ticker": "$USD", "weight_pct": 0.0939, "shares": 4.9, "market_value": 4.9}], "value_history": [{"date": "2026-05-22", "total": 30152.84}, {"date": "2026-05-24", "total": 5147.17}, {"date": "2026-05-25", "total": 5147.17}, {"date": "2026-05-26", "total": 5248.31}, {"date": "2026-05-27", "total": 5220.86}], "all_tickers": ["$USD", "GLD", "SDOW", "SGOV", "SHV", "SVXY", "TECL", "TMV", "TQQQ", "UPRO", "USMV", "VGT", "VIXM"], "weight_history": {"$USD": [0.0997, 0.0952, 0.0952, 0.0934, 0.0939], "GLD": [17.4332, 17.6474, 17.6474, 17.3057, 17.1822], "SDOW": [2.8462, 2.9173, 2.9173, 2.8769, 2.8655], "SGOV": [35.796, 35.9632, 35.9632, 35.2713, 35.4594], "SHV": [4.0029, 4.0219, 4.0219, 3.9449, 3.9662], "SVXY": [2.2653, 2.2735, 2.2735, 2.2652, 2.2987], "TECL": [13.8946, 13.5385, 13.5385, 14.3597, 14.2214], "TMV": [1.3169, 1.3358, 1.3358, 1.2921, 1.288], "TQQQ": [14.4781, 14.3716, 14.3716, 14.8488, 14.8768], "UPRO": [1.1729, 1.1667, 1.1667, 1.1662, 1.1723], "USMV": [3.7611, 3.7474, 3.7474, 3.6653, 3.6659], "VGT": [2.5317, 2.5184, 2.5184, 2.5197, 2.5192], "VIXM": [0.4012, 0.4032, 0.4032, 0.3909, 0.3905]}, "dates": ["2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -323,7 +323,7 @@ if (DATA.annualized_return_pct == null) {
 
 // ---- Pie chart -------------------------------------------------------------
 const today = (DATA.today_allocations || []).filter(a => a.weight_pct > 0.01);
-new Chart(document.getElementById("pie"), {
+try { new Chart(document.getElementById("pie"), {
   type: "doughnut",
   data: {
     labels: today.map(a => a.ticker),
@@ -349,11 +349,11 @@ new Chart(document.getElementById("pie"), {
       }
     }
   }
-});
+}); } catch(e) { console.warn("Pie chart init failed:", e); }
 
 // ---- Portfolio value line --------------------------------------------------
 const hist = DATA.value_history || [];
-new Chart(document.getElementById("value-line"), {
+try { new Chart(document.getElementById("value-line"), {
   type: "line",
   data: {
     labels: hist.map(p => p.date),
@@ -380,7 +380,7 @@ new Chart(document.getElementById("value-line"), {
       y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
     }
   }
-});
+}); } catch(e) { console.warn("Value line chart init failed:", e); }
 
 // ---- Holdings table --------------------------------------------------------
 const tbl = document.getElementById("holdings");
@@ -422,7 +422,7 @@ const datasets = tickers.map((t, i) => ({
   borderColor: colorFor(i),
   borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
 }));
-new Chart(document.getElementById("weights-stack"), {
+try { new Chart(document.getElementById("weights-stack"), {
   type: "line",
   data: { labels: dates, datasets },
   options: {
@@ -441,7 +441,7 @@ new Chart(document.getElementById("weights-stack"), {
       x: { stacked: true, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } }
     }
   }
-});
+}); } catch(e) { console.warn("Weights chart init failed:", e); }
 
 // ── Allocation Status vs. Yesterday ─────────────────────────────────────────
 (function renderAllocStatus() {

@@ -29,6 +29,20 @@ import subprocess; subprocess.run(['python', 'verify_html.py'])
 
 **Why this happened:** Claude's Edit tool loaded the file, made the replacement, but silently dropped the last ~130 lines when writing. The file committed and deployed in a broken state, causing stats, the chart, and the full history table to all show blank/missing data.
 
+## Daily Signal Page: Template vs Generated Output
+
+**`index2.html` is a GENERATED OUTPUT** — do NOT edit it for permanent changes.
+
+- **Template (edit this):** `dashboard_template.html`
+- **Generator:** `composer_pull_allocation.py` — runs daily at **3:51 PM ET**, overwrites `index2.html` from the template
+- **Placeholder:** `/* __DATA_JSON__ */ {}` in the template is replaced with live JSON at generation time
+- **Stat pre-rendering:** `id="stat-value"` and `id="stat-day"` elements are filled with static HTML values at generation time (edit the generator if these need to change)
+- **Workflow for permanent changes:** Edit `dashboard_template.html` → also patch `index2.html` directly so it takes effect before 3:51 PM
+
+**Chart.js try-catch:** All `new Chart(...)` calls in the template must be wrapped in try-catch. If Chart.js CDN fails (e.g., when opening as `file://`), a bare throw halts the entire inline script — silently killing Reallocation Status, Holdings table, and everything below.
+
+**`auth_guard.js` null body:** The file is loaded in `<head>` — always null-check `document.body` before accessing it. `document.body.style.X = ...` throws TypeError when body is null.
+
 ## IBKR Windows Scheduled Task
 - Task name: "IBKR Daily Rebalance"
 - Bat file: C:\Kei\ComposerInvest\run_ibkr.bat

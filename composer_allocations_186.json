@@ -1,104 +1,14 @@
 {
-  "date": "2026-05-26",
+  "date": "2026-05-27",
   "symphony_id": "jtQvlI5wINrxpOfxgmgl",
   "symphony_name": "BLEE - 186 2026 ALL in One",
-  "source": "CurrentWatchSymphony.html",
+  "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "UPRO",
-      "weight_pct": 1.66,
-      "shares": 4.0957,
-      "market_value": 597.28
-    },
-    {
-      "ticker": "EUM",
-      "weight_pct": 0.02,
-      "shares": 0.5058,
-      "market_value": 8.02
-    },
-    {
-      "ticker": "SDOW",
-      "weight_pct": 2.29,
-      "shares": 30.3466,
-      "market_value": 825.12
-    },
-    {
-      "ticker": "SVXY",
-      "weight_pct": 2.6,
-      "shares": 17.5033,
-      "market_value": 938.35
-    },
-    {
-      "ticker": "TECL",
-      "weight_pct": 16.92,
-      "shares": 27.1223,
-      "market_value": 6096.81
-    },
-    {
-      "ticker": "BTAL",
-      "weight_pct": 0.02,
-      "shares": 0.7331,
-      "market_value": 8.71
-    },
-    {
-      "ticker": "TQQQ",
-      "weight_pct": 19.22,
-      "shares": 84.4578,
-      "market_value": 6925.96
-    },
-    {
-      "ticker": "SHV",
-      "weight_pct": 4.54,
-      "shares": 14.8142,
-      "market_value": 1634.37
-    },
-    {
-      "ticker": "SGOV",
-      "weight_pct": 26.32,
-      "shares": 94.2457,
-      "market_value": 9484.25
-    },
-    {
-      "ticker": "GLD",
-      "weight_pct": 17.87,
-      "shares": 15.5629,
-      "market_value": 6439.63
-    },
-    {
-      "ticker": "VGT",
-      "weight_pct": 3.58,
-      "shares": 10.9301,
-      "market_value": 1290.68
-    },
-    {
-      "ticker": "TMV",
-      "weight_pct": 1.49,
-      "shares": 13.6325,
-      "market_value": 535.28
-    },
-    {
-      "ticker": "USMV",
-      "weight_pct": 2.92,
-      "shares": 10.8807,
-      "market_value": 1051.29
-    },
-    {
-      "ticker": "VIXM",
-      "weight_pct": 0.45,
-      "shares": 10.409,
-      "market_value": 161.86
-    },
-    {
-      "ticker": "SQQQ",
-      "weight_pct": 0.0,
-      "shares": 0.0403,
-      "market_value": 1.58
-    },
-    {
       "ticker": "$USD",
-      "weight_pct": 0.1,
-      "shares": 35.23,
-      "market_value": 35.23
+      "weight_pct": 100.0,
+      "shares": 35792.47,
+      "market_value": 35792.47
     }
   ]
 }

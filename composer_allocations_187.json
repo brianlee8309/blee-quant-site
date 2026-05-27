@@ -1,154 +1,32 @@
 {
-  "date": "2026-05-26",
+  "date": "2026-05-27",
   "symphony_id": "qjmHJ3IR19kmaAlbgkNj",
   "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal",
   "source": "symphony-stats-meta",
   "positions": [
     {
+      "ticker": "QQQ",
+      "weight_pct": 7.9866,
+      "shares": 0.56343,
+      "market_value": 411.0728937
+    },
+    {
       "ticker": "GLDM",
-      "weight_pct": 9.1288,
+      "weight_pct": 9.0277,
       "shares": 5.27515,
-      "market_value": 470.3851255
+      "market_value": 464.66158775
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 82.1794,
-      "shares": 42.07849,
-      "market_value": 4234.497307717
-    },
-    {
-      "ticker": "TECL",
-      "weight_pct": 8.5933,
-      "shares": 1.9698,
-      "market_value": 442.79114502
+      "weight_pct": 82.8206,
+      "shares": 42.35661,
+      "market_value": 4262.807351349
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.0986,
-      "shares": 5.08,
-      "market_value": 5.08
+      "weight_pct": 0.1651,
+      "shares": 8.5,
+      "market_value": 8.5
     }
-  ],
-  "raw_api_entry": {
-    "description": "",
-    "community_review_status": null,
-    "tags": [],
-    "last_rebalance_on": "2026-05-22",
-    "annualized_rate_of_return": 1.2455,
-    "last_semantic_update_at": "2026-05-18T22:57:15.690969Z",
-    "color": "#FFBB38",
-    "rebalance_frequency": "daily",
-    "last_rebalance_attempted_on": "2026-05-22",
-    "name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal ",
-    "value": 5152.75,
-    "sharpe_ratio": 13.1904,
-    "time_weighted_return": 0.02339,
-    "asset_class": "EQUITIES",
-    "may_rebalance_today": true,
-    "invested_since": "2026-05-14",
-    "cash": 5.08,
-    "deposit_adjusted_value": 1023.39,
-    "last_dollar_change": 33.2924898,
-    "skip_rebalance_today": false,
-    "tickers": [
-      {
-        "symbol": "EQUITIES::UPRO//USD",
-        "name": "ProShares Trust - ProShares UltraPro S&P 500 ETF 3x Shares"
-      },
-      {
-        "symbol": "EQUITIES::GLDM//USD",
-        "name": "World Gold Trust - SPDR Gold MiniShares Trust"
-      },
-      {
-        "symbol": "EQUITIES::DOW//USD",
-        "name": "Dow Inc"
-      },
-      {
-        "symbol": "EQUITIES::QQQ//USD",
-        "name": "Invesco QQQ Trust Series 1 - Invesco QQQ Trust Series 1"
-      },
-      {
-        "symbol": "EQUITIES::SPY//USD",
-        "name": "SPDR S&P 500 ETF TRUST - SPDR S&P 500 ETF Trust"
-      },
-      {
-        "symbol": "EQUITIES::TECL//USD",
-        "name": "Direxion Shares ETF Trust - Direxion Daily Technology Bull 3X ETF"
-      },
-      {
-        "symbol": "EQUITIES::TQQQ//USD",
-        "name": "ProShares Trust - ProShares UltraPro QQQ 3x Shares"
-      },
-      {
-        "symbol": "EQUITIES::SPY//USD",
-        "name": "SPDR S&P 500 ETF TRUST - SPDR S&P 500 ETF Trust"
-      },
-      {
-        "symbol": "EQUITIES::SGOV//USD",
-        "name": "iShares Trust - iShares 0-3 Month Treasury Bond ETF"
-      },
-      {
-        "symbol": "EQUITIES::GLD//USD",
-        "name": "SPDR Gold Trust - SPDR Gold Shares"
-      },
-      {
-        "symbol": "EQUITIES::SQQQ//USD",
-        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
-      },
-      {
-        "symbol": "EQUITIES::UDOW//USD",
-        "name": "ProShares Trust - ProShares UltraPro Dow30 3x Shares"
-      },
-      {
-        "symbol": "EQUITIES::SQQQ//USD",
-        "name": "ProShares Trust - ProShares UltraPro Short QQQ -3x Shares"
-      },
-      {
-        "symbol": "EQUITIES::GLD//USD",
-        "name": "SPDR Gold Trust - SPDR Gold Shares"
-      },
-      {
-        "symbol": "EQUITIES::PSQ//USD",
-        "name": "ProShares Trust - ProShares Short QQQ -1x Shares"
-      }
-    ],
-    "max_drawdown": 0.0025,
-    "id": "qjmHJ3IR19kmaAlbgkNj",
-    "net_deposits": 5000.0,
-    "position_id": "0f14bd4f-30a8-4483-938d-382b672007d0",
-    "holdings": [
-      {
-        "ticker": "GLDM",
-        "allocation": 0.091288171,
-        "price": 89.17,
-        "amount": 5.27515,
-        "value": 470.3851255,
-        "last_percent_change": -0.00044838
-      },
-      {
-        "ticker": "SGOV",
-        "allocation": 0.821793665,
-        "price": 100.6333,
-        "amount": 42.07849,
-        "value": 4234.497307717,
-        "last_percent_change": 3.2793e-05
-      },
-      {
-        "ticker": "TECL",
-        "allocation": 0.085932977,
-        "price": 224.7899,
-        "amount": 1.9698,
-        "value": 442.79114502,
-        "last_percent_change": 0.081500601
-      }
-    ],
-    "last_percent_change": 0.0065,
-    "simple_return": 0.03055,
-    "is_shared": false,
-    "as_of": "2026-05-26",
-    "asset_classes": [
-      "EQUITIES"
-    ],
-    "next_rebalance_on": "2026-05-23"
-  }
+  ]
 }
