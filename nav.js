@@ -285,7 +285,7 @@
     // displayMode "adaptive" shows all 3 items centred without scrolling
     script.text  = JSON.stringify({
       "symbols": [
-        {"description": "DOW 30",   "proName": "FOREXCOM:DJI30"  },
+        {"description": "DOW 30",   "proName": "OANDA:US30USD"   },
         {"description": "S&P 500",  "proName": "FOREXCOM:SPXUSD" },
         {"description": "NASDAQ",   "proName": "FOREXCOM:NSXUSD" }
       ],
