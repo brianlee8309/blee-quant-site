@@ -258,9 +258,13 @@
         "justify-content:center;gap:0;",
         "box-sizing:border-box;",
       "}",
+      // tv-mode: drop flex so TradingView iframe fills full bar width naturally
+      "#blee-ticker-bar.tv-mode{display:block;}",
       "#blee-ticker-bar.tv-mode iframe{height:52px!important;border:none!important;width:100%!important;}",
       "#blee-ticker-bar.tv-mode .tradingview-widget-container,",
-      "#blee-ticker-bar.tv-mode .tradingview-widget-container__widget{height:52px!important;width:100%!important;}",
+      "#blee-ticker-bar.tv-mode .tradingview-widget-container__widget{",
+        "height:52px!important;width:100%!important;",
+      "}",
       // Custom ticker items
       ".blee-tick-item{",
         "display:inline-flex;align-items:center;gap:10px;",
@@ -273,7 +277,7 @@
         "color:#94a3b8;text-transform:uppercase;white-space:nowrap;",
       "}",
       ".blee-tick-price{",
-        "font-size:13px;font-weight:600;color:#e2e8f0;white-space:nowrap;",
+        "font-size:13px;font-weight:600;color:#e2e8f0 !important;white-space:nowrap;",
       "}",
       ".blee-tick-change{",
         "font-size:12px;font-weight:700;white-space:nowrap;",
@@ -390,13 +394,15 @@
       script.type  = "text/javascript";
       script.src   = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
       script.async = true;
-      // CME E-mini futures trade ~23/7 and show real extended-hours data
-      // in TradingView's free widget — used only when Yahoo Finance proxy fails
+      // FOREXCOM/OANDA CFD symbols work on TradingView free tier and trade 24/7.
+      // Used only when Yahoo Finance proxy is unreachable.
+      // Note: these show cumulative change (not delta-from-4pm-close), but they
+      // always render correctly in the free widget.
       script.text  = JSON.stringify({
         "symbols": [
-          {"description": "S&P 500", "proName": "CME_MINI:ES1!" },
-          {"description": "NASDAQ",  "proName": "CME_MINI:NQ1!" },
-          {"description": "DOW 30",  "proName": "CBOT_MINI:YM1!"}
+          {"description": "S&P 500", "proName": "FOREXCOM:SPXUSD"},
+          {"description": "NASDAQ",  "proName": "FOREXCOM:NASUSD" },
+          {"description": "DOW 30",  "proName": "OANDA:US30USD"   }
         ],
         "showSymbolLogo": false, "isTransparent": true,
         "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
