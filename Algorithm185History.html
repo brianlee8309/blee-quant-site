@@ -347,8 +347,8 @@
 // ── 3-Year Allocation Data (752 trading days) ────────────────────────────
 // Cols: [date, UPRO, GLDM, $USD, TECL, TQQQ, SGOV, GLD, UDOW, SQQQ, PSQ]
 const ALLOC_DATA = [
-    ["2026-05-28", "-", "9%", "0.2%", "-", "-", "82.8%", "-", "-", "-", "-"],  // tomorrow's forecast (subscriber-only)
-  ["2026-05-27", "-", "9%", "0.2%", "-", "-", "82.8%", "-", "-", "-", "-"],
+    ["2026-05-28", "-", "8.7%", "0.1%", "10.8%", "-", "80.4%", "-", "-", "-", "-"],  // tomorrow's forecast (subscriber-only)
+  ["2026-05-27", "-", "8.7%", "0.1%", "10.8%", "-", "80.4%", "-", "-", "-", "-"],
   ["2026-05-26", "-", "9.1%", "0.1%", "8.6%", "-", "82.2%", "-", "-", "-", "-"],
   ["2026-05-25", "-", "9.2%", "0.1%", "8%", "-", "82.7%", "-", "-", "-", "-"],
   ["2026-05-24", "-", "9.2%", "0.1%", "8%", "-", "82.7%", "-", "-", "-", "-"],
@@ -1172,6 +1172,9 @@ function fmtDate(iso) {
 
 // ── Per-row accuracy / spike helpers ─────────────────────────────────────
 function accuracyFor(r, sig) {
+  // Never show accuracy for today's or future signal dates — market hasn't closed yet
+  var _today = new Date().toISOString().slice(0, 10);
+  if (r[0] >= _today) return { html: '<span class="acc-na">pending</span>', hit: null, isLev: false };
   if (sig.alwaysAccurate) {
     var lbl = sig.accLabel ? ' <span class="acc-sym">' + sig.accLabel + '</span>' : '';
     return { html: '<span class="acc-hit">OK</span>' + lbl, hit: true, isLev: false };
@@ -1213,7 +1216,9 @@ function computeAccuracyStats() {
   var oneYearAgo = new Date(today); oneYearAgo.setFullYear(today.getFullYear() - 1);
   var a1H=0, a1T=0, a3H=0, a3T=0;
   var s1H=0, s1T=0, s3H=0, s3T=0;
+  var _statsToday = new Date().toISOString().slice(0, 10);
   ALLOC_DATA.forEach(function(r) {
+    if (r[0] >= _statsToday) return; // skip today and future forecast rows
     var sig = classify(r);
     var acc = accuracyFor(r, sig);
     var rd = new Date(r[0] + "T00:00:00");
