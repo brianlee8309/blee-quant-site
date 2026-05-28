@@ -401,7 +401,7 @@
       script.text  = JSON.stringify({
         "symbols": [
           {"description": "S&P 500", "proName": "FOREXCOM:SPXUSD"},
-          {"description": "NASDAQ",  "proName": "FOREXCOM:NASUSD" },
+          {"description": "NASDAQ",  "proName": "OANDA:NAS100USD" },
           {"description": "DOW 30",  "proName": "OANDA:US30USD"   }
         ],
         "showSymbolLogo": false, "isTransparent": true,
