@@ -317,6 +317,7 @@
         <thead>
           <tr>
             <th>Signal Date</th>
+            <th title="Next trading day the signal is evaluated against" style="white-space:nowrap;">Market Date</th>
             <th>UPRO</th><th>GLDM</th><th>$USD</th><th>TECL</th><th>TQQQ</th>
             <th>SGOV</th><th>GLD</th><th>UDOW</th><th>SQQQ</th><th>PSQ</th>
             <th>Strategy Signal</th>
@@ -346,6 +347,7 @@
 // ── 3-Year Allocation Data (752 trading days) ────────────────────────────
 // Cols: [date, UPRO, GLDM, $USD, TECL, TQQQ, SGOV, GLD, UDOW, SQQQ, PSQ]
 const ALLOC_DATA = [
+    ["2026-05-28", "-", "9%", "0.2%", "-", "-", "82.8%", "-", "-", "-", "-"],  // tomorrow's forecast (subscriber-only)
   ["2026-05-27", "-", "9%", "0.2%", "-", "-", "82.8%", "-", "-", "-", "-"],
   ["2026-05-26", "-", "9.1%", "0.1%", "8.6%", "-", "82.2%", "-", "-", "-", "-"],
   ["2026-05-25", "-", "9.2%", "0.1%", "8%", "-", "82.7%", "-", "-", "-", "-"],
@@ -1153,7 +1155,7 @@ let searchTerm = "";
 // today's live signal is a paid feature (visible on the Daily Signal page).
 // ALLOC_DATA is newest-first, so dropping index 0 hides today.
 const PUBLIC_ALLOC = (typeof ALLOC_DATA !== "undefined")
-  ? ALLOC_DATA.slice(1)
+  ? ALLOC_DATA.slice(0)
   : [];
 let filteredData = PUBLIC_ALLOC.slice();
 
@@ -1294,6 +1296,14 @@ function filterTable() {
 }
 
 // ── Render table + pagination ──────────────────────────────────────────
+
+function nextTradingDay(dateStr) {
+  var d = new Date(dateStr + "T12:00:00");
+  d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0 || d.getDay() === 6) { d.setDate(d.getDate() + 1); }
+  return d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+}
+
 function render() {
   var tbody = document.getElementById("allocBody");
   if (!tbody) return;
@@ -1312,6 +1322,7 @@ function render() {
     var spk = spikeFor(r, sig, acc);
     return '<tr' + (isSpecial ? ' class="special"' : '') + '>'
       + '<td style="white-space:nowrap;color:#cbd5e1;">' + fmtDate(date) + '</td>'
+      + '<td style="white-space:nowrap;color:#64748b;font-size:12px;">' + nextTradingDay(date) + '</td>'
       + '<td>' + pillFor("upro", upro) + '</td>'
       + '<td>' + pillFor("gldm", gldm) + '</td>'
       + '<td>' + pillFor("usd",  usd) + '</td>'
