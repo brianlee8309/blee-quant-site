@@ -311,12 +311,19 @@
       { yf: "%5EGSPC", label: "S&P 500" },
       { yf: "%5EIXIC", label: "NASDAQ"  }
     ];
-    var YF_BASE = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
+    // Yahoo Finance v7 — fields include post/preMarket deltas FROM the 4 PM close
+    var YF_BASE = "https://query2.finance.yahoo.com/v7/finance/quote?symbols=" +
                   SYMS.map(function(s){ return s.yf; }).join(",") +
                   "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent," +
                   "postMarketChange,postMarketChangePercent,preMarketChange,preMarketChangePercent,marketState";
-    // Public CORS proxy — used when direct Yahoo Finance fetch is blocked by CORS
-    var CORS_PROXY = "https://corsproxy.io/?";
+
+    // CORS proxy chain — tried in order; first success wins.
+    // allorigins.win/raw accepts null origin (file://), corsproxy.io needs https origin.
+    var _PROXIES = [
+      "",                                       // 1. direct (works if YF ever adds CORS)
+      "https://api.allorigins.win/raw?url=",    // 2. allorigins — accepts null/file:// origin
+      "https://corsproxy.io/?"                  // 3. corsproxy — works from https origins
+    ];
 
     var _tickerTimer = null;
 
@@ -417,33 +424,28 @@
       return results;
     }
 
-    function fetchTicker() {
-      // Try direct Yahoo Finance first (no CORS headers on their end, so this
-      // usually fails in the browser — caught below and retried via proxy).
-      fetch(YF_BASE, { mode: "cors", credentials: "omit" })
+    // Try each proxy in _PROXIES in turn; on total failure use TradingView CFDs.
+    function _tryProxy(idx) {
+      if (idx >= _PROXIES.length) {
+        // All proxies exhausted — TradingView CFD fallback (shows cumulative change,
+        // not after-hours only, but at least renders correctly in the free widget)
+        if (_tickerTimer) clearTimeout(_tickerTimer);
+        fallbackToTradingView();
+        return;
+      }
+      var proxy = _PROXIES[idx];
+      var url   = proxy ? (proxy + encodeURIComponent(YF_BASE)) : YF_BASE;
+      fetch(url, { mode: "cors", credentials: "omit" })
         .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
         .then(function(data) {
-          renderItems(parseYF(data));
+          renderItems(parseYF(data));            // success — render and schedule refresh
           if (_tickerTimer) clearTimeout(_tickerTimer);
           _tickerTimer = setTimeout(fetchTicker, 60000);
         })
-        .catch(function() {
-          // Direct blocked — try via corsproxy.io (free public CORS proxy)
-          fetch(CORS_PROXY + encodeURIComponent(YF_BASE), { mode: "cors", credentials: "omit" })
-            .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-            .then(function(data) {
-              renderItems(parseYF(data));
-              if (_tickerTimer) clearTimeout(_tickerTimer);
-              _tickerTimer = setTimeout(fetchTicker, 60000);
-            })
-            .catch(function() {
-              // Both paths failed — fall back to TradingView with CME futures
-              // (trade ~23/7, show after-hours price movement, work in free widget)
-              if (_tickerTimer) clearTimeout(_tickerTimer);
-              fallbackToTradingView();
-            });
-        });
+        .catch(function() { _tryProxy(idx + 1); }); // this proxy failed — try next
     }
+
+    function fetchTicker() { _tryProxy(0); }
 
     fetchTicker();
   }
