@@ -797,9 +797,9 @@ def main() -> int:
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 
         # ── Update Algorithm185History.html ALLOC_DATA + source CSV ──────────
-        # Only runs for the Daily Signal symphony (qjmHJ3IR19kmaAlbgkNj)
+        # Only runs for Algorithm 185 symphony (7GJZdYouz3l3acrmUPOD)
         # Source CSV: composer_allocations_185_3yr2.csv  (10 ticker cols, no SPXU/VIXY)
-        if sid == "qjmHJ3IR19kmaAlbgkNj":
+        if sid == "7GJZdYouz3l3acrmUPOD":
             try:
                 import re as _re185, csv as _csv185
                 _hist_path = SCRIPT_DIR / "Algorithm185History.html"
