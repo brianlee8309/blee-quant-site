@@ -237,11 +237,16 @@
 
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MARKET TICKER BAR  —  TradingView widget (real-time, no CORS, incl. futures)
+  // MARKET TICKER BAR  —  Custom Yahoo Finance fetch
+  // Shows extended-hours change FROM the 4 PM close (not cumulative):
+  //   REGULAR hours  → regularMarketChangePercent (change from prev close)
+  //   POST / AH      → postMarketChangePercent    (change from today's 4 PM close)
+  //   PRE / overnight → preMarketChangePercent    (change from yesterday's close)
+  // Falls back to TradingView widget if Yahoo Finance is unreachable (CORS).
   // ═══════════════════════════════════════════════════════════════════════════
 
   function initTicker() {
-    // ── Outer bar styles ────────────────────────────────────────────────────
+    // ── CSS ─────────────────────────────────────────────────────────────────
     var s = document.createElement("style");
     s.id  = "blee-ticker-styles";
     s.textContent = [
@@ -249,55 +254,175 @@
         "position:sticky;top:60px;z-index:9998;",
         "background:#050d1a;",
         "border-bottom:1px solid rgba(255,255,255,0.07);",
-        "height:52px;overflow:hidden;",
+        "height:52px;overflow:hidden;display:flex;align-items:center;",
+        "justify-content:center;gap:0;",
         "box-sizing:border-box;",
       "}",
-      // Force the TradingView iframe to fill the bar and be transparent
-      "#blee-ticker-bar iframe{height:52px!important;border:none!important;}",
-      "#blee-ticker-bar .tradingview-widget-container,",
-      "#blee-ticker-bar .tradingview-widget-container__widget{",
-        "height:52px!important;",
+      "#blee-ticker-bar.tv-mode iframe{height:52px!important;border:none!important;width:100%!important;}",
+      "#blee-ticker-bar.tv-mode .tradingview-widget-container,",
+      "#blee-ticker-bar.tv-mode .tradingview-widget-container__widget{height:52px!important;width:100%!important;}",
+      // Custom ticker items
+      ".blee-tick-item{",
+        "display:inline-flex;align-items:center;gap:10px;",
+        "padding:0 28px;border-right:1px solid rgba(255,255,255,0.09);",
+        "height:52px;flex-shrink:0;",
       "}",
-      "@media(max-width:520px){#blee-ticker-bar{height:52px;}}",
+      ".blee-tick-item:last-child{border-right:none;}",
+      ".blee-tick-label{",
+        "font-size:11px;font-weight:600;letter-spacing:0.06em;",
+        "color:#94a3b8;text-transform:uppercase;white-space:nowrap;",
+      "}",
+      ".blee-tick-price{",
+        "font-size:13px;font-weight:600;color:#e2e8f0;white-space:nowrap;",
+      "}",
+      ".blee-tick-change{",
+        "font-size:12px;font-weight:700;white-space:nowrap;",
+      "}",
+      ".blee-tick-change.up{color:#22c55e;}",
+      ".blee-tick-change.dn{color:#ef4444;}",
+      ".blee-tick-change.flat{color:#94a3b8;}",
+      ".blee-tick-session{",
+        "font-size:10px;font-weight:700;letter-spacing:0.07em;",
+        "padding:2px 5px;border-radius:3px;",
+        "background:rgba(148,163,184,0.15);color:#94a3b8;",
+      "}",
+      ".blee-tick-session.ah{background:rgba(251,191,36,0.18);color:#fbbf24;}",
+      ".blee-tick-session.pm{background:rgba(139,92,246,0.18);color:#a78bfa;}",
+      "@media(max-width:600px){.blee-tick-item{padding:0 14px;gap:6px;}}",
+      "@media(max-width:400px){.blee-tick-label{display:none;}}",
     ].join("");
     document.head.appendChild(s);
 
-    // ── Inject bar HTML after #blee-site-nav ────────────────────────────────
+    // ── Inject bar after #blee-site-nav ─────────────────────────────────────
     var nav = document.getElementById("blee-site-nav");
     if (!nav || !nav.parentNode) return;
 
     var bar = document.createElement("div");
-    bar.id  = "blee-ticker-bar";
-
-    var tvContainer = document.createElement("div");
-    tvContainer.className = "tradingview-widget-container";
-    tvContainer.style.cssText = "height:52px;";
-
-    var tvWidget = document.createElement("div");
-    tvWidget.className = "tradingview-widget-container__widget";
-    tvContainer.appendChild(tvWidget);
-
-    // TradingView ticker tape script — config as inline text
-    var script = document.createElement("script");
-    script.type  = "text/javascript";
-    script.src   = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
-    script.async = true;
-    // displayMode "adaptive" shows all 3 items centred without scrolling
-    script.text  = JSON.stringify({
-      "symbols": [
-        {"description": "DOW 30",   "proName": "OANDA:US30USD"   },
-        {"description": "S&P 500",  "proName": "FOREXCOM:SPXUSD" },
-        {"description": "NASDAQ",   "proName": "FOREXCOM:NSXUSD" }
-      ],
-      "showSymbolLogo":  false,
-      "isTransparent":   true,
-      "displayMode":     "adaptive",
-      "colorTheme":      "dark",
-      "locale":          "en"
-    });
-    tvContainer.appendChild(script);
-    bar.appendChild(tvContainer);
+    bar.id = "blee-ticker-bar";
     nav.parentNode.insertBefore(bar, nav.nextSibling);
+
+    // ── Symbols to fetch ────────────────────────────────────────────────────
+    var SYMS = [
+      { yf: "%5EDJI",  label: "DOW 30"  },
+      { yf: "%5EGSPC", label: "S&P 500" },
+      { yf: "%5EIXIC", label: "NASDAQ"  }
+    ];
+    var YF_URL = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
+                 SYMS.map(function(s){ return s.yf; }).join(",") +
+                 "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent," +
+                 "postMarketChange,postMarketChangePercent,preMarketChange,preMarketChangePercent,marketState";
+
+    var _tickerTimer = null;
+
+    function fmt(n) {
+      // Format a number to 2 dp with sign
+      if (n == null || isNaN(n)) return null;
+      var sign = n >= 0 ? "+" : "";
+      return sign + n.toFixed(2);
+    }
+    function fmtPrice(n) {
+      if (n == null || isNaN(n)) return "—";
+      return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function renderItems(results) {
+      bar.innerHTML = "";
+      results.forEach(function(q, i) {
+        var state = (q.marketState || "").toUpperCase();
+        var chg, pct, sessionTag, sessionClass;
+
+        if (state === "REGULAR") {
+          chg = q.regularMarketChange;
+          pct = q.regularMarketChangePercent;
+          sessionTag = null;
+        } else if ((state === "POST" || state === "POSTPOST") &&
+                   q.postMarketChange != null) {
+          chg = q.postMarketChange;
+          pct = q.postMarketChangePercent;
+          sessionTag = "AH"; sessionClass = "ah";
+        } else if ((state === "PRE" || state === "PREPRE") &&
+                   q.preMarketChange != null) {
+          chg = q.preMarketChange;
+          pct = q.preMarketChangePercent;
+          sessionTag = "PM"; sessionClass = "pm";
+        } else {
+          // CLOSED with no extended data — show last regular change
+          chg = q.regularMarketChange;
+          pct = q.regularMarketChangePercent;
+          sessionTag = null;
+        }
+
+        var chgStr = fmt(chg);
+        var pctStr = fmt(pct);
+        var dir    = (chg == null) ? "flat" : (chg > 0 ? "up" : chg < 0 ? "dn" : "flat");
+        var changeHtml = (chgStr && pctStr)
+          ? ('<span class="blee-tick-change ' + dir + '">' +
+             chgStr + '&thinsp;(' + pctStr + '%)</span>')
+          : '<span class="blee-tick-change flat">—</span>';
+
+        var sessionHtml = sessionTag
+          ? (' <span class="blee-tick-session ' + sessionClass + '">' + sessionTag + '</span>')
+          : "";
+
+        var item = document.createElement("div");
+        item.className = "blee-tick-item";
+        item.innerHTML =
+          '<span class="blee-tick-label">' + SYMS[i].label + '</span>' +
+          '<span class="blee-tick-price">' + fmtPrice(q.regularMarketPrice) + '</span>' +
+          changeHtml +
+          sessionHtml;
+        bar.appendChild(item);
+      });
+    }
+
+    function fallbackToTradingView() {
+      bar.innerHTML = "";
+      bar.classList.add("tv-mode");
+      var tvContainer = document.createElement("div");
+      tvContainer.className = "tradingview-widget-container";
+      tvContainer.style.cssText = "height:52px;width:100%;";
+      var tvWidget = document.createElement("div");
+      tvWidget.className = "tradingview-widget-container__widget";
+      tvContainer.appendChild(tvWidget);
+      var script = document.createElement("script");
+      script.type  = "text/javascript";
+      script.src   = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+      script.async = true;
+      script.text  = JSON.stringify({
+        "symbols": [
+          {"description": "DOW 30",   "proName": "DJ:DJI"      },
+          {"description": "S&P 500",  "proName": "SP:SPX"      },
+          {"description": "NASDAQ",   "proName": "NASDAQ:COMP" }
+        ],
+        "showSymbolLogo": false, "isTransparent": true,
+        "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
+      });
+      tvContainer.appendChild(script);
+      bar.appendChild(tvContainer);
+    }
+
+    function fetchTicker() {
+      fetch(YF_URL, { mode: "cors", credentials: "omit" })
+        .then(function(r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then(function(data) {
+          var results = (data.quoteResponse && data.quoteResponse.result) || [];
+          if (!results.length) throw new Error("empty");
+          renderItems(results);
+          // schedule next refresh in 60 s
+          if (_tickerTimer) clearTimeout(_tickerTimer);
+          _tickerTimer = setTimeout(fetchTicker, 60000);
+        })
+        .catch(function() {
+          // CORS or network failure — use TradingView widget (no auto-refresh needed)
+          if (_tickerTimer) clearTimeout(_tickerTimer);
+          fallbackToTradingView();
+        });
+    }
+
+    fetchTicker();
   }
 
   // ── Sign In link toggle (Firebase auth state) ─────────────────────────────

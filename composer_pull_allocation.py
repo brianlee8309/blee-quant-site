@@ -33,6 +33,7 @@ Run manually:
 """
 
 from __future__ import annotations
+from backup_history import backup_before_write
 
 import csv
 import datetime as dt
@@ -874,6 +875,7 @@ def main() -> int:
                         )
                         log(f"  Prepended {today} row to Algorithm185History.html ALLOC_DATA")
 
+                    backup_before_write(_hist_path)
                     _hist_path.write_text(_hist_html, encoding="utf-8")
             except Exception as _e185:
                 log(f"  (Algorithm185History update failed: {type(_e185).__name__}: {_e185})")

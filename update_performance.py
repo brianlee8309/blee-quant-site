@@ -31,6 +31,7 @@ import subprocess
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from backup_history import backup_before_write
 
 # ── yfinance ──────────────────────────────────────────────────────────────
 try:
@@ -295,6 +296,7 @@ if not pattern.search(html_text):
     sys.exit(1)
 
 new_html = pattern.sub(new_block, html_text)
+backup_before_write(HTML_FILE)
 HTML_FILE.write_text(new_html, encoding="utf-8")
 
 # ── Integrity check — catch silent truncation immediately after write ──────

@@ -14,6 +14,7 @@ Schedule: Windows Task Scheduler — Mon–Fri 10:00 AM ET
 """
 
 from __future__ import annotations
+from backup_history import backup_before_write
 
 import datetime as dt
 import json
@@ -488,6 +489,7 @@ def inject_rsi_into_backtest() -> bool:
             log("  RSI: RSI_INLINE_DATA markers not found in HTML — skipping")
             return False
 
+        backup_before_write(html_file)
         html_file.write_text(new_html, encoding="utf-8")
         log(f"  RSI: Injected {len(recent)} RSI rows into Algorithm185History.html")
         return True
