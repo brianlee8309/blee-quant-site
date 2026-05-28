@@ -324,7 +324,7 @@
 <!-- ═══════════ 3-YEAR SECTION ═══════════ -->
 <section class="light" id="three-year">
   <div class="inner">
-    <div class="sec-label" data-perf-label="period_3yr">📅 Performance on 3 year period from 05/15/2023 to 05/26/2026</div>
+    <div class="sec-label" data-perf-label="period_3yr">📅 Performance on 3 year period from 05/15/2023 to 05/27/2026</div>
     <h2 class="sec-title">3-Year Performance: Outperforms S&amp;P 500 by Over 47 Points</h2>
     <p class="sec-sub">$10,000 starting investment. Fees included ($30.06 regulatory fees, $185.25 slippage). Calm Growth Model returned +106% vs SPY's +86.4% — outperforming by over 19 percentage points with significantly lower drawdown.</p>
 
@@ -345,15 +345,15 @@
     <!-- Result strip -->
     <div class="result-strip">
       <div class="rs">
-        <div class="rv g" data-perf="blee_cum_3yr">+123.35%</div>
+        <div class="rv g" data-perf="blee_cum_3yr">+122.85%</div>
         <div class="rl">BLEE Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+88.86%</div>
+        <div class="rv" style="color:var(--muted)" data-perf="spy_cum_3yr">+88.82%</div>
         <div class="rl">SPY Cumulative</div>
       </div>
       <div class="rs">
-        <div class="rv g" data-perf="blee_final_3yr">$22,335</div>
+        <div class="rv g" data-perf="blee_final_3yr">$22,285</div>
         <div class="rl">BLEE Final Value</div>
       </div>
       <div class="rs">
@@ -387,21 +387,21 @@
         <tbody>
           <tr>
             <td class="metric">Cumulative Return</td>
-            <td class="blee blee-win" data-perf="blee_cum_3yr">+123.35%</td>
-            <td class="spy" data-perf="spy_cum_3yr">+88.86%</td>
-            <td><span class="badge" data-perf="edge_cum_3yr">+34.5pp ahead</span></td>
+            <td class="blee blee-win" data-perf="blee_cum_3yr">+122.85%</td>
+            <td class="spy" data-perf="spy_cum_3yr">+88.82%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+34.0pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric">Annualized Return</td>
-            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.53%</td>
-            <td class="spy" data-perf="spy_ann_3yr">+23.50%</td>
-            <td><span class="badge" data-perf="edge_ann_3yr">+7.0pp</span></td>
+            <td class="blee blee-win" data-perf="blee_ann_3yr">+30.39%</td>
+            <td class="spy" data-perf="spy_ann_3yr">+23.46%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+6.9pp</span></td>
           </tr>
           <tr>
             <td class="metric">Final Value ($10K start)</td>
-            <td class="blee blee-win" data-perf="blee_final_3yr">$22,335</td>
-            <td class="spy" data-perf="spy_final_3yr">$18,886</td>
-            <td><span class="badge" data-perf="edge_final_3yr">+$3,449</span></td>
+            <td class="blee blee-win" data-perf="blee_final_3yr">$22,285</td>
+            <td class="spy" data-perf="spy_final_3yr">$18,882</td>
+            <td><span class="badge" data-perf="edge_final_3yr">+$3,402</span></td>
           </tr>
           <tr>
             <td class="metric">Max Drawdown</td>
@@ -594,7 +594,7 @@
 <!-- ═══════════ 6-YEAR SECTION ═══════════ -->
 <section class="white" id="six-year">
   <div class="inner">
-    <div class="sec-label" data-perf-label="period_6yr">📅 Performance on full 3-year period from 05/15/2023 to 05/26/2026 (Full Backtest)</div>
+    <div class="sec-label" data-perf-label="period_6yr">📅 Performance on full 3-year period from 05/15/2023 to 05/27/2026 (Full Backtest)</div>
     <h2 class="sec-title">Full Period: Outperforms S&amp;P 500 in Both Return and Risk</h2>
     <p class="sec-sub">Complete available history including the 2021 bull run, the 2022 bear market, and the 2023–2026 recovery. Calm Growth Model outperformed SPY in cumulative return while maintaining significantly lower drawdown throughout.</p>
 
@@ -862,7 +862,7 @@
     <a href="contact.html">Contact</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/27/2026 03:51 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">05/28/2026 03:51 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
@@ -894,46 +894,4 @@
         { label: 'S&P 500 (SPY)',    data: spy2022,  borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.07)', borderWidth: 2,   fill: true, tension: 0.4, pointRadius: 3, pointHoverRadius: 7, pointBackgroundColor: '#f472b6' }
       ]
     },
-    options: chartOpts('BLEE +12.65% ($11,263)  vs  SPY −18.65% ($8,135)  ·  31.3pp gap in a single year')
-  });
-
-  /* ── 3-YEAR CHART ── */
-  const labels3 = [
-    'Jun 2023','Aug 2023','Oct 2023','Dec 2023','Feb 2024',
-    'Apr 2024','Jun 2024','Aug 2024','Oct 2024','Dec 2024',
-    'Feb 2025','Apr 2025','Jun 2025','Aug 2025','Oct 2025',
-    'Dec 2025','Feb 2026','Apr 2026','May 2026'
-  ];
-  // BLEE: +110.32% = $21,032 from $10,000 (28.3% annualized, -5.7% max DD)
-  const blee3 = [
-    10000, 10500, 11000, 11800, 12700,
-    13500, 14300, 15300, 16100, 17700,
-    17100, 18100, 19200, 19900, 19200,
-    19600, 18900, 20400, 21032
-  ];
-  // SPY: ~+78% = ~$17,800
-  const spy3 = [
-    10000, 10800, 11100, 12000, 13200,
-    14100, 14900, 15600, 16200, 17900,
-    16400, 17200, 18100, 18800, 18000,
-    18500, 17400, 17900, 17800
-  ];
-
-  new Chart(document.getElementById('chart3yr').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: labels3,
-      datasets: [
-        { label: 'BLEE Calm Growth Model', data: blee3, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#10b981' },
-        { label: 'S&P 500 (SPY)',    data: spy3,  borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.06)', borderWidth: 2,   fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#f472b6' }
-      ]
-    },
-    options: chartOpts('BLEE +110.3% ($21,032)  vs  SPY +78% ($17,800)  ·  +32pp outperformance over 3 years')
-  });
-
-  /* ── 6-YEAR CHART ── */
-  const labels6 = [
-    'May 2020','Aug 2020','Nov 2020','Feb 2021','May 2021',
-    'Aug 2021','Nov 2021','Feb 2022','May 2022','Aug 2022',
-    'Nov 2022','Feb 2023','May 2023','Aug 2023','Nov 2023',
-    'Feb 2024','May 2024','Aug 2024','Nov 2024','Feb
+    options: chartOpts('BLEE +12.65% ($11,263)  vs  SPY −18.65% ($8,
