@@ -307,10 +307,12 @@
       { yf: "%5EGSPC", label: "S&P 500" },
       { yf: "%5EIXIC", label: "NASDAQ"  }
     ];
-    var YF_URL = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
-                 SYMS.map(function(s){ return s.yf; }).join(",") +
-                 "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent," +
-                 "postMarketChange,postMarketChangePercent,preMarketChange,preMarketChangePercent,marketState";
+    var YF_BASE = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
+                  SYMS.map(function(s){ return s.yf; }).join(",") +
+                  "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent," +
+                  "postMarketChange,postMarketChangePercent,preMarketChange,preMarketChangePercent,marketState";
+    // Public CORS proxy — used when direct Yahoo Finance fetch is blocked by CORS
+    var CORS_PROXY = "https://corsproxy.io/?";
 
     var _tickerTimer = null;
 
@@ -388,11 +390,13 @@
       script.type  = "text/javascript";
       script.src   = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
       script.async = true;
+      // CME E-mini futures trade ~23/7 and show real extended-hours data
+      // in TradingView's free widget — used only when Yahoo Finance proxy fails
       script.text  = JSON.stringify({
         "symbols": [
-          {"description": "DOW 30",   "proName": "DJ:DJI"      },
-          {"description": "S&P 500",  "proName": "SP:SPX"      },
-          {"description": "NASDAQ",   "proName": "NASDAQ:COMP" }
+          {"description": "S&P 500", "proName": "CME_MINI:ES1!" },
+          {"description": "NASDAQ",  "proName": "CME_MINI:NQ1!" },
+          {"description": "DOW 30",  "proName": "CBOT_MINI:YM1!"}
         ],
         "showSymbolLogo": false, "isTransparent": true,
         "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
@@ -401,24 +405,37 @@
       bar.appendChild(tvContainer);
     }
 
+    function parseYF(data) {
+      var results = (data.quoteResponse && data.quoteResponse.result) || [];
+      if (!results.length) throw new Error("empty");
+      return results;
+    }
+
     function fetchTicker() {
-      fetch(YF_URL, { mode: "cors", credentials: "omit" })
-        .then(function(r) {
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          return r.json();
-        })
+      // Try direct Yahoo Finance first (no CORS headers on their end, so this
+      // usually fails in the browser — caught below and retried via proxy).
+      fetch(YF_BASE, { mode: "cors", credentials: "omit" })
+        .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
         .then(function(data) {
-          var results = (data.quoteResponse && data.quoteResponse.result) || [];
-          if (!results.length) throw new Error("empty");
-          renderItems(results);
-          // schedule next refresh in 60 s
+          renderItems(parseYF(data));
           if (_tickerTimer) clearTimeout(_tickerTimer);
           _tickerTimer = setTimeout(fetchTicker, 60000);
         })
         .catch(function() {
-          // CORS or network failure — use TradingView widget (no auto-refresh needed)
-          if (_tickerTimer) clearTimeout(_tickerTimer);
-          fallbackToTradingView();
+          // Direct blocked — try via corsproxy.io (free public CORS proxy)
+          fetch(CORS_PROXY + encodeURIComponent(YF_BASE), { mode: "cors", credentials: "omit" })
+            .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+            .then(function(data) {
+              renderItems(parseYF(data));
+              if (_tickerTimer) clearTimeout(_tickerTimer);
+              _tickerTimer = setTimeout(fetchTicker, 60000);
+            })
+            .catch(function() {
+              // Both paths failed — fall back to TradingView with CME futures
+              // (trade ~23/7, show after-hours price movement, work in free widget)
+              if (_tickerTimer) clearTimeout(_tickerTimer);
+              fallbackToTradingView();
+            });
         });
     }
 
