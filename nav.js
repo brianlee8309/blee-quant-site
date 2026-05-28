@@ -305,24 +305,22 @@
     bar.id = "blee-ticker-bar";
     nav.parentNode.insertBefore(bar, nav.nextSibling);
 
-    // ── Symbols to fetch ────────────────────────────────────────────────────
+    // ── Symbols ─────────────────────────────────────────────────────────────
     var SYMS = [
-      { yf: "%5EDJI",  label: "DOW 30"  },
-      { yf: "%5EGSPC", label: "S&P 500" },
-      { yf: "%5EIXIC", label: "NASDAQ"  }
+      { yf: "^DJI",  label: "DOW 30"  },
+      { yf: "^GSPC", label: "S&P 500" },
+      { yf: "^IXIC", label: "NASDAQ"  }
     ];
-    // Yahoo Finance v7 — fields include post/preMarket deltas FROM the 4 PM close
-    var YF_BASE = "https://query2.finance.yahoo.com/v7/finance/quote?symbols=" +
-                  SYMS.map(function(s){ return s.yf; }).join(",") +
+    // Yahoo Finance v7 — postMarketChange/preMarketChange are delta FROM 4 PM close
+    var YF_BASE = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
+                  encodeURIComponent(SYMS.map(function(s){ return s.yf; }).join(",")) +
                   "&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent," +
                   "postMarketChange,postMarketChangePercent,preMarketChange,preMarketChangePercent,marketState";
 
-    // CORS proxy chain — tried in order; first success wins.
-    // allorigins.win/raw accepts null origin (file://), corsproxy.io needs https origin.
+    // CORS proxy chain — allorigins.win accepts null/file:// origin; corsproxy.io for https origins
     var _PROXIES = [
-      "",                                       // 1. direct (works if YF ever adds CORS)
-      "https://api.allorigins.win/raw?url=",    // 2. allorigins — accepts null/file:// origin
-      "https://corsproxy.io/?"                  // 3. corsproxy — works from https origins
+      "https://api.allorigins.win/raw?url=",
+      "https://corsproxy.io/?"
     ];
 
     var _tickerTimer = null;
@@ -388,24 +386,27 @@
       });
     }
 
-    function fallbackToTradingView() {
+    // showTradingView: render TV widget immediately so bar always has content.
+    // Called once on init (baseline), and also when all YF proxies fail.
+    function showTradingView() {
+      if (bar.classList.contains("tv-mode")) return; // already showing TV
       bar.innerHTML = "";
       bar.classList.add("tv-mode");
-      var tvContainer = document.createElement("div");
-      tvContainer.className = "tradingview-widget-container";
-      tvContainer.style.cssText = "height:52px;width:100%;";
-      var tvWidget = document.createElement("div");
-      tvWidget.className = "tradingview-widget-container__widget";
-      tvContainer.appendChild(tvWidget);
-      var script = document.createElement("script");
-      script.type  = "text/javascript";
-      script.src   = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
-      script.async = true;
-      // FOREXCOM/OANDA CFD symbols work on TradingView free tier and trade 24/7.
-      // Used only when Yahoo Finance proxy is unreachable.
-      // Note: these show cumulative change (not delta-from-4pm-close), but they
-      // always render correctly in the free widget.
-      script.text  = JSON.stringify({
+      bar.classList.remove("yf-mode");
+
+      var tvWrap = document.createElement("div");
+      tvWrap.className = "tradingview-widget-container";
+      tvWrap.style.cssText = "height:52px;width:100%;";
+
+      var tvInner = document.createElement("div");
+      tvInner.className = "tradingview-widget-container__widget";
+      tvWrap.appendChild(tvInner);
+      bar.appendChild(tvWrap); // append container FIRST so TV script can find it
+
+      // FOREXCOM/OANDA CFDs: free tier, trade 24/7, always render correctly.
+      // Limitation: shows cumulative session change, not delta-from-4pm-close.
+      // Yahoo Finance fetch below (async) will upgrade this if successful.
+      var cfg = JSON.stringify({
         "symbols": [
           {"description": "S&P 500", "proName": "FOREXCOM:SPXUSD"},
           {"description": "NASDAQ",  "proName": "OANDA:NAS100USD" },
@@ -414,8 +415,12 @@
         "showSymbolLogo": false, "isTransparent": true,
         "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
       });
-      tvContainer.appendChild(script);
-      bar.appendChild(tvContainer);
+      var script = document.createElement("script");
+      script.type  = "text/javascript";
+      script.src   = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+      script.async = true;
+      script.innerHTML = cfg; // innerHTML (not .text) ensures content survives src attribute
+      tvWrap.appendChild(script);
     }
 
     function parseYF(data) {
@@ -424,30 +429,39 @@
       return results;
     }
 
-    // Try each proxy in _PROXIES in turn; on total failure use TradingView CFDs.
+    // Upgrade bar from TradingView to custom YF ticker when data is available
+    function applyYF(results) {
+      bar.innerHTML = "";
+      bar.classList.remove("tv-mode");
+      bar.classList.add("yf-mode");
+      renderItems(results);
+    }
+
+    // Try each CORS proxy in order; first success upgrades TV → custom YF ticker.
+    // If all fail, TradingView remains (it was shown first by showTradingView()).
     function _tryProxy(idx) {
       if (idx >= _PROXIES.length) {
-        // All proxies exhausted — TradingView CFD fallback (shows cumulative change,
-        // not after-hours only, but at least renders correctly in the free widget)
+        // All YF proxies failed — TV is already showing, nothing more to do.
+        // Retry in 5 minutes in case of transient proxy failure.
         if (_tickerTimer) clearTimeout(_tickerTimer);
-        fallbackToTradingView();
+        _tickerTimer = setTimeout(fetchTicker, 300000);
         return;
       }
-      var proxy = _PROXIES[idx];
-      var url   = proxy ? (proxy + encodeURIComponent(YF_BASE)) : YF_BASE;
+      var url = _PROXIES[idx] + encodeURIComponent(YF_BASE);
       fetch(url, { mode: "cors", credentials: "omit" })
         .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
         .then(function(data) {
-          renderItems(parseYF(data));            // success — render and schedule refresh
+          applyYF(parseYF(data));
           if (_tickerTimer) clearTimeout(_tickerTimer);
-          _tickerTimer = setTimeout(fetchTicker, 60000);
+          _tickerTimer = setTimeout(fetchTicker, 60000); // refresh every 60 s
         })
-        .catch(function() { _tryProxy(idx + 1); }); // this proxy failed — try next
+        .catch(function() { _tryProxy(idx + 1); });
     }
 
     function fetchTicker() { _tryProxy(0); }
 
-    fetchTicker();
+    showTradingView(); // show TV immediately — guaranteed content
+    fetchTicker();     // async: upgrade to YF custom ticker if proxy succeeds
   }
 
   // ── Sign In link toggle (Firebase auth state) ─────────────────────────────
