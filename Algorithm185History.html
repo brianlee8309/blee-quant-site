@@ -65,7 +65,8 @@
   footer{text-align:center;color:#334155;font-size:12px;margin-top:40px;line-height:1.8;}
   .acc-hit   { color:#4ade80; font-weight:800; font-size:15px; }
   .acc-miss  { color:#f87171; font-weight:800; font-size:15px; }
-  .acc-na    { color:#94a3b8; font-size:12px; }
+  .acc-na      { color:#94a3b8; font-size:12px; }
+  .acc-neutral  { color:#94a3b8; font-weight:600; font-size:13px; letter-spacing:0.02em; }
   .acc-price { font-size:11px; font-weight:600; }
   .acc-sym   { font-size:10px; color:#64748b; margin-right:2px; }
   #accuracy-th { cursor:help; border-bottom:2px dashed #2563eb; white-space:nowrap; }
@@ -1130,7 +1131,7 @@ function classify(r) {
   if (tecl !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — TECL",          type:"bullish", underlying:"QQQ", alwaysAccurate:false};
   if (tqqq !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — TQQQ",          type:"bullish", underlying:"QQQ", alwaysAccurate:false};
   if (udow !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — UDOW",          type:"bullish", underlying:"DIA", alwaysAccurate:false};
-  if (qqq  !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — QQQ",           type:"bullish", underlying:"QQQ", alwaysAccurate:false};
+  if (qqq  !== "-" && pct(sgov) > 0) return {text:"⚪ Neutral Tactical — QQQ",         type:"neutral", underlying:null,  alwaysAccurate:false, isNeutral:true};
   if (dow  !== "-" && pct(sgov) > 0) return {text:"🟢 Bull Tactical — DOW",           type:"bullish", underlying:"DIA", alwaysAccurate:false};
   if (gld  !== "-" && pct(sgov) > 0) return {text:"Gold Tactical (SGOV+GLD)", type:"gold", underlying:null, alwaysAccurate:true, accLabel:"SGOV div + GLD"};
   return {text:"Core Strategy (SGOV+GLDM+Tactical)", type:"core", underlying:null, alwaysAccurate:true, accLabel:"SGOV div + GLDM"};
@@ -1172,6 +1173,8 @@ function fmtDate(iso) {
 
 // ── Per-row accuracy / spike helpers ─────────────────────────────────────
 function accuracyFor(r, sig) {
+  // Neutral signals (e.g. QQQ 8%): not a directional call — skip accuracy entirely
+  if (sig.isNeutral) return { html: '<span class="acc-neutral">Neutral</span>', hit: null, isLev: false };
   // Never show accuracy for today's or future signal dates — market hasn't closed yet
   var _today = new Date().toISOString().slice(0, 10);
   if (r[0] >= _today) return { html: '<span class="acc-na">pending</span>', hit: null, isLev: false };
@@ -1328,6 +1331,7 @@ function render() {
     var isSpecial = sig.type !== "core";
     var sigColor = sig.type === "bearish" ? "#f87171"
                   : sig.type === "bullish" ? "#4ade80"
+                  : sig.type === "neutral" ? "#94a3b8"
                   : sig.type === "preserve" ? "#fbbf24"
                   : sig.type === "gold" ? "#fde68a"
                   : "#94a3b8";
