@@ -797,9 +797,9 @@ def main() -> int:
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 
         # ── Update Algorithm185History.html ALLOC_DATA + source CSV ──────────
-        # Only runs for Algorithm 185 symphony (7GJZdYouz3l3acrmUPOD)
+        # Only runs for Algorithm 185 symphony (qjmHJ3IR19kmaAlbgkNj)
         # Source CSV: composer_allocations_185_3yr2.csv  (10 ticker cols, no SPXU/VIXY)
-        if sid == "7GJZdYouz3l3acrmUPOD":
+        if sid == "qjmHJ3IR19kmaAlbgkNj":
             try:
                 import re as _re185, csv as _csv185
                 _hist_path = SCRIPT_DIR / "Algorithm185History.html"
@@ -812,6 +812,10 @@ def main() -> int:
                     p["ticker"]: p.get("weight_pct", 0.0)
                     for p in positions if p.get("ticker")
                 }
+                # Map QQQ → TQQQ: Composer sometimes returns QQQ in account
+                # positions but the symphony strategy intends TQQQ
+                if "QQQ" in _pos_map and "TQQQ" not in _pos_map:
+                    _pos_map["TQQQ"] = _pos_map.pop("QQQ")
 
                 def _fmt_w185(ticker):
                     w = _pos_map.get(ticker, 0.0)
