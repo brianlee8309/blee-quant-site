@@ -435,9 +435,13 @@ const analysisIntro = {
   "Sunny Sky":                 "conditions look sunny and favorable for tomorrow. Strong positive momentum and good visibility expected.",
   "Clear Sky":                 "outstanding conditions forecasted for tomorrow. Clear skies and strong upward momentum — a rare clear-sky day for investment."
 };
-const posNegSentiment = REPORT.score < 0
-  ? `The prevailing winds from the <strong>${fmtPct(REPORT.negative_weight)}</strong> in risk-off instruments are keeping those clouds firmly overhead.`
-  : `The tailwind from <strong>${fmtPct(REPORT.positive_weight)}</strong> in growth-oriented positions is pushing those clouds aside.`;
+const rsiAdj = REPORT.rsi14_score_adj || 0;
+const allNeutral = REPORT.positive_weight === 0 && REPORT.negative_weight === 0;
+const posNegSentiment = (allNeutral && rsiAdj !== 0)
+  ? `The portfolio is fully in cash / neutral instruments (${fmtPct(REPORT.neutral_weight)}), so the weather score is driven entirely by the <strong>RSI-14 momentum signal (${rsiAdj > 0 ? '+' : ''}${rsiAdj} pts)</strong>. The 10-day average RSI of ${REPORT.rsi14_avg10d != null ? REPORT.rsi14_avg10d.toFixed(1) : '—'} indicates <strong>${REPORT.rsi14_signal || 'an elevated market condition'}</strong>.`
+  : REPORT.score < 0
+    ? `The prevailing winds from the <strong>${fmtPct(REPORT.negative_weight)}</strong> in risk-off instruments are keeping those clouds firmly overhead.`
+    : `The tailwind from <strong>${fmtPct(REPORT.positive_weight)}</strong> in growth-oriented positions is pushing those clouds aside.`;
 const analysisHTML = `
   <p>📡 The BLEE Quant weather station has recorded a market index of
   <strong style="color:${REPORT.temp_color}">${fmtScore(REPORT.score)}</strong> based on data as of ${REPORT.report_date}.
