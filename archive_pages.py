@@ -59,18 +59,21 @@ PAGES = [
         "prefix": "signal185",
         "label":  "BLEE-185 SGOV Dual Reversal",
         "icon":   "📈",
+        "show_in_index": False,
     },
     {
         "src":    SCRIPT_DIR / "index_kei186.html",
         "prefix": "signalKei186",
         "label":  "BLEE A-186 Part 1 Kei",
         "icon":   "📈",
+        "show_in_index": False,
     },
     {
         "src":    SCRIPT_DIR / "index_187hi.html",
         "prefix": "signal187hi",
         "label":  "BLEE-187 High Interest ALL in One",
         "icon":   "📈",
+        "show_in_index": False,
     },
 ]
 
@@ -371,12 +374,13 @@ def main() -> None:
         date_str = m.group(1)
         for page in PAGES:
             if f.name.startswith(page["prefix"]):
-                archives.append({
-                    "filename": f.name,
-                    "date":     date_str,
-                    "label":    page["label"],
-                    "icon":     page["icon"],
-                })
+                if page.get("show_in_index", True):  # skip symphony-only archives
+                    archives.append({
+                        "filename": f.name,
+                        "date":     date_str,
+                        "label":    page["label"],
+                        "icon":     page["icon"],
+                    })
                 break
 
     rebuild_index(archives)
