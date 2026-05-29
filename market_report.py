@@ -48,6 +48,7 @@ from pathlib import Path
 SCRIPT_DIR    = Path(__file__).resolve().parent
 POINTS_CSV    = SCRIPT_DIR / "Index_50_point.csv"
 ALLOC_HTML    = SCRIPT_DIR / "index_50.html"
+ALLOC_JSON    = SCRIPT_DIR / "composer_allocations_187hi.json"   # preferred source
 TEMPLATE_HTML = SCRIPT_DIR / "marketDailySummary.html"
 OUTPUT_HTML   = SCRIPT_DIR / "marketDailySummary.html"  # same file; we patch in-place
 LOG_PATH      = SCRIPT_DIR / "composer_run.log"
@@ -102,6 +103,28 @@ def load_allocations(path: Path) -> list[dict]:
                 break
     data = json.loads(chunk[:end])
     return data.get("today_allocations", []), data.get("total_value", 0), data.get("last_updated", "")
+
+
+# ── Load allocations from stable JSON (composer_allocations_*.json) ─────────
+
+def load_allocations_json(path: Path):
+    """Load allocations from a stable JSON file (preferred over index_50.html).
+    Returns (allocs, total_value, last_updated) matching load_allocations() contract."""
+    raw = path.read_bytes().replace(b"\x00", b"").decode("utf-8")
+    data = json.loads(raw)
+    positions = data.get("positions", [])
+    allocs = [
+        {
+            "ticker":       p["ticker"],
+            "weight_pct":   p.get("weight_pct", 0),
+            "market_value": p.get("market_value", 0),
+        }
+        for p in positions
+    ]
+    total_value = sum(p.get("market_value", 0) for p in positions)
+    last_updated = data.get("date", "")
+    symphony_name = data.get("symphony_name", path.stem)
+    return allocs, total_value, last_updated, symphony_name
 
 
 # ── Score calculation ─────────────────────────────────────────────────────────
@@ -370,16 +393,22 @@ def main() -> int:
     if not POINTS_CSV.exists():
         log(f"ERROR: Points CSV not found at {POINTS_CSV}")
         return 1
-    if not ALLOC_HTML.exists():
-        log(f"ERROR: Allocation HTML not found at {ALLOC_HTML}")
-        return 1
-
     # Load data
     points = load_points(POINTS_CSV)
     log(f"Loaded {len(points)} ETF points from {POINTS_CSV.name}")
 
-    allocs, total_value, last_updated = load_allocations(ALLOC_HTML)
-    log(f"Loaded {len(allocs)} ETF allocations from {ALLOC_HTML.name}")
+    # Prefer BLEE-187 JSON; fall back to index_50.html
+    symphony_name = "Strategy"
+    if ALLOC_JSON.exists():
+        allocs, total_value, last_updated, symphony_name = load_allocations_json(ALLOC_JSON)
+        log(f"Loaded {len(allocs)} ETF allocations from {ALLOC_JSON.name} ({symphony_name})")
+    elif ALLOC_HTML.exists():
+        allocs, total_value, last_updated = load_allocations(ALLOC_HTML)
+        allocs = allocs  # load_allocations returns 3-tuple
+        log(f"Loaded {len(allocs)} ETF allocations from {ALLOC_HTML.name} (fallback)")
+    else:
+        log(f"ERROR: No allocation source found (tried {ALLOC_JSON.name} and {ALLOC_HTML.name})")
+        return 1
 
     # Score
     score, breakdown = calculate_score(allocs, points)
