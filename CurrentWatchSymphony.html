@@ -292,16 +292,15 @@ SYMPHONIES.forEach((sym, si) => {
   });
 });
 
-// ── Composer total account balance — summed from embedded SYMPHONIES data ────
+// ── Live Composer account balance — reads from Firebase Firestore ─────────────
 (function () {
-  const INTERVAL_MS = 5 * 60 * 1000;   // 5 minutes
-
   const elVal    = document.getElementById("lb-value");
   const elStatus = document.getElementById("lb-status");
   const elDot    = document.getElementById("lb-dot");
 
   function fmtMoney(n) {
-    return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return "$" + Number(n).toLocaleString("en-US",
+      { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function isMarketOpen() {
@@ -312,44 +311,69 @@ SYMPHONIES.forEach((sym, si) => {
     return mins >= 9 * 60 + 30 && mins < 16 * 60;
   }
 
-  function renderTotal(symphonies) {
-    // Prefer the full account total (all symphonies) embedded at generation time;
-    // fall back to summing only the tracked symphonies displayed on this page.
+  function showFallback() {
     const total = (typeof ACCOUNT_TOTAL === "number" && ACCOUNT_TOTAL > 0)
       ? ACCOUNT_TOTAL
-      : symphonies.reduce(function(sum, s) { return sum + (s.value || 0); }, 0);
+      : SYMPHONIES.reduce(function(s, x) { return s + (x.value || 0); }, 0);
     elVal.className   = "lb-value";
     elVal.textContent = fmtMoney(total);
-    elDot.className   = "lb-dot live";
-    const now = new Date().toLocaleTimeString("en-US",
-      { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-    const mktLabel = isMarketOpen() ? "market open" : "market closed";
-    elStatus.textContent = "As of " + GENERATED + " · checked " + now + " · " + mktLabel;
+    elDot.className   = "lb-dot";
+    elStatus.textContent = "As of " + GENERATED + " (live updater offline)";
   }
 
-  async function refreshFromPage() {
+  showFallback();  // show immediately while Firestore loads
+
+  function attachFirestoreListener() {
     try {
-      // Re-fetch the page to pick up any regenerated SYMPHONIES data
-      const html = await fetch(window.location.href, { cache: "no-store" }).then(r => r.text());
-      const m = html.match(/const SYMPHONIES = \/\* __SYMPHONY_DATA__ \*\/ (\[[\s\S]*?\]);/);
-      if (m) {
-        renderTotal(JSON.parse(m[1]));
-      } else {
-        // Fallback: use the data already on the page
-        renderTotal(SYMPHONIES);
-      }
-    } catch (e) {
-      renderTotal(SYMPHONIES);   // always show something
+      const db  = firebase.firestore();
+      const ref = db.collection("account").doc("balance");
+
+      ref.onSnapshot(function(snap) {
+        if (!snap.exists) { showFallback(); return; }
+        const data  = snap.data();
+        const total = data.total;
+        const updAt = data.updated_at || "";
+        if (typeof total !== "number" || total <= 0) { showFallback(); return; }
+
+        elVal.className   = "lb-value";
+        elVal.textContent = fmtMoney(total);
+        elDot.className   = "lb-dot live";
+
+        let timeStr = "";
+        if (updAt) {
+          try {
+            timeStr = new Date(updAt).toLocaleTimeString("en-US",
+              { hour: "2-digit", minute: "2-digit", timeZone: "America/New_York" }) + " ET";
+          } catch(e) {}
+        }
+        const mktLabel = isMarketOpen()
+          ? "market open · updates every 5 min" : "market closed";
+        elStatus.textContent = "Live" + (timeStr ? " · updated " + timeStr : "")
+          + " · " + mktLabel;
+
+      }, function(err) {
+        console.warn("Firestore balance listener:", err.message);
+        showFallback();
+        elStatus.textContent = "As of " + GENERATED
+          + " — set Firestore rule to enable live updates";
+      });
+    } catch(e) {
+      showFallback();
     }
   }
 
-  // Show total immediately from embedded data
-  renderTotal(SYMPHONIES);
-
-  // Re-fetch page every 5 min during market hours to catch any intraday regeneration
-  setInterval(function () {
-    if (isMarketOpen()) refreshFromPage();
-  }, INTERVAL_MS);
+  // Wait for Firebase app to initialise (loaded via firebase-config.js)
+  var _tries = 0;
+  var _wait = setInterval(function() {
+    _tries++;
+    if (typeof firebase !== "undefined" && firebase.apps && firebase.apps.length > 0) {
+      clearInterval(_wait);
+      attachFirestoreListener();
+    } else if (_tries > 40) {
+      clearInterval(_wait);
+      showFallback();
+    }
+  }, 100);
 })();
 </script>
 </body>
