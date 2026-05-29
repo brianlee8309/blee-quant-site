@@ -83,7 +83,7 @@
 
   /* ── 3. setLang ─ flip the active state, persist, fire Google ─────── */
   function setLang(lang) {
-    document.querySelectorAll('.lang-btn').forEach(function (b) {
+    document.querySelectorAll('.lang-btn, .blee-lang-btn').forEach(function (b) {
       b.classList.toggle('active', b.dataset.lang === lang);
     });
     try { localStorage.setItem('blee-lang', lang); } catch (e) {}
@@ -111,7 +111,7 @@
 
   /* ── 4. Wire up the flag buttons (idempotent — safe to re-run) ──── */
   function wireButtons() {
-    document.querySelectorAll('.lang-btn').forEach(function (btn) {
+    document.querySelectorAll('.lang-btn, .blee-lang-btn').forEach(function (btn) {
       if (btn.__bleeWired) return;
       btn.__bleeWired = true;
       btn.addEventListener('click', function () { setLang(btn.dataset.lang); });
@@ -132,7 +132,7 @@
       if (sel) {
         sel.value = saved;
         sel.dispatchEvent(new Event('change'));
-        document.querySelectorAll('.lang-btn').forEach(function (b) {
+        document.querySelectorAll('.lang-btn, .blee-lang-btn').forEach(function (b) {
           b.classList.toggle('active', b.dataset.lang === saved);
         });
         clearInterval(t);

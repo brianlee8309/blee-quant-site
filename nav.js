@@ -199,8 +199,10 @@
           b.classList.toggle("active", b.dataset.lang === btn.dataset.lang);
         });
         // Fire page's own i18n system if present
-        if (typeof applyLang === "function")  applyLang(btn.dataset.lang);
-        if (typeof i18nApply === "function")  i18nApply(btn.dataset.lang);
+        // setLang() is the function exposed by i18n.js (Google Translate driver)
+        if (typeof setLang    === "function")  setLang(btn.dataset.lang);
+        if (typeof applyLang  === "function")  applyLang(btn.dataset.lang);
+        if (typeof i18nApply  === "function")  i18nApply(btn.dataset.lang);
       });
     });
 
