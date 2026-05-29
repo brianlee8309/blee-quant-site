@@ -251,7 +251,11 @@
       });
     }
     function tryWire() {
-      if (typeof firebase !== "undefined" && firebase.auth) {
+      // firebase.auth exists as soon as the compat SDK loads, but firebase.auth()
+      // throws "No App" until auth_guard.js / user_bar.js calls initializeApp().
+      // Check firebase.apps.length > 0 to confirm the app is ready.
+      if (typeof firebase !== "undefined" && firebase.auth &&
+          firebase.apps && firebase.apps.length > 0) {
         firebase.auth().onAuthStateChanged(function (user) {
           applyVisibility(!!(user && user.email === OWNER));
         });
