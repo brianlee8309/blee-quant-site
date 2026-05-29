@@ -294,8 +294,26 @@
       "}",
       ".blee-tick-session.ah{background:rgba(251,191,36,0.18);color:#fbbf24;}",
       ".blee-tick-session.pm{background:rgba(139,92,246,0.18);color:#a78bfa;}",
-      "@media(max-width:600px){.blee-tick-item{padding:0 14px;gap:6px;}}",
-      "@media(max-width:400px){.blee-tick-label{display:none;}}",
+      // Mobile: taller bar + smaller fonts so 3 items fit on one line
+      "@media(max-width:700px){",
+        "#blee-ticker-bar{height:44px;}",
+        "#blee-ticker-bar.tv-mode iframe{height:44px!important;}",
+        "#blee-ticker-bar.tv-mode .tradingview-widget-container,",
+        "#blee-ticker-bar.tv-mode .tradingview-widget-container__widget{height:44px!important;}",
+        ".blee-tick-item{padding:0 10px;gap:6px;height:44px;}",
+        ".blee-tick-label{font-size:9px;letter-spacing:0.03em;}",
+        ".blee-tick-price{font-size:11px!important;}",
+        ".blee-tick-change{font-size:10px;}",
+        ".blee-tick-session{font-size:9px;padding:1px 4px;}",
+      "}",
+      "@media(max-width:480px){",
+        "#blee-ticker-bar{height:40px;}",
+        "#blee-ticker-bar.tv-mode iframe{height:40px!important;}",
+        ".blee-tick-item{padding:0 7px;gap:4px;height:40px;}",
+        ".blee-tick-label{display:none;}",   // hide label on very small screens
+        ".blee-tick-price{font-size:10px!important;}",
+        ".blee-tick-change{font-size:9px;}",
+      "}",
     ].join("");
     document.head.appendChild(s);
 
@@ -398,7 +416,7 @@
 
       var tvWrap = document.createElement("div");
       tvWrap.className = "tradingview-widget-container";
-      tvWrap.style.cssText = "height:52px;width:100%;";
+      tvWrap.style.cssText = "height:100%;width:100%;";
 
       var tvInner = document.createElement("div");
       tvInner.className = "tradingview-widget-container__widget";
