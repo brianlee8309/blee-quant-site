@@ -136,6 +136,8 @@ def calculate_score(allocs: list[dict], points: dict[str, float]) -> tuple[float
         t = a["ticker"]
         w = a["weight_pct"]
         p = points.get(t, 0.0)
+        if t == 'SGOV':          # cash/stable — never contributes to market score
+            p = 0.0
         contrib = w * p
         score += contrib
         breakdown.append({
