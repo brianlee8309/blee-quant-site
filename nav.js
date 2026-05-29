@@ -433,7 +433,7 @@
           {"description": "DOW 30",  "proName": "OANDA:US30USD"   }
         ],
         "showSymbolLogo": false, "isTransparent": true,
-        "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
+        "displayMode": "regular", "colorTheme": "dark", "locale": "en"
       });
       var script = document.createElement("script");
       script.type  = "text/javascript";
