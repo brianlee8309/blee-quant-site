@@ -1,14 +1,80 @@
 {
-  "date": "2026-05-29",
+  "date": "2026-05-28",
   "symphony_id": "iPifD8uTozTr0sbu9qiB",
   "symphony_name": "BLEE - 187 2026 ALL in One For High Interest Period",
-  "source": "symphony-stats-meta",
+  "source": "symphony-stats-meta (2026-05-28 fallback \u2014 API returned empty on 2026-05-29)",
   "positions": [
     {
-      "ticker": "$USD",
-      "weight_pct": 100.0,
-      "shares": 32600.26,
-      "market_value": 32600.26
+      "ticker": "SGOV",
+      "weight_pct": 35.0523,
+      "shares": 18.395,
+      "market_value": 1851.4537
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 17.1621,
+      "shares": 2.195,
+      "market_value": 906.4994
+    },
+    {
+      "ticker": "TQQQ",
+      "weight_pct": 15.0618,
+      "shares": 9.5032,
+      "market_value": 795.5596
+    },
+    {
+      "ticker": "TECL",
+      "weight_pct": 14.6078,
+      "shares": 3.3527,
+      "market_value": 771.5789
+    },
+    {
+      "ticker": "SHV",
+      "weight_pct": 3.9209,
+      "shares": 1.8767,
+      "market_value": 207.0988
+    },
+    {
+      "ticker": "USMV",
+      "weight_pct": 3.6318,
+      "shares": 1.991,
+      "market_value": 191.8309
+    },
+    {
+      "ticker": "SDOW",
+      "weight_pct": 2.8313,
+      "shares": 5.5532,
+      "market_value": 149.5474
+    },
+    {
+      "ticker": "VGT",
+      "weight_pct": 2.5223,
+      "shares": 1.1199,
+      "market_value": 133.2246
+    },
+    {
+      "ticker": "SVXY",
+      "weight_pct": 2.2986,
+      "shares": 2.2175,
+      "market_value": 121.4103
+    },
+    {
+      "ticker": "TMV",
+      "weight_pct": 1.2556,
+      "shares": 1.7271,
+      "market_value": 66.3178
+    },
+    {
+      "ticker": "UPRO",
+      "weight_pct": 1.1785,
+      "shares": 0.4197,
+      "market_value": 62.2499
+    },
+    {
+      "ticker": "VIXM",
+      "weight_pct": 0.3843,
+      "shares": 1.3193,
+      "market_value": 20.3008
     }
   ]
 }

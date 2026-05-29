@@ -744,25 +744,34 @@ def main() -> int:
         }
         if sid in _STABLE_JSON_MAP:
             _stable_dst = SCRIPT_DIR / _STABLE_JSON_MAP[sid]
-            # Write a SLIM stable file (no raw_api_entry) so it stays small
-            # and always parses cleanly.  The full slice (with raw_api_entry)
-            # is kept in the dated file for debugging.
-            _slim = {
-                "date":          today,
-                "symphony_id":   sid,
-                "symphony_name": sname,
-                "source":        source_used,
-                "positions":     positions,
-            }
-            with open(_stable_dst, "w", encoding="utf-8") as _sf:
-                json.dump(_slim, _sf, indent=2, default=str)
-            # Validate before claiming success
-            try:
-                with open(_stable_dst, encoding="utf-8") as _vf:
-                    json.load(_vf)
-                log(f"  Updated stable file: {_stable_dst.name}")
-            except Exception as _ve:
-                log(f"  ERROR: stable file write failed validation: {_ve}")
+
+            # Guard: don't overwrite if API returned only $USD (cash-only or
+            # mid-rebalance snapshot). Keep the last valid allocation so the
+            # auto-rebalancer always has real positions to work with.
+            _real_positions = [p for p in positions if p.get("ticker", "").upper() != "$USD"]
+            if not _real_positions:
+                log(f"  SKIP stable file update for {sid}: only $USD returned "
+                    f"(mid-rebalance or empty holdings from API) — keeping previous file.")
+            else:
+                # Write a SLIM stable file (no raw_api_entry) so it stays small
+                # and always parses cleanly.  The full slice (with raw_api_entry)
+                # is kept in the dated file for debugging.
+                _slim = {
+                    "date":          today,
+                    "symphony_id":   sid,
+                    "symphony_name": sname,
+                    "source":        source_used,
+                    "positions":     positions,
+                }
+                with open(_stable_dst, "w", encoding="utf-8") as _sf:
+                    json.dump(_slim, _sf, indent=2, default=str)
+                # Validate before claiming success
+                try:
+                    with open(_stable_dst, encoding="utf-8") as _vf:
+                        json.load(_vf)
+                    log(f"  Updated stable file: {_stable_dst.name}")
+                except Exception as _ve:
+                    log(f"  ERROR: stable file write failed validation: {_ve}")
 
         # Collect data for CurrentWatchSymphony.html regeneration
         try:
