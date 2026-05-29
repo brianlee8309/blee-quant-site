@@ -27,7 +27,7 @@
     { href: "Algorithm185History.html", label: "Backtest"        },
     { href: "performance1.html",        label: "Performance"     },
     { href: "contact.html",             label: "Contact"         },
-    { href: "CurrentWatchSymphony.html", label: "Symphony Watch",  ownerOnly: true },
+    { href: "CurrentWatchSymphony.html", label: "Current Watch",  ownerOnly: true },
   ];
 
   var LANGS = [
@@ -240,37 +240,15 @@
     document.addEventListener("DOMContentLoaded", function() { inject(); initTicker(); });
   }
 
-  // ── Owner-only nav links (Symphony Watch — brianlee1004@gmail.com only) ────
-  // Waits for Firebase auth state so the link appears as soon as the session
-  // is confirmed, and disappears on sign-out.  Hidden for every other user.
-  (function wireOwnerLinks() {
-    var OWNER = "brianlee1004@gmail.com";
-    function applyVisibility(show) {
-      document.querySelectorAll("[data-owner-only]").forEach(function (el) {
-        el.style.display = show ? "" : "none";
-      });
-    }
-    function tryWire() {
-      // firebase.auth exists as soon as the compat SDK loads, but firebase.auth()
-      // throws "No App" until auth_guard.js / user_bar.js calls initializeApp().
-      // Check firebase.apps.length > 0 to confirm the app is ready.
-      if (typeof firebase !== "undefined" && firebase.auth &&
-          firebase.apps && firebase.apps.length > 0) {
-        firebase.auth().onAuthStateChanged(function (user) {
-          applyVisibility(!!(user && user.email === OWNER));
-        });
-        return true;
-      }
-      return false;
-    }
-    if (!tryWire()) {
-      // firebase-config.js may load after nav.js on some pages — retry briefly
-      var attempts = 0;
-      var t = setInterval(function () {
-        if (tryWire() || ++attempts > 20) clearInterval(t);
-      }, 150);
-    }
-  })();
+  // ── Owner-only nav links (Current Watch — brianlee1004@gmail.com only) ────
+  // Called by user_bar.js onAuthStateChanged after auth is confirmed — no
+  // timing issues because user_bar.js always loads AFTER nav.js and already
+  // has the verified user email.  Hidden for everyone else.
+  window._bleeApplyOwnerLinks = function (show) {
+    document.querySelectorAll("[data-owner-only]").forEach(function (el) {
+      el.style.display = show ? "" : "none";
+    });
+  };
 
 
   // ═══════════════════════════════════════════════════════════════════════════

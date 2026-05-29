@@ -49,6 +49,15 @@
         link.style.display = user ? "none" : "";
       })();
 
+      // Show / hide owner-only nav link (Current Watch) for brianlee1004@gmail.com
+      if (typeof window._bleeApplyOwnerLinks === "function") {
+        var _ownerEmailLc = (typeof BLEE_ADMIN_EMAIL !== "undefined"
+          ? BLEE_ADMIN_EMAIL : "").trim().toLowerCase();
+        window._bleeApplyOwnerLinks(
+          !!(user && (user.email || "").trim().toLowerCase() === _ownerEmailLc)
+        );
+      }
+
       if (!user) return;  // not signed in — show nothing
 
       // If auth_guard.js already drew its own bar, piggy-back only an admin
