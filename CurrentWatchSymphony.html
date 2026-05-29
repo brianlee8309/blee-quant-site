@@ -152,12 +152,12 @@
   <div class="updated" id="updated-line">Updated —</div>
   <div class="live-balance-bar" id="live-balance-bar">
     <div>
-      <div class="lb-label">Schwab Account Total</div>
+      <div class="lb-label">Total Portfolio Value</div>
       <div class="lb-value lb-err" id="lb-value">Connecting…</div>
     </div>
     <div class="lb-meta">
       <span class="lb-dot" id="lb-dot"></span>
-      <span id="lb-status">Waiting for Schwab Trader (localhost:5050)</span>
+      <span id="lb-status">Calculating…</span>
     </div>
   </div>
 </div>
@@ -291,61 +291,61 @@ SYMPHONIES.forEach((sym, si) => {
   });
 });
 
-// ── Live Schwab account balance — polls /api/balance on localhost:5050 ────────
+// ── Composer total account balance — summed from embedded SYMPHONIES data ────
 (function () {
-  const ENDPOINT    = "http://127.0.0.1:5050/api/balance";
   const INTERVAL_MS = 5 * 60 * 1000;   // 5 minutes
 
   const elVal    = document.getElementById("lb-value");
   const elStatus = document.getElementById("lb-status");
   const elDot    = document.getElementById("lb-dot");
 
-  function isMarketOpen() {
-    // Market hours: Mon–Fri 09:30–16:00 US/Eastern
-    const now = new Date();
-    const et  = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-    const day = et.getDay();                    // 0=Sun 6=Sat
-    if (day === 0 || day === 6) return false;
-    const h = et.getHours(), m = et.getMinutes();
-    const mins = h * 60 + m;
-    return mins >= 9 * 60 + 30 && mins < 16 * 60;
-  }
-
-  function fmt(n) {
+  function fmtMoney(n) {
     return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function setError(msg) {
-    elVal.className    = "lb-value lb-err";
-    elVal.textContent  = "—";
-    elDot.className    = "lb-dot";
-    elStatus.textContent = msg;
+  function isMarketOpen() {
+    const et  = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+    const day = et.getDay();
+    if (day === 0 || day === 6) return false;
+    const mins = et.getHours() * 60 + et.getMinutes();
+    return mins >= 9 * 60 + 30 && mins < 16 * 60;
   }
 
-  async function fetchBalance() {
+  function renderTotal(symphonies) {
+    const total = symphonies.reduce(function(sum, s) {
+      return sum + (s.value || 0);
+    }, 0);
+    elVal.className   = "lb-value";
+    elVal.textContent = fmtMoney(total);
+    elDot.className   = "lb-dot live";
+    const now = new Date().toLocaleTimeString("en-US",
+      { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const mktLabel = isMarketOpen() ? "market open" : "market closed";
+    elStatus.textContent = "As of " + GENERATED + " · checked " + now + " · " + mktLabel;
+  }
+
+  async function refreshFromPage() {
     try {
-      const r    = await fetch(ENDPOINT, { mode: "cors" });
-      const data = await r.json();
-      if (data.ok && data.equity != null) {
-        elVal.className   = "lb-value";
-        elVal.textContent = fmt(data.equity);
-        elDot.className   = "lb-dot live";
-        const now = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-        elStatus.textContent = "Live · refreshed " + now + (isMarketOpen() ? " · market open" : " · market closed");
+      // Re-fetch the page to pick up any regenerated SYMPHONIES data
+      const html = await fetch(window.location.href, { cache: "no-store" }).then(r => r.text());
+      const m = html.match(/const SYMPHONIES = \/\* __SYMPHONY_DATA__ \*\/ (\[[\s\S]*?\]);/);
+      if (m) {
+        renderTotal(JSON.parse(m[1]));
       } else {
-        setError(data.error || "Schwab returned no value");
+        // Fallback: use the data already on the page
+        renderTotal(SYMPHONIES);
       }
     } catch (e) {
-      setError("Schwab Trader offline — start trader_ui.py to see live total");
+      renderTotal(SYMPHONIES);   // always show something
     }
   }
 
-  // Initial fetch
-  fetchBalance();
+  // Show total immediately from embedded data
+  renderTotal(SYMPHONIES);
 
-  // Poll every 5 min; only refresh actively during market hours
+  // Re-fetch page every 5 min during market hours to catch any intraday regeneration
   setInterval(function () {
-    fetchBalance();
+    if (isMarketOpen()) refreshFromPage();
   }, INTERVAL_MS);
 })();
 </script>
