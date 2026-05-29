@@ -645,6 +645,16 @@ def main() -> int:
             json.dump(stats_payload, f, indent=2, default=str)
         log(f"Saved symphony-stats response to {stats_path.name}")
 
+    # Compute true account total from ALL symphonies in the account (not just tracked ones)
+    account_total: float = 0.0
+    if stats_payload is not None:
+        for _s in stats_payload.get("symphonies", []):
+            _sv = _s.get("value")
+            if isinstance(_sv, (int, float)) and _sv > 0:
+                account_total += _sv
+        account_total = round(account_total, 2)
+        log(f"True Composer account total (all symphonies): ${account_total:,.2f}")
+
     # For each configured symphony, extract its slice and write outputs.
     symphony_watch_data: list[dict] = []  # collected for CurrentWatchSymphony.html
     for sym in symphonies:
@@ -950,6 +960,12 @@ def main() -> int:
             _watch_html = _re_watch.sub(
                 r'/\* __GENERATED__ \*/ "[^"]*"',
                 f'/* __GENERATED__ */ "{today}"',
+                _watch_html,
+            )
+            # Replace ACCOUNT_TOTAL placeholder
+            _watch_html = _re_watch.sub(
+                r'/\* __ACCOUNT_TOTAL__ \*/ [\d.]+',
+                f'/* __ACCOUNT_TOTAL__ */ {account_total}',
                 _watch_html,
             )
             _watch_path.write_text(_watch_html, encoding="utf-8")
