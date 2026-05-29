@@ -368,20 +368,24 @@ def fetch_news(max_items: int = 3) -> list[dict]:
 
 def patch_html(report: dict) -> None:
     html = OUTPUT_HTML.read_text(encoding="utf-8")
+    if not html.strip().endswith("</html>"):
+        raise RuntimeError(f"patch_html: {OUTPUT_HTML.name} is already truncated before patch — aborting to avoid data loss")
     new_json = json.dumps(report, ensure_ascii=False)
-    patched = re.sub(
-        r"const REPORT = /\* __REPORT_JSON__ \*/ \{.*?\};",
-        f"const REPORT = /* __REPORT_JSON__ */ {new_json};",
-        html,
-        flags=re.DOTALL,
-    )
-    if patched == html:
-        # Fallback: replace the entire const REPORT = ... ; block
-        patched = re.sub(
-            r"const REPORT = /\* __REPORT_JSON__ \*/ .*?;",
-            f"const REPORT = /* __REPORT_JSON__ */ {new_json};",
-            html,
-        )
+    # Use a simple string replace on the const REPORT line to avoid regex
+    # swallowing the rest of the file (DOTALL .*? can mismatch on large JSON).
+    marker = "/* __REPORT_JSON__ */"
+    idx = html.find("const REPORT = " + marker)
+    if idx == -1:
+        raise RuntimeError("patch_html: REPORT marker not found in HTML")
+    # Find the semicolon that ends the const statement
+    end_idx = html.find("};", idx)
+    if end_idx == -1:
+        raise RuntimeError("patch_html: could not find closing }; for REPORT block")
+    end_idx += 2  # include the };
+    new_block = f"const REPORT = {marker} {new_json};"
+    patched = html[:idx] + new_block + html[end_idx:]
+    if not patched.strip().endswith("</html>"):
+        raise RuntimeError("patch_html: patched output is truncated — aborting write")
     OUTPUT_HTML.write_text(patched, encoding="utf-8")
 
 
