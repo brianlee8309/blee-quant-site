@@ -27,6 +27,7 @@
     { href: "Algorithm185History.html", label: "Backtest"        },
     { href: "performance1.html",        label: "Performance"     },
     { href: "contact.html",             label: "Contact"         },
+    { href: "CurrentWatchSymphony.html", label: "Symphony Watch",  ownerOnly: true },
   ];
 
   var LANGS = [
@@ -139,7 +140,9 @@
       var active = (currentPage === l.href.toLowerCase()) ? " active" : "";
       var cls = active ? ' class="active"' : "";
       if (isMobile && l.href === "subscribe.html") return ""; // subscribe shown separately in mobile
-      return '<a href="' + l.href + '"' + cls + ">" + l.label + "</a>";
+      // ownerOnly links are hidden by default; revealed by onAuthStateChanged for brianlee1004@gmail.com only
+      var hidden = l.ownerOnly ? ' data-owner-only="1" style="display:none;"' : "";
+      return '<a href="' + l.href + '"' + (cls || hidden ? (cls + hidden) : "") + ">" + l.label + "</a>";
     }).join("");
   }
 
@@ -236,6 +239,34 @@
   } else {
     document.addEventListener("DOMContentLoaded", function() { inject(); initTicker(); });
   }
+
+  // ── Owner-only nav links (Symphony Watch — brianlee1004@gmail.com only) ────
+  // Waits for Firebase auth state so the link appears as soon as the session
+  // is confirmed, and disappears on sign-out.  Hidden for every other user.
+  (function wireOwnerLinks() {
+    var OWNER = "brianlee1004@gmail.com";
+    function applyVisibility(show) {
+      document.querySelectorAll("[data-owner-only]").forEach(function (el) {
+        el.style.display = show ? "" : "none";
+      });
+    }
+    function tryWire() {
+      if (typeof firebase !== "undefined" && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function (user) {
+          applyVisibility(!!(user && user.email === OWNER));
+        });
+        return true;
+      }
+      return false;
+    }
+    if (!tryWire()) {
+      // firebase-config.js may load after nav.js on some pages — retry briefly
+      var attempts = 0;
+      var t = setInterval(function () {
+        if (tryWire() || ++attempts > 20) clearInterval(t);
+      }, 150);
+    }
+  })();
 
 
   // ═══════════════════════════════════════════════════════════════════════════
