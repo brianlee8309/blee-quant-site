@@ -1,68 +1,14 @@
 {
-  "date": "2026-05-28",
+  "date": "2026-05-29",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "UPRO",
-      "weight_pct": 3.3197,
-      "shares": 1.40292,
-      "market_value": 208.0810944
-    },
-    {
-      "ticker": "SVXY",
-      "weight_pct": 3.6455,
-      "shares": 4.17354,
-      "market_value": 228.501315
-    },
-    {
-      "ticker": "TECL",
-      "weight_pct": 22.3844,
-      "shares": 6.09652,
-      "market_value": 1403.0531128
-    },
-    {
-      "ticker": "TQQQ",
-      "weight_pct": 34.5276,
-      "shares": 25.85183,
-      "market_value": 2164.18594845
-    },
-    {
-      "ticker": "SHV",
-      "weight_pct": 6.3677,
-      "shares": 3.61676,
-      "market_value": 399.1275498
-    },
-    {
-      "ticker": "GLD",
-      "weight_pct": 19.7896,
-      "shares": 3.00356,
-      "market_value": 1240.4102088
-    },
-    {
-      "ticker": "VGT",
-      "weight_pct": 7.1404,
-      "shares": 3.76215,
-      "market_value": 447.557779095
-    },
-    {
-      "ticker": "TMV",
-      "weight_pct": 2.0915,
-      "shares": 3.4141,
-      "market_value": 131.09666026
-    },
-    {
-      "ticker": "VIXM",
-      "weight_pct": 0.6347,
-      "shares": 2.58518,
-      "market_value": 39.779974286
-    },
-    {
       "ticker": "$USD",
-      "weight_pct": 0.0989,
-      "shares": 6.2,
-      "market_value": 6.2
+      "weight_pct": 100.0,
+      "shares": 14572.23,
+      "market_value": 14572.23
     }
   ]
 }
