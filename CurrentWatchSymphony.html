@@ -104,6 +104,33 @@
     letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px;
   }
   .total-row { font-size: 13px; color: var(--muted); padding: 8px 24px 16px; }
+
+  /* ── Live account balance banner ── */
+  .live-balance-bar {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.20);
+    border-radius: 10px; padding: 10px 20px; margin-top: 14px;
+  }
+  .live-balance-bar .lb-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); font-weight: 600;
+  }
+  .live-balance-bar .lb-value {
+    font-size: 22px; font-weight: 900; color: var(--green);
+    letter-spacing: -0.02em;
+  }
+  .live-balance-bar .lb-value.lb-err { color: var(--muted); font-size: 14px; font-weight: 400; }
+  .live-balance-bar .lb-meta {
+    font-size: 11px; color: #475569; margin-left: auto;
+  }
+  .live-balance-bar .lb-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
+    display: inline-block; margin-right: 5px;
+  }
+  .live-balance-bar .lb-dot.live { background: var(--green); animation: pulse-dot 2s infinite; }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -123,6 +150,16 @@
   <h1>🎼 Symphony <span>Watch</span></h1>
   <div class="sub">Daily allocation snapshot across all tracked Composer symphonies</div>
   <div class="updated" id="updated-line">Updated —</div>
+  <div class="live-balance-bar" id="live-balance-bar">
+    <div>
+      <div class="lb-label">Schwab Account Total</div>
+      <div class="lb-value lb-err" id="lb-value">Connecting…</div>
+    </div>
+    <div class="lb-meta">
+      <span class="lb-dot" id="lb-dot"></span>
+      <span id="lb-status">Waiting for Schwab Trader (localhost:5050)</span>
+    </div>
+  </div>
 </div>
 
 <div class="container">
@@ -253,6 +290,64 @@ SYMPHONIES.forEach((sym, si) => {
     }
   });
 });
+
+// ── Live Schwab account balance — polls /api/balance on localhost:5050 ────────
+(function () {
+  const ENDPOINT    = "http://127.0.0.1:5050/api/balance";
+  const INTERVAL_MS = 5 * 60 * 1000;   // 5 minutes
+
+  const elVal    = document.getElementById("lb-value");
+  const elStatus = document.getElementById("lb-status");
+  const elDot    = document.getElementById("lb-dot");
+
+  function isMarketOpen() {
+    // Market hours: Mon–Fri 09:30–16:00 US/Eastern
+    const now = new Date();
+    const et  = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+    const day = et.getDay();                    // 0=Sun 6=Sat
+    if (day === 0 || day === 6) return false;
+    const h = et.getHours(), m = et.getMinutes();
+    const mins = h * 60 + m;
+    return mins >= 9 * 60 + 30 && mins < 16 * 60;
+  }
+
+  function fmt(n) {
+    return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function setError(msg) {
+    elVal.className    = "lb-value lb-err";
+    elVal.textContent  = "—";
+    elDot.className    = "lb-dot";
+    elStatus.textContent = msg;
+  }
+
+  async function fetchBalance() {
+    try {
+      const r    = await fetch(ENDPOINT, { mode: "cors" });
+      const data = await r.json();
+      if (data.ok && data.equity != null) {
+        elVal.className   = "lb-value";
+        elVal.textContent = fmt(data.equity);
+        elDot.className   = "lb-dot live";
+        const now = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        elStatus.textContent = "Live · refreshed " + now + (isMarketOpen() ? " · market open" : " · market closed");
+      } else {
+        setError(data.error || "Schwab returned no value");
+      }
+    } catch (e) {
+      setError("Schwab Trader offline — start trader_ui.py to see live total");
+    }
+  }
+
+  // Initial fetch
+  fetchBalance();
+
+  // Poll every 5 min; only refresh actively during market hours
+  setInterval(function () {
+    fetchBalance();
+  }, INTERVAL_MS);
+})();
 </script>
 </body>
 </html>
