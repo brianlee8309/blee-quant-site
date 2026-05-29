@@ -742,20 +742,27 @@
   .landing-hero {
     position: relative;
     min-height: 580px;
-    background: linear-gradient(160deg, #06101f 0%, #0d1a34 55%, #08142b 100%);
-    background-color: #07111f;
+    background-image: url('images/HomepageBackgroundToApply.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
   }
-  /* subtle radial glow behind illustration */
+  /* dark gradient overlay — left side keeps text readable, right lets image show */
   .landing-hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 55% 70% at 72% 50%,
-      rgba(109,40,217,0.18) 0%, transparent 70%);
+    background: linear-gradient(
+      to right,
+      rgba(6,16,31,0.88) 0%,
+      rgba(6,16,31,0.72) 45%,
+      rgba(6,16,31,0.30) 75%,
+      rgba(6,16,31,0.08) 100%
+    );
     z-index: 0;
     pointer-events: none;
   }
@@ -763,33 +770,19 @@
   .landing-hero-inner {
     position: relative;
     z-index: 2;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 820px;
+    margin: 0 auto 0 0;
     padding: 60px 48px 40px 60px;
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 420px;
-    gap: 32px;
-    align-items: center;
-  }
-  .landing-hero-left { /* text column */ }
-  .landing-hero-right {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .landing-hero-right img {
-    width: 100%;
-    max-width: 420px;
-    height: auto;
-    filter: drop-shadow(0 8px 32px rgba(109,40,217,0.35));
   }
   @media (max-width: 860px) {
-    .landing-hero-inner {
-      grid-template-columns: 1fr;
-      padding: 48px 24px 32px;
+    .landing-hero::before {
+      background: rgba(6,16,31,0.80);
     }
-    .landing-hero-right { display: none; }
+    .landing-hero-inner {
+      padding: 48px 24px 32px;
+      max-width: 100%;
+    }
   }
   .landing-pre {
     font-size: 18px;
@@ -1091,7 +1084,6 @@
 <!-- ══════════════════════════════════════ LANDING HERO ══ -->
 <div class="landing-hero">
   <div class="landing-hero-inner">
-  <div class="landing-hero-left">
 
     <div class="landing-pre">For Every Investor Who Has Been Hurt Before</div>
 
@@ -1133,10 +1125,6 @@
     </div>
 
 
-  </div><!-- /landing-hero-left -->
-  <div class="landing-hero-right">
-    <img src="images/hero_rocket.svg" alt="Financial freedom illustration — rocket launching with gold coins and upward chart" width="420" height="380">
-  </div>
   </div><!-- /landing-hero-inner -->
 </div>
 
@@ -2010,4 +1998,122 @@ function googleTranslateElementInit() {
       'bear.sub':'The 2022 bear market (Jan–Dec 2022) saw the worst S&amp;P 500 performance in over a decade. BLEE\'s bond-rotation logic stepped in and generated positive returns throughout the selloff.',
       'cmp.label':'Risk-Adjusted Performance','cmp.title':'The Numbers Don\'t Lie',
       'cmp.sub':'3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.',
-      'th.metric':'Metric','th.blee':'BLEE Strategy','th.spy':'S&amp;P 500 (SPY)','th.e
+      'th.metric':'Metric','th.blee':'BLEE Strategy','th.spy':'S&amp;P 500 (SPY)','th.edge':'Edge',
+      'row1':'Cumulative Return (3yr)','row2':'Annualized Return','row3':'Max Drawdown','row4':'Calmar Ratio',
+      'row5':'Sharpe Ratio','row6':'Beta (Market Sensitivity)','row7':'Trailing 3-Month Return','row8':'Alpha (vs SPY)',
+      'founder.tag':'👤 About the Creator',
+      'founder.title':'Built From <em>Real Experience</em> — and Used in Real Trading',
+      'how.label':'Under the Hood',
+      'how.title':'Why Calm Growth Model Surges Periodically — and Why That\'s By Design',
+      'how.sub':'If you look at the performance charts, you\'ll notice Calm Growth Model doesn\'t grow in a perfectly smooth line. There are calm steady periods, and then sudden upward surges. This is intentional — and it\'s the core of what makes the algorithm powerful.',
+      'l1.label':'Layer 1 · Daily Foundation','l1.title':'🔄 Rotation Across Asset Classes',
+      'l2.label':'Layer 2 · Market Condition Monitoring','l2.title':'📡 Oversold &amp; Overbought Detection',
+      'l3.label':'Layer 3 · Periodic Opportunity Capture','l3.title':'⚡ Calculated Aggressive Moves — A Few Times a Year',
+      'surge.title':'⚡ The Surges You See in the Charts Are Not Luck','surge.stat.lbl':'High-conviction moves per year',
+      'strat.label':'Our Strategies','strat.title':'One Algorithm. One Goal: Long-Term Wealth.',
+      'cs1.name':'Bank Savings / CDs','cs2.name':'Dividend Stocks','cs3.name':'S&amp;P 500 Index','cs4.name':'Calm Growth Model (Backtest)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Who is Calm Growth Model for?',
+      'why.label':'Why BLEE Quant Analytics','why.title':'Built for Serious Long-Term Investors',
+      'why.sub':'We do the research. You make the decisions. Every day, fresh algorithmic signals so you\'re never flying blind.',
+      'price.label':'Subscription Plans','price.title':'Invest in Your Edge',
+      'price.sub':'Affordable access to institutional-grade algorithmic analysis. Cancel anytime.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. All rights reserved.',
+      'footer.disclaimer':'Simulated performance data only. Not investment advice.',
+      'lastupdated':'Last Updated:',
+    },
+    ja: {
+      'nav.home':'ホーム','nav.profile':'マーケット予報','nav.signal':'デイリーシグナル','nav.backtest':'バックテスト','nav.performance':'パフォーマンス','nav.subscribe':'購読する',
+      'hero.tag':'📊 毎日このシグナルを実際に活用する投資家が構築',
+      'hero.h1':'規律あるETFローテーションモデル<br><em>長期成長のために設計</em>',
+      'btn.strategies':'戦略を見る','btn.trackrecord':'実績を確認する',
+      'hs1.lbl':'全期間平均年率リターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs2.lbl':'過去3年平均年率リターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs3.lbl':'最大ドローダウン（3年、S&P −18.8%比） <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'hs4.lbl':'2022年弱気市場でのリターン <span class="ds-tag sim" style="font-size:9px;">バックテスト</span>',
+      'perf.label':'過去のバックテスト',
+      'perf.title':'約6年のデータ。リターンとリスク両面でS&amp;P 500を上回る。',
+      'perf.sub':'2020年5月〜2026年5月のシミュレーション結果、S&amp;P 500（SPY）との比較。Calm Growth Modelは+177%（SPYの+155%を上回り、ドローダウンも大幅に低い）。',
+      'bear.label':'弱気市場での強さ','bear.title':'S&amp;Pが18.6%下落した時、我々は11.2%の利益を獲得',
+      'bear.sub':'2022年の弱気市場（1月〜12月）は10年以上で最悪のS&amp;P 500パフォーマンスとなりました。BLEEの債券ローテーションロジックが機能し、下落局面でもプラスのリターンを実現しました。',
+      'cmp.label':'リスク調整後パフォーマンス','cmp.title':'数字は嘘をつかない',
+      'cmp.sub':'3年バックテスト（2023年5月〜2026年5月）。BLEE戦略 vs. SPYベンチマーク。',
+      'th.metric':'指標','th.blee':'BLEE戦略','th.spy':'S&amp;P 500（SPY）','th.edge':'優位性',
+      'row1':'累積リターン（3年）','row2':'年率リターン','row3':'最大ドローダウン','row4':'カルマーレシオ',
+      'row5':'シャープレシオ','row6':'ベータ（市場感応度）','row7':'直近3ヶ月リターン','row8':'アルファ（SPY比）',
+      'founder.tag':'👤 創設者について',
+      'founder.title':'<em>実際の経験</em>から構築 — 実際の取引で活用中',
+      'how.label':'仕組みの解説',
+      'how.title':'Calm Growth Modelが定期的に急上昇する理由 — それは設計によるもの',
+      'how.sub':'パフォーマンスチャートを見ると、Calm Growth Modelが完全に滑らかには成長しないことに気づくでしょう。穏やかな安定期があり、その後に突然の上昇局面があります。これは意図的なものであり、アルゴリズムを強力にする核心です。',
+      'l1.label':'レイヤー1・日次基盤','l1.title':'🔄 資産クラス間のローテーション',
+      'l2.label':'レイヤー2・市場環境監視','l2.title':'📡 売られすぎ・買われすぎの検出',
+      'l3.label':'レイヤー3・定期的な機会捕捉','l3.title':'⚡ 計算された積極的ポジション — 年1〜2回',
+      'surge.title':'⚡ チャートに見られる急上昇は運ではない','surge.stat.lbl':'年間の高確信度ポジション',
+      'strat.label':'当社の戦略','strat.title':'1つのアルゴリズム。1つの目標：長期的な資産形成。',
+      'cs1.name':'銀行預金・CD','cs2.name':'配当株','cs3.name':'S&amp;P 500インデックス','cs4.name':'Calm Growth Model（バックテスト）',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Modelは誰に向いているか？',
+      'why.label':'なぜBLEE Quant Analytics','why.title':'真剣な長期投資家のために構築',
+      'why.sub':'我々がリサーチする。あなたが意思決定する。毎日新鮮なアルゴリズムシグナルで、常に把握。',
+      'price.label':'サブスクリプションプラン','price.title':'優位性に投資しよう',
+      'price.sub':'機関投資家グレードのアルゴリズム分析に手頃にアクセス。いつでもキャンセル可能。',
+      'footer.rights':'© 2026 BLEE Quant Analytics. 全著作権所有。',
+      'footer.disclaimer':'シミュレーションパフォーマンスデータのみ。投資アドバイスではありません。',
+      'lastupdated':'最終更新:',
+    },
+    vi: {
+      'nav.home':'Trang chủ','nav.profile':'Dự báo thị trường','nav.signal':'Tín hiệu hàng ngày','nav.backtest':'Kiểm tra lịch sử','nav.performance':'Hiệu suất','nav.subscribe':'Đăng ký',
+      'hero.tag':'📊 Được xây dựng bởi nhà đầu tư sử dụng tín hiệu này mỗi ngày',
+      'hero.h1':'Mô hình luân chuyển ETF kỷ luật<br><em>được xây dựng cho tăng trưởng dài hạn.</em>',
+      'btn.strategies':'Xem chiến lược','btn.trackrecord':'Xem lịch sử hiệu suất',
+      'hs1.lbl':'Lợi nhuận bình quân hàng năm toàn kỳ <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs2.lbl':'Lợi nhuận bình quân 3 năm gần nhất <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs3.lbl':'Sụt giảm tối đa (3 năm, so với −18.8% S&P) <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'hs4.lbl':'Lợi nhuận trong thị trường giảm 2022 <span class="ds-tag sim" style="font-size:9px;">Backtest</span>',
+      'perf.label':'Kiểm tra lịch sử',
+      'perf.title':'~6 năm dữ liệu. Vượt trội S&amp;P 500 về cả lợi nhuận và rủi ro.',
+      'perf.sub':'Lợi nhuận mô phỏng từ 5/2020 đến 5/2026, so với S&amp;P 500 (SPY). Calm Growth Model đạt +177% so với +155% của SPY, với mức sụt giảm thấp hơn đáng kể.',
+      'bear.label':'Khả năng chống chịu thị trường giảm','bear.title':'Khi S&amp;P Giảm 18.6%, Chúng Tôi Tăng 11.2%',
+      'bear.sub':'Thị trường giảm năm 2022 (Tháng 1–12) là hiệu suất S&amp;P 500 tệ nhất trong hơn một thập kỷ. Logic luân chuyển trái phiếu của BLEE đã hoạt động và mang lại lợi nhuận dương ngay cả trong đợt giảm.',
+      'cmp.label':'Hiệu suất điều chỉnh rủi ro','cmp.title':'Những Con Số Không Nói Dối',
+      'cmp.sub':'Backtest 3 năm (5/2023 – 5/2026). Chiến lược BLEE vs. chuẩn SPY.',
+      'th.metric':'Chỉ số','th.blee':'Chiến lược BLEE','th.spy':'S&amp;P 500 (SPY)','th.edge':'Lợi thế',
+      'row1':'Lợi nhuận tích lũy (3 năm)','row2':'Lợi nhuận hàng năm','row3':'Sụt giảm tối đa','row4':'Tỷ số Calmar',
+      'row5':'Tỷ số Sharpe','row6':'Beta (Độ nhạy thị trường)','row7':'Lợi nhuận 3 tháng gần nhất','row8':'Alpha (so với SPY)',
+      'founder.tag':'👤 Về Người Tạo Ra',
+      'founder.title':'Được Xây Dựng Từ <em>Kinh Nghiệm Thực Tế</em> — Và Được Sử Dụng Trong Giao Dịch Thực',
+      'how.label':'Cơ Chế Hoạt Động',
+      'how.title':'Tại Sao Calm Growth Model Tăng Vọt Định Kỳ — Và Đó Là Thiết Kế Có Chủ Đích',
+      'how.sub':'Nhìn vào biểu đồ hiệu suất, bạn sẽ nhận thấy Calm Growth Model không tăng trưởng theo đường thẳng hoàn toàn mượt mà. Có những giai đoạn ổn định, sau đó là những đợt tăng đột ngột. Điều này là có chủ đích và là cốt lõi tạo nên sức mạnh của thuật toán.',
+      'l1.label':'Lớp 1 · Nền Tảng Hàng Ngày','l1.title':'🔄 Luân Chuyển Giữa Các Lớp Tài Sản',
+      'l2.label':'Lớp 2 · Giám Sát Điều Kiện Thị Trường','l2.title':'📡 Phát Hiện Quá Bán &amp; Quá Mua',
+      'l3.label':'Lớp 3 · Thu Nắm Cơ Hội Định Kỳ','l3.title':'⚡ Các Chiến Lược Tấn Công Có Tính Toán — Vài Lần Mỗi Năm',
+      'surge.title':'⚡ Những Đợt Tăng Vọt Trong Biểu Đồ Không Phải May Mắn','surge.stat.lbl':'Lần di chuyển độ tin cậy cao mỗi năm',
+      'strat.label':'Chiến Lược Của Chúng Tôi','strat.title':'Một Thuật Toán. Một Mục Tiêu: Tài Sản Dài Hạn.',
+      'cs1.name':'Tiết kiệm ngân hàng / CD','cs2.name':'Cổ phiếu cổ tức','cs3.name':'Chỉ số S&amp;P 500','cs4.name':'Calm Growth Model (Backtest)',
+      'sc.title':'Calm Growth Model','sc.for':'🎯 Calm Growth Model dành cho ai?',
+      'why.label':'Tại Sao BLEE Quant Analytics','why.title':'Được Xây Dựng Cho Nhà Đầu Tư Dài Hạn Nghiêm Túc',
+      'why.sub':'Chúng tôi nghiên cứu. Bạn quyết định. Mỗi ngày, tín hiệu thuật toán mới để bạn không bao giờ mù quáng.',
+      'price.label':'Gói Đăng Ký','price.title':'Đầu Tư Vào Lợi Thế Của Bạn',
+      'price.sub':'Truy cập phân tích thuật toán cấp tổ chức với giá hợp lý. Hủy bất cứ lúc nào.',
+      'footer.rights':'© 2026 BLEE Quant Analytics. Bảo lưu mọi quyền.',
+      'footer.disclaimer':'Chỉ là dữ liệu hiệu suất mô phỏng. Không phải lời khuyên đầu tư.',
+      'lastupdated':'Cập nhật lần cuối:',
+    },
+  };
+
+  function applyI18n(lang) {
+    const dict = i18n[lang];
+    if (!dict) return;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+  }
+
+  const initLang = localStorage.getItem('blee-lang') || 'en';
+  if (initLang !== 'en' && i18n[initLang]) applyI18n(initLang);
+})();
+</script>
+
+</body>
+</html>
