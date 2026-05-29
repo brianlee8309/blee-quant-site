@@ -741,48 +741,55 @@
   /* ── LANDING HERO (image) ── */
   .landing-hero {
     position: relative;
-    min-height: 620px;
-    background-image: url('images/CoupleWithKidsSwimming2.png');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
+    min-height: 580px;
+    background: linear-gradient(160deg, #06101f 0%, #0d1a34 55%, #08142b 100%);
     background-color: #07111f;
     display: flex;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
   }
+  /* subtle radial glow behind illustration */
   .landing-hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right,
-      rgba(5,15,35,0.97) 0%,
-      rgba(5,15,35,0.92) 38%,
-      rgba(5,15,35,0.65) 62%,
-      rgba(5,15,35,0.25) 82%,
-      rgba(5,15,35,0.05) 100%);
-    z-index: 0;
-  }
-  .landing-hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom,
-      rgba(7,17,31,0.00) 0%,
-      rgba(7,17,31,0.00) 40%,
-      rgba(7,17,31,0.60) 75%,
-      rgba(7,17,31,0.95) 100%);
+    background: radial-gradient(ellipse 55% 70% at 72% 50%,
+      rgba(109,40,217,0.18) 0%, transparent 70%);
     z-index: 0;
     pointer-events: none;
   }
+  .landing-hero::after { display: none; }
   .landing-hero-inner {
     position: relative;
     z-index: 2;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 72px 48px 28px 60px;
+    padding: 60px 48px 40px 60px;
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 32px;
+    align-items: center;
+  }
+  .landing-hero-left { /* text column */ }
+  .landing-hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .landing-hero-right img {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    filter: drop-shadow(0 8px 32px rgba(109,40,217,0.35));
+  }
+  @media (max-width: 860px) {
+    .landing-hero-inner {
+      grid-template-columns: 1fr;
+      padding: 48px 24px 32px;
+    }
+    .landing-hero-right { display: none; }
   }
   .landing-pre {
     font-size: 18px;
@@ -1084,6 +1091,7 @@
 <!-- ══════════════════════════════════════ LANDING HERO ══ -->
 <div class="landing-hero">
   <div class="landing-hero-inner">
+  <div class="landing-hero-left">
 
     <div class="landing-pre">For Every Investor Who Has Been Hurt Before</div>
 
@@ -1125,6 +1133,10 @@
     </div>
 
 
+  </div><!-- /landing-hero-left -->
+  <div class="landing-hero-right">
+    <img src="images/hero_rocket.svg" alt="Financial freedom illustration — rocket launching with gold coins and upward chart" width="420" height="380">
+  </div>
   </div><!-- /landing-hero-inner -->
 </div>
 
@@ -1251,15 +1263,15 @@
         <tbody>
           <tr>
             <td class="metric" data-i18n="row1">Cumulative Return (3yr)</td>
-            <td class="strategy-val win" data-perf="blee_cum_3yr">+122.85%</td>
-            <td class="spy-val" data-perf="spy_cum_3yr">+88.82%</td>
-            <td><span class="badge" data-perf="edge_cum_3yr">+34.0pp ahead</span></td>
+            <td class="strategy-val win" data-perf="blee_cum_3yr">+123.06%</td>
+            <td class="spy-val" data-perf="spy_cum_3yr">+89.91%</td>
+            <td><span class="badge" data-perf="edge_cum_3yr">+33.2pp ahead</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row2">Annualized Return</td>
-            <td class="strategy-val win" data-perf="blee_ann_3yr">+30.39%</td>
-            <td class="spy-val" data-perf="spy_ann_3yr">+23.46%</td>
-            <td><span class="badge" data-perf="edge_ann_3yr">+6.9pp</span></td>
+            <td class="strategy-val win" data-perf="blee_ann_3yr">+30.38%</td>
+            <td class="spy-val" data-perf="spy_ann_3yr">+23.66%</td>
+            <td><span class="badge" data-perf="edge_ann_3yr">+6.7pp</span></td>
           </tr>
           <tr>
             <td class="metric" data-i18n="row3">Max Drawdown</td>
@@ -1791,7 +1803,7 @@
   <p data-i18n="footer.rights">© 2026 BLEE Quant Analytics. All rights reserved.</p>
   <p style="margin-top:6px;" data-i18n="footer.disclaimer">Simulated performance data only. Not investment advice.</p>
   <p style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.30);">
-    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/28/2026 03:51 PM ET</span>
+    <span data-i18n="lastupdated">Last Updated:</span> <span id="blee-updated">05/29/2026 12:07 AM ET</span>
   </p>
 </footer>
 
@@ -1998,23 +2010,4 @@ function googleTranslateElementInit() {
       'bear.sub':'The 2022 bear market (Jan–Dec 2022) saw the worst S&amp;P 500 performance in over a decade. BLEE\'s bond-rotation logic stepped in and generated positive returns throughout the selloff.',
       'cmp.label':'Risk-Adjusted Performance','cmp.title':'The Numbers Don\'t Lie',
       'cmp.sub':'3-Year backtest (May 2023 – May 2026). BLEE Strategy vs. SPY benchmark.',
-      'th.metric':'Metric','th.blee':'BLEE Strategy','th.spy':'S&amp;P 500 (SPY)','th.edge':'Edge',
-      'row1':'Cumulative Return (3yr)','row2':'Annualized Return','row3':'Max Drawdown','row4':'Calmar Ratio',
-      'row5':'Sharpe Ratio','row6':'Beta (Market Sensitivity)','row7':'Trailing 3-Month Return','row8':'Alpha (vs SPY)',
-      'founder.tag':'👤 About the Creator',
-      'founder.title':'Built From <em>Real Experience</em> — and Used in Real Trading',
-      'how.label':'Under the Hood',
-      'how.title':'Why Calm Growth Model Surges Periodically — and Why That\'s By Design',
-      'how.sub':'If you look at the performance charts, you\'ll notice Calm Growth Model doesn\'t grow in a perfectly smooth line. There are calm steady periods, and then sudden upward surges. This is intentional — and it\'s the core of what makes the algorithm powerful.',
-      'l1.label':'Layer 1 · Daily Foundation','l1.title':'🔄 Rotation Across Asset Classes',
-      'l2.label':'Layer 2 · Market Condition Monitoring','l2.title':'📡 Oversold &amp; Overbought Detection',
-      'l3.label':'Layer 3 · Periodic Opportunity Capture','l3.title':'⚡ Calculated Aggressive Moves — A Few Times a Year',
-      'surge.title':'⚡ The Surges You See in the Charts Are Not Luck','surge.stat.lbl':'High-conviction moves per year',
-      'strat.label':'Our Strategies','strat.title':'One Algorithm. One Goal: Long-Term Wealth.',
-      'cs1.name':'Bank Savings / CDs','cs2.name':'Dividend Stocks','cs3.name':'S&amp;P 500 Index','cs4.name':'Calm Growth Model (Backtest)',
-      'sc.title':'Calm Growth Model','sc.for':'🎯 Who is Calm Growth Model for?',
-      'why.label':'Why BLEE Quant Analytics','why.title':'Built for Serious Long-Term Investors',
-      'why.sub':'We do the research. You make the decisions. Every day, fresh algorithmic signals so you\'re never flying blind.',
-      'price.label':'Subscription Plans','price.title':'Invest in Your Edge',
-      'price.sub':'Affordable access to institutional-grade algorithmic analysis. Cancel anytime.',
-      'footer.rights':'©
+      'th.metric':'Metric','th.blee':'BLEE Strategy','th.spy':'S&amp;P 500 (SPY)','th.e

@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" width="480" height="380">
+  <defs>
+    <radialGradient id="spaceBg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1a1060"/>
+      <stop offset="100%" stop-color="#060b1e"/>
+    </radialGradient>
+    <radialGradient id="rocketBody" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#7c4fe0"/>
+      <stop offset="60%" stop-color="#4b23a8"/>
+      <stop offset="100%" stop-color="#2a0f6e"/>
+    </radialGradient>
+    <radialGradient id="coinGrad" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="60%" stop-color="#e0a800"/>
+      <stop offset="100%" stop-color="#b07800"/>
+    </radialGradient>
+    <radialGradient id="engineGlow" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#1e6fa8"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Space background -->
+  <rect width="480" height="380" fill="url(#spaceBg)"/>
+
+  <!-- Stars -->
+  <g fill="white" opacity="0.85">
+    <circle cx="22" cy="18" r="1.2"/><circle cx="55" cy="35" r="0.9"/>
+    <circle cx="90" cy="12" r="1.4"/><circle cx="140" cy="28" r="0.8"/>
+    <circle cx="175" cy="8" r="1.1"/><circle cx="220" cy="22" r="0.7"/>
+    <circle cx="260" cy="14" r="1.3"/><circle cx="310" cy="30" r="0.9"/>
+    <circle cx="350" cy="10" r="1.0"/><circle cx="400" cy="25" r="1.2"/>
+    <circle cx="440" cy="16" r="0.8"/><circle cx="465" cy="40" r="1.1"/>
+    <circle cx="38" cy="65" r="0.7"/><circle cx="75" cy="90" r="1.0"/>
+    <circle cx="125" cy="72" r="0.8"/><circle cx="420" cy="60" r="0.9"/>
+    <circle cx="455" cy="88" r="1.2"/><circle cx="380" cy="75" r="0.7"/>
+    <circle cx="300" cy="55" r="0.9"/><circle cx="160" cy="50" r="1.1"/>
+    <circle cx="240" cy="65" r="0.7"/><circle cx="480" cy="110" r="0.9"/>
+    <circle cx="12" cy="130" r="1.0"/><circle cx="468" cy="145" r="0.8"/>
+  </g>
+
+  <!-- $99 price badge (top left) -->
+  <text x="28" y="52" font-family="Arial Black, sans-serif" font-size="30" font-weight="900"
+        fill="#f5c518" stroke="#c8920a" stroke-width="1" filter="url(#glow)">$99</text>
+
+  <!-- ── Rocket (center) ── -->
+  <!-- Rocket tip -->
+  <polygon points="190,50 230,105 170,105" fill="#5b21b6" stroke="#7c3aed" stroke-width="1.5"/>
+  <!-- Rocket body left facet -->
+  <polygon points="170,105 230,105 225,185 165,185" fill="#6d28d9"/>
+  <!-- Rocket body right highlight -->
+  <polygon points="200,108 230,105 225,185 200,185" fill="#7c3aed" opacity="0.7"/>
+  <!-- Rocket body dark left facet -->
+  <polygon points="170,105 200,108 200,185 165,185" fill="#4c1d95" opacity="0.9"/>
+  <!-- Left fin -->
+  <polygon points="165,170 148,205 170,195" fill="#4c1d95"/>
+  <!-- Right fin -->
+  <polygon points="225,170 242,205 222,195" fill="#4c1d95"/>
+  <!-- Left small fin -->
+  <polygon points="165,185 150,210 168,200" fill="#5b21b6"/>
+  <!-- Right small fin -->
+  <polygon points="225,185 240,210 222,200" fill="#5b21b6"/>
+
+  <!-- Engine window (blue circle) -->
+  <circle cx="197" cy="145" r="22" fill="#1a3a5c" stroke="#2563eb" stroke-width="2.5"/>
+  <circle cx="197" cy="145" r="16" fill="url(#engineGlow)"/>
+  <circle cx="191" cy="139" r="5" fill="white" opacity="0.45"/>
+
+  <!-- Rocket flame -->
+  <ellipse cx="197" cy="210" rx="14" ry="22" fill="#f97316" opacity="0.9"/>
+  <ellipse cx="197" cy="214" rx="9" ry="16" fill="#fbbf24"/>
+  <ellipse cx="197" cy="218" rx="5" ry="10" fill="#fef3c7"/>
+
+  <!-- ── Person riding rocket ── -->
+  <!-- Head -->
+  <circle cx="225" cy="118" r="18" fill="#c8956c"/>
+  <!-- Body / suit -->
+  <rect x="215" y="136" width="22" height="30" rx="4" fill="#1e293b"/>
+  <!-- Arms -->
+  <rect x="200" y="140" width="15" height="8" rx="3" fill="#1e293b"/>
+  <rect x="237" y="140" width="15" height="8" rx="3" fill="#1e293b"/>
+  <!-- Hair -->
+  <ellipse cx="225" cy="103" rx="17" ry="8" fill="#3b1f0a"/>
+  <!-- Face highlight -->
+  <circle cx="220" cy="115" r="4" fill="#e8b48a" opacity="0.5"/>
+
+  <!-- ── Chart section (bottom right) ── -->
+  <!-- Chart background block -->
+  <polygon points="290,195 440,195 440,320 290,320" fill="#1a0f05" opacity="0.85" rx="6"/>
+  <rect x="290" y="195" width="150" height="125" rx="6" fill="#1c1206" opacity="0.9"/>
+
+  <!-- Chart upward line (golden) -->
+  <polyline points="305,310 330,280 355,265 375,235 400,215 425,198"
+            fill="none" stroke="#e0a800" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Chart area fill -->
+  <polygon points="305,310 330,280 355,265 375,235 400,215 425,198 440,195 440,320"
+           fill="#e0a800" opacity="0.12"/>
+
+  <!-- Triangle/arrow at top of chart -->
+  <polygon points="425,178 413,200 437,200" fill="#f5c518"/>
+
+  <!-- Chart coin bottom right -->
+  <circle cx="395" cy="330" r="17" fill="url(#coinGrad)" stroke="#b07800" stroke-width="1.5"/>
+  <circle cx="395" cy="330" r="12" fill="none" stroke="#b07800" stroke-width="1" opacity="0.5"/>
+  <text x="395" y="335" font-family="Arial Black,sans-serif" font-size="12" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+
+  <circle cx="430" cy="340" r="14" fill="url(#coinGrad)" stroke="#b07800" stroke-width="1.5"/>
+  <circle cx="430" cy="340" r="9" fill="none" stroke="#b07800" stroke-width="1" opacity="0.5"/>
+  <text x="430" y="344" font-family="Arial Black,sans-serif" font-size="10" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+
+  <!-- ── Coins bottom left ── -->
+  <circle cx="58" cy="318" r="22" fill="url(#coinGrad)" stroke="#b07800" stroke-width="2"/>
+  <circle cx="58" cy="318" r="16" fill="none" stroke="#b07800" stroke-width="1.2" opacity="0.5"/>
+  <text x="58" y="323" font-family="Arial Black,sans-serif" font-size="15" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+
+  <circle cx="108" cy="310" r="18" fill="url(#coinGrad)" stroke="#b07800" stroke-width="1.5"/>
+  <circle cx="108" cy="310" r="13" fill="none" stroke="#b07800" stroke-width="1" opacity="0.5"/>
+  <text x="108" y="315" font-family="Arial Black,sans-serif" font-size="13" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+
+  <circle cx="80" cy="345" r="20" fill="url(#coinGrad)" stroke="#b07800" stroke-width="2"/>
+  <circle cx="80" cy="345" r="14" fill="none" stroke="#b07800" stroke-width="1.2" opacity="0.5"/>
+  <text x="80" y="350" font-family="Arial Black,sans-serif" font-size="14" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+
+  <circle cx="38" cy="348" r="16" fill="url(#coinGrad)" stroke="#b07800" stroke-width="1.5"/>
+  <text x="38" y="353" font-family="Arial Black,sans-serif" font-size="11" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+
+  <circle cx="135" cy="340" r="15" fill="url(#coinGrad)" stroke="#b07800" stroke-width="1.5"/>
+  <text x="135" y="345" font-family="Arial Black,sans-serif" font-size="11" font-weight="900"
+        text-anchor="middle" fill="#7a5000">$</text>
+</svg>
