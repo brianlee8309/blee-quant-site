@@ -781,8 +781,24 @@ def main() -> int:
                 _last_reb = str(_last_reb)[:10]
             _ret_pct   = (raw_entry or {}).get("return_pct") or (raw_entry or {}).get("total_return")
             _ann       = (raw_entry or {}).get("annualized_return") or (raw_entry or {}).get("annualized")
+            # Guard: if API only returned $USD, fall back to stable JSON file
+            # so CurrentWatchSymphony.html keeps showing real positions.
+            _positions_for_watch = positions
+            _usd_only = all(p.get("ticker","").upper() == "$USD" for p in positions if p.get("ticker"))
+            if _usd_only and sid in _STABLE_JSON_MAP:
+                _stable_src = SCRIPT_DIR / _STABLE_JSON_MAP[sid]
+                try:
+                    _fallback = json.load(open(_stable_src, encoding="utf-8"))
+                    _fb_pos = _fallback.get("positions", [])
+                    _fb_real = [p for p in _fb_pos if p.get("ticker","").upper() != "$USD"]
+                    if _fb_real:
+                        _positions_for_watch = _fb_pos
+                        log(f"  Using stable-file holdings for watch page (API returned $USD only for {sid})")
+                except Exception as _fbe:
+                    log(f"  Could not load fallback for watch holdings: {_fbe}")
+
             _watch_holdings = []
-            for _wp in positions:
+            for _wp in _positions_for_watch:
                 if not _wp.get("ticker"):
                     continue
                 _wv = float(_wp.get("market_value") or 0)
