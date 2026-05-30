@@ -335,7 +335,7 @@
 
   <!-- Market Analysis -->
   <div class="card">
-    <h2>🌤️ Market Forecast — Tomorrow's Weather Report</h2>
+    <h2>🌤️ Market Forecast — Next Market Open Weather Report</h2>
     <div class="analysis-text" id="analysis-text">
       <!-- Populated by JS -->
     </div>
@@ -427,13 +427,13 @@ const weatherHeadline = {
 };
 const headline = weatherHeadline[REPORT.temperature] || REPORT.temperature;
 const analysisIntro = {
-  "Thunderstorm Warning":     "there is a high probability of severe market turbulence tomorrow. Pack a sturdy umbrella — conditions look rough.",
-  "Rain in the Forecast":     "rain is expected tomorrow. The negative bias is clear; keep defensive positioning and watch for any clearing breaks.",
+  "Thunderstorm Warning":     "there is a high probability of severe market turbulence at the next market open. Pack a sturdy umbrella — conditions look rough.",
+  "Rain in the Forecast":     "rain is expected at the next market open. The negative bias is clear; keep defensive positioning and watch for any clearing breaks.",
   "Neutral — Hold Gold/SGOV":  "the market is sending mixed signals — no strong sun, no heavy rain. Hold your weather insurance and wait for direction.",
   "Mostly Cloudy":             "caution is still advised. Mostly cloudy conditions mean mixed signals — maintain some defensive allocation while watching for improvement.",
   "Sunny and Partly Cloudy":   "conditions are moderately favorable. Sunny with some clouds — positive momentum is building but keep some protection in place.",
-  "Sunny Sky":                 "conditions look sunny and favorable for tomorrow. Strong positive momentum and good visibility expected.",
-  "Clear Sky":                 "outstanding conditions forecasted for tomorrow. Clear skies and strong upward momentum — a rare clear-sky day for investment."
+  "Sunny Sky":                 "conditions look sunny and favorable for the next market open. Strong positive momentum and good visibility expected.",
+  "Clear Sky":                 "outstanding conditions forecasted for the next market open. Clear skies and strong upward momentum — a rare clear-sky day for investment."
 };
 const rsiAdj = REPORT.rsi14_score_adj || 0;
 const allNeutral = REPORT.positive_weight === 0 && REPORT.negative_weight === 0;
@@ -455,7 +455,7 @@ const analysisHTML = `
   <strong>${fmtPct(REPORT.neutral_weight)}</strong> is sitting under shelter (cash and short-duration instruments).
   ${posNegSentiment}</p>
 
-  <p>📅 <strong>Tomorrow's weather summary (${REPORT.for_date}):</strong>
+  <p>📅 <strong>Next market open weather summary (${REPORT.for_date}):</strong>
   ${descMap[REPORT.temperature] || headline}
   Keep an eye on macro releases, Fed commentary, and geopolitical developments for any sudden shifts in the forecast.</p>
 `;
