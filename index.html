@@ -883,16 +883,29 @@
   }
   .hero-if-you strong { color: #fff; }
   .hero-mission-stmt {
-    font-size: 19px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 800;
     color: #fff;
-    line-height: 1.7;
-    border-top: 2px solid rgba(245,158,11,0.45);
-    border-bottom: 2px solid rgba(245,158,11,0.45);
-    padding: 18px 0;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    border-top: 2px solid rgba(245,158,11,0.55);
+    border-bottom: 2px solid rgba(245,158,11,0.55);
+    padding: 24px 0 24px 20px;
     margin: 0;
+    position: relative;
   }
-  .hero-mission-stmt strong { color: var(--gold); }
+  .hero-mission-stmt::before {
+    content: '“';
+    position: absolute;
+    left: -8px;
+    top: 12px;
+    font-size: 72px;
+    line-height: 1;
+    color: rgba(245,158,11,0.35);
+    font-family: Georgia, serif;
+    font-weight: 900;
+  }
+  .hero-mission-stmt strong { color: var(--gold); font-weight: 900; }
   .hero-ctas {
     display: flex;
     gap: 14px;
@@ -927,7 +940,8 @@
   .hero-cta-outline:hover { border-color: rgba(255,255,255,0.65); }
   @media (max-width: 680px) {
     .hero-pain-grid { grid-template-columns: 1fr; }
-    .hero-mission-stmt { font-size: 15px; }
+    .hero-mission-stmt { font-size: 18px; padding-left: 16px; }
+    .hero-mission-stmt::before { font-size: 52px; left: -4px; }
   }
   /* ── CTA BAND ── */
   .cta-band {
