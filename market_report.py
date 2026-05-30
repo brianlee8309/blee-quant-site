@@ -471,13 +471,18 @@ def main() -> int:
 
     log(f"Composite score: {score:+.2f} -> {label}")
 
-    # Dates — for_date = next business day after the allocation date
-    now = dt.datetime.now()
-    generated = now.strftime("%m/%d/%Y %I:%M %p")
-    today_str = now.strftime("%B %d, %Y")
+    # Dates — always use US/Eastern so the script running after midnight UTC
+    # (still same trading day in ET) shows the correct "data as of" date.
+    import zoneinfo as _zi
+    _et = _zi.ZoneInfo("America/New_York")
+    now = dt.datetime.now(_et)
+    generated = now.strftime("%m/%d/%Y %I:%M %p") + " ET"
+    today_str = now.strftime("%B %d, %Y")          # "data as of" = run date in ET
+    today_iso  = now.date().isoformat()            # e.g. "2026-05-29"
 
     def next_business_day(date_str: str) -> dt.date:
-        """Return the next weekday (Mon–Fri) after the given ISO date string."""
+        """Return the next weekday (Mon–Fri) after the given ISO date string,
+        skipping Saturday and Sunday (market closed)."""
         try:
             base = dt.date.fromisoformat(date_str)
         except (ValueError, TypeError):
@@ -487,7 +492,8 @@ def main() -> int:
             nxt += dt.timedelta(days=1)
         return nxt
 
-    for_date_obj = next_business_day(last_updated or dt.date.today().isoformat())
+    # "forecast for" = next trading day after TODAY (not after the allocation file date)
+    for_date_obj = next_business_day(today_iso)
     for_date_str = for_date_obj.strftime("%B %d, %Y")
 
     # News
