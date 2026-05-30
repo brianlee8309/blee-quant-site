@@ -130,24 +130,34 @@ def load_allocations_json(path: Path):
 # ── Score calculation ─────────────────────────────────────────────────────────
 
 def calculate_score(allocs: list[dict], points: dict[str, float]) -> tuple[float, list[dict]]:
-    score = 0.0
+    # Score = positive_driver_weight% - negative_driver_weight%
+    # (net allocation bias, capped at ±100).
+    # Point values in the CSV only determine direction (positive / negative / neutral);
+    # the magnitude of each ticker's contribution is its allocation weight, not its point
+    # multiplier. This keeps the score intuitive: +30 means 30% more of the portfolio
+    # is in bullish positions than bearish ones.
     breakdown = []
     for a in allocs:
         t = a["ticker"]
         w = a["weight_pct"]
-        p = points.get(t, 0.0)
+        p_raw = points.get(t, 0.0)
         if t == 'SGOV':          # cash/stable — never contributes to market score
-            p = 0.0
-        contrib = w * p
-        score += contrib
+            p_raw = 0.0
+        # Use sign only for scoring; keep raw point for display/breakdown
+        p_sign = 1.0 if p_raw > 0 else (-1.0 if p_raw < 0 else 0.0)
+        contrib = round(w * p_sign, 4)   # contribution = weight × direction (±1 or 0)
         breakdown.append({
             "ticker":       t,
             "weight":       round(w, 4),
-            "point":        p,
-            "contribution": round(contrib, 4),
+            "point":        p_raw,        # original CSV point (kept for reference)
+            "contribution": contrib,
             "value":        round(a.get("market_value", 0), 2),
         })
-    return round(score, 4), breakdown
+    # Score = Σ positive weights − Σ negative weights  (= net positive allocation %)
+    pos = sum(b["weight"] for b in breakdown if b["point"] > 0)
+    neg = sum(b["weight"] for b in breakdown if b["point"] < 0)
+    score = round(pos - neg, 4)
+    return score, breakdown
 
 
 def market_temperature(score: float) -> tuple[str, str, str]:
