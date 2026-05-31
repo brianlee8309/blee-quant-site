@@ -51,3 +51,14 @@ date,symphony_id,ticker,weight_pct,shares,market_value,source
 2026-05-28,g7WBkfIc6UWUWC6NiAdu,VIXM,0.6347,2.58518,39.779974286,symphony-stats-meta
 2026-05-28,g7WBkfIc6UWUWC6NiAdu,$USD,0.0989,6.2,6.2,symphony-stats-meta
 2026-05-29,g7WBkfIc6UWUWC6NiAdu,$USD,100.0,14572.23,14572.23,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,UPRO,3.3341,3.25413,485.4511134,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,SVXY,3.6756,9.69708,535.1818452,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,TECL,4.1774,2.47866,608.2383774,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,TQQQ,32.708,56.31982,4762.4039792,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,SHV,6.5028,8.57799,946.8385362,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,GLD,19.9877,6.9771,2910.287952,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,VGT,7.1941,8.65267,1047.4922302,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,TMV,2.1575,8.18061,314.135424,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,VIXM,0.652,6.18056,94.9334016,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,BIL,19.5106,30.99293,2840.8119638,symphony-stats-meta
+2026-05-31,g7WBkfIc6UWUWC6NiAdu,$USD,0.1003,14.6,14.6,symphony-stats-meta
