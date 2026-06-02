@@ -114,8 +114,12 @@
 
   <div class="stats">
     <div class="stat">
+      <div class="label">Portfolio Value</div>
+      <div class="value" id="stat-value">$1,836.90</div>
+    </div>
+    <div class="stat">
       <div class="label">Day Change</div>
-      <div class="value" id="stat-day" class="neg">-77.71%</div>
+      <div class="value" id="stat-day" class="pos">+0.34%</div>
     </div>
     <div class="stat" style="display:none">
       <div class="label" id="label-total">Total Return</div>
@@ -147,16 +151,22 @@
     <div style="font-size:12px;color:#94a3b8;" id="rsi-signal-display">—</div>
   </div>
 
-  <section class="card">
-    <h2>Today's Allocation</h2>
-    <div class="chart-wrap"><canvas id="pie"></canvas></div>
-  </section>
+  <div class="row">
+    <section class="card">
+      <h2>Today's Allocation</h2>
+      <div class="chart-wrap"><canvas id="pie"></canvas></div>
+    </section>
+    <section class="card">
+      <h2>Portfolio Value Over Time</h2>
+      <div class="chart-wrap"><canvas id="value-line"></canvas></div>
+    </section>
+  </div>
 
   <section class="card">
     <h2>Holdings at Market Close — Opening Strategy for <span id="holdings-date"></span></h2>
     <div style="overflow-x:auto"><table id="holdings"></table></div>
     <div class="download-row">
-      <a id="csv-download" href="composer_allocations.csv" download>Download full history (CSV)</a>
+      <a id="csv-download" href="../composer_allocations.csv" download>Download full history (CSV)</a>
     </div>
   </section>
 
@@ -230,7 +240,7 @@
 </div>
 
 <script>
-const DATA = {"symphony_id": "qjmHJ3IR19kmaAlbgkNj", "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal", "csv_filename": "composer_allocations_185.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-06-02", "run_datetime": "06/02/2026 03:51 PM", "total_value": 1147.49, "day_change_pct": -77.7057, "total_return_pct": 14.749, "annualized_return_pct": 787.5426, "today_allocations": [{"ticker": "SGOV", "weight_pct": 82.6802, "shares": 9.4496, "market_value": 948.74645472}, {"ticker": "GLDM", "weight_pct": 9.1997, "shares": 1.1894, "market_value": 105.565197}, {"ticker": "QQQ", "weight_pct": 8.0211, "shares": 0.12341, "market_value": 92.0416462}, {"ticker": "$USD", "weight_pct": 0.0993, "shares": 1.14, "market_value": 1.14}], "value_history": [{"date": "2026-05-10", "total": 82.4}, {"date": "2026-05-11", "total": 1002.47}, {"date": "2026-05-12", "total": 1002.13}, {"date": "2026-05-13", "total": 1001.37}, {"date": "2026-05-14", "total": 997.89}, {"date": "2026-05-15", "total": 1007.12}, {"date": "2026-05-16", "total": 1007.28}, {"date": "2026-05-17", "total": 1007.28}, {"date": "2026-05-18", "total": 1004.59}, {"date": "2026-05-19", "total": 1001.76}, {"date": "2026-05-20", "total": 15075.36}, {"date": "2026-05-21", "total": 15086.7}, {"date": "2026-05-22", "total": 15120.57}, {"date": "2026-05-24", "total": 5119.46}, {"date": "2026-05-25", "total": 5119.46}, {"date": "2026-05-26", "total": 5152.75}, {"date": "2026-05-27", "total": 5147.04}, {"date": "2026-05-28", "total": 5155.58}, {"date": "2026-05-29", "total": 5163.8}, {"date": "2026-05-31", "total": 5162.92}, {"date": "2026-06-01", "total": 5147.0}, {"date": "2026-06-02", "total": 1147.49}], "all_tickers": ["$USD", "GLDM", "QQQ", "SGOV", "SPXU", "SQQQ", "TECL", "TQQQ", "VIXY"], "weight_history": {"$USD": [5.1456, 0.1027, 0.1028, 0.1009, 0.1022, 0.1013, 0.1013, 0.1013, 0.1015, 0.0998, 0.0999, 0.1001, 0.1554, 0.0992, 0.0992, 0.0986, 0.1651, 0.1649, 0.1646, 0.1646, 0.1651, 0.0993], "GLDM": [9.3751, 9.9937, 9.9587, 0.0, 0.0, 9.1905, 9.1911, 9.1911, 9.2413, 9.1175, 9.2691, 9.1709, 9.0831, 9.1923, 9.1923, 9.1288, 9.0277, 9.1054, 9.1895, 9.1885, 9.0873, 9.1997], "QQQ": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.9866, 8.039, 8.062, 8.0572, 8.1288, 8.0211], "SGOV": [85.4824, 89.9035, 89.9385, 0.0, 0.0, 82.7765, 82.7675, 82.7675, 82.9974, 81.182, 82.3197, 82.6751, 82.5306, 82.711, 82.711, 82.1794, 82.8206, 82.6908, 82.5838, 82.5897, 82.6188, 82.6802], "SPXU": [0.0, 0.0, 0.0, 0.0, 32.2018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "SQQQ": [0.0, 0.0, 0.0, 99.8993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TECL": [0.0, 0.0, 0.0, 0.0, 0.0, 7.9321, 7.9402, 7.9402, 7.6602, 0.0, 0.0, 0.0, 8.2309, 7.9974, 7.9974, 8.5933, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TQQQ": [0.0, 0.0, 0.0, 0.0, 8.003, 0.0, 0.0, 0.0, 0.0, 9.6009, 8.3113, 8.054, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 59.693, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-31", "2026-06-01", "2026-06-02"], "baseline_date": null};
+const DATA = {"symphony_id": "ZGersOlsQFRHg7U2qnSw", "symphony_name": "BLEE - 185 2026 SGOV and Dual Reversal", "csv_filename": "composer_allocations_185v2.csv", "account_uuid": "b0d61a36-f329-4226-9d82-4494deaee5f5", "last_updated": "2026-06-01", "run_datetime": "06/01/2026 03:51 PM", "total_value": 1836.9, "day_change_pct": 0.3354, "total_return_pct": 79.4443, "annualized_return_pct": null, "today_allocations": [{"ticker": "SGOV", "weight_pct": 80.4287, "shares": 14.71582, "market_value": 1477.3947489}, {"ticker": "TECL", "weight_pct": 10.6352, "shares": 0.74517, "market_value": 195.35749305}, {"ticker": "GLDM", "weight_pct": 8.8328, "shares": 1.82992, "market_value": 162.2498568}, {"ticker": "$USD", "weight_pct": 0.1034, "shares": 1.9, "market_value": 1.9}], "value_history": [{"date": "2026-05-22", "total": 1023.66}, {"date": "2026-05-24", "total": 1023.68}, {"date": "2026-05-25", "total": 1023.68}, {"date": "2026-05-26", "total": 1032.17}, {"date": "2026-05-27", "total": 1029.45}, {"date": "2026-05-28", "total": 1032.91}, {"date": "2026-05-29", "total": 1040.9}, {"date": "2026-05-31", "total": 1830.76}, {"date": "2026-06-01", "total": 1836.9}], "all_tickers": ["$USD", "GLDM", "SGOV", "TECL", "TQQQ"], "weight_history": {"$USD": [0.1133, 0.1133, 0.1133, 0.1124, 0.1127, 0.9226, 1.1087, 0.1038, 0.1034], "GLDM": [8.8863, 8.8891, 8.8891, 8.812, 8.7278, 8.7879, 8.815, 8.9889, 8.8328], "SGOV": [80.8017, 80.8004, 80.8004, 80.1384, 80.3562, 80.0943, 79.5032, 80.9195, 80.4287], "TECL": [10.1991, 10.197, 10.197, 10.9373, 10.8038, 0.0, 10.5727, 9.9881, 10.6352], "TQQQ": [0.0, 0.0, 0.0, 0.0, 0.0, 10.1956, 0.0, 0.0, 0.0]}, "dates": ["2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-31", "2026-06-01"], "baseline_date": null};
 
 // ---- Helpers ---------------------------------------------------------------
 const fmt$ = (n) => n == null ? "—" :
@@ -278,6 +288,7 @@ if (DATA.csv_filename) {
   document.getElementById("csv-download").href = DATA.csv_filename;
 }
 
+document.getElementById("stat-value").textContent = fmt$(DATA.total_value);
 
 const dayEl = document.getElementById("stat-day");
 if (DATA.day_change_pct == null) {
@@ -340,7 +351,36 @@ try { new Chart(document.getElementById("pie"), {
   }
 }); } catch(e) { console.warn("Pie chart init failed:", e); }
 
-
+// ---- Portfolio value line --------------------------------------------------
+const hist = DATA.value_history || [];
+try { new Chart(document.getElementById("value-line"), {
+  type: "line",
+  data: {
+    labels: hist.map(p => p.date),
+    datasets: [{
+      label: "Total Value",
+      data: hist.map(p => p.total),
+      borderColor: "#2563eb",
+      backgroundColor: "rgba(59,130,246,0.10)",
+      fill: true, tension: 0.25, pointRadius: 3, borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
+        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
+        callbacks: { label: (ctx) => fmt$(ctx.parsed.y) }
+      }
+    },
+    scales: {
+      x: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } },
+      y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
+    }
+  }
+}); } catch(e) { console.warn("Value line chart init failed:", e); }
 
 // ---- Holdings table --------------------------------------------------------
 const tbl = document.getElementById("holdings");

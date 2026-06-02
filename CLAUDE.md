@@ -50,6 +50,7 @@ import subprocess; subprocess.run(['python', 'verify_html.py'])
 - Runs AFTER "Composer Daily Allocation Pull" (run_signal.bat at 3:51 PM)
 - Distribution source: index2.html → symphony qjmHJ3IR19kmaAlbgkNj
 - Account: U25734106 (live, TWS port 7496)
+- **SOLE OWNER of IBKR auto-trading.** The duplicate Cowork scheduled task "ibkr-daily-rebalance" (3:58 PM) was DISABLED 2026-06-01 to avoid double execution against the live account.
 
 ## Schwab Trader Web App
 - Location: C:\Kei\VisualStudio\SchwabTrader\trader_ui.py (~2,119 lines; use Python string replace for edits, NOT Edit tool)
@@ -85,7 +86,7 @@ import subprocess; subprocess.run(['python', 'verify_html.py'])
 - Falls back to blee_signal_fetcher (remote BLEE site) if local file missing
 
 ### Config files (C:\Kei\VisualStudio\SchwabTrader\)
-- `rebalance_config.json`: `{"budget": 32900.0, "allocation_file": "composer_allocations_186main.json"}`
+- `rebalance_config.json`: `{"budget": 32500.0, "allocation_file": "composer_allocations_185.json"}` (current as of 2026-06-01; user-set via UI — never hardcoded by Claude)
 - `composer_config.json`: same file as C:\Kei\ComposerInvest\composer_config.json (read-only reference)
 
 ## Two Trading Systems in Parallel
