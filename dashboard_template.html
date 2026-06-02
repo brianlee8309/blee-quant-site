@@ -114,10 +114,6 @@
 
   <div class="stats">
     <div class="stat">
-      <div class="label">Portfolio Value</div>
-      <div class="value" id="stat-value"></div>
-    </div>
-    <div class="stat">
       <div class="label">Day Change</div>
       <div class="value" id="stat-day"></div>
     </div>
@@ -151,16 +147,10 @@
     <div style="font-size:12px;color:#94a3b8;" id="rsi-signal-display">—</div>
   </div>
 
-  <div class="row">
-    <section class="card">
-      <h2>Today's Allocation</h2>
-      <div class="chart-wrap"><canvas id="pie"></canvas></div>
-    </section>
-    <section class="card">
-      <h2>Portfolio Value Over Time</h2>
-      <div class="chart-wrap"><canvas id="value-line"></canvas></div>
-    </section>
-  </div>
+  <section class="card">
+    <h2>Today's Allocation</h2>
+    <div class="chart-wrap"><canvas id="pie"></canvas></div>
+  </section>
 
   <section class="card">
     <h2>Holdings at Market Close — Opening Strategy for <span id="holdings-date"></span></h2>
@@ -288,7 +278,6 @@ if (DATA.csv_filename) {
   document.getElementById("csv-download").href = DATA.csv_filename;
 }
 
-document.getElementById("stat-value").textContent = fmt$(DATA.total_value);
 
 const dayEl = document.getElementById("stat-day");
 if (DATA.day_change_pct == null) {
@@ -351,36 +340,7 @@ try { new Chart(document.getElementById("pie"), {
   }
 }); } catch(e) { console.warn("Pie chart init failed:", e); }
 
-// ---- Portfolio value line --------------------------------------------------
-const hist = DATA.value_history || [];
-try { new Chart(document.getElementById("value-line"), {
-  type: "line",
-  data: {
-    labels: hist.map(p => p.date),
-    datasets: [{
-      label: "Total Value",
-      data: hist.map(p => p.total),
-      borderColor: "#2563eb",
-      backgroundColor: "rgba(59,130,246,0.10)",
-      fill: true, tension: 0.25, pointRadius: 3, borderWidth: 2
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
-        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
-        callbacks: { label: (ctx) => fmt$(ctx.parsed.y) }
-      }
-    },
-    scales: {
-      x: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } },
-      y: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => "$" + Number(v).toLocaleString() } }
-    }
-  }
-}); } catch(e) { console.warn("Value line chart init failed:", e); }
+
 
 // ---- Holdings table --------------------------------------------------------
 const tbl = document.getElementById("holdings");

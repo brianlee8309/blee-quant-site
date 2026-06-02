@@ -548,11 +548,9 @@ def generate_dashboard(
 
     template = DASHBOARD_TEMPLATE_PATH.read_text(encoding="utf-8")
     html = template.replace("/* __DATA_JSON__ */ {}", json.dumps(data))
-    # Pre-render Portfolio Value and Day Change directly into the HTML so they
-    # are visible immediately even if JavaScript is slow or blocked (e.g. when
-    # opening the file locally while CDN scripts haven't loaded yet).
-    _val_str = f"${total_value:,.2f}"
-    html = html.replace('id="stat-value"></div>', f'id="stat-value">{_val_str}</div>')
+    # Pre-render Day Change directly into the HTML so it is visible immediately
+    # even if JavaScript is slow or blocked (e.g. when opening the file locally
+    # while CDN scripts haven't loaded yet). (Portfolio Value card removed 2026-06-02.)
     if day_change_pct is not None:
         _sign = "+" if day_change_pct >= 0 else ""
         _chg_str = f"{_sign}{day_change_pct:.2f}%"
