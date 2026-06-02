@@ -215,8 +215,8 @@
 
 <div class="page-header">
   <h1>📊 BLEE Analytics — Full System Data Flow</h1>
-  <p>Investment Models → PC Automation → GitHub Pages + BackLog → Auth/Payments → Trading → Users</p>
-  <div class="version">v2.0 · Last updated 2026-05-23 · Admin only · bleeanalytics.com/data_flow_diagram.html</div>
+  <p>Investment Models → PC Automation (Windows + Cowork) → GitHub Pages + BackLog → Auth/Payments → Trading → Users</p>
+  <div class="version">v2.1 · Last updated 2026-06-01 · Admin only · bleeanalytics.com/data_flow_diagram.html</div>
 </div>
 
 <!-- Legend -->
@@ -245,6 +245,11 @@
       <div class="node-title">📈 yfinance</div>
       <div class="node-sub">QQQ / SPY / DIA<br>daily OHLCV</div>
       <span class="node-badge">free API</span>
+    </div>
+    <div class="node c-teal" id="n-rss">
+      <div class="node-title">📰 News RSS</div>
+      <div class="node-sub">WSJ · Yahoo Finance · Barron's<br>market headlines</div>
+      <span class="node-badge">free feeds</span>
     </div>
   </div>
 </div>
@@ -278,7 +283,7 @@
         </div>
         <div class="node c-orange" id="n-rsi">
           <div class="node-title">rsi_tracker.py</div>
-          <div class="node-sub">Fetches SPY RSI-14<br>Appends rsi_history.csv<br>Triggers RSI override if >76</div>
+          <div class="node-sub">Fetches SPY RSI-14<br>Appends rsi_history.csv<br>Triggers RSI override if &gt;76</div>
           <span class="node-badge">3:51 PM</span>
         </div>
         <div class="node c-red" id="n-schwabpy">
@@ -290,6 +295,26 @@
           <div class="node-title">ibkr_trader.py</div>
           <div class="node-sub">Reads index2.html<br>Auto-trades Calm Growth Model<br>Account U25734106 via TWS</div>
           <span class="node-badge">3:55 PM</span>
+        </div>
+        <div class="node c-orange" id="n-morning">
+          <div class="node-title">morning_preview.py</div>
+          <div class="node-sub">Pre-market RSI + signal preview<br>→ Algorithm185History.html</div>
+          <span class="node-badge">10:00 AM</span>
+        </div>
+      </div>
+    </div>
+    <div class="group-box">
+      <div class="group-label">🤖 Claude / Cowork Scheduled Tasks</div>
+      <div class="group-inner">
+        <div class="node c-orange" id="n-mktreport">
+          <div class="node-title">market_report.py</div>
+          <div class="node-sub">Market Weather score + top news<br>WSJ / Yahoo / Barron's RSS<br>Writes marketDailySummary.html + git push</div>
+          <span class="node-badge">3:55 PM</span>
+        </div>
+        <div class="node c-gray" id="n-cowork-ibkr">
+          <div class="node-title">ibkr-daily-rebalance</div>
+          <div class="node-sub">Disabled 2026-06-01<br>Duplicate of Windows IBKR task<br>(Windows is sole owner)</div>
+          <span class="node-badge" style="background:#30363d;color:#8b949e">disabled</span>
         </div>
       </div>
     </div>
@@ -471,7 +496,7 @@
 </div>
 
 <div style="text-align:center;font-size:10px;color:#6e7681;margin-top:4px;padding-bottom:6px">
-  Auto-updates 3:51 PM ET daily · bleeanalytics.com · All times Eastern
+  Auto-updates 3:51 PM ET daily (Windows) · Market Weather 3:55 PM ET (Cowork) · bleeanalytics.com · All times Eastern
 </div>
 
 </div><!-- #diagram -->
@@ -508,6 +533,11 @@
         <td>2026-05-23</td>
         <td><span class="badge orange">v2.0</span></td>
         <td>Major update: added schwab_rebalance.py (3:54 PM auto-trade), archive_pages.py (daily BackLog archiving), rsi_tracker.py (RSI-14 history + override). New pages: account_pro, account_ultimate, account_starter, client/index.html (BLEETrader download), BackLog/index.html, CurrentWatchSymphony.html (admin). BLEETrader subscriber desktop app (trader_client.py :5060). Removed planned "Import from Composer" node (replaced by live bleeanalytics.com fetch). Tiers updated: free/basic/pro/ultimate/admin. Symphony renamed Investment Model on all public pages. Schwab Trader dropdown now fetches live from CurrentWatchSymphony.html.</td>
+      </tr>
+      <tr>
+        <td>2026-06-01</td>
+        <td><span class="badge">v2.1</span></td>
+        <td>Added Claude / Cowork Scheduled Tasks group: market_report.py (3:55 PM — Market Weather score + WSJ/Yahoo/Barron's news → marketDailySummary.html). Disabled the duplicate Cowork "ibkr-daily-rebalance" task (was 3:58 PM) — Windows Task Scheduler is now sole owner of IBKR auto-trading on U25734106. Added News RSS source node + morning_preview.py (10:00 AM). Removed the dead "Import from Composer" (n-import) arrow left over from v2.0. Synced rebalance_config.json reference (budget $32,500 · composer_allocations_185.json).</td>
       </tr>
     </tbody>
   </table>
@@ -617,6 +647,7 @@ function renderArrows() {
   connect(svg, defs, 'n-composer', 'n-ibkrpy',      'blue',  'daily signal', false, +30, 0);
   connect(svg, defs, 'n-yfinance', 'n-acc',         'teal',  'price data');
   connect(svg, defs, 'n-yfinance', 'n-upd',         'teal',  '', false, +10, 0);
+  connect(svg, defs, 'n-rss',      'n-mktreport',   'teal',  'headlines');
   connect(svg, defs, 'n-pull',     'n-idx2',        'green', 'git push');
   connect(svg, defs, 'n-acc',      'n-algo',        'green', 'git push');
   connect(svg, defs, 'n-upd',      'n-algo',        'green', '', false, -10, +10);
@@ -625,7 +656,7 @@ function renderArrows() {
   connect(svg, defs, 'n-authpages','n-firebase',    'purple','sign-in', false, -20, +20);
   connect(svg, defs, 'n-authpages','n-stripe',      'purple','subscribe');
   connect(svg, defs, 'n-trader',   'n-schwab-api',  'red',   '');
-  connectH(svg, defs, 'n-idx2',    'n-import',      'red',   'reads signal (planned)', true);
+  connect(svg, defs, 'n-mktreport','n-mds',         'green', 'git push');
   connect(svg, defs, 'n-tws',      'n-ibkr-broker', 'red',   'live orders');
   connect(svg, defs, 'n-schwab-api','n-sch-broker', 'red',   'live orders');
   connect(svg, defs, 'n-idx2',     'n-basic',       'gray',  'browser access', false, 0, 0);
