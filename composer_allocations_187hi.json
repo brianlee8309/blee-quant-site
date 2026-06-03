@@ -1,98 +1,98 @@
 {
-  "date": "2026-06-02",
+  "date": "2026-06-03",
   "symphony_id": "iPifD8uTozTr0sbu9qiB",
   "symphony_name": "BLEE - 187 2026 ALL in One For High Interest Period",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "UPRO",
-      "weight_pct": 1.0519,
-      "shares": 2.27473,
-      "market_value": 343.24538335
+      "ticker": "EUM",
+      "weight_pct": 5.7693,
+      "shares": 121.0959,
+      "market_value": 1883.00491623
+    },
+    {
+      "ticker": "SDOW",
+      "weight_pct": 3.0105,
+      "shares": 36.80003,
+      "market_value": 982.560801
     },
     {
       "ticker": "TECL",
-      "weight_pct": 2.9571,
-      "shares": 3.54246,
-      "market_value": 964.966104
+      "weight_pct": 1.9512,
+      "shares": 2.37818,
+      "market_value": 636.8290404
+    },
+    {
+      "ticker": "BTAL",
+      "weight_pct": 6.5051,
+      "shares": 183.36147,
+      "market_value": 2123.14246113
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 9.1662,
-      "shares": 34.33711,
-      "market_value": 2991.091917256
+      "weight_pct": 2.904,
+      "shares": 10.91081,
+      "market_value": 947.80024308
     },
     {
       "ticker": "SHV",
-      "weight_pct": 2.6004,
-      "shares": 7.70888,
-      "market_value": 848.554966
+      "weight_pct": 1.3017,
+      "shares": 3.85924,
+      "market_value": 424.85987236
     },
     {
       "ticker": "VIXY",
-      "weight_pct": 7.0806,
-      "shares": 98.31965,
-      "market_value": 2310.511775
+      "weight_pct": 5.6367,
+      "shares": 78.36856,
+      "market_value": 1839.701946
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 35.9201,
-      "shares": 116.74584,
-      "market_value": 11721.364058088
+      "weight_pct": 35.9669,
+      "shares": 116.89851,
+      "market_value": 11738.9483742
     },
     {
       "ticker": "GLD",
-      "weight_pct": 14.7405,
-      "shares": 11.67919,
-      "market_value": 4810.075569419
+      "weight_pct": 17.4861,
+      "shares": 13.98503,
+      "market_value": 5707.1508927
     },
     {
       "ticker": "UVXY",
-      "weight_pct": 1.2676,
-      "shares": 14.17598,
-      "market_value": 413.642338018
-    },
-    {
-      "ticker": "VGT",
-      "weight_pct": 2.5444,
-      "shares": 6.61153,
-      "market_value": 830.2759374
-    },
-    {
-      "ticker": "UDOW",
-      "weight_pct": 2.9507,
-      "shares": 14.32405,
-      "market_value": 962.862641
+      "weight_pct": 1.2981,
+      "shares": 14.54961,
+      "market_value": 423.6846432
     },
     {
       "ticker": "TMV",
-      "weight_pct": 1.2883,
+      "weight_pct": 1.3043,
       "shares": 11.03121,
-      "market_value": 420.41044431
+      "market_value": 425.6943939
     },
     {
       "ticker": "USMV",
-      "weight_pct": 3.7599,
+      "weight_pct": 3.7353,
       "shares": 12.65457,
-      "market_value": 1226.92383435
+      "market_value": 1219.1412738
     },
     {
       "ticker": "BIL",
-      "weight_pct": 11.7004,
+      "weight_pct": 11.6992,
       "shares": 41.77287,
-      "market_value": 3818.040318
+      "market_value": 3818.41627383
     },
     {
-      "ticker": "SQQQ",
-      "weight_pct": 2.8718,
-      "shares": 25.36217,
-      "market_value": 937.1321815
+      "ticker": "PSQ",
+      "weight_pct": 1.3017,
+      "shares": 16.94371,
+      "market_value": 424.86352825
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1,
-      "shares": 32.64,
-      "market_value": 32.64
+      "weight_pct": 0.1298,
+      "shares": 42.36,
+      "market_value": 42.36
     }
   ]
 }
