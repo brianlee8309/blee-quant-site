@@ -862,7 +862,7 @@
     <a href="contact.html">Contact</a>
   </div>
   <p>© 2026 BLEE Quant Analytics · Simulated backtest data only · Not investment advice</p>
-  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">06/03/2026 03:51 PM ET</span></p>
+  <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.25);">Last Updated: <span id="page-last-updated">06/03/2026 03:58 PM ET</span></p>
 </footer>
 
 <!-- CHARTS -->
@@ -955,24 +955,4 @@
     data: {
       labels: labels6,
       datasets: [
-        { label: 'BLEE Calm Growth Model', data: blee6, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#10b981' },
-        { label: 'S&P 500 (SPY)',    data: spy6,  borderColor: '#f472b6', backgroundColor: 'rgba(244,114,182,0.06)', borderWidth: 2,   fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#f472b6' }
-      ]
-    },
-    options: chartOpts('BLEE +172% ($27,197)  vs  SPY ~+155%  ·  BLEE outperforms on risk-adjusted basis')
-  }); } catch(e) { console.warn('chart6yr:', e); }
-
-  function chartOpts(footerNote) {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(10,16,30,0.95)',
-          borderColor: 'rgba(255,255,255,0.12)',
-          borderWidth: 1,
-          titleColor: '#e5e7eb',
-          bodyColor: '#cbd5e1',
-         
+        { label: 'BLEE Calm Growth Model', data: blee6, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.10)', borderWid
