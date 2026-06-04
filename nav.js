@@ -493,8 +493,13 @@
 
     function fetchTicker() { _tryProxy(0); }
 
-    showTradingView(); // show TV immediately — guaranteed content
-    fetchTicker();     // async: upgrade to YF custom ticker if proxy succeeds
+    // TradingView is the SOLE live source (2026-06-03). The Yahoo Finance
+    // upgrade was disabled because its free CORS proxies (allorigins.win /
+    // corsproxy.io) and Yahoo's v7 quote endpoint became unreliable, which
+    // left the ticker showing stale values. The TradingView ticker-tape is
+    // self-contained (no proxy, no CORS) and always live 24/7.
+    // (The YF helper fns above are kept but intentionally no longer called.)
+    showTradingView();
   }
 
   // ── Sign In link toggle (Firebase auth state) ─────────────────────────────
