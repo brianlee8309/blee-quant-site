@@ -1,74 +1,80 @@
 {
-  "date": "2026-06-03",
+  "date": "2026-06-04",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "EUM",
-      "weight_pct": 16.4827,
-      "shares": 107.59187,
-      "market_value": 1673.021300939
+      "ticker": "UPRO",
+      "weight_pct": 3.0506,
+      "shares": 2.05311,
+      "market_value": 307.1863182
     },
     {
       "ticker": "TECL",
-      "weight_pct": 5.5708,
-      "shares": 2.11161,
-      "market_value": 565.4469258
+      "weight_pct": 4.0124,
+      "shares": 1.58369,
+      "market_value": 404.0309928
     },
     {
-      "ticker": "BTAL",
-      "weight_pct": 18.5843,
-      "shares": 162.91061,
-      "market_value": 1886.34195319
+      "ticker": "TQQQ",
+      "weight_pct": 31.1363,
+      "shares": 36.65676,
+      "market_value": 3135.322330644
     },
     {
       "ticker": "SHV",
-      "weight_pct": 2.0526,
-      "shares": 1.89245,
-      "market_value": 208.33792805
+      "weight_pct": 2.1823,
+      "shares": 1.996,
+      "market_value": 219.74962
     },
     {
       "ticker": "VIXY",
-      "weight_pct": 12.7044,
-      "shares": 54.93171,
-      "market_value": 1289.52189225
+      "weight_pct": 5.8687,
+      "shares": 25.98776,
+      "market_value": 590.9616624
     },
     {
       "ticker": "GLD",
-      "weight_pct": 19.7845,
-      "shares": 4.92088,
-      "market_value": 2008.1619192
+      "weight_pct": 20.2717,
+      "shares": 4.9681,
+      "market_value": 2041.292928
     },
     {
       "ticker": "UVXY",
-      "weight_pct": 2.0471,
-      "shares": 7.1354,
-      "market_value": 207.782848
+      "weight_pct": 2.0805,
+      "shares": 7.54673,
+      "market_value": 209.4972248
+    },
+    {
+      "ticker": "VGT",
+      "weight_pct": 7.18,
+      "shares": 5.87091,
+      "market_value": 723.0025665
     },
     {
       "ticker": "TMV",
-      "weight_pct": 2.0779,
+      "weight_pct": 2.0803,
       "shares": 5.46539,
-      "market_value": 210.9094001
+      "market_value": 209.484572927
     },
     {
       "ticker": "BIL",
-      "weight_pct": 18.4741,
-      "shares": 20.51392,
-      "market_value": 1875.15691328
+      "weight_pct": 19.6432,
+      "shares": 21.63766,
+      "market_value": 1978.0066889
     },
     {
       "ticker": "PSQ",
-      "weight_pct": 2.0539,
-      "shares": 8.31417,
-      "market_value": 208.47781275
+      "weight_pct": 2.193,
+      "shares": 8.76315,
+      "market_value": 220.832256315
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1678,
-      "shares": 17.03,
-      "market_value": 17.03
+      "weight_pct": 0.301,
+      "shares": 30.31,
+      "market_value": 30.31
     }
   ]
 }
