@@ -441,9 +441,9 @@
       // Yahoo Finance fetch below (async) will upgrade this if successful.
       var cfg = JSON.stringify({
         "symbols": [
-          {"description": "S&P 500", "proName": "FOREXCOM:SPXUSD"},
-          {"description": "NASDAQ",  "proName": "OANDA:NAS100USD" },
-          {"description": "DOW 30",  "proName": "OANDA:US30USD"   }
+          {"description": "S&P 500", "proName": "CAPITALCOM:US500"},
+          {"description": "NASDAQ",  "proName": "CAPITALCOM:US100"},
+          {"description": "DOW 30",  "proName": "CAPITALCOM:US30" }
         ],
         "showSymbolLogo": false, "isTransparent": true,
         "displayMode": "regular", "colorTheme": "dark", "locale": "en"
