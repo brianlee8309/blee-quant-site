@@ -102,3 +102,7 @@ date,symphony_id,ticker,weight_pct,shares,market_value,source
 2026-06-08,qjmHJ3IR19kmaAlbgkNj,GLDM,9.219,6.53155,559.427910655,symphony-stats-meta
 2026-06-08,qjmHJ3IR19kmaAlbgkNj,SGOV,82.7733,49.9935,5022.846945,symphony-stats-meta
 2026-06-08,qjmHJ3IR19kmaAlbgkNj,$USD,0.1004,6.09,6.09,symphony-stats-meta
+2026-06-09,qjmHJ3IR19kmaAlbgkNj,GLDM,9.078,6.53155,550.087141,symphony-stats-meta
+2026-06-09,qjmHJ3IR19kmaAlbgkNj,SGOV,82.8916,49.9935,5022.846945,symphony-stats-meta
+2026-06-09,qjmHJ3IR19kmaAlbgkNj,UDOW,7.9306,7.39379,480.55938105,symphony-stats-meta
+2026-06-09,qjmHJ3IR19kmaAlbgkNj,$USD,0.0998,6.05,6.05,symphony-stats-meta

@@ -1,21 +1,21 @@
 {
-  "date": "2026-06-08",
+  "date": "2026-06-09",
   "symphony_id": "qjmHJ3IR19kmaAlbgkNj",
   "symphony_name": "BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal",
   "source": "blee-quant-site",
-  "published_at": "2026-06-08T19:51:05Z",
+  "published_at": "2026-06-09T19:51:05Z",
   "positions": [
     {
-      "ticker": "PSQ",
-      "weight_pct": 7.9074
-    },
-    {
       "ticker": "GLDM",
-      "weight_pct": 9.219
+      "weight_pct": 9.078
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 82.7733
+      "weight_pct": 82.8916
+    },
+    {
+      "ticker": "UDOW",
+      "weight_pct": 7.9306
     }
   ]
 }

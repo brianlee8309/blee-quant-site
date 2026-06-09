@@ -226,3 +226,15 @@
 [2026-06-08T09:45:03] Loading previous allocation for comparison...
 [2026-06-08T09:45:03]   Previous date: 2026-06-07
 [2026-06-08T09:45:03]   Changes:
+[2026-06-09T09:45:00] ============================================================
+[2026-06-09T09:45:00] Morning Preview — starting
+[2026-06-09T09:45:00] Discovering account UUID...
+[2026-06-09T09:45:02]   Found account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-06-09T09:45:02] Fetching current symphony allocation from Composer API...
+[2026-06-09T09:45:03]   Got 3 positions from API
+[2026-06-09T09:45:03]     SGOV        0.83%
+[2026-06-09T09:45:03]     GLDM        0.09%
+[2026-06-09T09:45:03]     UDOW        0.08%
+[2026-06-09T09:45:03] Loading previous allocation for comparison...
+[2026-06-09T09:45:03]   Previous date: 2026-06-08
+[2026-06-09T09:45:03]   Changes:
