@@ -1,68 +1,68 @@
 {
-  "date": "2026-06-09",
+  "date": "2026-06-10",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 7.9141,
+      "weight_pct": 7.9148,
       "shares": 2.70391,
-      "market_value": 368.6781285
+      "market_value": 356.4294162
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 3.4857,
+      "weight_pct": 3.5257,
       "shares": 3.01994,
-      "market_value": 162.3821738
+      "market_value": 158.7733455
     },
     {
       "ticker": "TECL",
-      "weight_pct": 19.5853,
-      "shares": 4.59035,
-      "market_value": 912.377966
+      "weight_pct": 20.0574,
+      "shares": 4.71492,
+      "market_value": 903.25372662
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 15.4192,
+      "weight_pct": 15.3804,
       "shares": 9.88172,
-      "market_value": 718.301238628
+      "market_value": 692.632482756
     },
     {
       "ticker": "SHV",
-      "weight_pct": 4.1028,
+      "weight_pct": 4.2447,
       "shares": 1.73539,
-      "market_value": 191.12717765
+      "market_value": 191.1532085
     },
     {
       "ticker": "GLD",
-      "weight_pct": 44.6189,
-      "shares": 5.32024,
-      "market_value": 2078.5645656
+      "weight_pct": 43.7218,
+      "shares": 5.24589,
+      "market_value": 1968.939369111
     },
     {
       "ticker": "TLT",
-      "weight_pct": 2.0516,
+      "weight_pct": 2.1163,
       "shares": 1.12253,
-      "market_value": 95.5722042
+      "market_value": 95.302797
     },
     {
       "ticker": "TMV",
-      "weight_pct": 2.045,
+      "weight_pct": 2.1352,
       "shares": 2.45014,
-      "market_value": 95.266833508
+      "market_value": 96.1557443
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.614,
+      "weight_pct": 0.6414,
       "shares": 1.84976,
-      "market_value": 28.602653904
+      "market_value": 28.883817424
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1634,
-      "shares": 7.61,
-      "market_value": 7.61
+      "weight_pct": 0.2625,
+      "shares": 11.82,
+      "market_value": 11.82
     }
   ]
 }

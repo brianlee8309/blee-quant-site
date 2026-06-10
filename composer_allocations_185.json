@@ -1,32 +1,32 @@
 {
-  "date": "2026-06-09",
+  "date": "2026-06-10",
   "symphony_id": "ZGersOlsQFRHg7U2qnSw",
   "symphony_name": "BLEE - 185 2026 SGOV and Dual Reversal",
   "source": "symphony-stats-meta",
   "positions": [
     {
+      "ticker": "PSQ",
+      "weight_pct": 9.9606,
+      "shares": 19.65199,
+      "market_value": 526.2802922
+    },
+    {
       "ticker": "GLDM",
-      "weight_pct": 8.712,
-      "shares": 5.47764,
-      "market_value": 461.3268408
+      "weight_pct": 8.6505,
+      "shares": 5.64969,
+      "market_value": 457.059921
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 81.1011,
+      "weight_pct": 81.2888,
       "shares": 42.7448,
-      "market_value": 4294.570056
-    },
-    {
-      "ticker": "UDOW",
-      "weight_pct": 9.9464,
-      "shares": 8.10358,
-      "market_value": 526.6921821
+      "market_value": 4294.997504
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.2406,
-      "shares": 12.74,
-      "market_value": 12.74
+      "weight_pct": 0.1001,
+      "shares": 5.29,
+      "market_value": 5.29
     }
   ]
 }
