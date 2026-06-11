@@ -1,68 +1,62 @@
 {
-  "date": "2026-06-10",
+  "date": "2026-06-11",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "UPRO",
-      "weight_pct": 7.9148,
-      "shares": 2.70391,
-      "market_value": 356.4294162
+      "ticker": "GLD",
+      "weight_pct": 43.1051,
+      "shares": 5.24589,
+      "market_value": 2027.011896
     },
     {
-      "ticker": "SVXY",
-      "weight_pct": 3.5257,
-      "shares": 3.01994,
-      "market_value": 158.7733455
-    },
-    {
-      "ticker": "TECL",
-      "weight_pct": 20.0574,
-      "shares": 4.71492,
-      "market_value": 903.25372662
-    },
-    {
-      "ticker": "TQQQ",
-      "weight_pct": 15.3804,
-      "shares": 9.88172,
-      "market_value": 692.632482756
+      "ticker": "PSQ",
+      "weight_pct": 1.7885,
+      "shares": 3.22788,
+      "market_value": 84.1024134
     },
     {
       "ticker": "SHV",
-      "weight_pct": 4.2447,
-      "shares": 1.73539,
-      "market_value": 191.1532085
-    },
-    {
-      "ticker": "GLD",
-      "weight_pct": 43.7218,
-      "shares": 5.24589,
-      "market_value": 1968.939369111
-    },
-    {
-      "ticker": "TLT",
-      "weight_pct": 2.1163,
-      "shares": 1.12253,
-      "market_value": 95.302797
+      "weight_pct": 3.8221,
+      "shares": 1.63153,
+      "market_value": 179.733586778
     },
     {
       "ticker": "TMV",
-      "weight_pct": 2.1352,
+      "weight_pct": 1.9679,
       "shares": 2.45014,
-      "market_value": 96.1557443
+      "market_value": 92.5417878
     },
     {
-      "ticker": "VIXM",
-      "weight_pct": 0.6414,
-      "shares": 1.84976,
-      "market_value": 28.883817424
+      "ticker": "BTAL",
+      "weight_pct": 3.5627,
+      "shares": 14.48304,
+      "market_value": 167.535461808
+    },
+    {
+      "ticker": "TECL",
+      "weight_pct": 21.3735,
+      "shares": 4.81917,
+      "market_value": 1005.0860952
+    },
+    {
+      "ticker": "TQQQ",
+      "weight_pct": 16.2216,
+      "shares": 10.07981,
+      "market_value": 762.816837237
+    },
+    {
+      "ticker": "UPRO",
+      "weight_pct": 7.8878,
+      "shares": 2.70391,
+      "market_value": 370.9223738
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.2625,
-      "shares": 11.82,
-      "market_value": 11.82
+      "weight_pct": 0.2709,
+      "shares": 12.74,
+      "market_value": 12.74
     }
   ]
 }
