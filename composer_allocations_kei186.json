@@ -1,62 +1,68 @@
 {
-  "date": "2026-06-11",
+  "date": "2026-06-12",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "GLD",
-      "weight_pct": 43.1051,
-      "shares": 5.24589,
-      "market_value": 2027.011896
+      "ticker": "UPRO",
+      "weight_pct": 10.0534,
+      "shares": 10.74434,
+      "market_value": 1493.8393119
     },
     {
-      "ticker": "PSQ",
-      "weight_pct": 1.7885,
-      "shares": 3.22788,
-      "market_value": 84.1024134
-    },
-    {
-      "ticker": "SHV",
-      "weight_pct": 3.8221,
-      "shares": 1.63153,
-      "market_value": 179.733586778
-    },
-    {
-      "ticker": "TMV",
-      "weight_pct": 1.9679,
-      "shares": 2.45014,
-      "market_value": 92.5417878
-    },
-    {
-      "ticker": "BTAL",
-      "weight_pct": 3.5627,
-      "shares": 14.48304,
-      "market_value": 167.535461808
+      "ticker": "SVXY",
+      "weight_pct": 3.4243,
+      "shares": 9.2944,
+      "market_value": 508.821928
     },
     {
       "ticker": "TECL",
-      "weight_pct": 21.3735,
-      "shares": 4.81917,
-      "market_value": 1005.0860952
+      "weight_pct": 20.8666,
+      "shares": 14.39449,
+      "market_value": 3100.573146
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 16.2216,
-      "shares": 10.07981,
-      "market_value": 762.816837237
+      "weight_pct": 13.579,
+      "shares": 26.07686,
+      "market_value": 2017.6970425
     },
     {
-      "ticker": "UPRO",
-      "weight_pct": 7.8878,
-      "shares": 2.70391,
-      "market_value": 370.9223738
+      "ticker": "SHV",
+      "weight_pct": 3.9556,
+      "shares": 5.33361,
+      "market_value": 587.760088473
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 43.4622,
+      "shares": 16.72421,
+      "market_value": 6458.0536915
+    },
+    {
+      "ticker": "TLT",
+      "weight_pct": 1.9706,
+      "shares": 3.41784,
+      "market_value": 292.8063528
+    },
+    {
+      "ticker": "TMV",
+      "weight_pct": 1.9996,
+      "shares": 7.77797,
+      "market_value": 297.118454
+    },
+    {
+      "ticker": "VIXM",
+      "weight_pct": 0.589,
+      "shares": 5.7273,
+      "market_value": 87.513144
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.2709,
-      "shares": 12.74,
-      "market_value": 12.74
+      "weight_pct": 0.0997,
+      "shares": 14.82,
+      "market_value": 14.82
     }
   ]
 }
