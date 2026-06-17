@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE Quant — Upcoming Market Weather Forecast</title>
+<!-- BLEE Auth Guard (Basic+ required) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<script>const BLEE_REQUIRED_TIER = "free";</script>
+<script src="auth_guard.js"></script>
+<script src="i18n.js" defer></script>
+<script src="analytics.js" defer></script>
+<style>
+  :root {
+    --bg:       #0b1120;
+    --surface:  #131f35;
+    --card:     #1a2742;
+    --border:   rgba(255,255,255,0.07);
+    --text:     #e8edf5;
+    --muted:    rgba(255,255,255,0.45);
+    --gold:     #f59e0b;
+    --pos:      #22c55e;
+    --neg:      #ef4444;
+    --neutral:  #f59e0b;
+    --accent:   #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* ── UNIFIED NAV ── */
+
+  /* ── LAYOUT ── */
+  .container { max-width: 980px; margin: 0 auto; padding: 36px 20px 72px; }
+  .page-header { margin-bottom: 28px; }
+  .page-header h1 {
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.02em; color: #fff;
+  }
+  .page-header .sub {
+    color: var(--muted); font-size: 13px; margin-top: 4px;
+  }
+  .badge-date {
+    display: inline-block;
+    background: rgba(59,130,246,0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.3);
+    font-size: 11.5px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  /* ── TEMPERATURE HERO ── */
+  .temp-hero {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+  }
+  @media(max-width:640px){ .temp-hero { grid-template-columns:1fr; } }
+  .temp-label {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .temp-value {
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .temp-desc { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+  .score-box {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 18px 24px;
+    text-align: center;
+    min-width: 130px;
+  }
+  .score-box .sl { font-size: 11px; color: var(--muted); font-weight: 600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px; }
+  .score-box .sv { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+
+  /* ── GAUGE BAR ── */
+  .gauge-wrap { margin: 20px 0 8px; }
+  .gauge-track {
+    height: 10px; border-radius: 6px;
+    background: linear-gradient(to right,
+      #dc2626 0%, #ef4444 20%, #fca5a5 35%,
+      #f59e0b 48%, #f59e0b 52%,
+      #86efac 65%, #22c55e 80%, #16a34a 100%);
+    position: relative;
+  }
+  .gauge-needle {
+    position: absolute;
+    top: -4px;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #0d1829;
+    transform: translateX(-50%);
+    transition: left .6s ease;
+  }
+  .gauge-labels {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ── STAT STRIP ── */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:500px){ .stat-strip { grid-template-columns: repeat(1,1fr); } }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .stat-card .sl { font-size: 10.5px; color: var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:6px; }
+  .stat-card .sv { font-size: 20px; font-weight: 700; }
+
+  /* ── SECTION CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    font-size: 14px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .analysis-text {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: rgba(232,237,245,0.85);
+  }
+  .analysis-text p { margin-bottom: 14px; }
+  .analysis-text p:last-child { margin-bottom: 0; }
+
+  /* ── BREAKDOWN TABLE ── */
+  table { width:100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { font-size: 10.5px; font-weight: 700; text-transform:uppercase; letter-spacing:0.07em; color: var(--muted); }
+  td.num, th.num { text-align:right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .ticker-cell { font-weight: 700; font-size: 13.5px; }
+  .bar-wrap { display:flex; align-items:center; gap:8px; }
+  .bar-track { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; min-width:60px; }
+  .bar-fill { height:100%; border-radius:3px; }
+  .bar-pos { background: var(--pos); }
+  .bar-neg { background: var(--neg); }
+  .bar-zero { background: var(--muted); }
+  .contrib-pos { color: var(--pos); }
+  .contrib-neg { color: var(--neg); }
+
+  /* ── NEWS CARDS ── */
+  .news-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .news-item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .news-item:first-child { padding-top: 0; }
+  .news-tag {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 7px;
+  }
+  .tag-macro  { background: rgba(59,130,246,0.2); color: #93c5fd; }
+  .tag-fed    { background: rgba(245,158,11,0.2); color: #fcd34d; }
+  .tag-equity { background: rgba(34,197,94,0.2);  color: #86efac; }
+  .tag-risk   { background: rgba(239,68,68,0.2);  color: #fca5a5; }
+  .news-title { font-size: 15px; font-weight: 700; line-height: 1.4; color: #fff; margin-bottom: 6px; }
+  .news-body  { font-size: 13.5px; line-height: 1.7; color: rgba(232,237,245,0.75); }
+  .news-source { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .news-source a { color: var(--accent); text-decoration: none; }
+  .news-source a:hover { text-decoration: underline; }
+
+  /* ── RECOMMENDATION BOX ── */
+  .rec-box {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rec-icon { font-size: 26px; line-height:1; flex-shrink:0; }
+  .rec-title { font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+  .rec-body  { font-size: 13.5px; color: rgba(232,237,245,0.8); line-height: 1.65; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    line-height: 1.8;
+  }
+
+  .pos { color: var(--pos); }
+  .neg { color: var(--neg); }
+  .neutral { color: var(--neutral); }
+</style>
+</head>
+<body>
+
+<!-- Auth handled by auth_guard.js in <head> (BLEE_REQUIRED_TIER = "basic") -->
+
+
+
+<div class="container">
+
+  <div class="page-header">
+    <div class="badge-date" id="report-badge">— Loading —</div>
+    <h1>Upcoming Market Weather Forecast</h1>
+    <div class="sub">BLEE Quant Analytics · Daily market weather model · Updated <span id="updated-time">—</span></div>
+  </div>
+
+  <!-- Temperature Hero -->
+  <div class="temp-hero" id="temp-hero">
+    <div>
+      <div class="temp-label">🌡️ Weather Forecast</div>
+      <div class="temp-value" id="temp-value">—</div>
+      <div class="temp-desc" id="temp-desc">Calculating…</div>
+      <div class="gauge-wrap">
+        <div class="gauge-track">
+          <div class="gauge-needle" id="gauge-needle"></div>
+        </div>
+        <div class="gauge-labels">
+          <span>⛈️ Thunderstorm</span>
+          <span>⛅ Cloudy</span>
+          <span>🌈 Clear Sky</span>
+        </div>
+      </div>
+    </div>
+    <div class="score-box">
+      <div class="sl">🌡️ Weather Index</div>
+      <div class="sv" id="score-val">—</div>
+    </div>
+  </div>
+
+  <!-- Stat Strip -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="sl">Positive Drivers</div>
+      <div class="sv pos" id="stat-pos">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sl">Negative Drivers</div>
+      <div class="sv neg" id="stat-neg">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sl">Neutral Allocation</div>
+      <div class="sv" id="stat-neutral" style="color:#94a3b8">—</div>
+    </div>
+  </div>
+
+  <!-- RSI Override Banner (hidden — manual override disabled 2026-05-15;
+       the symphony now handles bull/bear rotation natively) -->
+  <div id="rsi-override-banner" style="display:none;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:12px;padding:14px 20px;margin-bottom:12px;align-items:center;gap:14px;">
+    <span style="font-size:24px;">⚡</span>
+    <div>
+      <div style="font-size:14px;font-weight:800;color:#fff;letter-spacing:.02em;">RSI ELEVATED — Symphony Rotation Active</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.75);margin-top:3px;">SPY RSI-14 is in an extended overbought zone. The BLEE-187 symphony is rotating between defensive (SQQQ / VIXY / SGOV) and growth (TECL / TQQQ / UPRO) positions on its own — no manual redistribution is being applied.</div>
+    </div>
+  </div>
+
+  <!-- RSI-14 Signal Card -->
+  <div class="card" id="rsi-card" style="display:none;">
+    <h2>📈 SPY RSI-14 Momentum Signal</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+      <div style="flex:0 0 auto;text-align:center;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 22px;">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Today RSI-14</div>
+        <div id="rsi-today" style="font-size:32px;font-weight:800;color:#f59e0b;">—</div>
+      </div>
+      <div style="flex:0 0 auto;text-align:center;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 22px;">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">10-Day Avg RSI</div>
+        <div id="rsi-avg" style="font-size:32px;font-weight:800;color:#f59e0b;">—</div>
+      </div>
+      <div style="flex:1;min-width:180px;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 18px;">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Signal</div>
+        <div id="rsi-signal" style="font-size:15px;font-weight:600;color:#e2e8f0;">—</div>
+        <div id="rsi-adj" style="font-size:12px;margin-top:6px;color:#64748b;">Score adjustment: —</div>
+      </div>
+    </div>
+    <!-- Mini sparkline table for last 10 days -->
+    <div style="margin-top:14px;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr>
+            <th style="color:#64748b;font-weight:600;padding:4px 8px;text-align:left;">Date</th>
+            <th style="color:#64748b;font-weight:600;padding:4px 8px;text-align:right;">SPY Close</th>
+            <th style="color:#64748b;font-weight:600;padding:4px 8px;text-align:right;">RSI-14</th>
+            <th style="color:#64748b;font-weight:600;padding:4px 8px;text-align:left;">Zone</th>
+          </tr>
+        </thead>
+        <tbody id="rsi-history-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Market Analysis -->
+  <div class="card">
+    <h2>🌤️ Market Forecast — Next Market Open Weather Report</h2>
+    <div class="analysis-text" id="analysis-text">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Recommendation -->
+  <div class="rec-box" id="rec-box">
+    <div class="rec-icon" id="rec-icon">⚠️</div>
+    <div>
+      <div class="rec-title" id="rec-title">—</div>
+      <div class="rec-body" id="rec-body">—</div>
+    </div>
+  </div>
+
+  <!-- Market News -->
+  <div class="card">
+    <h2>📰 Top Market News</h2>
+    <div id="news-section"></div>
+  </div>
+
+  <footer>
+    <div>BLEE Quant Analytics · Upcoming Market Weather Forecast</div>
+    <div style="margin-top:4px">Last generated: <span id="footer-time">—</span></div>
+    <div style="margin-top:12px">
+      <a href="..//BackLog/index.html" style="color:#7c3aed;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #7c3aed;padding:5px 14px;border-radius:20px;">
+        📁 View Archive
+      </a>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.25)">
+      This report is generated automatically from quantitative signals and publicly available news sources.<br>
+      It does not constitute financial advice. Past performance does not guarantee future results.
+    </div>
+  </footer>
+</div>
+
+<script>
+// ─── DATA (injected by market_report.py) ───────────────────────────────────
+const REPORT = /* __REPORT_JSON__ */ {"generated": "06/16/2026 03:53 PM ET", "report_date": "June 16, 2026", "for_date": "June 17, 2026", "score": 3.3232, "temperature": "Mostly Cloudy", "temp_color": "#f59e0b", "temp_arrow": "-", "weather_label": "☁️ Mostly Cloudy", "positive_weight": 22.57, "negative_weight": 14.25, "neutral_weight": 63.17, "total_value": 32616.66, "breakdown": [{"ticker": "UPRO", "weight": 1.0599, "point": 3.0, "contribution": 1.0599, "value": 345.7}, {"ticker": "TECL", "weight": 1.3944, "point": 3.0, "contribution": 1.3944, "value": 454.8}, {"ticker": "TQQQ", "weight": 10.8183, "point": 3.0, "contribution": 10.8183, "value": 3528.57}, {"ticker": "SHV", "weight": 1.3414, "point": -1.0, "contribution": -1.3414, "value": 437.53}, {"ticker": "VIXY", "weight": 5.9941, "point": -3.0, "contribution": -5.9941, "value": 1955.07}, {"ticker": "SGOV", "weight": 35.9907, "point": 0.0, "contribution": 0.0, "value": 11738.95}, {"ticker": "GLD", "weight": 14.8445, "point": 0.0, "contribution": 0.0, "value": 4841.77}, {"ticker": "UVXY", "weight": 1.2788, "point": -3.0, "contribution": -1.2788, "value": 417.12}, {"ticker": "VGT", "weight": 2.4942, "point": 2.0, "contribution": 2.4942, "value": 813.54}, {"ticker": "UDOW", "weight": 3.0584, "point": 3.0, "contribution": 3.0584, "value": 997.55}, {"ticker": "TMV", "weight": 1.3324, "point": -1.0, "contribution": -1.3324, "value": 434.6}, {"ticker": "USMV", "weight": 3.7494, "point": 1.0, "contribution": 3.7494, "value": 1222.94}, {"ticker": "BIL", "weight": 12.0742, "point": 0.0, "contribution": 0.0, "value": 3938.19}, {"ticker": "SQQQ", "weight": 2.9567, "point": -3.0, "contribution": -2.9567, "value": 964.37}, {"ticker": "PSQ", "weight": 1.348, "point": -1.0, "contribution": -1.348, "value": 439.67}, {"ticker": "$USD", "weight": 0.2646, "point": 0.0, "contribution": 0.0, "value": 86.3}], "news": [{"tag": "EQUITY", "tag_class": "tag-equity", "title": "Stocks Sink in Broad AI Rout Sparked by China's DeepSeek", "body": "U.S. stocks were mostly lower, with the Nasdaq leading declines as makers of AI infrastructure suffered steep falls, many in the double digits. Nvidia was down 16%.", "source": "WSJ", "url": "https://www.wsj.com/articles/nikkei-may-rise-as-weak-yen-raises-earnings-hopes-776a8056?mod=rss_markets_main"}, {"tag": "GEOPOLITICAL RISK", "tag_class": "tag-risk", "title": "Morning Bid: 'Let the oil flow'", "body": "Morning Bid: 'Let the oil flow'", "source": "Yahoo Finance", "url": "https://finance.yahoo.com/sectors/energy/articles/morning-bid-let-oil-flow-104102237.html"}, {"tag": "MACRO", "tag_class": "tag-macro", "title": "Trade Winds: Tariff Developments Continue to Reshape Global Supply Chains", "body": "Ongoing tariff negotiations between the U.S. and major trading partners continue to reshape global supply chains. Analysts note selective sector impacts — industrials and consumer staples face the most direct cost pressures.", "source": "Barron's", "url": "https://www.barrons.com"}], "rsi14_today": 56.66, "rsi14_avg10d": 56.09, "rsi14_signal": "Mildly Overbought — slight bear lean", "rsi14_score_adj": -5, "rsi14_history": [{"date": "2026-06-03", "ticker": "SPY", "rsi14": "71.72", "close": "754.62"}, {"date": "2026-06-04", "ticker": "SPY", "rsi14": "73.05", "close": "757.58"}, {"date": "2026-06-05", "ticker": "SPY", "rsi14": "52.66", "close": "738.88"}, {"date": "2026-06-08", "ticker": "SPY", "rsi14": "51.81", "close": "739.18"}, {"date": "2026-06-09", "ticker": "SPY", "rsi14": "49.12", "close": "735.59"}, {"date": "2026-06-10", "ticker": "SPY", "rsi14": "42.26", "close": "726.88"}, {"date": "2026-06-11", "ticker": "SPY", "rsi14": "50.78", "close": "737.58"}, {"date": "2026-06-12", "ticker": "SPY", "rsi14": "53.07", "close": "741.02"}, {"date": "2026-06-15", "ticker": "SPY", "rsi14": "59.78", "close": "753.82"}, {"date": "2026-06-16", "ticker": "SPY", "rsi14": "56.66", "close": "750.66"}], "rsi14_override": false, "rsi14_override_why": "override disabled (symphony handles rotation)"};
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+const fmt$ = n => "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtPct = n => Number(n).toFixed(2) + "%";
+const fmtScore = n => (n >= 0 ? "+" : "") + Number(n).toFixed(2);
+
+// ─── Populate header ────────────────────────────────────────────────────────
+document.getElementById("report-badge").textContent = "⛅ Forecast for " + REPORT.for_date;
+document.getElementById("updated-time").textContent = REPORT.generated;
+document.getElementById("footer-time").textContent  = REPORT.generated;
+
+// ─── Temperature hero ───────────────────────────────────────────────────────
+const tempEl = document.getElementById("temp-value");
+tempEl.textContent = REPORT.weather_label || (REPORT.temp_arrow + "  " + REPORT.temperature);
+tempEl.style.color = REPORT.temp_color;
+
+const descMap = {
+  "Thunderstorm Warning":      "⛈️ Full thunderstorm warning issued. Our weather station is detecting severe turbulence — barometric pressure has dropped sharply and heavy rain is almost certain. Do not leave home without a sturdy umbrella.",
+  "Rain in the Forecast":      "🌧️ Rain in the forecast. The clouds have rolled in and there's a clear negative bias in the atmosphere. Expect persistent showers — not the best day for an equity picnic outdoors.",
+  "Neutral — Hold Gold/SGOV":  "⛅ Overcast and hard to read. No strong sun, no heavy rain — markets are in a wait-and-see mood. Sit on the porch with your umbrella (gold and short bonds) and watch which way the wind turns.",
+  "Mostly Cloudy":             "☁️ Mostly cloudy skies ahead. Mixed signals — some positive momentum building but caution still warranted. Consider maintaining a defensive tilt while watching for clearing conditions.",
+  "Sunny and Partly Cloudy":   "⛅ Sunny with some clouds passing through. Generally favorable conditions with moderate positive momentum. A reasonable day for partial equity exposure with some protective positioning.",
+  "Sunny Sky":                 "☀️ Sunny sky ahead. The forecast looks favorable — strong upward momentum and good visibility. A fine day to be invested.",
+  "Clear Sky":                 "🌈 Clear sky for investment. Outstanding conditions — full sunshine, zero clouds in sight. Pack the sunscreen and enjoy the ride."
+};
+document.getElementById("temp-desc").textContent = descMap[REPORT.temperature] || "";
+
+document.getElementById("score-val").textContent = fmtScore(REPORT.score);
+document.getElementById("score-val").style.color = REPORT.temp_color;
+
+// ─── Gauge needle ────────────────────────────────────────────────────────────
+// Score range: -100 to +100 mapped to 0-100% of track
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const pct = clamp((REPORT.score + 100) / 200 * 100, 2, 98);
+document.getElementById("gauge-needle").style.left = pct + "%";
+
+// ─── Stat strip ─────────────────────────────────────────────────────────────
+document.getElementById("stat-pos").textContent     = fmtPct(REPORT.positive_weight);
+document.getElementById("stat-neg").textContent     = fmtPct(REPORT.negative_weight);
+document.getElementById("stat-neutral").textContent = fmtPct(REPORT.neutral_weight);
+// ─── Analysis text ──────────────────────────────────────────────────────────
+const scoreAbs = Math.abs(REPORT.score).toFixed(1);
+const weatherHeadline = {
+  "Thunderstorm Warning":      "⛈️ Thunderstorm Warning",
+  "Rain in the Forecast":      "🌧️ Rain in the Forecast",
+  "Neutral — Hold Gold/SGOV":  "⛅ Overcast — Neutral",
+  "Mostly Cloudy":             "☁️ Mostly Cloudy",
+  "Sunny and Partly Cloudy":   "⛅ Sunny and Partly Cloudy",
+  "Sunny Sky":                 "☀️ Sunny Sky",
+  "Clear Sky":                 "🌈 Clear Sky"
+};
+const headline = weatherHeadline[REPORT.temperature] || REPORT.temperature;
+const analysisIntro = {
+  "Thunderstorm Warning":     "there is a high probability of severe market turbulence at the next market open. Pack a sturdy umbrella — conditions look rough.",
+  "Rain in the Forecast":     "rain is expected at the next market open. The negative bias is clear; keep defensive positioning and watch for any clearing breaks.",
+  "Neutral — Hold Gold/SGOV":  "the market is sending mixed signals — no strong sun, no heavy rain. Hold your weather insurance and wait for direction.",
+  "Mostly Cloudy":             "caution is still advised. Mostly cloudy conditions mean mixed signals — maintain some defensive allocation while watching for improvement.",
+  "Sunny and Partly Cloudy":   "conditions are moderately favorable. Sunny with some clouds — positive momentum is building but keep some protection in place.",
+  "Sunny Sky":                 "conditions look sunny and favorable for the next market open. Strong positive momentum and good visibility expected.",
+  "Clear Sky":                 "outstanding conditions forecasted for the next market open. Clear skies and strong upward momentum — a rare clear-sky day for investment."
+};
+const rsiAdj = REPORT.rsi14_score_adj || 0;
+const allNeutral = REPORT.positive_weight === 0 && REPORT.negative_weight === 0;
+const posNegSentiment = (allNeutral && rsiAdj !== 0)
+  ? `The portfolio is fully in cash / neutral instruments (${fmtPct(REPORT.neutral_weight)}), so the weather score is driven entirely by the <strong>RSI-14 momentum signal (${rsiAdj > 0 ? '+' : ''}${rsiAdj} pts)</strong>. The 10-day average RSI of ${REPORT.rsi14_avg10d != null ? REPORT.rsi14_avg10d.toFixed(1) : '—'} indicates <strong>${REPORT.rsi14_signal || 'an elevated market condition'}</strong>.`
+  : REPORT.score < 0
+    ? `The prevailing winds from the <strong>${fmtPct(REPORT.negative_weight)}</strong> in risk-off instruments are keeping those clouds firmly overhead.`
+    : `The tailwind from <strong>${fmtPct(REPORT.positive_weight)}</strong> in growth-oriented positions is pushing those clouds aside.`;
+const analysisHTML = `
+  <p>📡 The BLEE Quant weather station has recorded a market index of
+  <strong style="color:${REPORT.temp_color}">${fmtScore(REPORT.score)}</strong> based on data as of ${REPORT.report_date}.
+  The forecast for <strong>${REPORT.for_date}</strong> is:
+  <strong style="color:${REPORT.temp_color}">${headline}</strong> —
+  ${analysisIntro[REPORT.temperature] || "conditions are being assessed."}</p>
+
+  <p>🌡️ The weather index sits at <strong style="color:${REPORT.temp_color}">${fmtScore(REPORT.score)}</strong>.
+  About <strong>${fmtPct(REPORT.positive_weight)}</strong> of the portfolio is leaning toward sunshine (growth assets),
+  <strong>${fmtPct(REPORT.negative_weight)}</strong> is bracing for rain (defensive/inverse positions), and
+  <strong>${fmtPct(REPORT.neutral_weight)}</strong> is sitting under shelter (cash and short-duration instruments).
+  ${posNegSentiment}</p>
+
+  <p>📅 <strong>Next market open weather summary (${REPORT.for_date}):</strong>
+  ${descMap[REPORT.temperature] || headline}
+  Keep an eye on macro releases, Fed commentary, and geopolitical developments for any sudden shifts in the forecast.</p>
+`;
+document.getElementById("analysis-text").innerHTML = analysisHTML;
+
+// ─── RSI Override banner ────────────────────────────────────────────────────
+if (REPORT.rsi14_override) {
+  const banner = document.getElementById("rsi-override-banner");
+  banner.style.display = "flex";
+}
+
+// ─── RSI-14 panel ───────────────────────────────────────────────────────────
+if (REPORT.rsi14_today != null) {
+  document.getElementById("rsi-card").style.display = "";
+
+  const rsiColor = r => r >= 70 ? "#ef4444" : r <= 30 ? "#22c55e" : r >= 55 ? "#f97316" : r <= 45 ? "#86efac" : "#f59e0b";
+  const rsiZone  = r => r >= 70 ? "Overbought 🔴" : r <= 30 ? "Oversold 🟢" : r >= 55 ? "High 🟠" : r <= 45 ? "Low 🟡" : "Neutral ⚪";
+
+  const rsiToday = REPORT.rsi14_today;
+  document.getElementById("rsi-today").textContent = rsiToday.toFixed(1);
+  document.getElementById("rsi-today").style.color = rsiColor(rsiToday);
+  if (REPORT.rsi14_avg10d != null) {
+    document.getElementById("rsi-avg").textContent = REPORT.rsi14_avg10d.toFixed(1);
+    document.getElementById("rsi-avg").style.color = rsiColor(REPORT.rsi14_avg10d);
+  }
+  document.getElementById("rsi-signal").textContent = REPORT.rsi14_signal || "—";
+  const adj = REPORT.rsi14_score_adj || 0;
+  document.getElementById("rsi-adj").textContent =
+    "Score adjustment: " + (adj === 0 ? "none (neutral)" : (adj > 0 ? "+" : "") + adj + " pts applied to composite");
+
+  const hist = REPORT.rsi14_history || [];
+  const tbody = document.getElementById("rsi-history-body");
+  tbody.innerHTML = [...hist].reverse().map(row => {
+    const rsi = parseFloat(row.rsi14);
+    const col = rsiColor(rsi);
+    return `<tr style="border-top:1px solid rgba(255,255,255,0.06);">
+      <td style="padding:4px 8px;color:#cbd5e1;">${row.date}</td>
+      <td style="padding:4px 8px;text-align:right;color:#94a3b8;">${parseFloat(row.close).toFixed(2)}</td>
+      <td style="padding:4px 8px;text-align:right;font-weight:700;color:${col};">${rsi.toFixed(1)}</td>
+      <td style="padding:4px 8px;color:${col};font-size:11px;">${rsiZone(rsi)}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ─── Recommendation ─────────────────────────────────────────────────────────
+const recMap = {
+  "Thunderstorm Warning":     { icon:"⛈️", title:"Thunderstorm Warning — Stay Indoors",          body:"Our model is flashing a full thunderstorm alert. This is not a day to go for a stroll in equity-land — high probability of getting soaked. Seek shelter in short-duration treasuries and gold, and wait for the weather index to climb back above zero before venturing outside." },
+  "Rain in the Forecast":     { icon:"🌧️", title:"Rain Forecast — Keep That Umbrella Up",        body:"It's raining out there and the clouds aren't parting anytime soon. Defensive positioning is your best rain jacket right now. Avoid chasing growth assets in this downpour — wait for the sky to clear." },
+  "Neutral — Hold Gold/SGOV": { icon:"⛅",  title:"Overcast — Umbrella on Standby",              body:"No strong sun, no heavy rain — just grey skies and uncertainty. Hold your weather insurance (gold and short bonds) and wait for the clouds to break in a clear direction before making any bold moves." },
+  "Mostly Cloudy":             { icon:"☁️", title:"Mostly Cloudy — Mixed Signals",              body:"Caution required. Score is in the 0–20 range — some positive drivers are present but sentiment is mixed. Dow-component equities may hold up better than Nasdaq-heavy positions. Keep a meaningful allocation in bonds or short-duration Treasuries until the sky clears." },
+  "Sunny and Partly Cloudy":   { icon:"⛅",  title:"Sunny and Partly Cloudy — Building Momentum", body:"Moderate positive conditions. Score sits in the 20–35 range — equity markets show a constructive lean with some clouds overhead. A reasonable day for partial risk exposure; maintain some defensive positioning as a hedge." },
+  "Sunny Sky":                 { icon:"☀️", title:"Sunny Sky — Good Conditions Ahead",           body:"The forecast looks sunny and favorable for the session. Strong positive momentum with good visibility — a fine day to be invested, score in the 35–50 range." },
+  "Clear Sky":                 { icon:"🌈", title:"Clear Sky — Outstanding Investment Conditions", body:"Full sunshine, clear skies, strong upward momentum. Our model is flashing a full all-clear for investment — pack the sunscreen and enjoy the ride. Rare conditions like these don't last forever, so stay alert for any sudden shifts." }
+};
+const rec = recMap[REPORT.temperature];
+if (rec) {
+  document.getElementById("rec-icon").textContent  = rec.icon;
+  document.getElementById("rec-title").textContent = rec.title;
+  document.getElementById("rec-body").textContent  = rec.body;
+  document.getElementById("rec-box").style.borderColor =
+    REPORT.score < 0 ? "#ef4444" : REPORT.score < 20 ? "#f59e0b" : REPORT.score < 35 ? "#84cc16" : "#22c55e";
+}
+
+// ─── News section ────────────────────────────────────────────────────────────
+const newsEl = document.getElementById("news-section");
+if (newsEl && REPORT.news && REPORT.news.length) {
+  newsEl.innerHTML = REPORT.news.map(n => `
+    <div style="border-bottom:1px solid rgba(255,255,255,0.07);padding:14px 0;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span class="tag ${n.tag_class || ''}">${n.tag}</span>
+        <a href="../${n.url}" target="_blank" style="font-weight:700;color:#e2e8f0;text-decoration:none;font-size:15px;">${n.title}</a>
+      </div>
+      <div style="color:#94a3b8;font-size:13px;line-height:1.5;">${n.body}</div>
+      <div style="font-size:11px;color:#475569;margin-top:6px;">Source: ${n.source}</div>
+    </div>
+  `).join("");
+}
+</script>
+</body>
+</html>
