@@ -292,3 +292,9 @@
 [2026-06-17T09:45:02]   Found account: b0d61a36-f329-4226-9d82-4494deaee5f5
 [2026-06-17T09:45:02] Fetching current symphony allocation from Composer API...
 [2026-06-17T09:45:03] ERROR: Symphony qjmHJ3IR19kmaAlbgkNj not found in account stats.
+[2026-06-18T09:45:01] ============================================================
+[2026-06-18T09:45:01] Morning Preview — starting
+[2026-06-18T09:45:01] Discovering account UUID...
+[2026-06-18T09:45:02]   Found account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-06-18T09:45:03] Fetching current symphony allocation from Composer API...
+[2026-06-18T09:45:04] ERROR: Symphony qjmHJ3IR19kmaAlbgkNj not found in account stats.
