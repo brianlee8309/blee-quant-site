@@ -733,10 +733,10 @@ def main() -> int:
         # Maps symphony ID -> fixed filename so rebalance_config.json never
         # needs to change as the date rolls over each day.
         _STABLE_JSON_MAP = {
-            "7GJZdYouz3l3acrmUPOD": "composer_allocations_186main.json", # BLEE-186 main ($132K)
+            "WgHFDD7PsDJYTw3ZCvZx": "composer_allocations_186main.json", # BLEE-186 main ($132K)
             "jtQvlI5wINrxpOfxgmgl": "composer_allocations_186.json",   # BLEE-186 small copy
             "qjmHJ3IR19kmaAlbgkNj": "composer_allocations_187.json",   # BLEE-187 SGOV Bond
-            "iPifD8uTozTr0sbu9qiB": "composer_allocations_187hi.json", # BLEE-187 Hi Interest
+            "BNwivIq0tIEyex2D10GM": "composer_allocations_187hi.json", # BLEE-187 Hi Interest
             "ZGersOlsQFRHg7U2qnSw": "composer_allocations_185.json",   # BLEE-185
             "g7WBkfIc6UWUWC6NiAdu": "composer_allocations_kei186.json",# BLEE A-186 Kei
         }
