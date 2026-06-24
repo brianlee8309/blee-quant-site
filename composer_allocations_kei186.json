@@ -6,69 +6,75 @@
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 7.874,
-      "shares": 5.77156,
-      "market_value": 784.8167288
+      "weight_pct": 2.9881,
+      "shares": 2.19558,
+      "market_value": 297.171753
+    },
+    {
+      "ticker": "CURE",
+      "weight_pct": 8.9892,
+      "shares": 8.98253,
+      "market_value": 893.98629825
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 3.4834,
+      "weight_pct": 3.4858,
       "shares": 6.29847,
-      "market_value": 347.20315875
+      "market_value": 346.6677888
     },
     {
       "ticker": "TECL",
-      "weight_pct": 18.9736,
-      "shares": 8.97171,
-      "market_value": 1891.1467509
+      "weight_pct": 11.4723,
+      "shares": 5.43326,
+      "market_value": 1140.9302674
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 14.9455,
-      "shares": 19.9392,
-      "market_value": 1489.657632
+      "weight_pct": 4.4893,
+      "shares": 5.99758,
+      "market_value": 446.4598552
     },
     {
       "ticker": "SHV",
-      "weight_pct": 6.3353,
-      "shares": 5.72692,
-      "market_value": 631.450771892
+      "weight_pct": 4.0038,
+      "shares": 3.61093,
+      "market_value": 398.1772511
     },
     {
       "ticker": "GLD",
-      "weight_pct": 25.8236,
-      "shares": 6.81088,
-      "market_value": 2573.8996608
+      "weight_pct": 20.0051,
+      "shares": 5.27306,
+      "market_value": 1989.525538
     },
     {
-      "ticker": "VGT",
-      "weight_pct": 7.2694,
-      "shares": 6.23166,
-      "market_value": 724.5551082
+      "ticker": "TLT",
+      "weight_pct": 1.9948,
+      "shares": 2.30149,
+      "market_value": 198.388438
     },
     {
       "ticker": "UDOW",
-      "weight_pct": 12.3521,
-      "shares": 18.09741,
-      "market_value": 1231.1668023
+      "weight_pct": 39.8374,
+      "shares": 58.37426,
+      "market_value": 3961.8610262
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.5958,
+      "weight_pct": 0.5987,
       "shares": 3.97226,
-      "market_value": 59.384889774
+      "market_value": 59.5441774
     },
     {
       "ticker": "BND",
-      "weight_pct": 2.0279,
+      "weight_pct": 2.032,
       "shares": 2.75996,
-      "market_value": 202.1256706
+      "market_value": 202.0842712
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.3193,
-      "shares": 31.83,
-      "market_value": 31.83
+      "weight_pct": 0.1033,
+      "shares": 10.27,
+      "market_value": 10.27
     }
   ]
 }
