@@ -4646,3 +4646,46 @@
 [2026-06-23T21:08:52]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-06-23"
 [2026-06-23T21:08:52]   $ git -C "C:\Kei\ComposerInvest" push
 [2026-06-23T21:08:58] GitHub push successful.
+[2026-06-23T21:20:47] === Composer daily allocation pull ===
+[2026-06-23T21:20:47] Configured symphonies: ['WgHFDD7PsDJYTw3ZCvZx', 'jtQvlI5wINrxpOfxgmgl', 'qjmHJ3IR19kmaAlbgkNj', 'ZGersOlsQFRHg7U2qnSw', 'g7WBkfIc6UWUWC6NiAdu', 'BNwivIq0tIEyex2D10GM']
+[2026-06-23T21:20:47] No account_uuid in config; discovering via /accounts/list...
+[2026-06-23T21:20:48] Using first account: b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-06-23T21:20:48] (Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)
+[2026-06-23T21:20:48] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-06-23T21:20:48] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-06-23T21:20:50] Saved symphony-stats response to composer_symphony_stats_2026-06-23.json
+[2026-06-23T21:20:50] True Composer account total (all symphonies): $15,246.31
+[2026-06-23T21:20:50] --- BLEE - 186 2026 ALL in One 57% Max-Down SGOV Bond (WgHFDD7PsDJYTw3ZCvZx) ---
+[2026-06-23T21:20:50]   WARN: symphony-stats-meta returned no positions for WgHFDD7PsDJYTw3ZCvZx (check 2026-06-23 JSON to verify the id matches one in the response)
+[2026-06-23T21:20:50]   ERROR: no positions found for WgHFDD7PsDJYTw3ZCvZx; skipping CSV/HTML for this symphony
+[2026-06-23T21:20:50] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-06-23T21:20:50]   WARN: symphony-stats-meta returned no positions for jtQvlI5wINrxpOfxgmgl (check 2026-06-23 JSON to verify the id matches one in the response)
+[2026-06-23T21:20:50]   ERROR: no positions found for jtQvlI5wINrxpOfxgmgl; skipping CSV/HTML for this symphony
+[2026-06-23T21:20:50] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-06-23T21:20:50]   WARN: symphony-stats-meta returned no positions for qjmHJ3IR19kmaAlbgkNj (check 2026-06-23 JSON to verify the id matches one in the response)
+[2026-06-23T21:20:50]   ERROR: no positions found for qjmHJ3IR19kmaAlbgkNj; skipping CSV/HTML for this symphony
+[2026-06-23T21:20:50] --- BLEE - 185 2026 SGOV and Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-06-23T21:20:50]   Got 4 positions from symphony-stats-meta
+[2026-06-23T21:20:50]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-06-23T21:20:50]   Saved today's slice to composer_allocations_185v2_2026-06-23.json
+[2026-06-23T21:20:50]   Updated stable file: composer_allocations_185.json
+[2026-06-23T21:20:50]   Wrote 4 rows for 2026-06-23 to composer_allocations_185v2.csv (kept 96 prior rows, source=symphony-stats-meta)
+[2026-06-23T21:20:50] Generated dashboard -> index_185v2.html (value=$5,301.24, days=25)
+[2026-06-23T21:20:50] --- BLEE A - 186 Part 1 Kei 90% NVDA (g7WBkfIc6UWUWC6NiAdu) ---
+[2026-06-23T21:20:50]   Got 12 positions from symphony-stats-meta
+[2026-06-23T21:20:50]   RSI override: DISABLED (symphony handles its own rotation)
+[2026-06-23T21:20:50]   Saved today's slice to composer_allocations_kei186_2026-06-23.json
+[2026-06-23T21:20:50]   Updated stable file: composer_allocations_kei186.json
+[2026-06-23T21:20:50]   Wrote 12 rows for 2026-06-23 to composer_allocations_kei186.csv (kept 234 prior rows, source=symphony-stats-meta)
+[2026-06-23T21:20:50] Generated dashboard -> index_kei186.html (value=$9,945.07, days=25)
+[2026-06-23T21:20:50] --- BLEE - 187 2026 ALL in One For High Interest Period (BNwivIq0tIEyex2D10GM) ---
+[2026-06-23T21:20:50]   WARN: symphony-stats-meta returned no positions for BNwivIq0tIEyex2D10GM (check 2026-06-23 JSON to verify the id matches one in the response)
+[2026-06-23T21:20:50]   ERROR: no positions found for BNwivIq0tIEyex2D10GM; skipping CSV/HTML for this symphony
+[2026-06-23T21:20:50] Published signal_latest.json (3 positions, date=2026-06-10)
+[2026-06-23T21:20:50] Regenerated CurrentWatchSymphony.html (2 symphonies)
+[2026-06-23T21:20:50] === Done ===
+[2026-06-23T21:20:50] Stamped last-updated (06/23/2026 09:20 PM ET) into index.html
+[2026-06-23T21:20:50] Stamped last-updated (06/23/2026 09:20 PM ET) into performance1.html
+[2026-06-23T21:20:50] Stamped last-updated (06/23/2026 09:20 PM ET) into Algorithm185History.html
+[2026-06-23T21:20:50] --- Pushing updates to GitHub ---
+[2026-06-23T21:20:50]   $ git -C "C:\Kei\ComposerInvest" add .
