@@ -619,35 +619,18 @@ def main() -> int:
 
     account_uuid = cfg.get("account_uuid")
     if not account_uuid:
-        want_num = str(cfg.get("account_number", "")).strip()
         log("No account_uuid in config; discovering via /accounts/list...")
         accts = list_accounts(cfg)
         if not accts:
             log("ERROR: no accounts returned from API")
             return 1
-
-        def _acct_uuid(a):
-            return a.get("account_uuid") or a.get("uuid") or a.get("id")
-
-        # Log every account so the correct one can be identified
-        for a in accts:
-            log("  account: uuid=" + str(_acct_uuid(a)) + "  " + json.dumps(a, default=str)[:240])
-
-        chosen = None
-        if want_num:
-            for a in accts:
-                if want_num in json.dumps(a, default=str):
-                    chosen = a
-                    log("Matched account_number " + want_num + " -> " + str(_acct_uuid(a)))
-                    break
-            if chosen is None:
-                log("WARN: account_number " + want_num + " not found among accounts; using first account")
-        if chosen is None:
-            chosen = accts[0]
-            log("Using first account: " + str(_acct_uuid(chosen)))
-
-        account_uuid = _acct_uuid(chosen)
-        log("(Tip: pin the chosen account_uuid in composer_config.json to skip discovery.)")
+        account_uuid = (
+            accts[0].get("account_uuid")
+            or accts[0].get("uuid")
+            or accts[0].get("id")
+        )
+        log(f"Using first account: {account_uuid}")
+        log("(Tip: copy this account_uuid into composer_config.json to skip the lookup next run.)")
 
     today = dt.date.today().isoformat()
 
