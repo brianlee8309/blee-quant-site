@@ -118,11 +118,6 @@ def api_request(cfg: dict, method: str, path: str, body: dict | None = None) -> 
         "authorization": f"Bearer {cfg['api_secret']}",
         "Content-Type":  "application/json",
         "Accept":        "application/json",
-        # Browser-like UA + headers to avoid Cloudflare Error 1010 (browser_signature_banned)
-        "User-Agent":    ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                          "AppleWebKit/537.36 (KHTML, like Gecko) "
-                          "Chrome/126.0.0.0 Safari/537.36"),
-        "Accept-Language": "en-US,en;q=0.9",
     }
     url = f"{API_BASE}{path}"
     req = urllib.request.Request(
@@ -622,67 +617,48 @@ def main() -> int:
         return 1
     log(f"Configured symphonies: {[s['id'] for s in symphonies]}")
 
-    def _acct_uuid(a):
-        return a.get("account_uuid") or a.get("uuid") or a.get("id")
-
-    account_uuids: list = []
-    if cfg.get("account_uuid"):
-        account_uuids = [cfg.get("account_uuid")]
-    else:
-        want_nums = cfg.get("account_numbers")
-        if not want_nums:
-            _single = str(cfg.get("account_number", "")).strip()
-            want_nums = [_single] if _single else []
-        want_nums = [str(n).strip() for n in want_nums if str(n).strip()]
+    account_uuid = cfg.get("account_uuid")
+    if not account_uuid:
+        want_num = str(cfg.get("account_number", "")).strip()
         log("No account_uuid in config; discovering via /accounts/list...")
         accts = list_accounts(cfg)
         if not accts:
             log("ERROR: no accounts returned from API")
             return 1
+
+        def _acct_uuid(a):
+            return a.get("account_uuid") or a.get("uuid") or a.get("id")
+
+        # Log every account so the correct one can be identified
         for a in accts:
             log("  account: uuid=" + str(_acct_uuid(a)) + "  " + json.dumps(a, default=str)[:240])
-        if want_nums:
-            for num in want_nums:
-                hit = next((a for a in accts if num in json.dumps(a, default=str)), None)
-                if hit:
-                    account_uuids.append(_acct_uuid(hit))
-                    log("Matched account_number " + num + " -> " + str(_acct_uuid(hit)))
-                else:
-                    log("WARN: account_number " + num + " not found among accounts")
-        if not account_uuids:
-            account_uuids = [_acct_uuid(accts[0])]
-            log("Using first account: " + str(account_uuids[0]))
 
-    account_uuid = account_uuids[0]
-    log("Pulling from " + str(len(account_uuids)) + " account(s): " + str(account_uuids))
+        chosen = None
+        if want_num:
+            for a in accts:
+                if want_num in json.dumps(a, default=str):
+                    chosen = a
+                    log("Matched account_number " + want_num + " -> " + str(_acct_uuid(a)))
+                    break
+            if chosen is None:
+                log("WARN: account_number " + want_num + " not found among accounts; using first account")
+        if chosen is None:
+            chosen = accts[0]
+            log("Using first account: " + str(_acct_uuid(chosen)))
+
+        account_uuid = _acct_uuid(chosen)
+        log("(Tip: pin the chosen account_uuid in composer_config.json to skip discovery.)")
 
     today = dt.date.today().isoformat()
 
-    # Fetch symphony-stats-meta for EACH account and MERGE, so configured
-    # symphonies are found regardless of which account holds them.
+    # Fetch symphony-stats-meta ONCE; share across all configured symphonies.
     log("Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...")
-    stats_payload = None
-    _merged_syms: list = []
-    _seen_ids = set()
-    for _au in account_uuids:
-        _sp = get_symphony_stats(cfg, _au)
-        if _sp is None:
-            continue
-        if stats_payload is None:
-            stats_payload = dict(_sp)
-        for _s in (_sp.get("symphonies") or []):
-            _sid2 = _s.get("id") or _s.get("symphony_id")
-            if _sid2 and _sid2 in _seen_ids:
-                continue
-            if _sid2:
-                _seen_ids.add(_sid2)
-            _merged_syms.append(_s)
+    stats_payload = get_symphony_stats(cfg, account_uuid)
     if stats_payload is not None:
-        stats_payload["symphonies"] = _merged_syms
         stats_path = SCRIPT_DIR / f"composer_symphony_stats_{today}.json"
         with open(stats_path, "w") as f:
             json.dump(stats_payload, f, indent=2, default=str)
-        log("Saved merged symphony-stats (" + str(len(_merged_syms)) + " symphonies) to " + stats_path.name)
+        log(f"Saved symphony-stats response to {stats_path.name}")
 
     # Compute true account total from ALL symphonies in the account (not just tracked ones)
     account_total: float = 0.0
@@ -872,9 +848,9 @@ def main() -> int:
             log(f"  (dashboard generation failed: {type(e).__name__}: {e})")
 
         # ── Update Algorithm185History.html ALLOC_DATA + source CSV ──────────
-        # Only runs for Algorithm 185 symphony (ZGersOlsQFRHg7U2qnSw — re-pointed from dead qjm 2026-06-23)
+        # Only runs for Algorithm 185 symphony (qjmHJ3IR19kmaAlbgkNj)
         # Source CSV: composer_allocations_185_3yr2.csv  (10 ticker cols, no SPXU/VIXY)
-        if sid == "ZGersOlsQFRHg7U2qnSw":
+        if sid == "qjmHJ3IR19kmaAlbgkNj":
             try:
                 import re as _re185, csv as _csv185
                 _hist_path = SCRIPT_DIR / "Algorithm185History.html"
