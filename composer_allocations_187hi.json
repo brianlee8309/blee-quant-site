@@ -1,110 +1,104 @@
 {
-  "date": "2026-06-25",
+  "date": "2026-06-26",
   "symphony_id": "BNwivIq0tIEyex2D10GM",
   "symphony_name": "BLEE - 187 2026 ALL in One For High Interest Period",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 3.8544,
-      "shares": 22.562136621,
-      "market_value": 3041.601637877
+      "weight_pct": 3.8395,
+      "shares": 39.806627954,
+      "market_value": 5351.344319054
+    },
+    {
+      "ticker": "SDOW",
+      "weight_pct": 2.915,
+      "shares": 163.72453501,
+      "market_value": 4062.824336273
     },
     {
       "ticker": "CURE",
-      "weight_pct": 5.7237,
-      "shares": 42.490540488,
-      "market_value": 4516.744453874
+      "weight_pct": 5.7647,
+      "shares": 69.442992438,
+      "market_value": 8034.554225077
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 2.1792,
-      "shares": 30.891026974,
-      "market_value": 1719.703471643
+      "weight_pct": 2.1794,
+      "shares": 54.523382407,
+      "market_value": 3037.497633894
     },
     {
       "ticker": "TECL",
-      "weight_pct": 6.6838,
-      "shares": 25.056639401,
-      "market_value": 5274.422593911
+      "weight_pct": 6.6457,
+      "shares": 45.897898198,
+      "market_value": 9262.356499
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 6.0582,
-      "shares": 63.785270456,
-      "market_value": 4780.706020677
+      "weight_pct": 8.9318,
+      "shares": 171.551671554,
+      "market_value": 12448.647046316
     },
     {
       "ticker": "SHV",
-      "weight_pct": 2.5631,
-      "shares": 18.338425593,
-      "market_value": 2022.63665078
-    },
-    {
-      "ticker": "VIXY",
-      "weight_pct": 2.9111,
-      "shares": 102.143806084,
-      "market_value": 2297.214198829
+      "weight_pct": 2.5642,
+      "shares": 32.393786885,
+      "market_value": 3573.844538088
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 35.9484,
-      "shares": 281.932744777,
-      "market_value": 28368.072779462
+      "weight_pct": 35.9648,
+      "shares": 498.004870027,
+      "market_value": 50125.783783802
     },
     {
       "ticker": "GLD",
-      "weight_pct": 16.5008,
-      "shares": 35.240342762,
-      "market_value": 13021.306650559
+      "weight_pct": 19.4136,
+      "shares": 72.422043471,
+      "market_value": 27057.592418996
     },
     {
       "ticker": "TLT",
       "weight_pct": 1.2821,
-      "shares": 11.582376732,
-      "market_value": 1011.72060754
+      "shares": 20.465255784,
+      "market_value": 1786.92380878
     },
     {
       "ticker": "VGT",
-      "weight_pct": 2.5206,
-      "shares": 17.236800515,
-      "market_value": 1989.126779431
+      "weight_pct": 2.5169,
+      "shares": 30.647799852,
+      "market_value": 3507.94717106
     },
     {
       "ticker": "UDOW",
-      "weight_pct": 5.3753,
-      "shares": 61.712707182,
-      "market_value": 4241.822928155
+      "weight_pct": 2.4694,
+      "shares": 50.324628764,
+      "market_value": 3441.70136117
     },
     {
       "ticker": "USMV",
-      "weight_pct": 3.7436,
-      "shares": 31.143137179,
-      "market_value": 2954.2379928
+      "weight_pct": 3.746,
+      "shares": 54.555733357,
+      "market_value": 5220.983682265
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.3847,
-      "shares": 20.673806225,
-      "market_value": 303.594844414
-    },
-    {
-      "ticker": "SQQQ",
-      "weight_pct": 2.8906,
-      "shares": 57.792255045,
-      "market_value": 2281.060306626
+      "weight_pct": 0.3844,
+      "shares": 36.604963428,
+      "market_value": 535.81247317
     },
     {
       "ticker": "BND",
-      "weight_pct": 1.2815,
-      "shares": 13.739633384,
-      "market_value": 1011.237017062
+      "weight_pct": 1.2822,
+      "shares": 24.257434184,
+      "market_value": 1787.042750592
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.099,
-      "shares": 78.13,
-      "market_value": 78.13
+      "weight_pct": 0.1001,
+      "shares": 139.55,
+      "market_value": 139.55
     }
   ]
 }
