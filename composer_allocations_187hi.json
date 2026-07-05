@@ -1,5 +1,5 @@
 {
-  "date": "2026-07-02",
+  "date": "2026-07-05",
   "symphony_id": "BNwivIq0tIEyex2D10GM",
   "symphony_name": "BLEE - 187 2026 ALL in One For High Interest Period",
   "source": "symphony-stats-meta",
@@ -96,9 +96,9 @@
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.0999,
-      "shares": 100.72,
-      "market_value": 100.72
+      "weight_pct": 0.0998,
+      "shares": 100.62,
+      "market_value": 100.62
     }
   ]
 }
