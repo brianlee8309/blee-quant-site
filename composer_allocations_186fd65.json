@@ -1,0 +1,92 @@
+{
+  "date": "2026-07-09",
+  "symphony_id": "onbkd6V1mHyOAFsWWSlJ",
+  "symphony_name": "BLEE 186 - 65% Max down 12.6% Fighting for Direction Max SDOW/TQQQ UDOW/SQQQ",
+  "source": "symphony-stats-meta",
+  "positions": [
+    {
+      "ticker": "UPRO",
+      "weight_pct": 1.9472,
+      "shares": 14.244707337,
+      "market_value": 2025.383712711
+    },
+    {
+      "ticker": "BSV",
+      "weight_pct": 1.4076,
+      "shares": 18.867983133,
+      "market_value": 1464.155491121
+    },
+    {
+      "ticker": "TMF",
+      "weight_pct": 2.8146,
+      "shares": 88.154131044,
+      "market_value": 2927.598691971
+    },
+    {
+      "ticker": "CURE",
+      "weight_pct": 6.3479,
+      "shares": 55.27950953,
+      "market_value": 6602.805736301
+    },
+    {
+      "ticker": "SVXY",
+      "weight_pct": 2.3927,
+      "shares": 43.245223397,
+      "market_value": 2488.762606497
+    },
+    {
+      "ticker": "TECL",
+      "weight_pct": 9.0378,
+      "shares": 44.780372698,
+      "market_value": 9400.743640491
+    },
+    {
+      "ticker": "TQQQ",
+      "weight_pct": 20.426,
+      "shares": 281.613822128,
+      "market_value": 21246.354810447
+    },
+    {
+      "ticker": "SHV",
+      "weight_pct": 1.4076,
+      "shares": 13.294767633,
+      "market_value": 1464.086285584
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 12.9849,
+      "shares": 35.709579157,
+      "market_value": 13506.434124552
+    },
+    {
+      "ticker": "VGT",
+      "weight_pct": 4.6716,
+      "shares": 41.425534985,
+      "market_value": 4859.215253741
+    },
+    {
+      "ticker": "UDOW",
+      "weight_pct": 18.2317,
+      "shares": 270.835570609,
+      "market_value": 18963.906654042
+    },
+    {
+      "ticker": "VIXM",
+      "weight_pct": 0.4232,
+      "shares": 30.808585029,
+      "market_value": 440.223871479
+    },
+    {
+      "ticker": "SQQQ",
+      "weight_pct": 17.807,
+      "shares": 479.663143719,
+      "market_value": 18522.192294709
+    },
+    {
+      "ticker": "$USD",
+      "weight_pct": 0.1003,
+      "shares": 104.34,
+      "market_value": 104.34
+    }
+  ]
+}

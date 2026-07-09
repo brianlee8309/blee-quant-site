@@ -6,25 +6,25 @@
   "positions": [
     {
       "ticker": "GLDM",
-      "weight_pct": 8.8286,
+      "weight_pct": 8.9106,
       "shares": 0.97652,
-      "market_value": 78.8246944
+      "market_value": 79.6303234
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 81.1014,
+      "weight_pct": 81.0374,
       "shares": 7.20782,
-      "market_value": 724.0975972
+      "market_value": 724.19850668
     },
     {
       "ticker": "UDOW",
-      "weight_pct": 9.6254,
+      "weight_pct": 9.6082,
       "shares": 1.22559,
-      "market_value": 85.9383708
+      "market_value": 85.8648354
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.4447,
+      "weight_pct": 0.4442,
       "shares": 3.97,
       "market_value": 3.97
     }
