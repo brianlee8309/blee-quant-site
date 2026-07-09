@@ -775,6 +775,8 @@ def main() -> int:
         # needs to change as the date rolls over each day.
         _STABLE_JSON_MAP = {
             "WgHFDD7PsDJYTw3ZCvZx": "composer_allocations_186main.json", # BLEE-186 main ($132K)
+            "gHJn5DKfpQ6g6VGXHOQO": "composer_allocations_186fd40.json", # BLEE-186 FightDir 40%
+            "onbkd6V1mHyOAFsWWSlJ": "composer_allocations_186fd65.json", # BLEE-186 FightDir 65%
             "jtQvlI5wINrxpOfxgmgl": "composer_allocations_186.json",   # BLEE-186 small copy
             "qjmHJ3IR19kmaAlbgkNj": "composer_allocations_187.json",   # BLEE-187 SGOV Bond
             "BNwivIq0tIEyex2D10GM": "composer_allocations_187hi.json", # BLEE-187 Hi Interest
