@@ -859,7 +859,6 @@ def main() -> int:
                 "last_rebalance": _last_reb,
                 "return_pct":    round(float(_ret_pct), 2) if isinstance(_ret_pct, (int, float)) else None,
                 "annualized":    round(float(_ann), 2) if isinstance(_ann, (int, float)) else None,
-                "csv":           _STABLE_JSON_MAP.get(sid) or ("composer_allocations_auto_" + sid + ".json"),
                 "holdings":      _watch_holdings,
             })
         except Exception as _we:
@@ -1002,51 +1001,6 @@ def main() -> int:
             log("WARNING: No allocation JSON found — signal_latest.json not updated.")
     except Exception as _se:
         log(f"  (signal_latest.json publish failed: {type(_se).__name__}: {_se})")
-
-    # ── Dynamic auto-include: add EVERY invested symphony not in the config ──
-    # Filename encodes the id ("composer_allocations_auto_<id>.json") so the
-    # Schwab dropdown + rebalance work with zero manual ID wiring, no matter how
-    # often symphonies get deleted/re-created on Composer.
-    try:
-        _cfg_ids = {s["id"] for s in symphonies}
-        _already = {w.get("id") for w in symphony_watch_data}
-        for _s in ((stats_payload.get("symphonies") if stats_payload else None) or []):
-            _asid = _s.get("id") or _s.get("symphony_id")
-            if not _asid or _asid in _cfg_ids or _asid in _already:
-                continue
-            _apos = extract_positions_from_symphony_stats(stats_payload, _asid)
-            _areal = [p for p in _apos if p.get("ticker", "").upper() != "$USD"]
-            if not _areal:
-                continue  # not invested (cash-only / empty)
-            _aname = _s.get("name") or _asid
-            _afile = "composer_allocations_auto_" + _asid + ".json"
-            try:
-                with open(SCRIPT_DIR / _afile, "w", encoding="utf-8") as _af:
-                    json.dump({"date": today, "symphony_id": _asid, "symphony_name": _aname,
-                               "source": "symphony-stats-meta", "positions": _apos},
-                              _af, indent=2, default=str)
-            except Exception as _awe:
-                log(f"  (auto stable-file write failed for {_asid}: {_awe})")
-            _ah = []
-            for _wp in _apos:
-                if not _wp.get("ticker"):
-                    continue
-                _wv = float(_wp.get("market_value") or 0)
-                _ws = float(_wp.get("shares") or 0)
-                _ah.append({"ticker": _wp["ticker"],
-                            "pct": round(float(_wp.get("weight_pct") or 0), 2),
-                            "price": round(_wv / _ws, 4) if _ws > 0 else None,
-                            "shares": round(_ws, 4), "value": round(_wv, 2)})
-            _av = _s.get("value")
-            symphony_watch_data.append({
-                "id": _asid, "name": _aname,
-                "value": round(float(_av), 2) if isinstance(_av, (int, float)) else None,
-                "last_rebalance": None, "return_pct": None, "annualized": None,
-                "csv": _afile, "holdings": _ah,
-            })
-            log(f"  Auto-included symphony {_asid} ({_aname}) -> {_afile}")
-    except Exception as _aie:
-        log(f"  (auto-include pass failed: {type(_aie).__name__}: {_aie})")
 
     # ---- Regenerate CurrentWatchSymphony.html ------------------------------------
     import re as _re_watch
