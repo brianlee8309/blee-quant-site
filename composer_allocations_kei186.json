@@ -1,84 +1,84 @@
 {
-  "date": "2026-07-14",
+  "date": "2026-07-15",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 2.9897,
+      "weight_pct": 3.0379,
       "shares": 0.212505997,
-      "market_value": 30.666740427
+      "market_value": 30.915988711
     },
     {
       "ticker": "BSV",
-      "weight_pct": 2.1691,
+      "weight_pct": 2.1893,
       "shares": 0.286656698,
-      "market_value": 22.248859615
+      "market_value": 22.280391852
     },
     {
       "ticker": "TMF",
-      "weight_pct": 4.3549,
+      "weight_pct": 4.4173,
       "shares": 1.357311392,
-      "market_value": 44.669117911
+      "market_value": 44.954153303
     },
     {
       "ticker": "CURE",
-      "weight_pct": 9.7624,
+      "weight_pct": 9.7897,
       "shares": 0.905793601,
-      "market_value": 100.135482591
+      "market_value": 99.628238174
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 3.7261,
+      "weight_pct": 3.8089,
       "shares": 0.658271749,
-      "market_value": 38.219257747
+      "market_value": 38.76233194
     },
     {
       "ticker": "TECL",
-      "weight_pct": 13.8963,
+      "weight_pct": 13.5505,
       "shares": 0.700984091,
-      "market_value": 142.538105064
+      "market_value": 137.901095302
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 31.2709,
+      "weight_pct": 31.1706,
       "shares": 4.275598313,
-      "market_value": 320.755385441
+      "market_value": 317.216472718
     },
     {
       "ticker": "SHV",
-      "weight_pct": 2.1632,
+      "weight_pct": 2.1806,
       "shares": 0.201366446,
-      "market_value": 22.188568685
+      "market_value": 22.191045492
     },
     {
       "ticker": "GLD",
-      "weight_pct": 20.0324,
+      "weight_pct": 20.1838,
       "shares": 0.552226702,
-      "market_value": 205.478033547
+      "market_value": 205.406244076
     },
     {
       "ticker": "VGT",
-      "weight_pct": 7.1873,
+      "weight_pct": 7.2008,
       "shares": 0.629457829,
-      "market_value": 73.722100932
+      "market_value": 73.281480452
     },
     {
       "ticker": "UDOW",
-      "weight_pct": 1.6836,
+      "weight_pct": 1.7065,
       "shares": 0.24391654,
-      "market_value": 17.269291032
+      "market_value": 17.36688204
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.661,
+      "weight_pct": 0.6596,
       "shares": 0.472962474,
-      "market_value": 6.779917065
+      "market_value": 6.712756393
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1033,
+      "weight_pct": 0.1042,
       "shares": 1.06,
       "market_value": 1.06
     }
