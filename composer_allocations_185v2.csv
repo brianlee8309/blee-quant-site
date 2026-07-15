@@ -155,7 +155,10 @@ date,symphony_id,ticker,weight_pct,shares,market_value,source
 2026-07-13,ZGersOlsQFRHg7U2qnSw,SGOV,81.1967,7.20782,724.46159211,symphony-stats-meta
 2026-07-13,ZGersOlsQFRHg7U2qnSw,UDOW,9.7012,1.22559,86.55729375,symphony-stats-meta
 2026-07-13,ZGersOlsQFRHg7U2qnSw,$USD,0.445,3.97,3.97,symphony-stats-meta
-2026-07-14,ZGersOlsQFRHg7U2qnSw,GLDM,8.6626,0.97652,77.3110884,symphony-stats-meta
-2026-07-14,ZGersOlsQFRHg7U2qnSw,SGOV,81.1826,7.20782,724.5300664,symphony-stats-meta
-2026-07-14,ZGersOlsQFRHg7U2qnSw,UDOW,9.7103,1.22559,86.6614689,symphony-stats-meta
-2026-07-14,ZGersOlsQFRHg7U2qnSw,$USD,0.4448,3.97,3.97,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,GLDM,5.9998,3.663928385,293.993613612,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,SDOW,7.3488,15.035357479,360.096811622,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,SGOV,53.9411,26.294910346,2643.16438798,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,SQQQ,7.6706,9.729858251,375.864424236,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,TQQQ,7.6163,4.974728853,373.204158552,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,UDOW,17.3228,11.989134894,848.830750495,symphony-stats-meta
+2026-07-14,ZGersOlsQFRHg7U2qnSw,$USD,0.1008,4.94,4.94,symphony-stats-meta

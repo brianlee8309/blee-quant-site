@@ -5,64 +5,82 @@
   "source": "symphony-stats-meta",
   "positions": [
     {
+      "ticker": "UPRO",
+      "weight_pct": 2.9897,
+      "shares": 0.212505997,
+      "market_value": 30.666740427
+    },
+    {
+      "ticker": "BSV",
+      "weight_pct": 2.1691,
+      "shares": 0.286656698,
+      "market_value": 22.248859615
+    },
+    {
       "ticker": "TMF",
-      "weight_pct": 4.3206,
+      "weight_pct": 4.3549,
       "shares": 1.357311392,
-      "market_value": 44.533386772
+      "market_value": 44.669117911
     },
     {
       "ticker": "CURE",
-      "weight_pct": 9.7292,
-      "shares": 0.855137787,
-      "market_value": 100.282008281
+      "weight_pct": 9.7624,
+      "shares": 0.905793601,
+      "market_value": 100.135482591
     },
     {
       "ticker": "SVXY",
-      "weight_pct": 3.6824,
+      "weight_pct": 3.7261,
       "shares": 0.658271749,
-      "market_value": 37.955949047
+      "market_value": 38.219257747
     },
     {
       "ticker": "TECL",
-      "weight_pct": 11.3808,
-      "shares": 0.596971441,
-      "market_value": 117.304888157
+      "weight_pct": 13.8963,
+      "shares": 0.700984091,
+      "market_value": 142.538105064
     },
     {
-      "ticker": "SH",
-      "weight_pct": 2.1638,
-      "shares": 0.676468963,
-      "market_value": 22.30318171
+      "ticker": "TQQQ",
+      "weight_pct": 31.2709,
+      "shares": 4.275598313,
+      "market_value": 320.755385441
+    },
+    {
+      "ticker": "SHV",
+      "weight_pct": 2.1632,
+      "shares": 0.201366446,
+      "market_value": 22.188568685
     },
     {
       "ticker": "GLD",
-      "weight_pct": 23.5869,
-      "shares": 0.662209622,
-      "market_value": 243.117018525
+      "weight_pct": 20.0324,
+      "shares": 0.552226702,
+      "market_value": 205.478033547
+    },
+    {
+      "ticker": "VGT",
+      "weight_pct": 7.1873,
+      "shares": 0.629457829,
+      "market_value": 73.722100932
     },
     {
       "ticker": "UDOW",
-      "weight_pct": 1.6733,
+      "weight_pct": 1.6836,
       "shares": 0.24391654,
-      "market_value": 17.247338543
+      "market_value": 17.269291032
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.6598,
+      "weight_pct": 0.661,
       "shares": 0.472962474,
-      "market_value": 6.801200376
-    },
-    {
-      "ticker": "PSQ",
-      "weight_pct": 42.6862,
-      "shares": 16.967957225,
-      "market_value": 439.979130844
+      "market_value": 6.779917065
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1174,
-      "shares": 1.21,
-      "market_value": 1.21
+      "weight_pct": 0.1033,
+      "shares": 1.06,
+      "market_value": 1.06
     }
   ]
 }

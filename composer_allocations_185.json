@@ -6,27 +6,45 @@
   "positions": [
     {
       "ticker": "GLDM",
-      "weight_pct": 8.6626,
-      "shares": 0.97652,
-      "market_value": 77.3110884
+      "weight_pct": 5.9998,
+      "shares": 3.663928385,
+      "market_value": 293.993613612
+    },
+    {
+      "ticker": "SDOW",
+      "weight_pct": 7.3488,
+      "shares": 15.035357479,
+      "market_value": 360.096811622
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 81.1826,
-      "shares": 7.20782,
-      "market_value": 724.5300664
+      "weight_pct": 53.9411,
+      "shares": 26.294910346,
+      "market_value": 2643.16438798
+    },
+    {
+      "ticker": "SQQQ",
+      "weight_pct": 7.6706,
+      "shares": 9.729858251,
+      "market_value": 375.864424236
+    },
+    {
+      "ticker": "TQQQ",
+      "weight_pct": 7.6163,
+      "shares": 4.974728853,
+      "market_value": 373.204158552
     },
     {
       "ticker": "UDOW",
-      "weight_pct": 9.7103,
-      "shares": 1.22559,
-      "market_value": 86.6614689
+      "weight_pct": 17.3228,
+      "shares": 11.989134894,
+      "market_value": 848.830750495
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.4448,
-      "shares": 3.97,
-      "market_value": 3.97
+      "weight_pct": 0.1008,
+      "shares": 4.94,
+      "market_value": 4.94
     }
   ]
 }
