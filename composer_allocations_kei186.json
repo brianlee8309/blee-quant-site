@@ -1,62 +1,74 @@
 {
-  "date": "2026-07-26",
+  "date": "2026-07-27",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "SH",
-      "weight_pct": 1.9874,
-      "shares": 6.40660259,
-      "market_value": 214.557120739
+      "ticker": "UPRO",
+      "weight_pct": 4.8015,
+      "shares": 3.818514507,
+      "market_value": 520.043490708
     },
     {
-      "ticker": "GLD",
-      "weight_pct": 28.589,
-      "shares": 8.297870899,
-      "market_value": 3086.393080883
+      "ticker": "CURE",
+      "weight_pct": 8.9875,
+      "shares": 8.061660377,
+      "market_value": 973.433398032
     },
     {
-      "ticker": "PSQ",
-      "weight_pct": 27.2573,
-      "shares": 109.067058514,
-      "market_value": 2942.629238708
-    },
-    {
-      "ticker": "TMF",
-      "weight_pct": 3.9825,
-      "shares": 13.50308831,
-      "market_value": 429.93833179
+      "ticker": "TECL",
+      "weight_pct": 8.9913,
+      "shares": 5.661385467,
+      "market_value": 973.843221106
     },
     {
       "ticker": "BTAL",
-      "weight_pct": 3.998,
-      "shares": 35.436246412,
-      "market_value": 431.613481298
-    },
-    {
-      "ticker": "SVXY",
-      "weight_pct": 18.0214,
-      "shares": 34.252479744,
-      "market_value": 1945.540849459
+      "weight_pct": 3.9963,
+      "shares": 35.522405443,
+      "market_value": 432.840510323
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 11.2385,
-      "shares": 18.957415539,
-      "market_value": 1213.274594496
+      "weight_pct": 11.1967,
+      "shares": 19.167164505,
+      "market_value": 1212.706498231
     },
     {
-      "ticker": "UPRO",
-      "weight_pct": 4.8203,
-      "shares": 3.818514507,
-      "market_value": 520.387157014
+      "ticker": "SHV",
+      "weight_pct": 1.9973,
+      "shares": 1.961127065,
+      "market_value": 216.322120905
+    },
+    {
+      "ticker": "SH",
+      "weight_pct": 1.9976,
+      "shares": 6.457930551,
+      "market_value": 216.355526699
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 28.6109,
+      "shares": 8.265278583,
+      "market_value": 3098.818246338
+    },
+    {
+      "ticker": "TMV",
+      "weight_pct": 1.9974,
+      "shares": 5.33385007,
+      "market_value": 216.340958839
+    },
+    {
+      "ticker": "PSQ",
+      "weight_pct": 27.3229,
+      "shares": 109.260416447,
+      "market_value": 2959.318379467
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1057,
-      "shares": 11.41,
-      "market_value": 11.41
+      "weight_pct": 0.1005,
+      "shares": 10.89,
+      "market_value": 10.89
     }
   ]
 }
