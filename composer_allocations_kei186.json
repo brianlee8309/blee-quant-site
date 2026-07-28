@@ -1,74 +1,80 @@
 {
-  "date": "2026-07-27",
+  "date": "2026-07-28",
   "symphony_id": "g7WBkfIc6UWUWC6NiAdu",
   "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "UPRO",
-      "weight_pct": 4.8015,
-      "shares": 3.818514507,
-      "market_value": 520.043490708
+      "weight_pct": 12.5442,
+      "shares": 8.637590533,
+      "market_value": 1186.633051183
     },
     {
       "ticker": "CURE",
-      "weight_pct": 8.9875,
-      "shares": 8.061660377,
-      "market_value": 973.433398032
+      "weight_pct": 9.1008,
+      "shares": 6.636117927,
+      "market_value": 860.90357867
+    },
+    {
+      "ticker": "SVXY",
+      "weight_pct": 1.9961,
+      "shares": 3.30060674,
+      "market_value": 188.827711595
     },
     {
       "ticker": "TECL",
-      "weight_pct": 8.9913,
-      "shares": 5.661385467,
-      "market_value": 973.843221106
+      "weight_pct": 15.5647,
+      "shares": 9.002644571,
+      "market_value": 1472.366314827
     },
     {
       "ticker": "BTAL",
-      "weight_pct": 3.9963,
-      "shares": 35.522405443,
-      "market_value": 432.840510323
+      "weight_pct": 2.0017,
+      "shares": 15.301503201,
+      "market_value": 189.356102112
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 11.1967,
-      "shares": 19.167164505,
-      "market_value": 1212.706498231
+      "weight_pct": 11.4293,
+      "shares": 17.530034378,
+      "market_value": 1081.164870263
     },
     {
       "ticker": "SHV",
-      "weight_pct": 1.9973,
-      "shares": 1.961127065,
-      "market_value": 216.322120905
-    },
-    {
-      "ticker": "SH",
-      "weight_pct": 1.9976,
-      "shares": 6.457930551,
-      "market_value": 216.355526699
+      "weight_pct": 4.0054,
+      "shares": 3.434192743,
+      "market_value": 378.894485335
     },
     {
       "ticker": "GLD",
-      "weight_pct": 28.6109,
-      "shares": 8.265278583,
-      "market_value": 3098.818246338
+      "weight_pct": 24.9642,
+      "shares": 6.393992484,
+      "market_value": 2361.525214078
+    },
+    {
+      "ticker": "VGT",
+      "weight_pct": 7.1955,
+      "shares": 6.134267192,
+      "market_value": 680.672396439
     },
     {
       "ticker": "TMV",
-      "weight_pct": 1.9974,
-      "shares": 5.33385007,
-      "market_value": 216.340958839
+      "weight_pct": 2.0051,
+      "shares": 4.738827931,
+      "market_value": 189.671587938
     },
     {
       "ticker": "PSQ",
-      "weight_pct": 27.3229,
-      "shares": 109.260416447,
-      "market_value": 2959.318379467
+      "weight_pct": 9.0898,
+      "shares": 31.482745153,
+      "market_value": 859.866180442
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.1005,
-      "shares": 10.89,
-      "market_value": 10.89
+      "weight_pct": 0.1031,
+      "shares": 9.75,
+      "market_value": 9.75
     }
   ]
 }

@@ -1,92 +1,86 @@
 {
-  "date": "2026-07-27",
+  "date": "2026-07-28",
   "symphony_id": "ZGersOlsQFRHg7U2qnSw",
   "symphony_name": "BLEE - 185 2026 SGOV and Dual Reversal",
   "source": "symphony-stats-meta",
   "positions": [
     {
       "ticker": "SDOW",
-      "weight_pct": 1.0491,
-      "shares": 22.395299255,
-      "market_value": 548.90878474
+      "weight_pct": 1.039,
+      "shares": 1.727708269,
+      "market_value": 40.895027498
     },
     {
       "ticker": "GLDM",
-      "weight_pct": 12.7365,
-      "shares": 82.433007298,
-      "market_value": 6663.88430997
+      "weight_pct": 12.7451,
+      "shares": 6.299108254,
+      "market_value": 501.660981349
     },
     {
       "ticker": "CURE",
-      "weight_pct": 2.2923,
-      "shares": 9.932717775,
-      "market_value": 1199.360772255
+      "weight_pct": 2.3025,
+      "shares": 0.698607959,
+      "market_value": 90.630410521
     },
     {
       "ticker": "TECL",
-      "weight_pct": 2.2931,
-      "shares": 6.974957615,
-      "market_value": 1199.797334144
+      "weight_pct": 2.6599,
+      "shares": 0.640157976,
+      "market_value": 104.69668469
     },
     {
       "ticker": "BTAL",
-      "weight_pct": 1.0186,
-      "shares": 43.736814552,
-      "market_value": 532.933085316
+      "weight_pct": 1.0135,
+      "shares": 3.223705966,
+      "market_value": 39.893361329
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 1.0497,
-      "shares": 8.68023422,
-      "market_value": 549.198419099
-    },
-    {
-      "ticker": "SHV",
-      "weight_pct": 0.5094,
-      "shares": 2.416391603,
-      "market_value": 266.540075769
+      "weight_pct": 1.273,
+      "shares": 0.812423982,
+      "market_value": 50.10624909
     },
     {
       "ticker": "SH",
-      "weight_pct": 0.5079,
-      "shares": 7.931479701,
-      "market_value": 265.722812387
+      "weight_pct": 0.5088,
+      "shares": 0.599403788,
+      "market_value": 20.026080557
+    },
+    {
+      "ticker": "QID",
+      "weight_pct": 9.9428,
+      "shares": 24.399154429,
+      "market_value": 391.359997126
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 64.7387,
-      "shares": 336.5320824,
-      "market_value": 33871.95409356
+      "weight_pct": 64.8151,
+      "shares": 25.344742983,
+      "market_value": 2551.201828669
     },
     {
       "ticker": "GLD",
-      "weight_pct": 1.3486,
-      "shares": 1.882031806,
-      "market_value": 705.611364706
+      "weight_pct": 1.3494,
+      "shares": 0.143814218,
+      "market_value": 53.115624205
     },
     {
       "ticker": "TMV",
-      "weight_pct": 0.5095,
-      "shares": 6.571774689,
-      "market_value": 266.551181386
+      "weight_pct": 0.5049,
+      "shares": 0.49654627,
+      "market_value": 19.874264457
     },
     {
       "ticker": "USMV",
-      "weight_pct": 1.3487,
-      "shares": 7.233162711,
-      "market_value": 705.631188272
+      "weight_pct": 1.3486,
+      "shares": 0.538565979,
+      "market_value": 53.08106289
     },
     {
       "ticker": "PSQ",
-      "weight_pct": 10.4957,
-      "shares": 202.748241868,
-      "market_value": 5491.436130995
-    },
-    {
-      "ticker": "$USD",
-      "weight_pct": 0.1022,
-      "shares": 53.47,
-      "market_value": 53.47
+      "weight_pct": 0.5083,
+      "shares": 0.73255876,
+      "market_value": 20.007864621
     }
   ]
 }
