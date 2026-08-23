@@ -1,56 +1,68 @@
 {
-  "date": "2026-08-20",
+  "date": "2026-08-22",
   "symphony_id": "ZGersOlsQFRHg7U2qnSw",
   "symphony_name": "BLEE - 185 2026 SGOV and Dual Reversal",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "GLD",
-      "weight_pct": 9.9869,
-      "shares": 0.070074668,
-      "market_value": 29.09990738
+      "ticker": "SDOW",
+      "weight_pct": 7.3578,
+      "shares": 257.427972807,
+      "market_value": 5913.120535377
     },
     {
       "ticker": "GLDM",
-      "weight_pct": 6.2,
-      "shares": 0.201691454,
-      "market_value": 18.065503535
-    },
-    {
-      "ticker": "SDOW",
-      "weight_pct": 14.8323,
-      "shares": 1.828190638,
-      "market_value": 43.218426682
-    },
-    {
-      "ticker": "SGOV",
-      "weight_pct": 53.5588,
-      "shares": 1.551442899,
-      "market_value": 156.05964121
+      "weight_pct": 5.987,
+      "shares": 52.68843842,
+      "market_value": 4811.508196514
     },
     {
       "ticker": "TQQQ",
-      "weight_pct": 14.518,
-      "shares": 0.600206776,
-      "market_value": 42.302573572
+      "weight_pct": 7.6434,
+      "shares": 86.309240379,
+      "market_value": 6142.628637773
+    },
+    {
+      "ticker": "SGOV",
+      "weight_pct": 53.9593,
+      "shares": 430.931244735,
+      "market_value": 43364.611157683
+    },
+    {
+      "ticker": "GLD",
+      "weight_pct": 9.9766,
+      "shares": 18.938372723,
+      "market_value": 8017.749476009
     },
     {
       "ticker": "UVXY",
-      "weight_pct": 0.3101,
+      "weight_pct": 0.0011,
       "shares": 0.045450896,
-      "market_value": 0.903563812
+      "market_value": 0.881747382
+    },
+    {
+      "ticker": "UDOW",
+      "weight_pct": 7.3306,
+      "shares": 80.845970795,
+      "market_value": 5891.245891832
     },
     {
       "ticker": "VIXM",
-      "weight_pct": 0.1531,
+      "weight_pct": 0.0005,
       "shares": 0.031469888,
-      "market_value": 0.446085662
+      "market_value": 0.44120783
+    },
+    {
+      "ticker": "SQQQ",
+      "weight_pct": 7.6464,
+      "shares": 157.485128957,
+      "market_value": 6145.069731902
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.4393,
-      "shares": 1.28,
-      "market_value": 1.28
+      "weight_pct": 0.0973,
+      "shares": 78.18,
+      "market_value": 78.18
     }
   ]
 }
