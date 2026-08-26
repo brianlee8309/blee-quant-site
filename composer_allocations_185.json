@@ -1,68 +1,44 @@
 {
-  "date": "2026-08-22",
+  "date": "2026-08-25",
   "symphony_id": "ZGersOlsQFRHg7U2qnSw",
   "symphony_name": "BLEE - 185 2026 SGOV and Dual Reversal",
   "source": "symphony-stats-meta",
   "positions": [
     {
-      "ticker": "SDOW",
-      "weight_pct": 7.3578,
-      "shares": 257.427972807,
-      "market_value": 5913.120535377
+      "ticker": "GLD",
+      "weight_pct": 10.0331,
+      "shares": 3.46771,
+      "market_value": 1484.43995825
     },
     {
       "ticker": "GLDM",
-      "weight_pct": 5.987,
-      "shares": 52.68843842,
-      "market_value": 4811.508196514
-    },
-    {
-      "ticker": "TQQQ",
-      "weight_pct": 7.6434,
-      "shares": 86.309240379,
-      "market_value": 6142.628637773
+      "weight_pct": 5.9702,
+      "shares": 9.56598,
+      "market_value": 883.3225932
     },
     {
       "ticker": "SGOV",
-      "weight_pct": 53.9593,
-      "shares": 430.931244735,
-      "market_value": 43364.611157683
-    },
-    {
-      "ticker": "GLD",
-      "weight_pct": 9.9766,
-      "shares": 18.938372723,
-      "market_value": 8017.749476009
-    },
-    {
-      "ticker": "UVXY",
-      "weight_pct": 0.0011,
-      "shares": 0.045450896,
-      "market_value": 0.881747382
-    },
-    {
-      "ticker": "UDOW",
-      "weight_pct": 7.3306,
-      "shares": 80.845970795,
-      "market_value": 5891.245891832
-    },
-    {
-      "ticker": "VIXM",
-      "weight_pct": 0.0005,
-      "shares": 0.031469888,
-      "market_value": 0.44120783
+      "weight_pct": 53.9578,
+      "shares": 79.32524,
+      "market_value": 7983.2921536
     },
     {
       "ticker": "SQQQ",
-      "weight_pct": 7.6464,
-      "shares": 157.485128957,
-      "market_value": 6145.069731902
+      "weight_pct": 15.2457,
+      "shares": 57.16362,
+      "market_value": 2255.6764452
+    },
+    {
+      "ticker": "UDOW",
+      "weight_pct": 14.6932,
+      "shares": 29.34559,
+      "market_value": 2173.9213072
     },
     {
       "ticker": "$USD",
-      "weight_pct": 0.0973,
-      "shares": 78.18,
-      "market_value": 78.18
+      "weight_pct": 0.1,
+      "shares": 14.8,
+      "market_value": 14.8
     }
   ]
 }
