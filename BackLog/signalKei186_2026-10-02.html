@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLEE Market Analysis — Daily Update</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0b1120;
+    --card: #111827;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: #1f2937;
+    --accent: #3b82f6;
+    --pos: #4ade80;
+    --neg: #f87171;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1180px; margin: 0 auto; padding: 32px 24px 64px; }
+  header { margin-bottom: 24px; }
+  header h1 {
+    font-size: 28px; font-weight: 700; margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+  header .sub { color: var(--muted); font-size: 14px; }
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin: 24px 0 32px;
+  }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat {
+    background: var(--card); padding: 18px 20px;
+    border-radius: 10px; box-shadow: var(--shadow);
+  }
+  .stat .label {
+    font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 600;
+  }
+  .stat .value {
+    font-size: 26px; font-weight: 700; margin-top: 6px;
+    letter-spacing: -0.01em;
+  }
+  .stat .value.small { font-size: 16px; font-weight: 500; }
+  .pos { color: var(--pos); }
+  .neg { color: var(--neg); }
+  section.card {
+    background: var(--card); border-radius: 10px; box-shadow: var(--shadow);
+    padding: 20px 24px; margin-bottom: 20px;
+  }
+  section.card h2 {
+    margin: 0 0 16px; font-size: 16px; font-weight: 600;
+    color: var(--text);
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+  .chart-wrap { position: relative; height: 340px; }
+  .chart-wrap.tall { height: 380px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td {
+    padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 600; color: var(--muted);
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .ticker { font-weight: 600; }
+  footer {
+    color: var(--muted); font-size: 12px; text-align: center;
+    margin-top: 40px;
+  }
+  footer a { color: var(--muted); }
+  .download-row { margin-top: 12px; }
+  .download-row a {
+    display: inline-block; padding: 8px 14px; border: 1px solid var(--border);
+    border-radius: 6px; text-decoration: none; color: var(--text);
+    font-size: 13px; font-weight: 500;
+    background: var(--card);
+  }
+  .download-row a:hover { border-color: var(--accent); color: var(--accent); }
+
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="nav.js"></script>
+<script>const BLEE_REQUIRED_TIER = "basic";</script>
+<script src="auth_guard.js"></script>
+</head>
+<body>
+
+
+<div class="container">
+  <header>
+    <h1>BLEE Market Analysis</h1>
+    <div class="sub">
+      <span id="symphony-name" style="font-weight:600"></span><span id="symphony-name-sep" style="display:none"> &middot; </span>Daily Update — generated <span id="last-updated"></span>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="label">Day Change</div>
+      <div class="value" id="stat-day" class="neg">-12.66%</div>
+    </div>
+    <div class="stat" style="display:none">
+      <div class="label" id="label-total">Total Return</div>
+      <div class="value" id="stat-total"></div>
+    </div>
+    <div class="stat" style="display:none">
+      <div class="label">Annualized Return</div>
+      <div class="value" id="stat-annual"></div>
+    </div>
+  </div>
+
+  <!-- RSI Override Banner (shown when override is active) -->
+  <div id="rsi-override-banner" style="display:none;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:12px;padding:14px 20px;margin-bottom:16px;align-items:center;gap:14px;">
+    <span style="font-size:24px;">⚡</span>
+    <div>
+      <div style="font-size:14px;font-weight:800;color:#fff;">RSI OVERRIDE ACTIVE — Distribution Adjusted</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.80);margin-top:3px;">
+        SPY RSI-14 exceeded 76 today and was sustained over the past 10 days.
+        VIXY &amp; SPXU allocations (if any) redistributed: TQQQ 65% · UPRO 35%.
+        <span id="rsi-override-detail"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RSI Signal Strip -->
+  <div id="rsi-strip" style="display:none;background:#131f35;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:none;gap:24px;flex-wrap:wrap;align-items:center;">
+    <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;">SPY RSI-14</div>
+    <div style="font-size:22px;font-weight:800;" id="rsi-val-display">—</div>
+    <div style="font-size:12px;color:#94a3b8;" id="rsi-signal-display">—</div>
+  </div>
+
+  <section class="card">
+    <h2>Today's Allocation</h2>
+    <div class="chart-wrap"><canvas id="pie"></canvas></div>
+  </section>
+
+  <section class="card">
+    <h2>Holdings at Market Close — Opening Strategy for <span id="holdings-date"></span></h2>
+    <div style="overflow-x:auto"><table id="holdings"></table></div>
+    <div class="download-row">
+      <a id="csv-download" href="../composer_allocations.csv" download>Download full history (CSV)</a>
+    </div>
+  </section>
+
+  <!-- ── Allocation Status vs. Yesterday ─────────────────────────────── -->
+  <section class="card" id="alloc-status-section">
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;">📋 Reallocation Status</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">
+      Compares today's allocation to yesterday's — tells existing members if they need to rebalance, and guides new members on building their position.
+    </p>
+    <div id="alloc-status-content">
+      <p style="color:var(--muted);font-size:13px;">Loading...</p>
+    </div>
+  </section>
+
+  <!-- ── Investment Calculator ─────────────────────────────────────────── -->
+  <section class="card" id="calc-section">
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">💰 Investment Calculator</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">
+      Enter your total investment amount — see exactly how much to put into each ETF and how many shares to buy.
+    </p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+      <div style="position:relative;flex:1;min-width:200px;max-width:340px;">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:800;font-size:18px;color:#94a3b8;">$</span>
+        <input id="calc-input" type="number" min="1" step="1" placeholder="e.g. 12000"
+          style="width:100%;padding:14px 14px 14px 32px;border:2px solid #334155;border-radius:10px;
+                 font-size:20px;font-weight:700;background:#1e293b;color:#f1f5f9;outline:none;
+                 box-sizing:border-box;letter-spacing:0.01em;">
+      </div>
+      <button onclick="runCalc()"
+        style="padding:14px 32px;background:#2563eb;color:#fff;font-weight:800;font-size:16px;
+               border:none;border-radius:10px;cursor:pointer;white-space:nowrap;letter-spacing:0.01em;">
+        Calculate
+      </button>
+      <button onclick="clearCalc()"
+        style="padding:14px 18px;background:transparent;color:#94a3b8;font-size:14px;font-weight:600;
+               border:2px solid #334155;border-radius:10px;cursor:pointer;">
+        Clear
+      </button>
+    </div>
+
+    <div id="calc-results" style="display:none;">
+      <div id="calc-cards" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;"></div>
+
+      <!-- Total row -->
+      <div id="calc-total" style="background:linear-gradient(135deg,#1e3a5f,#1e3a8a);border:2px solid #3b82f6;
+           border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:17px;font-weight:800;color:#fff;letter-spacing:0.01em;">💼 TOTAL INVESTMENT</span>
+        <span id="calc-total-amt" style="font-size:26px;font-weight:900;color:#34d399;letter-spacing:-0.01em;"></span>
+      </div>
+
+      <p style="margin-top:12px;font-size:12px;color:#64748b;line-height:1.5;">
+        ⚠️ Prices are estimated from the latest portfolio snapshot and may differ from live market prices.
+        Always verify before placing orders. Fractional shares availability depends on your broker.
+      </p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Historical Weight Changes</h2>
+    <div class="chart-wrap tall"><canvas id="weights-stack"></canvas></div>
+  </section>
+
+  <footer>
+    Last Updated: <span id="footer-updated"></span>
+    <div style="margin-top:12px">
+      <a href="BackLog/index.html" style="color:#7c3aed;text-decoration:none;font-size:13px;font-weight:600;border:1px solid rgba(124,58,237,0.6);padding:5px 14px;border-radius:20px;">
+        📁 View Archive
+      </a>
+    </div>
+  </footer>
+</div>
+
+<script>
+const DATA = {"symphony_id": "g7WBkfIc6UWUWC6NiAdu", "symphony_name": "BLEE A - 186 Part 1 Kei 90% NVDA", "csv_filename": "composer_allocations_kei186.csv", "account_uuid": "5faa30f0-1913-43f2-9d0d-63aa6394e07c", "last_updated": "2026-07-28", "run_datetime": "07/28/2026 03:51 PM", "total_value": 9459.63, "day_change_pct": -12.6608, "total_return_pct": 57.2357, "annualized_return_pct": 1076.9657, "today_allocations": [{"ticker": "GLD", "weight_pct": 24.9642, "shares": 6.393992484, "market_value": 2361.525214078}, {"ticker": "TECL", "weight_pct": 15.5647, "shares": 9.002644571, "market_value": 1472.366314827}, {"ticker": "UPRO", "weight_pct": 12.5442, "shares": 8.637590533, "market_value": 1186.633051183}, {"ticker": "TQQQ", "weight_pct": 11.4293, "shares": 17.530034378, "market_value": 1081.164870263}, {"ticker": "CURE", "weight_pct": 9.1008, "shares": 6.636117927, "market_value": 860.90357867}, {"ticker": "PSQ", "weight_pct": 9.0898, "shares": 31.482745153, "market_value": 859.866180442}, {"ticker": "VGT", "weight_pct": 7.1955, "shares": 6.134267192, "market_value": 680.672396439}, {"ticker": "SHV", "weight_pct": 4.0054, "shares": 3.434192743, "market_value": 378.894485335}, {"ticker": "TMV", "weight_pct": 2.0051, "shares": 4.738827931, "market_value": 189.671587938}, {"ticker": "BTAL", "weight_pct": 2.0017, "shares": 15.301503201, "market_value": 189.356102112}, {"ticker": "SVXY", "weight_pct": 1.9961, "shares": 3.30060674, "market_value": 188.827711595}, {"ticker": "$USD", "weight_pct": 0.1031, "shares": 9.75, "market_value": 9.75}], "value_history": [{"date": "2026-05-22", "total": 6016.21}, {"date": "2026-05-24", "total": 6014.67}, {"date": "2026-05-25", "total": 6014.67}, {"date": "2026-05-26", "total": 6250.11}, {"date": "2026-05-27", "total": 6142.56}, {"date": "2026-05-28", "total": 6267.99}, {"date": "2026-05-29", "total": 14572.23}, {"date": "2026-05-31", "total": 14560.37}, {"date": "2026-06-01", "total": 14658.98}, {"date": "2026-06-02", "total": 14738.88}, {"date": "2026-06-03", "total": 10150.19}, {"date": "2026-06-04", "total": 10069.68}, {"date": "2026-06-05", "total": 9794.84}, {"date": "2026-06-07", "total": 4767.96}, {"date": "2026-06-08", "total": 4809.67}, {"date": "2026-06-09", "total": 4658.48}, {"date": "2026-06-10", "total": 4503.34}, {"date": "2026-06-11", "total": 4702.49}, {"date": "2026-06-12", "total": 14859.0}, {"date": "2026-06-14", "total": 14873.32}, {"date": "2026-06-15", "total": 15633.99}, {"date": "2026-06-16", "total": 17610.75}, {"date": "2026-06-17", "total": 17125.49}, {"date": "2026-06-18", "total": 10534.49}, {"date": "2026-06-23", "total": 8106.94}, {"date": "2026-06-24", "total": 8063.72}, {"date": "2026-06-25", "total": 58283.81}, {"date": "2026-06-26", "total": 2559.12}, {"date": "2026-06-29", "total": 2607.99}, {"date": "2026-06-30", "total": 2688.55}, {"date": "2026-07-01", "total": 1061.9}, {"date": "2026-07-02", "total": 1039.76}, {"date": "2026-07-05", "total": 1039.76}, {"date": "2026-07-06", "total": 162295.3}, {"date": "2026-07-07", "total": 11918.16}, {"date": "2026-07-08", "total": 11811.69}, {"date": "2026-07-09", "total": 12146.7}, {"date": "2026-07-10", "total": 2092.98}, {"date": "2026-07-12", "total": 2091.46}, {"date": "2026-07-13", "total": 1030.64}, {"date": "2026-07-14", "total": 1025.73}, {"date": "2026-07-15", "total": 1017.68}, {"date": "2026-07-16", "total": 297.48}, {"date": "2026-07-17", "total": 293.22}, {"date": "2026-07-19", "total": 293.22}, {"date": "2026-07-20", "total": 788.07}, {"date": "2026-07-21", "total": 40755.55}, {"date": "2026-07-22", "total": 10771.96}, {"date": "2026-07-23", "total": 10767.63}, {"date": "2026-07-24", "total": 10786.31}, {"date": "2026-07-26", "total": 10795.74}, {"date": "2026-07-27", "total": 10830.91}, {"date": "2026-07-28", "total": 9459.63}], "all_tickers": ["$USD", "BIL", "BND", "BSV", "BTAL", "CURE", "EUM", "GLD", "PSQ", "SH", "SHV", "SVXY", "TECL", "TLT", "TMF", "TMV", "TQQQ", "UDOW", "UPRO", "UTSL", "UVXY", "VGT", "VIXM", "VIXY"], "weight_history": {"$USD": [0.1847, 0.339, 0.339, 0.3262, 100.0, 0.0989, 100.0, 0.1003, 0.0996, 0.1001, 0.1678, 0.301, 0.191, 0.1013, 0.1004, 0.1634, 0.2625, 0.2709, 0.0997, 0.1504, 0.1431, 0.1036, 0.1029, 0.0965, 0.1002, 0.1007, 0.1003, 0.1219, 0.1104, 0.1071, 0.0, 0.1, 0.1, 0.0994, 0.1094, 0.13, 0.1012, 0.1003, 0.1979, 0.1087, 0.1033, 0.1042, 0.1244, 0.0, 0.0, 0.0, 0.1006, 0.0935, 0.1002, 0.1008, 0.1057, 0.1005, 0.1031], "BIL": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 19.5106, 19.3244, 18.3894, 18.4741, 19.6432, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.9938, 9.0754, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "BND": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9211, 2.0011, 2.0213, 1.9944, 1.9923, 2.1682, 2.0952, 2.1924, 1.9901, 1.9901, 1.9838, 2.0052, 2.019, 2.1672, 2.1453, 2.147, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "BSV": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9538, 1.8599, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9828, 1.9828, 0.0, 1.9925, 2.0084, 0.0, 2.0893, 0.0, 2.1743, 2.1691, 2.1893, 2.1906, 2.2221, 2.2221, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "BTAL": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 18.5843, 0.0, 24.4867, 0.0, 0.0, 0.0, 0.0, 3.5627, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.2136, 9.34, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.6996, 3.6996, 0.0, 0.0, 0.0, 0.0, 4.0545, 3.998, 3.9963, 2.0017], "CURE": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0239, 9.3044, 8.9072, 8.9841, 9.7574, 9.1901, 9.7869, 9.0251, 9.0251, 9.0298, 8.9451, 8.6898, 9.746, 9.6585, 9.7401, 10.0135, 9.7624, 9.7897, 10.0374, 9.0102, 9.0102, 9.3, 8.9757, 9.5015, 0.0, 0.0, 0.0, 8.9875, 9.1008], "EUM": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 16.4827, 0.0, 18.2711, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6.2562, 6.2773, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "GLD": [19.613, 19.9508, 19.9508, 19.1974, 0.0, 19.7896, 0.0, 19.9877, 19.5829, 19.9074, 19.7845, 20.2717, 19.8223, 20.0352, 19.9171, 44.6189, 43.7218, 43.1051, 43.4622, 43.9507, 42.8566, 20.6717, 20.1144, 23.8923, 19.9828, 19.4547, 24.9872, 25.0448, 19.9837, 19.4012, 19.9964, 24.9163, 24.9163, 24.9335, 25.0112, 25.0361, 19.982, 19.882, 20.0127, 19.9092, 20.0324, 20.1838, 20.1602, 25.5122, 25.5122, 26.4826, 28.6183, 23.6041, 23.1107, 28.5926, 28.589, 28.6109, 24.9642], "PSQ": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0539, 2.193, 0.0, 40.1995, 39.2769, 0.0, 0.0, 1.7885, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 11.8146, 11.8146, 14.6509, 27.3184, 42.6615, 43.6804, 27.5689, 27.2573, 27.3229, 9.0898], "SH": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9983, 2.1715, 2.2045, 1.9926, 1.9874, 1.9976, 0.0], "SHV": [6.4254, 6.4267, 6.4267, 6.1855, 0.0, 6.3677, 0.0, 6.5028, 6.4401, 4.087, 2.0526, 2.1823, 6.6778, 4.008, 3.9734, 4.1028, 4.2447, 3.8221, 3.9556, 3.9516, 3.7598, 6.3496, 6.3371, 3.8379, 4.0034, 4.0248, 3.9891, 3.9805, 4.3314, 4.202, 6.5736, 3.9808, 3.9808, 5.9482, 3.997, 4.0336, 6.4979, 4.2929, 6.5001, 2.189, 2.1632, 2.1806, 2.19, 4.01, 4.01, 4.2297, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9973, 4.0054], "SVXY": [3.6365, 3.6306, 3.6306, 3.5494, 0.0, 3.6455, 0.0, 3.6756, 3.6132, 0.0, 0.0, 0.0, 3.644, 3.4057, 3.416, 3.4857, 3.5257, 0.0, 3.4243, 3.4288, 3.3771, 3.5877, 3.5033, 3.3276, 3.3968, 3.4286, 3.3921, 3.3375, 3.6814, 3.6148, 3.7406, 3.3911, 3.3911, 3.3892, 3.3843, 3.3858, 3.6816, 3.678, 3.6794, 3.6828, 3.7261, 3.8089, 3.6929, 0.0, 0.0, 3.5811, 3.3986, 3.6942, 3.5788, 18.0537, 18.0214, 0.0, 1.9961], "TECL": [24.1692, 23.6841, 23.6841, 24.6495, 0.0, 22.3844, 0.0, 4.1774, 4.4329, 8.4197, 5.5708, 4.0124, 17.7014, 20.2109, 21.174, 19.5853, 20.0574, 21.3735, 20.8666, 20.4605, 21.5718, 20.0695, 25.7256, 21.6554, 11.4627, 11.1795, 11.5318, 11.493, 13.9159, 14.7035, 13.9362, 11.5485, 11.5485, 11.453, 0.0, 0.0, 13.9188, 14.0949, 13.9223, 13.8252, 13.8963, 13.5505, 13.7554, 11.374, 11.374, 11.9035, 8.9983, 11.7482, 10.8847, 0.0, 0.0, 8.9913, 15.5647], "TLT": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0026, 1.978, 2.0516, 2.1163, 0.0, 1.9706, 0.0, 0.0, 0.0, 0.0, 1.9247, 2.0013, 2.0394, 1.9954, 1.9967, 2.1653, 2.0775, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "TMF": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.3222, 4.3549, 4.4173, 4.3544, 0.0, 0.0, 0.0, 3.9966, 4.3161, 4.2881, 4.0123, 3.9825, 0.0, 0.0], "TMV": [2.1138, 2.1044, 2.1044, 1.9974, 0.0, 2.0915, 0.0, 2.1575, 2.1488, 2.0249, 2.0779, 2.0803, 2.1752, 2.0026, 2.0076, 2.045, 2.1352, 1.9679, 1.9996, 1.9919, 1.8955, 2.0733, 2.136, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.846, 1.846, 2.1364, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9974, 2.0051], "TQQQ": [32.779, 32.779, 32.779, 33.232, 0.0, 34.5276, 0.0, 32.708, 33.0489, 26.0846, 0.0, 31.1363, 1.5004, 4.4501, 4.5924, 15.4192, 15.3804, 16.2216, 13.579, 13.4553, 13.9314, 29.2498, 25.529, 17.8755, 4.4864, 4.4104, 17.2822, 17.1987, 31.3726, 32.1917, 31.3381, 15.695, 15.695, 15.7865, 11.2312, 11.3803, 31.3877, 31.6132, 31.3577, 31.2413, 31.2709, 31.1706, 30.9283, 15.6292, 15.6292, 16.2701, 11.198, 0.0, 0.0, 10.8224, 11.2385, 11.1967, 11.4293], "UDOW": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.9603, 5.6342, 6.8396, 39.9468, 40.4479, 7.034, 7.074, 1.6784, 1.6406, 1.7215, 11.6959, 11.6959, 11.7746, 11.7351, 11.4522, 0.0, 1.6321, 1.6283, 1.6711, 1.6836, 1.7065, 1.6731, 0.0, 0.0, 0.0, 0.0, 1.5533, 0.0, 0.0, 0.0, 0.0, 0.0], "UPRO": [3.3302, 3.3308, 3.3308, 3.2669, 0.0, 3.3197, 0.0, 3.3341, 3.3369, 2.9934, 0.0, 3.0506, 0.0, 2.985, 2.9761, 7.9141, 7.9148, 7.8878, 10.0534, 10.0694, 10.057, 4.0357, 2.9454, 10.9426, 2.9927, 2.9872, 10.996, 10.9702, 2.9956, 2.9816, 3.0633, 7.7659, 7.7659, 7.8534, 4.7947, 4.7909, 4.6753, 3.0005, 2.9986, 2.9825, 2.9897, 3.0379, 2.9999, 7.5958, 7.5958, 8.1283, 4.7978, 0.0, 1.6015, 4.8024, 4.8203, 4.8015, 12.5442], "UTSL": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.8866, 0.0, 0.0, 0.0, 0.0], "UVXY": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9946, 2.0471, 2.0805, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "VGT": [7.1792, 7.1841, 7.1841, 7.053, 0.0, 7.1404, 0.0, 7.1941, 7.3199, 7.2406, 0.0, 7.18, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.26, 7.3055, 7.1202, 0.0, 0.0, 7.1916, 7.2189, 7.1913, 7.173, 7.2713, 7.2388, 7.2388, 7.155, 0.0, 0.0, 7.1928, 7.1665, 7.1696, 7.2196, 7.1873, 7.2008, 7.2325, 7.2873, 7.2873, 7.5696, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.1955], "VIXM": [0.5689, 0.5706, 0.5706, 0.5428, 0.0, 0.6347, 0.0, 0.652, 0.6525, 0.0, 0.0, 0.0, 0.6748, 0.599, 0.588, 0.614, 0.6414, 0.0, 0.589, 0.5874, 0.548, 0.6387, 0.6664, 0.5667, 0.6019, 0.6011, 0.5987, 0.5875, 0.6484, 0.6217, 0.6574, 0.6693, 0.6693, 0.5936, 0.6059, 0.6113, 0.6495, 0.6465, 0.6463, 0.6606, 0.661, 0.6596, 0.6601, 0.0, 0.0, 0.6336, 0.5995, 0.6561, 0.6644, 0.0, 0.0, 0.0, 0.0], "VIXY": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.7584, 12.7044, 5.8687, 4.8552, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.7249, 1.77, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "dates": ["2026-05-22", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-31", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-07", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-14", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-05", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-12", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-19", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-26", "2026-07-27", "2026-07-28"], "baseline_date": null};
+
+// ---- Helpers ---------------------------------------------------------------
+const fmt$ = (n) => n == null ? "—" :
+  "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const fmtPct = (n, signed = false) => {
+  if (n == null || isNaN(n)) return "—";
+  const v = Number(n);
+  const s = (signed && v > 0 ? "+" : "") + v.toFixed(2) + "%";
+  return s;
+};
+const colorPalette = [
+  "#2563eb","#dc2626","#16a34a","#ea580c","#9333ea",
+  "#0891b2","#ca8a04","#db2777","#4f46e5","#65a30d",
+  "#0d9488","#b91c1c","#7c3aed","#0284c7","#a16207",
+  "#15803d","#be185d","#1d4ed8","#be123c","#0e7490"
+];
+const colorFor = (i) => colorPalette[i % colorPalette.length];
+
+// ---- Render top section ----------------------------------------------------
+// Friendly display names per symphony ID
+const SYMPHONY_DISPLAY = {
+  "ZGersOlsQFRHg7U2qnSw": "BLEE - 185 Algorithm",
+};
+const displayName = SYMPHONY_DISPLAY[DATA.symphony_id] || DATA.symphony_name;
+
+// Next business day (skip Saturday=6, Sunday=0)
+function nextBizDay(dateStr) {
+  if (!dateStr) return "—";
+  const p = dateStr.split("-");
+  const d = new Date(+p[0], +p[1] - 1, +p[2]);
+  d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+}
+
+document.getElementById("last-updated").textContent = DATA.last_updated || "—";
+document.getElementById("holdings-date").textContent = nextBizDay(DATA.last_updated);
+document.getElementById("footer-updated").textContent = DATA.run_datetime || DATA.last_updated || "—";
+if (displayName) {
+  document.getElementById("symphony-name").textContent = displayName;
+  document.getElementById("symphony-name-sep").style.display = "inline";
+  document.title = "BLEE Market Analysis — " + displayName;
+}
+if (DATA.csv_filename) {
+  document.getElementById("csv-download").href = DATA.csv_filename;
+}
+
+
+const dayEl = document.getElementById("stat-day");
+if (DATA.day_change_pct == null) {
+  dayEl.textContent = "—";
+} else {
+  dayEl.textContent = fmtPct(DATA.day_change_pct, true);
+  dayEl.classList.add(DATA.day_change_pct >= 0 ? "pos" : "neg");
+}
+
+const totalEl = document.getElementById("stat-total");
+if (DATA.total_return_pct == null) {
+  totalEl.textContent = "—";
+} else {
+  totalEl.textContent = fmtPct(DATA.total_return_pct, true);
+  totalEl.classList.add(DATA.total_return_pct >= 0 ? "pos" : "neg");
+}
+// If a baseline_date is set, relabel "Total Return" to show the start date
+if (DATA.baseline_date) {
+  const lbl = document.getElementById("label-total");
+  if (lbl) lbl.textContent = "Return Since " + DATA.baseline_date;
+}
+
+const annEl = document.getElementById("stat-annual");
+if (DATA.annualized_return_pct == null) {
+  annEl.textContent = "—";
+  annEl.classList.add("small");
+  annEl.textContent = "needs ≥ 14 days";
+} else {
+  annEl.textContent = fmtPct(DATA.annualized_return_pct, true);
+  annEl.classList.add(DATA.annualized_return_pct >= 0 ? "pos" : "neg");
+}
+
+// ---- Pie chart -------------------------------------------------------------
+const today = (DATA.today_allocations || []).filter(a => a.weight_pct > 0.01);
+try { new Chart(document.getElementById("pie"), {
+  type: "doughnut",
+  data: {
+    labels: today.map(a => a.ticker),
+    datasets: [{
+      data: today.map(a => a.weight_pct),
+      backgroundColor: today.map((_, i) => colorFor(i)),
+      borderWidth: 2, borderColor: "#0b1120"
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "right", labels: { boxWidth: 12, font: { size: 12 }, color: "rgba(255,255,255,0.70)" } },
+      tooltip: {
+        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
+        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
+        callbacks: {
+          label: (ctx) => {
+            const a = today[ctx.dataIndex];
+            return `${a.ticker}: ${a.weight_pct.toFixed(2)}% (${fmt$(a.market_value)})`;
+          }
+        }
+      }
+    }
+  }
+}); } catch(e) { console.warn("Pie chart init failed:", e); }
+
+
+
+// ---- Holdings table --------------------------------------------------------
+const tbl = document.getElementById("holdings");
+const cols = [
+  ["Ticker", "ticker", "ticker"],
+  ["Weight", "weight_pct", "num", (v) => fmtPct(v)],
+  ["Shares", "shares", "num", (v) => Number(v).toLocaleString(undefined, { maximumFractionDigits: 4 })],
+  ["Market Value", "market_value", "num", (v) => fmt$(v)]
+];
+const thead = document.createElement("thead");
+const trh = document.createElement("tr");
+cols.forEach(c => {
+  const th = document.createElement("th");
+  th.textContent = c[0]; th.className = c[2];
+  trh.appendChild(th);
+});
+thead.appendChild(trh); tbl.appendChild(thead);
+const tbody = document.createElement("tbody");
+(DATA.today_allocations || []).forEach(a => {
+  const tr = document.createElement("tr");
+  cols.forEach(c => {
+    const td = document.createElement("td");
+    td.className = c[2];
+    const v = a[c[1]];
+    td.textContent = c[3] ? c[3](v) : v;
+    tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+});
+tbl.appendChild(tbody);
+
+// ---- Stacked area: weight history -----------------------------------------
+const tickers = DATA.all_tickers || [];
+const dates = DATA.dates || [];
+const datasets = tickers.map((t, i) => ({
+  label: t,
+  data: (DATA.weight_history || {})[t] || [],
+  backgroundColor: colorFor(i) + "cc",
+  borderColor: colorFor(i),
+  borderWidth: 1, fill: true, pointRadius: 0, tension: 0.2
+}));
+try { new Chart(document.getElementById("weights-stack"), {
+  type: "line",
+  data: { labels: dates, datasets },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { position: "right", labels: { boxWidth: 10, font: { size: 11 }, color: "rgba(255,255,255,0.70)" } },
+      tooltip: {
+        backgroundColor: "#1e293b", titleColor: "rgba(255,255,255,0.70)", bodyColor: "#fff",
+        borderColor: "rgba(255,255,255,0.10)", borderWidth: 1,
+        callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` }
+      }
+    },
+    scales: {
+      y: { stacked: true, max: 100, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)", callback: (v) => v + "%" } },
+      x: { stacked: true, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { color: "rgba(255,255,255,0.35)" } }
+    }
+  }
+}); } catch(e) { console.warn("Weights chart init failed:", e); }
+
+// ── Allocation Status vs. Yesterday ─────────────────────────────────────────
+(function renderAllocStatus() {
+  const dates  = DATA.dates  || [];
+  const wh     = DATA.weight_history || {};
+  const allocs = DATA.today_allocations || [];
+  const el     = document.getElementById("alloc-status-content");
+  if (!el) return;
+
+  const priceMap = {};
+  allocs.forEach(a => {
+    const isCash = a.ticker === "$USD" || a.ticker === "USD";
+    priceMap[a.ticker] = (isCash || !a.shares || a.shares === 0) ? 1 : (a.market_value / a.shares);
+  });
+
+  const todayW = {};
+  allocs.forEach(a => { todayW[a.ticker] = a.weight_pct; });
+
+  if (dates.length < 2) {
+    el.innerHTML = `
+      <div style="background:#0f2744;border:2px solid #2563eb;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;">
+        <div style="font-size:26px;">📅</div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#93c5fd;margin-bottom:4px;">First Day of Tracking</div>
+          <div style="font-size:13px;color:#cbd5e1;">This is the first day at your new baseline — no previous allocation to compare yet.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 18px;">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">✋ Existing Members</div>
+          <div style="font-size:13px;color:#e2e8f0;line-height:1.5;">No prior-day data yet. Use the Adjustment Guide when history builds after tomorrow.</div>
+        </div>
+        <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 18px;">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">👋 New Members</div>
+          <div style="font-size:13px;color:#e2e8f0;line-height:1.5;">Use the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const yestIdx  = dates.length - 2;
+  const yestDate = dates[yestIdx];
+  const yestW = {};
+  Object.keys(wh).forEach(t => {
+    if (wh[t] && wh[t][yestIdx] !== undefined) yestW[t] = wh[t][yestIdx];
+  });
+
+  const allTickers = new Set([...Object.keys(todayW), ...Object.keys(yestW)]);
+  const changes = [];
+  allTickers.forEach(t => {
+    const today = todayW[t] ?? 0;
+    const yest  = yestW[t]  ?? 0;
+    const diff  = today - yest;
+    if (Math.abs(diff) >= 0.05) changes.push({ ticker: t, today, yest, diff });
+  });
+
+  const maxAbsDiff = changes.length ? Math.max(...changes.map(c => Math.abs(c.diff))) : 0;
+  const needsRealloc = maxAbsDiff >= 1.0;
+
+  if (!needsRealloc) {
+    el.innerHTML = `
+      <div style="background:#052e16;border:2px solid #16a34a;border-radius:12px;padding:18px 22px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;">
+        <div style="font-size:30px;line-height:1;">✅</div>
+        <div>
+          <div style="font-size:18px;font-weight:900;color:#4ade80;margin-bottom:4px;">Allocation Unchanged — No Reallocation Needed</div>
+          <div style="font-size:13px;color:#bbf7d0;line-height:1.6;">All positions are within <strong>1%</strong> of yesterday's allocation (${yestDate}). Your portfolio is already aligned with today's strategy.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
+          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Your current holdings are within tolerance of today's targets.<br><strong style="color:#4ade80;">Skip reallocation today</strong> — no trades required.</div>
+        </div>
+        <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
+          <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">Follow today's allocation using the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your initial position.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const rowsHtml = [...changes].sort((a,b) => a.diff - b.diff).map(c => {
+    const sign   = c.diff > 0 ? "+" : "";
+    const color  = c.diff >= 1.0 ? "#4ade80" : c.diff <= -1.0 ? "#f87171" : "#94a3b8";
+    const action = c.diff >= 1.0
+      ? `<span style="display:inline-block;background:#14532d;color:#4ade80;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:800;">BUY ▲</span>`
+      : c.diff <= -1.0
+      ? `<span style="display:inline-block;background:#450a0a;color:#f87171;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:800;">SELL ▼</span>`
+      : `<span style="color:#64748b;font-size:12px;">no change</span>`;
+    return `<tr style="border-bottom:1px solid #1e3a5f;">
+      <td style="padding:11px 14px;font-weight:800;font-size:15px;color:#f1f5f9;">${c.ticker}</td>
+      <td style="padding:11px 14px;text-align:right;color:#94a3b8;font-size:14px;">${c.yest.toFixed(1)}%</td>
+      <td style="padding:11px 14px;text-align:right;font-weight:700;font-size:14px;color:#f1f5f9;">${c.today.toFixed(1)}%</td>
+      <td style="padding:11px 14px;text-align:right;font-weight:800;font-size:14px;color:${color};">${sign}${c.diff.toFixed(1)} pp</td>
+      <td style="padding:11px 14px;text-align:center;">${action}</td>
+    </tr>`;
+  }).join("");
+
+  el.innerHTML = `
+    <div style="background:#1c0a00;border:2px solid #f59e0b;border-radius:12px;padding:18px 22px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start;">
+      <div style="font-size:30px;line-height:1;">⚡</div>
+      <div>
+        <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-bottom:4px;">Allocation Changed — Reallocation Recommended</div>
+        <div style="font-size:13px;color:#fde68a;line-height:1.6;">Some positions shifted by more than 1% since yesterday (${yestDate}). Existing members should make targeted adjustments — <strong>no need to liquidate and rebuild</strong>.</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;margin-bottom:18px;">
+      <table style="width:100%;border-collapse:collapse;background:#0d1829;border-radius:12px;overflow:hidden;border:1px solid #1e3a5f;">
+        <thead>
+          <tr style="background:#0f2744;border-bottom:2px solid #1e3a5f;">
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:0.07em;">ETF / Asset</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:0.07em;">Yesterday</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:0.07em;">Today</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:0.07em;">Change</th>
+            <th style="padding:10px 14px;text-align:center;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:0.07em;">Action</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>
+    <div style="background:#1e293b;border:1.5px solid #f59e0b;border-radius:12px;padding:18px 22px;margin-bottom:16px;">
+      <div style="font-size:15px;font-weight:800;color:#fbbf24;margin-bottom:4px;">🔧 Adjustment Guide for Existing Members</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:14px;">Enter your <em>current total portfolio value</em> to calculate exactly how much to sell and buy.</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="position:relative;min-width:180px;max-width:280px;flex:1;">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#64748b;font-size:16px;">$</span>
+          <input id="adj-input" type="number" min="1" step="1" placeholder="e.g. 10000"
+            style="width:100%;padding:12px 12px 12px 26px;border:2px solid #334155;border-radius:8px;
+                   font-size:16px;font-weight:700;background:#0f172a;color:#f1f5f9;outline:none;box-sizing:border-box;">
+        </div>
+        <button onclick="runAdjCalc()"
+          style="padding:12px 24px;background:#f59e0b;color:#000;font-weight:800;font-size:14px;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;">
+          Calculate Adjustments
+        </button>
+      </div>
+      <div id="adj-results" style="display:none;flex-direction:column;gap:10px;"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">✋ Existing Members</div>
+        <div style="font-size:13px;color:#e2e8f0;line-height:1.6;">Only adjust the positions above. Use the Adjustment Guide for exact amounts — no need to start over.</div>
+      </div>
+      <div style="background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">👋 New Members</div>
+        <div style="font-size:13px;color:#e2e8f0;line-height:1.6;">Skip the adjustment guide — use the <strong style="color:#93c5fd;">Investment Calculator</strong> below to build your full initial position.</div>
+      </div>
+    </div>`;
+
+  const adjInp = document.getElementById("adj-input");
+  if (adjInp) adjInp.addEventListener("keydown", e => { if (e.key === "Enter") runAdjCalc(); });
+})();
+
+function runAdjCalc() {
+  const raw = parseFloat(document.getElementById("adj-input").value);
+  if (!raw || raw <= 0) { alert("Please enter your current total portfolio value."); return; }
+
+  const dates   = DATA.dates || [];
+  const wh      = DATA.weight_history || {};
+  const allocs  = DATA.today_allocations || [];
+  const yestIdx = dates.length - 2;
+
+  const priceMap = {};
+  allocs.forEach(a => {
+    const isCash = a.ticker === "$USD" || a.ticker === "USD";
+    priceMap[a.ticker] = (isCash || !a.shares || a.shares === 0) ? 1 : (a.market_value / a.shares);
+  });
+  const todayW = {};
+  allocs.forEach(a => { todayW[a.ticker] = a.weight_pct; });
+
+  const rows = [];
+  Object.keys(wh).forEach(t => {
+    const today = todayW[t] ?? 0;
+    const yest  = (wh[t] && wh[t][yestIdx] !== undefined) ? wh[t][yestIdx] : 0;
+    const diff  = today - yest;
+    if (Math.abs(diff) < 1.0) return;
+    const dollarChange = (diff / 100) * raw;
+    const price  = priceMap[t] || 1;
+    const isCash = t === "$USD" || t === "USD";
+    const shares = isCash ? null : Math.abs(dollarChange / price);
+    rows.push({ ticker: t, diff, dollarChange, price, shares, isCash });
+  });
+  rows.sort((a, b) => a.diff - b.diff);
+
+  const resultsEl = document.getElementById("adj-results");
+  if (!rows.length) {
+    resultsEl.innerHTML = `<p style="color:#94a3b8;font-size:13px;">No significant adjustments needed for this portfolio size.</p>`;
+    resultsEl.style.display = "block";
+    return;
+  }
+
+  resultsEl.innerHTML = rows.map(r => {
+    const isBuy  = r.diff > 0;
+    const bg     = isBuy ? "#0f2d1e" : "#2d0a0a";
+    const border = isBuy ? "#16a34a" : "#dc2626";
+    const color  = isBuy ? "#4ade80" : "#f87171";
+    const verb   = isBuy ? "BUY" : "SELL";
+    const arrow  = isBuy ? "▲" : "▼";
+    const sharesText = r.isCash
+      ? "Hold as cash"
+      : `~${r.shares.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} shares @ ~$${r.price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}/share`;
+    return `<div style="background:${bg};border:2px solid ${border};border-radius:10px;padding:16px 20px;
+         display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="background:${border};color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:5px;">${verb} ${arrow}</span>
+        <span style="font-size:20px;font-weight:900;color:${color};">${r.ticker}</span>
+        <span style="font-size:13px;color:#94a3b8;">${r.diff > 0 ? "+" : ""}${r.diff.toFixed(1)} pp shift</span>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:26px;font-weight:900;color:${color};letter-spacing:-0.01em;">$${Math.abs(r.dollarChange).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px;">${sharesText}</div>
+      </div>
+    </div>`;
+  }).join("");
+  resultsEl.style.display = "flex";
+  resultsEl.style.flexDirection = "column";
+}
+
+// ── Investment Calculator ────────────────────────────────────────────────────
+const CALC_COLORS = [
+  { bg: "#0f2744", border: "#2563eb", badge: "#2563eb" },
+  { bg: "#0f2d1e", border: "#16a34a", badge: "#16a34a" },
+  { bg: "#2d1a00", border: "#d97706", badge: "#d97706" },
+  { bg: "#1e0f2d", border: "#9333ea", badge: "#9333ea" },
+  { bg: "#1a0f2d", border: "#ec4899", badge: "#ec4899" },
+];
+
+function runCalc() {
+  const raw = parseFloat(document.getElementById("calc-input").value);
+  if (!raw || raw <= 0) {
+    alert("Please enter a valid investment amount greater than $0.");
+    return;
+  }
+  const allocs = (DATA.today_allocations || []).filter(a => a.weight_pct > 0);
+  if (!allocs.length) { alert("No allocation data available."); return; }
+
+  const container = document.getElementById("calc-cards");
+  container.innerHTML = "";
+  let totalDollars = 0;
+
+  allocs.forEach((a, i) => {
+    const isCash = a.ticker === "$USD" || a.ticker === "USD";
+    const pricePerShare = (isCash || !a.shares || a.shares === 0)
+      ? 1 : (a.market_value / a.shares);
+    const dollarAmt = (a.weight_pct / 100) * raw;
+    const sharesNeeded = isCash ? null : (dollarAmt / pricePerShare);
+    totalDollars += dollarAmt;
+
+    const c = CALC_COLORS[i % CALC_COLORS.length];
+    const sharesText = isCash
+      ? '<span style="color:#fbbf24;font-size:15px;font-weight:700;">💵 Hold as Cash</span>'
+      : `<span style="color:#93c5fd;font-size:22px;font-weight:900;">~${sharesNeeded.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+         <span style="color:#93c5fd;font-size:14px;font-weight:600;"> shares</span>`;
+    const priceText = isCash ? "N/A"
+      : "$" + pricePerShare.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + " / share";
+
+    const card = document.createElement("div");
+    card.style.cssText = `background:${c.bg};border:2px solid ${c.border};border-radius:14px;padding:18px 22px;
+      display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center;`;
+    card.innerHTML = `
+      <div>
+        <div style="display:inline-block;background:${c.badge};color:#fff;font-size:13px;font-weight:800;
+             padding:3px 10px;border-radius:6px;letter-spacing:0.04em;margin-bottom:8px;">${a.ticker}</div>
+        <div style="font-size:28px;font-weight:900;color:#f1f5f9;line-height:1;">${a.weight_pct.toFixed(1)}%</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">of portfolio</div>
+      </div>
+      <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.1);border-right:1px solid rgba(255,255,255,0.1);padding:0 12px;">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Invest</div>
+        <div style="font-size:30px;font-weight:900;color:#34d399;letter-spacing:-0.01em;line-height:1;">
+          $${dollarAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">${priceText}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Buy approx.</div>
+        <div style="line-height:1.2;">${sharesText}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById("calc-total-amt").textContent =
+    "$" + totalDollars.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById("calc-results").style.display = "block";
+}
+
+function clearCalc() {
+  document.getElementById("calc-input").value = "";
+  document.getElementById("calc-results").style.display = "none";
+  document.getElementById("calc-cards").innerHTML = "";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const inp = document.getElementById("calc-input");
+  if (inp) inp.addEventListener("keydown", function(e) { if (e.key === "Enter") runCalc(); });
+});
+
+// ── RSI Override banner ──────────────────────────────────────────────────────
+(function() {
+  const rsiToday = DATA.rsi14_today;
+  const rsiSignal = DATA.rsi14_signal || "";
+  const rsiOverride = DATA.rsi14_override || false;
+
+  if (rsiToday != null) {
+    const strip = document.getElementById("rsi-strip");
+    if (strip) {
+      strip.style.display = "flex";
+      const rsiColor = rsiToday >= 70 ? "#ef4444" : rsiToday <= 30 ? "#22c55e" : rsiToday >= 55 ? "#f97316" : "#64748b";
+      document.getElementById("rsi-val-display").textContent = rsiToday.toFixed(1);
+      document.getElementById("rsi-val-display").style.color = rsiColor;
+      document.getElementById("rsi-signal-display").textContent = rsiSignal;
+    }
+  }
+
+  if (rsiOverride) {
+    const banner = document.getElementById("rsi-override-banner");
+    if (banner) {
+      banner.style.display = "flex";
+      const detailEl = document.getElementById("rsi-override-detail");
+      if (detailEl && DATA.rsi14_override_why) {
+        detailEl.textContent = " — " + DATA.rsi14_override_why;
+      }
+    }
+  }
+})();
+</script>
+</body>
+</html>
