@@ -9496,3 +9496,84 @@ oser_allocations_187hi.json (BLEE - 187 2026 ALL in One For High Interest Period
 [2026-10-08T22:06:12] Stamped last-updated (10/08/2026 10:06 PM ET) into Algorithm185History.html
 [2026-10-08T22:06:12] --- Pushing updates to GitHub ---
 [2026-10-08T22:06:12]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-10-08T22:06:25]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-10-08"
+[2026-10-08T22:06:40]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-10-08T22:07:05] GitHub push successful.
+[2026-10-18T21:44:56] archive: === Archive started ===
+[2026-10-18T21:44:56] archive:   Archived -> marketForecast_2026-10-18.html
+[2026-10-18T21:44:56] archive:   Archived -> dailySignal_2026-10-18.html
+[2026-10-18T21:44:56] archive:   SKIP (not found): index_186main.html
+[2026-10-18T21:44:56] archive:   Archived -> signal185_2026-10-18.html
+[2026-10-18T21:44:56] archive:   Archived -> signalKei186_2026-10-18.html
+[2026-10-18T21:44:56] archive:   Archived -> signal187hi_2026-10-18.html
+[2026-10-18T21:44:58] archive: Rebuilt BackLog/index.html — 97 dates, 190 files
+[2026-10-18T21:44:58] archive: === Archive complete ===
+[2026-10-18T21:44:59] === Composer daily allocation pull ===
+[2026-10-18T21:44:59] Configured symphonies: ['WgHFDD7PsDJYTw3ZCvZx', 'jtQvlI5wINrxpOfxgmgl', 'qjmHJ3IR19kmaAlbgkNj', 'ZGersOlsQFRHg7U2qnSw', 'g7WBkfIc6UWUWC6NiAdu', 'BNwivIq0tIEyex2D10GM', 'gHJn5DKfpQ6g6VGXHOQO', 'onbkd6V1mHyOAFsWWSlJ']
+[2026-10-18T21:44:59] No account_uuid in config; discovering via /accounts/list...
+[2026-10-18T21:45:12] Network error on GET /api/v0.1/accounts/list: <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-10-18T21:45:12] FATAL: URLError: <urlopen error [Errno 11001] getaddrinfo failed>
+[2026-10-18T21:50:25] archive: === Archive started ===
+[2026-10-18T21:50:25] archive:   Already archived today (has real data): marketForecast_2026-10-18.html
+[2026-10-18T21:50:25] archive:   Already archived today (has real data): dailySignal_2026-10-18.html
+[2026-10-18T21:50:25] archive:   SKIP (not found): index_186main.html
+[2026-10-18T21:50:26] archive:   Already archived today (has real data): signal185_2026-10-18.html
+[2026-10-18T21:50:26] archive:   Already archived today (has real data): signalKei186_2026-10-18.html
+[2026-10-18T21:50:26] archive:   Already archived today (has real data): signal187hi_2026-10-18.html
+[2026-10-18T21:50:28] archive: Rebuilt BackLog/index.html — 97 dates, 190 files
+[2026-10-18T21:50:28] archive: === Archive complete ===
+[2026-10-18T21:50:30] === Composer daily allocation pull ===
+[2026-10-18T21:50:30] Configured symphonies: ['WgHFDD7PsDJYTw3ZCvZx', 'jtQvlI5wINrxpOfxgmgl', 'qjmHJ3IR19kmaAlbgkNj', 'ZGersOlsQFRHg7U2qnSw', 'g7WBkfIc6UWUWC6NiAdu', 'BNwivIq0tIEyex2D10GM', 'gHJn5DKfpQ6g6VGXHOQO', 'onbkd6V1mHyOAFsWWSlJ']
+[2026-10-18T21:50:30] No account_uuid in config; discovering via /accounts/list...
+[2026-10-18T21:50:31]   account: uuid=b0d61a36-f329-4226-9d82-4494deaee5f5  {"first_deploy_at": "2023-12-29T14:13:04.640912Z", "account_type": "ROTH_IRA", "first_incoming_acats_transfer_at": null, "first_direct_trade_at": null, "direct_tradable_asset_classes": {"buy": [], "sell": []}, "has_queued_deploy": true, "fi
+[2026-10-18T21:50:31]   account: uuid=ab37a3ba-4df7-4d20-b239-6ba1b13d159a  {"first_deploy_at": null, "account_type": "TRADITIONAL_IRA", "first_incoming_acats_transfer_at": null, "first_direct_trade_at": null, "direct_tradable_asset_classes": {"buy": [], "sell": []}, "has_queued_deploy": false, "first_deposit_at": 
+[2026-10-18T21:50:31]   account: uuid=5faa30f0-1913-43f2-9d0d-63aa6394e07c  {"first_deploy_at": "2023-05-18T19:48:28.886816Z", "account_type": "INDIVIDUAL", "first_incoming_acats_transfer_at": null, "first_direct_trade_at": "2025-07-22T15:01:44.425605Z", "direct_tradable_asset_classes": {"buy": [], "sell": []}, "ha
+[2026-10-18T21:50:31] Matched account_number 171091982 -> 5faa30f0-1913-43f2-9d0d-63aa6394e07c
+[2026-10-18T21:50:31] Matched account_number 4CM05765 -> b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-10-18T21:50:31] Pulling from 2 account(s): ['5faa30f0-1913-43f2-9d0d-63aa6394e07c', 'b0d61a36-f329-4226-9d82-4494deaee5f5']
+[2026-10-18T21:50:31] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-10-18T21:50:31] GET /api/v0.1/portfolio/accounts/5faa30f0-1913-43f2-9d0d-63aa6394e07c/symphony-stats-meta
+[2026-10-18T21:50:32] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-10-18T21:50:33] Saved merged symphony-stats (9 symphonies) to composer_symphony_stats_2026-10-18.json
+[2026-10-18T21:50:33] True Composer account total (all symphonies): $123,612.30
+[2026-10-18T21:50:33] --- BLEE - 186 2026 ALL in One 57% Max-Down SGOV Bond (WgHFDD7PsDJYTw3ZCvZx) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for WgHFDD7PsDJYTw3ZCvZx (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for WgHFDD7PsDJYTw3ZCvZx; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for jtQvlI5wINrxpOfxgmgl (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for jtQvlI5wINrxpOfxgmgl; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for qjmHJ3IR19kmaAlbgkNj (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for qjmHJ3IR19kmaAlbgkNj; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE - 185 2026 SGOV and Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for ZGersOlsQFRHg7U2qnSw (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for ZGersOlsQFRHg7U2qnSw; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE A - 186 Part 1 Kei 90% NVDA (g7WBkfIc6UWUWC6NiAdu) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for g7WBkfIc6UWUWC6NiAdu (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for g7WBkfIc6UWUWC6NiAdu; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE - 187 2026 ALL in One For High Interest Period (BNwivIq0tIEyex2D10GM) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for BNwivIq0tIEyex2D10GM (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for BNwivIq0tIEyex2D10GM; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE 186 - 40% Max down 5.8% Fighting for Direction SDOW/TQQQ UDOW/SQQQ (gHJn5DKfpQ6g6VGXHOQO) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for gHJn5DKfpQ6g6VGXHOQO (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for gHJn5DKfpQ6g6VGXHOQO; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:33] --- BLEE 186 - 65% Max down 12.6% Fighting for Direction Max SDOW/TQQQ UDOW/SQQQ (onbkd6V1mHyOAFsWWSlJ) ---
+[2026-10-18T21:50:33]   WARN: symphony-stats-meta returned no positions for onbkd6V1mHyOAFsWWSlJ (check 2026-10-18 JSON to verify the id matches one in the response)
+[2026-10-18T21:50:33]   ERROR: no positions found for onbkd6V1mHyOAFsWWSlJ; skipping CSV/HTML for this symphony
+[2026-10-18T21:50:42] Published signal_latest.json (3 positions, date=2026-06-10)
+[2026-10-18T21:50:42]   Auto-included symphony hafqXDXiNFUtgcqVegi9 (BLEE -  High Interest Period 41/6 2020 SGOV NDVA Turbo C25.1 ARM ) -> composer_allocations_auto_hafqXDXiNFUtgcqVegi9.json
+[2026-10-18T21:50:42]   Auto-included symphony ACdDttwadMyxg60YVipT (BLEE SGOV Bond 20% Yield and Min Dual Reversal  (Buy Copy)) -> composer_allocations_auto_ACdDttwadMyxg60YVipT.json
+[2026-10-18T21:50:42]   Auto-included symphony IHXYcwTp0YvC5Pv4H4Zp (BLEE SGOV Bond 34/4.4 Dual All Mix) -> composer_allocations_auto_IHXYcwTp0YvC5Pv4H4Zp.json
+[2026-10-18T21:50:42]   Auto-included symphony 1DV4CZVuRijjm7bGgDf4 (BLEE 58/22-2020 Aggressive BumpyUptrend with SPY/QQQ RSI 14  (Buy Copy)) -> composer_allocations_auto_1DV4CZVuRijjm7bGgDf4.json
+[2026-10-18T21:50:42]   Auto-included symphony sthWADOcRQY4M6oXgJL9 (BLEE -  High Interest Period 39% Ave -5.8 Down  2020 SGOV (Buy Copy) (Buy Copy)) -> composer_allocations_auto_sthWADOcRQY4M6oXgJL9.json
+[2026-10-18T21:50:42]   Auto-included symphony Mb4Bz3W3LUobiAOaTwsA (BLEE -  24/15.8-2012 LONG Grow More ) -> composer_allocations_auto_Mb4Bz3W3LUobiAOaTwsA.json
+[2026-10-18T21:50:42]   Auto-included symphony WlTiPkwM5XyFqnc1fshi (BLEE SGOV Mixed  18/4.5 Similar S&P Move with 1/4 MaxDown Better than Cash Safe V2 (Buy Copy)) -> composer_allocations_auto_WlTiPkwM5XyFqnc1fshi.json
+[2026-10-18T21:50:42]   Auto-included symphony trRAPNJJVJHAF1kmgQ5O (BLEE -186 90% Ave/Maxdown 19.8% NVDA double/GOLD Mini Drop Year Round (Buy Copy)) -> composer_allocations_auto_trRAPNJJVJHAF1kmgQ5O.json
+[2026-10-18T21:50:42]   Auto-included symphony Ve4tuiMMXfuvynt5b3pq (BLEE -  High Interest Period 41/6 2020 SGOV NDVA Turbo C25.1 ARM  (Buy Copy)) -> composer_allocations_auto_Ve4tuiMMXfuvynt5b3pq.json
+[2026-10-18T21:50:42] Regenerated CurrentWatchSymphony.html (9 symphonies)
+[2026-10-18T21:50:42] === Done ===
+[2026-10-18T21:50:51] Stamped last-updated (10/18/2026 09:50 PM ET) into index.html
+[2026-10-18T21:50:52] Stamped last-updated (10/18/2026 09:50 PM ET) into performance1.html
+[2026-10-18T21:50:52] Stamped last-updated (10/18/2026 09:50 PM ET) into Algorithm185History.html
+[2026-10-18T21:50:52] --- Pushing updates to GitHub ---
+[2026-10-18T21:50:52]   $ git -C "C:\Kei\ComposerInvest" add .
