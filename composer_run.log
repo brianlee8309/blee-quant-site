@@ -10128,3 +10128,104 @@ oser_allocations_187hi.json (BLEE - 187 2026 ALL in One For High Interest Period
 [2026-11-22T20:20:50] Stamped last-updated (11/22/2026 08:20 PM ET) into Algorithm185History.html
 [2026-11-22T20:20:50] --- Pushing updates to GitHub ---
 [2026-11-22T20:20:50]   $ git -C "C:\Kei\ComposerInvest" add .
+[2026-11-22T20:20:55]   $ git -C "C:\Kei\ComposerInvest" commit -m "daily auto update 2026-11-22"
+[2026-11-22T20:20:58]   $ git -C "C:\Kei\ComposerInvest" push
+[2026-11-22T20:21:10] market_report:   RSI-14 fetched: 24.82 (SPY close=689.81)
+[2026-11-22T20:21:10] market_report:   RSI signal: Neutral RSI (10d avg=48.02, adj=+0, new score=+11.06)
+[2026-11-22T20:21:10] market_report:   RSI override not triggered: Today RSI 24.8 ≤ 76.0 — override not triggered
+[2026-11-22T20:21:10] market_report: Composite score: +11.06 -> Mostly Cloudy
+[2026-11-22T20:21:10] GitHub push successful.
+[2026-11-22T20:21:11] market_report:   RSS WSJ: 20 items fetched
+[2026-11-22T20:21:11] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-11-22T20:21:12] market_report:   RSS fetch failed (Yahoo Finance): HTTP Error 404: Not Found
+[2026-11-22T20:21:12] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-11-22T20:21:12] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-11-22T20:21:14] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-11-22T20:21:14] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-11-22T20:21:14] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-11-22T20:21:14] market_report: Fetched 3 news items
+[2026-11-22T20:21:14] market_report: Updated marketDailySummary.html with score=+11.06 (Mostly Cloudy)
+[2026-11-22T20:21:14] market_report: Stamped last-updated (11/22/2026 08:21 PM ET) into index.html
+[2026-11-22T20:21:14] market_report: Stamped last-updated (11/22/2026 08:21 PM ET) into performance1.html
+[2026-11-22T20:21:14] market_report: Stamped last-updated (11/22/2026 08:21 PM ET) into Algorithm185History.html
+[2026-11-22T20:21:14] market_report: === Market report generation complete ===
+[2026-11-23T19:06:01] market_report: === Market report generation started ===
+[2026-11-23T19:06:01] market_report: Loaded 21 ETF points from Index_50_point.csv
+[2026-11-23T19:06:01] market_report: Loaded 18 ETF allocations from composer_allocations_187hi.json (BLEE - 187 2026 ALL in One For High Interest Period)
+[2026-11-23T19:06:40] market_report:   RSI-14 fetched: 41.61 (SPY close=722.29)
+[2026-11-23T19:06:40] market_report:   RSI signal: Neutral RSI (10d avg=47.59, adj=+0, new score=+11.06)
+[2026-11-23T19:06:40] market_report:   RSI override not triggered: Today RSI 41.6 ≤ 76.0 — override not triggered
+[2026-11-23T19:06:40] market_report: Composite score: +11.06 -> Mostly Cloudy
+[2026-11-23T19:06:41] market_report:   RSS WSJ: 20 items fetched
+[2026-11-23T19:06:41] market_report:   Selected [WSJ] topic=EQUITY: Stocks Sink in Broad AI Rout Sparked by China's DeepSeek
+[2026-11-23T19:06:42] market_report:   RSS fetch failed (Yahoo Finance): HTTP Error 404: Not Found
+[2026-11-23T19:06:42] market_report:   Yahoo Finance: RSS unavailable, using hardcoded fallback
+[2026-11-23T19:06:42] market_report:   Selected [Yahoo Finance] topic=EQUITY: S&P 500 Holds Near Highs as Investors Weigh Macro Crosscurrents
+[2026-11-23T19:06:43] market_report:   RSS fetch failed (Barron's): HTTP Error 403: Forbidden
+[2026-11-23T19:06:43] market_report:   Barron's: RSS unavailable, using hardcoded fallback
+[2026-11-23T19:06:43] market_report:   Selected [Barron's] topic=MACRO: Trade Winds: Tariff Developments Continue to Reshape Global Supply Cha
+[2026-11-23T19:06:43] market_report: Fetched 3 news items
+[2026-11-23T19:06:43] market_report: Updated marketDailySummary.html with score=+11.06 (Mostly Cloudy)
+[2026-11-23T19:06:43] market_report: Stamped last-updated (11/23/2026 07:06 PM ET) into index.html
+[2026-11-23T19:06:44] market_report: Stamped last-updated (11/23/2026 07:06 PM ET) into performance1.html
+[2026-11-23T19:06:44] market_report: Stamped last-updated (11/23/2026 07:06 PM ET) into Algorithm185History.html
+[2026-11-23T19:06:44] market_report: === Market report generation complete ===
+[2026-11-24T16:42:23] archive: === Archive started ===
+[2026-11-24T16:42:23] archive:   Archived -> marketForecast_2026-11-24.html
+[2026-11-24T16:42:23] archive:   Archived -> dailySignal_2026-11-24.html
+[2026-11-24T16:42:23] archive:   SKIP (not found): index_186main.html
+[2026-11-24T16:42:23] archive:   Archived -> signal185_2026-11-24.html
+[2026-11-24T16:42:24] archive:   Archived -> signalKei186_2026-11-24.html
+[2026-11-24T16:42:25] archive:   Archived -> signal187hi_2026-11-24.html
+[2026-11-24T16:42:32] archive: Rebuilt BackLog/index.html � 105 dates, 206 files
+[2026-11-24T16:42:32] archive: === Archive complete ===
+[2026-11-24T16:42:35] === Composer daily allocation pull ===
+[2026-11-24T16:42:35] Configured symphonies: ['WgHFDD7PsDJYTw3ZCvZx', 'jtQvlI5wINrxpOfxgmgl', 'qjmHJ3IR19kmaAlbgkNj', 'ZGersOlsQFRHg7U2qnSw', 'g7WBkfIc6UWUWC6NiAdu', 'BNwivIq0tIEyex2D10GM', 'gHJn5DKfpQ6g6VGXHOQO', 'onbkd6V1mHyOAFsWWSlJ']
+[2026-11-24T16:42:35] No account_uuid in config; discovering via /accounts/list...
+[2026-11-24T16:42:36]   account: uuid=b0d61a36-f329-4226-9d82-4494deaee5f5  {"first_deploy_at": "2023-12-29T14:13:04.640912Z", "account_type": "ROTH_IRA", "first_incoming_acats_transfer_at": null, "first_direct_trade_at": null, "direct_tradable_asset_classes": {"buy": [], "sell": []}, "has_queued_deploy": false, "f
+[2026-11-24T16:42:36]   account: uuid=ab37a3ba-4df7-4d20-b239-6ba1b13d159a  {"first_deploy_at": null, "account_type": "TRADITIONAL_IRA", "first_incoming_acats_transfer_at": "2026-11-20T05:15:05.846125Z", "first_direct_trade_at": null, "direct_tradable_asset_classes": {"buy": [], "sell": []}, "has_queued_deploy": fa
+[2026-11-24T16:42:36]   account: uuid=5faa30f0-1913-43f2-9d0d-63aa6394e07c  {"first_deploy_at": "2023-05-18T19:48:28.886816Z", "account_type": "INDIVIDUAL", "first_incoming_acats_transfer_at": null, "first_direct_trade_at": "2025-07-22T15:01:44.425605Z", "direct_tradable_asset_classes": {"buy": [], "sell": []}, "ha
+[2026-11-24T16:42:36] Matched account_number 171091982 -> 5faa30f0-1913-43f2-9d0d-63aa6394e07c
+[2026-11-24T16:42:36] Matched account_number 4CM05765 -> b0d61a36-f329-4226-9d82-4494deaee5f5
+[2026-11-24T16:42:36] Pulling from 2 account(s): ['5faa30f0-1913-43f2-9d0d-63aa6394e07c', 'b0d61a36-f329-4226-9d82-4494deaee5f5']
+[2026-11-24T16:42:36] Fetching per-symphony stats from /portfolio/.../symphony-stats-meta...
+[2026-11-24T16:42:36] GET /api/v0.1/portfolio/accounts/5faa30f0-1913-43f2-9d0d-63aa6394e07c/symphony-stats-meta
+[2026-11-24T16:42:37] GET /api/v0.1/portfolio/accounts/b0d61a36-f329-4226-9d82-4494deaee5f5/symphony-stats-meta
+[2026-11-24T16:42:38] Saved merged symphony-stats (4 symphonies) to composer_symphony_stats_2026-11-24.json
+[2026-11-24T16:42:38] True Composer account total (all symphonies): $115,772.13
+[2026-11-24T16:42:38] --- BLEE - 186 2026 ALL in One 57% Max-Down SGOV Bond (WgHFDD7PsDJYTw3ZCvZx) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for WgHFDD7PsDJYTw3ZCvZx (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for WgHFDD7PsDJYTw3ZCvZx; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE - 186 2026 ALL in One (jtQvlI5wINrxpOfxgmgl) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for jtQvlI5wINrxpOfxgmgl (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for jtQvlI5wINrxpOfxgmgl; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE - 187 2026 SGOV Bond 20% Yield and Min Dual Reversal (qjmHJ3IR19kmaAlbgkNj) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for qjmHJ3IR19kmaAlbgkNj (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for qjmHJ3IR19kmaAlbgkNj; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE - 185 2026 SGOV and Dual Reversal (ZGersOlsQFRHg7U2qnSw) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for ZGersOlsQFRHg7U2qnSw (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for ZGersOlsQFRHg7U2qnSw; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE A - 186 Part 1 Kei 90% NVDA (g7WBkfIc6UWUWC6NiAdu) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for g7WBkfIc6UWUWC6NiAdu (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for g7WBkfIc6UWUWC6NiAdu; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE - 187 2026 ALL in One For High Interest Period (BNwivIq0tIEyex2D10GM) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for BNwivIq0tIEyex2D10GM (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for BNwivIq0tIEyex2D10GM; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE 186 - 40% Max down 5.8% Fighting for Direction SDOW/TQQQ UDOW/SQQQ (gHJn5DKfpQ6g6VGXHOQO) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for gHJn5DKfpQ6g6VGXHOQO (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for gHJn5DKfpQ6g6VGXHOQO; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] --- BLEE 186 - 65% Max down 12.6% Fighting for Direction Max SDOW/TQQQ UDOW/SQQQ (onbkd6V1mHyOAFsWWSlJ) ---
+[2026-11-24T16:42:38]   WARN: symphony-stats-meta returned no positions for onbkd6V1mHyOAFsWWSlJ (check 2026-11-24 JSON to verify the id matches one in the response)
+[2026-11-24T16:42:38]   ERROR: no positions found for onbkd6V1mHyOAFsWWSlJ; skipping CSV/HTML for this symphony
+[2026-11-24T16:42:38] Published signal_latest.json (3 positions, date=2026-06-10)
+[2026-11-24T16:42:38]   Auto-included symphony ZDRcnNBS5b6oTIsH9Aiy (BLEE SGOV 35/7.7% Yield mixed with TQQQ or Not & TQQQ FTLT Loops/31% Return, 9.5% M_Down  SDOW vs SQQQ, Turbo C25.1 ARM  (Buy Copy) (Buy Copy) (Buy Copy)) -> composer_allocations_auto_ZDRcnNBS5b6oTIsH9Aiy.json
+[2026-11-24T16:42:39]   Auto-included symphony ajRU9P5pXroo6VFihl2z (BLEE SGOV 21/5.5% Yield and Min Dual Reversal  (Buy Copy)) -> composer_allocations_auto_ajRU9P5pXroo6VFihl2z.json
+[2026-11-24T16:42:39]   Auto-included symphony lFUU2PMyNERqgqLu9ExU (BLEE SGOV 35/7.7% Yield mixed with TQQQ or Not & TQQQ FTLT Loops/31% Return, 9.5% M_Down  SDOW vs SQQQ, Turbo C25.1 ARM  (Buy Copy) (Buy Copy)) -> composer_allocations_auto_lFUU2PMyNERqgqLu9ExU.json
+[2026-11-24T16:42:39]   Auto-included symphony wQ4EiyNMYkS0kekXEoa6 (BLEE SGOV 21/5.5% Yield and Min Dual Reversal ) -> composer_allocations_auto_wQ4EiyNMYkS0kekXEoa6.json
+[2026-11-24T16:42:39] Regenerated CurrentWatchSymphony.html (4 symphonies)
+[2026-11-24T16:42:39] === Done ===
+[2026-11-24T16:42:57] Stamped last-updated (11/24/2026 04:42 PM ET) into index.html
+[2026-11-24T16:42:57] Stamped last-updated (11/24/2026 04:42 PM ET) into performance1.html
+[2026-11-24T16:42:57] Stamped last-updated (11/24/2026 04:42 PM ET) into Algorithm185History.html
+[2026-11-24T16:42:57] --- Pushing updates to GitHub ---
+[2026-11-24T16:42:57]   $ git -C "C:\Kei\ComposerInvest" add .
